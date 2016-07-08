@@ -31,7 +31,7 @@ Texts below is cited from this book as an introduction of TAS-plot:
 import pandas as pd
 
 
-#sys is needed to ad the TAS.py file in the path to import
+#sys is needed to add the TAS.py file in the path to import
 import sys
 sys.path.append("~/GeoPython/TAS.py")
 
