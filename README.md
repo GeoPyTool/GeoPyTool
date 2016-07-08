@@ -66,6 +66,7 @@ TAS.PlotData(TasRawData,0.5,'b')
 
 They are optional. And the letters for different colors are shown below:
 
+```language
 b: blue
 g: green
 r: red
@@ -74,10 +75,12 @@ m: magenta
 y: yellow
 k: black
 w: white
+```
 
 
 And the items on the map stand for these different kinds of rocks.
 
+```language
 F=Foidite
 PC=Picro-Basalt
 S1=Trachy-Basalt
@@ -93,6 +96,7 @@ O1=Basaltic Andesite
 O2=Andesite
 O3=Dacite
 R=Rhyolite
+```
 
 
 
