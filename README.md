@@ -15,6 +15,8 @@ https://github.com/cycleuser/GeoPython
 #####Copyright 2016 cycleuser
 
 
+![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/QQgroup.png)
+
 |MileStone|Date|Function|
 |--|--|--|
 |Beginning Date|2016-07-07 6:20|TAS|
@@ -141,14 +143,14 @@ They are optional. And the letters for different colors are shown below:
 >这两个不填写也不要紧，有默认值。下面列出的是字幕对应的颜色类型：
 
 ```language
-b: blue
-g: green
-r: red
-c: cyan
-m: magenta
-y: yellow
-k: black
-w: white
+0 b: blue
+1 g: green
+2 r: red
+3 c: cyan
+4 m: magenta
+5 y: yellow
+6 k: black
+7 w: white
 ```
 Same sequence of colors is used in the data file TAS.xlsx.
 >在表格里面设置颜色的时候也用了同样的颜色排序。
@@ -173,6 +175,9 @@ O2=Andesite
 O3=Dacite
 R=Rhyolite
 ```
+
+
+
 
 ![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-TAS-Plot.png)
 
