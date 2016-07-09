@@ -3,8 +3,11 @@ Date: 2016-7-7 6:20
 Category: Python
 
 
-#GeoPython, a project of using Python for geology related daily work
->#GeoPython，一个将 Python 用于地质学的日常工作的计划
+#[GeoPython, a project of using Python for geology related daily work](https://github.com/cycleuser/GeoPython)
+>#[GeoPython，一个将 Python 用于地质学的日常工作的计划](https://github.com/cycleuser/GeoPython)
+
+
+https://github.com/cycleuser/GeoPython
 
 
 #####author: cycleuser
@@ -90,8 +93,8 @@ In order to use these modules, sys is needed to add the files in the path to imp
 
 ```Python
 import sys
-sys.path.append("~/GeoPython/TAS.py")
-sys.path.append("~/GeoPython/QAPF.py")
+sys.path.append("./TAS.py")
+sys.path.append("./QAPF.py")
 
 import TAS
 import QAPF
@@ -174,6 +177,3 @@ R=Rhyolite
 ![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-TAS-Plot.png)
 
 ![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-QAPF-Plot.jpg)
-
-
-
