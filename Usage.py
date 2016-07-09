@@ -38,8 +38,8 @@ import pandas as pd
 
 #sys is needed to add the files in the path to import
 import sys
-sys.path.append("~/GeoPython/TAS.py")
-sys.path.append("~/GeoPython/QAPF.py")
+sys.path.append("./TAS.py")
+sys.path.append("./QAPF.py")
 
 
 #import the module first and then you can use the functions in it
