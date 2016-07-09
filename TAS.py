@@ -17,6 +17,7 @@ This file is a module of TAS-plot for volcanic rocks.
 All data used in this module are from the book 
 "Igneous Rocks_ a Classification and Glossary of Terms"
  by  R.W. Le Maitre & International Union of Geological Sciences 2002
+
 Texts below is cited from this book as an introduction of TAS-plot:
 "The TAS (Total Alkali – Silica) classification should be used only if:
 (1) the rock is considered to be volcanic
@@ -37,6 +38,56 @@ lang = "python"
 #You need to install numpy and matplotlib to use this module
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+#sys is needed to add the TAS.py file in the path to import
+import sys
+sys.path.append("~/GeoPython/Drawer.py")
+import Drawer
+
+'''
+Drawer.DrawTasFrameLines(LineWidth=1,LineColor='k')
+
+
+XHigh=[41,41,45,48.4,52.5]
+YHigh=[3,7,9.4,11.5,14]
+
+XMid=[61,57.6,53,49.4,45,45]
+YMid=[(2.4*3.4/4.6+11.7),11.7,9.3,7.3,5,3]
+
+XMid=[45,45,49.4,53,57.6,61]
+YMid=[3,5,7.3,9.3,11.7,(2.4*3.4/4.6+11.7)]
+
+
+XLow=[45,52,57,63,69]
+YLow=[5,5,5.9,7,8]
+
+
+XRightSpine=[50,52.5,57.6,63]
+YRightSpine=[(2.5*2.3/5.1+14),14,11.7,7]
+
+
+XMidSpine=[48.4,53,57]
+YMidSpine=[11.5,9.3,5.9]
+
+
+XLeftSpine=[45,49.4,52]
+YLeftSpine=[9.4,7.3,5]
+
+
+Drawer.DrawLines(XHigh,YHigh,LineWidth=0.5,LineColor='r')
+Drawer.DrawLines(XMid,YMid,LineWidth=0.5,LineColor='r')
+Drawer.DrawLines(XLow,YLow,LineWidth=0.5,LineColor='r')
+Drawer.DrawLines(XRightSpine,YRightSpine,LineWidth=0.5,LineColor='r')
+Drawer.DrawLines(XMidSpine,YMidSpine,LineWidth=0.5,LineColor='r')
+Drawer.DrawLines(XLeftSpine,YLeftSpine,LineWidth=0.5,LineColor='r')
+
+
+
+plt.show()
+'''
+
+
+
 
 
 
@@ -63,8 +114,6 @@ def DrawTheLines(LineWidth=1,LineColor='k'):
 
     ax.yaxis.set_ticks_position('left')
     ax.spines['left'].set_position(('data',35))
-
-
 
 #x and y are the values of the locations of points
     x=[41,45,48.4,49.4,52,52.5,53,57,57.6,63,69]
@@ -114,10 +163,7 @@ def DrawTheLines(LineWidth=1,LineColor='k'):
 #Items are the positions of those Labels
     Items =[(39,10),(43,1.5),(44,6),(48.5,2.5),(49,6),(49,9.5),(54,3),(53,7),(53,12),(60,4),(57,8.5),(57,14),(67,5),(65,10),(75,9)]
 
-
-
-
-    for i in range(15):
+    for i in range(len(Items)):
         plt.annotate(Labels[i],xy=(Items[i]), xycoords='data',xytext=(-6, -3), textcoords='offset points', fontsize=12,)
 
 
@@ -159,9 +205,9 @@ if __name__ == '__main__':
 
 
     DrawTheLines(Width,Color)
-    plt.savefig("Result-TAS-Plot.png",dpi=600)
-    plt.savefig("Result-TAS-Plot.jpg",dpi=600)
-    plt.savefig("Result-TAS-Plot.svg",dpi=600)
+    plt.savefig("Default-TAS-Plot.png",dpi=600)
+    plt.savefig("Default-TAS-Plot.jpg",dpi=600)
+    plt.savefig("Default-TAS-Plot.svg",dpi=600)
     plt.show()
 
 

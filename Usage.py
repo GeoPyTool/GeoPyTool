@@ -16,12 +16,17 @@ This file is a module of TAS-plot for volcanic rocks.
 All data used in this module are from the book 
 "Igneous Rocks_ a Classification and Glossary of Terms"
  by  R.W. Le Maitre & International Union of Geological Sciences 2002
+
 Texts below is cited from this book as an introduction of TAS-plot:
 "The TAS (Total Alkali – Silica) classification should be used only if:
 (1) the rock is considered to be volcanic
 (2) a mineral mode cannot be determined, owing either to the presence of glass or to the fine-grained nature of the rock
 (3) a chemical analysis of the rock is available."
 
+Texts below is cited from this book as an introduction of QAPF-plot:
+"QAPF modal classification of volcanic rocks (based on Streckeisen, 1978, Fig. 1). 
+The corners of the double triangle are Q = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid. 
+This diagram must not be used for rocks in which the mafic mineral content, M, is greater than 90%."
 
 
 """
@@ -31,21 +36,25 @@ Texts below is cited from this book as an introduction of TAS-plot:
 import pandas as pd
 
 
-#sys is needed to add the TAS.py file in the path to import
+#sys is needed to add the files in the path to import
 import sys
 sys.path.append("~/GeoPython/TAS.py")
+sys.path.append("~/GeoPython/QAPF.py")
 
 
 #import the module first and then you can use the functions in it
 import TAS
+import QAPF
 
 
-#You need to put you data in a xlsx file in the same form as the example file "TAS.xlsx"
+#You need to put you data in a xlsx file in the same form as the example file
 TasRawData = pd.read_excel("TAS.xlsx")
+QapfRawData= pd.read_excel("QAPF.xlsx")
 
 
 #You only need to input the data from the file
 TAS.PlotData(TasRawData)
+QAPF.PlotData(QapfRawData)
 
 #Then if the data file is in the right form and nothing goes wrong, you will have three files:
 #a svg(Scalable Vector Graphics) file which can be modified directly in Adobe Illustrator or Corel Draw,
