@@ -1,10 +1,11 @@
-Title: GeoPython, a set of free softwares for geology related daily work
+Title: GeoPython,a project of using Python for geology related daily work
 Date: 2016-7-7 6:20
 Category: Python
 
 
-#GeoPython, a set of free softwares for geology related daily work
->#GeoPython，一个地质学日常工具系列
+#GeoPython, a project of using Python for geology related daily work
+>#GeoPython，一个将 Python 用于地质学的日常工作的计划
+
 
 #####author: cycleuser
 #####email: cycleuser@cycleuser.org
