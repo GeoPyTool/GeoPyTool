@@ -13,7 +13,7 @@ GeoPython is a set of free softwares for geology related daily work: you can red
 GeoPython is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with GeoPython. If not, see http://www.gnu.org/licenses/.
 
-This file is a module of QFL-plot for sedimentary rocks.
+This file is a module of QmFLt-plot for sedimentary rocks.
 All data used in this module are from  Dickinson 1979、1985
 
 
@@ -63,36 +63,38 @@ def DrawTheLines(LineWidth=1,LineColor='k'):
     
 
     
-    XSpecialLon=[[51.5,15],
-                 [27.5,87.5]
+    XSpecialLon=[[55.5,23],
+                 [27.5,93.5],
+                 [40,87]
                 ]
-    YSpecialLon=[[48.5*math.sqrt(3),0],
-                 [27.5*math.sqrt(3),12.5*math.sqrt(3)]          
+    YSpecialLon=[[44.5*math.sqrt(3),0],
+                 [27.5*math.sqrt(3),6.5*math.sqrt(3)],
+                 [40*math.sqrt(3),0]
                 ]
     for i in range(len(XSpecialLon)):
         DrawLines(XSpecialLon[i],YSpecialLon[i],LineWidth=1,LineColor='k',LineStyle="-",)     
     
     
     
-    LineMid=Drawer.CrossPoint(13/2,13/2*math.sqrt(3),100-37/2,37/2*math.sqrt(3),55/2,55/2*math.sqrt(3),100-25/2,25/2*math.sqrt(3))    
-    LineLeft=Drawer.CrossPoint(15,0,51.5,48.5*math.sqrt(3),13/2,13/2*math.sqrt(3),100-37/2,37/2*math.sqrt(3))    
+    LineMid=Drawer.CrossPoint(9,9*math.sqrt(3),84,16*math.sqrt(3),57/2,57/2*math.sqrt(3),100-13/2,13/2*math.sqrt(3))    
+    LineLeft=Drawer.CrossPoint(23,0,55.5,44.5*math.sqrt(3),9,9*math.sqrt(3),84,16*math.sqrt(3))    
     
     
     XMid=[[LineMid[0],LineLeft[0]],
-          [LineMid[0],100-37/2],
-          [50,87.5],
+          [LineMid[0],84],
+          [47,91],
          ]
     YMid=[[LineMid[1],LineLeft[1]]  ,
-          [LineMid[1],37/2*math.sqrt(3)] ,
-          [0,12.5*math.sqrt(3)]          
+          [LineMid[1],16*math.sqrt(3)] ,
+          [0,9*math.sqrt(3)]          
          ]
     for i in range(len(XMid)):
         DrawLines(XMid[i],YMid[i],LineWidth=1,LineColor='k',LineStyle="--",)     
 
 #Label are the names of different kinds of rocks
-    Label=[u'Q',
+    Label=[u'Qm',
            u'F',
-           u'L']
+           u'Lt']
 
 #LabelPosition are the positions of those Labels
     LabelPosition =[(48,50*math.sqrt(3)+2),
@@ -116,14 +118,13 @@ def PlotPoints(X,Y,Size,Color,Alph):
     SpotAlpha=[0.25,0.5,0.75,1]
     plt.scatter(X,Y, s=SpotSize[Size],color =SpotColor[Color],alpha=SpotAlpha[Alph])
 
-def PlotData(QflRaw,Width=1,Color='k'):
+def PlotData(QmFLtRaw,Width=1,Color='k'):
     DrawTheLines(Width,Color)
-    Points = len(QflRaw)     
+    Points = len(QmFLtRaw)     
     for i in range(Points):        
-        
-        q=QflRaw.at[i,'Q']
-        f=QflRaw.at[i,'F']
-        l=QflRaw.at[i,'L']
+        q=QmFLtRaw.at[i,'Qm']
+        f=QmFLtRaw.at[i,'F']
+        l=QmFLtRaw.at[i,'Lt']
         
         Q=100*q/(q+f+l)
         F=100*f/(q+f+l) 
@@ -133,22 +134,21 @@ def PlotData(QflRaw,Width=1,Color='k'):
         x= Q/2+(100-Q)*L/(L+F)
         y= Q/2*math.sqrt(3)
         
-        
-        PlotPoints(x,y,QflRaw.at[i,'Size'],QflRaw.at[i,'Color'],QflRaw.at[i,'Alpha'])  
-    plt.savefig("Result-QFL-Plot.png",dpi=600)
-    plt.savefig("Result-QFL-Plot.jpg",dpi=600)
-    plt.savefig("Result-QFL-Plot.svg",dpi=600)
+        PlotPoints(x,y,QmFLtRaw.at[i,'Size'],QmFLtRaw.at[i,'Color'],QmFLtRaw.at[i,'Alpha'])  
+    plt.savefig("Result-QmFLt-Plot.png",dpi=600)
+    plt.savefig("Result-QmFLt-Plot.jpg",dpi=600)
+    plt.savefig("Result-QmFLt-Plot.svg",dpi=600)
     plt.show()
 
 
 
-def PlotBaseData(QflRaw,Width=1,Color='k'):
+def PlotBaseData(QmFLtRaw,Width=1,Color='k'):
     DrawTheLines(Width,Color)
-    Points = len(QflRaw)     
-    for i in range(Points):        
-        q=QflRaw.at[i,'Q']
-        f=QflRaw.at[i,'F']
-        l=QflRaw.at[i,'L']
+    Points = len(QmFLtRaw)     
+    for i in range(Points):       
+        q=QmFLtRaw.at[i,'Qm']
+        f=QmFLtRaw.at[i,'F']
+        l=QmFLtRaw.at[i,'Lt']
         
         Q=100*q/(q+f+l)
         F=100*f/(q+f+l) 
@@ -157,10 +157,12 @@ def PlotBaseData(QflRaw,Width=1,Color='k'):
         
         x= Q/2+(100-Q)*L/(L+F)
         y= Q/2*math.sqrt(3)
-        PlotPoints(x,y,QflRaw.at[i,'Size'],QflRaw.at[i,'Color'],QflRaw.at[i,'Alpha'])   
-    plt.savefig("Result-QFL-Plot.png",dpi=600)
-    plt.savefig("Result-QFL-Plot.jpg",dpi=600)
-    plt.savefig("Result-QFL-Plot.svg",dpi=600)
+        
+        
+        PlotPoints(x,y,QmFLtRaw.at[i,'Size'],QmFLtRaw.at[i,'Color'],QmFLtRaw.at[i,'Alpha'])  
+    plt.savefig("Result-QmFLt-Plot.png",dpi=600)
+    plt.savefig("Result-QmFLt-Plot.jpg",dpi=600)
+    plt.savefig("Result-QmFLt-Plot.svg",dpi=600)
     plt.show()
 
 
@@ -172,9 +174,9 @@ if __name__ == '__main__':
 
 
     DrawTheLines(Width,Color)
-    plt.savefig("Default-QFL-Plot.png",dpi=600)
-    plt.savefig("Default-QFL-Plot.jpg",dpi=600)
-    plt.savefig("Default-QFL-Plot.svg",dpi=600)
+    plt.savefig("Default-QmFLt-Plot.png",dpi=600)
+    plt.savefig("Default-QmFLt-Plot.jpg",dpi=600)
+    plt.savefig("Default-QmFLt-Plot.svg",dpi=600)
     plt.show()
 
 

@@ -67,10 +67,24 @@ def DrawLines(X=[0,1],Y=[0,1],LineWidth=1,LineColor='k',LineStyle="-",):
     
 
 
+def CrossPoint(x0,y0,x1,y1,x2,y2,x3,y3): 
+    a = y1-y0 
+    b = x1*y0-x0*y1 
+    c = x1-x0 
+    d = y3-y2 
+    e = x3*y2-x2*y3 
+    f = x3-x2 
+    y = float(a*e-b*d)/(a*f-c*d) 
+    x = float(y*c-b)/a 
+    print(x,y)
+    return([x,y])
+
+
+
 if __name__ == '__main__':
     Width=1
     Color="Blue"
     x=[41,45,48.4,49.4,52,52.5,53,57,57.6,63,69]
     y=[3,5,5.9,7,7.3,8,9.3,9.4,11.5,11.7,14]
-    DrawTheLines(x,y,Width,Color)
+    DrawLines(x,y,Width,Color)
 

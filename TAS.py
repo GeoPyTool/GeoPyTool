@@ -38,11 +38,11 @@ lang = "python"
 #You need to install numpy and matplotlib to use this module
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
+#import pandas as pd
 #sys is needed to add the TAS.py file in the path to import
-import sys
-sys.path.append("~/GeoPython/Drawer.py")
-import Drawer
+#import sys
+#sys.path.append("~/GeoPython/Drawer.py")
+#import Drawer
 
 '''
 Drawer.DrawTasFrameLines(LineWidth=1,LineColor='k')

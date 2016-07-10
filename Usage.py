@@ -41,23 +41,29 @@ import sys
 sys.path.append("./TAS.py")
 sys.path.append("./QAPF.py")
 sys.path.append("./QFL.py")
+sys.path.append("./QmFt.py")
+sys.path.append("./Drawer.py")
 
 #import the module first and then you can use the functions in it
 import TAS
 import QAPF
 import QFL
+import QmFLt
+
+import Drawer
+
 
 
 #You need to put you data in a xlsx file in the same form as the example file
 TasRawData = pd.read_excel("TAS.xlsx")
 QapfRawData= pd.read_excel("QAPF.xlsx")
-QflRawData= pd.read_excel("QFLBaseData.xlsx")
+QflRawData= pd.read_excel("QFL.xlsx")
 
 #You only need to input the data from the file
 #TAS.PlotData(TasRawData)
-QAPF.PlotData(QapfRawData)
-#QFL.PlotData(QflRawData)
-
+#QAPF.PlotData(QapfRawData)
+QFL.PlotData(QflRawData)
+QmFLt.PlotData(QflRawData)
 #Then if the data file is in the right form and nothing goes wrong, you will have three files:
 #a svg(Scalable Vector Graphics) file which can be modified directly in Adobe Illustrator or Corel Draw,
 #a png (Portable Network Graphics) and a more commonly used jpg.
