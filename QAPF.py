@@ -23,6 +23,18 @@ Texts below is cited from this book as an introduction of QAPF-plot:
 The corners of the double triangle are Q = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid. 
 This diagram must not be used for rocks in which the mafic mineral content, M, is greater than 90%."
 
+“To use the classification the modal amounts of Q, A, P, and F must be known and recalcu- lated so that their sum is 100%.
+For example, a rock with Q = 10%, A = 30%, P = 20%, and M = 40% would give recalculated values of Q, A, and P as follows:
+Q = 100 £ 10 / 60 = 16.7 A = 100 £ 30 / 60 = 50.0 P = 100 £ 20 / 60 = 33.3
+Although at this stage the rock can be plotted directly into the triangular diagram, if all that is required is to name the rock it is easier to determine the plagioclase ratio where:
+plagioclase ratio = 100 £ P / (A + P)
+as the non-horizontal divisions in the QAPF diagram are lines of constant plagioclase ratio. The field into which the rock falls can then easily be determined by inspection.
+In the above example rock the plagioclase ratio is 40 so that it can be seen by inspection that the rock falls into QAPF field 8* (Fig. 2.5) and should, therefore, be called a quartz monzonite (Fig. 2.4).
+Similarly, a rock with A = 50%, P = 5%, F = 30%, and M = 15% would recalculate as fol- lows:
+A = 100 £ 50 / 85 = 58.8 P = 100 £ 5 / 85 = 5.9
+F = 100 £ 30 / 85 = 35.3 Plagioclase ratio = 9
+”
+
 
 """
 
@@ -207,12 +219,26 @@ def PlotData(QapfRaw,Width=1,Color='k'):
     
     for i in range(Points):        
         
-        if( (QapfRaw.at[i,'Q'])>0):
-            x=QapfRaw.at[i,'Q']/2+(100-QapfRaw.at[i,'Q'])*QapfRaw.at[i,'A']/(QapfRaw.at[i,'A']+QapfRaw.at[i,'P'])
-            y=(QapfRaw.at[i,'Q'])/2*math.sqrt(3)
-        if( (QapfRaw.at[i,'F'])>0):
-            x=QapfRaw.at[i,'F']/2+(100-QapfRaw.at[i,'F'])*QapfRaw.at[i,'A']/(QapfRaw.at[i,'A']+QapfRaw.at[i,'P'])
-            y=-(QapfRaw.at[i,'F'])/2*math.sqrt(3)
+        
+        q=QapfRaw.at[i,'Q']
+        f=QapfRaw.at[i,'F']
+        a=QapfRaw.at[i,'A']
+        p=QapfRaw.at[i,'P']
+        
+        Q=100*q/(q+a+p)
+        F=100*f/(f+a+p)
+
+        
+        if( Q>0):
+            A=100*a/(q+a+p)
+            P=100*p/(q+a+p)
+            x=Q/2+(100-Q)*A/(A+P)
+            y=(Q)/2*math.sqrt(3)
+        if( F>0):
+            A=100*a/(f+a+p)
+            P=100*p/(f+a+p)
+            x=F/2+(100-F)*A/(A+P)
+            y=-(F)/2*math.sqrt(3)
         PlotPoints(x,y,QapfRaw.at[i,'Size'],QapfRaw.at[i,'Color'],QapfRaw.at[i,'Alpha'])
         
 

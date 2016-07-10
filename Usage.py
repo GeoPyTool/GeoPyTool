@@ -40,21 +40,23 @@ import pandas as pd
 import sys
 sys.path.append("./TAS.py")
 sys.path.append("./QAPF.py")
-
+sys.path.append("./QFL.py")
 
 #import the module first and then you can use the functions in it
 import TAS
 import QAPF
+import QFL
 
 
 #You need to put you data in a xlsx file in the same form as the example file
 TasRawData = pd.read_excel("TAS.xlsx")
 QapfRawData= pd.read_excel("QAPF.xlsx")
-
+QflRawData= pd.read_excel("QFLBaseData.xlsx")
 
 #You only need to input the data from the file
-TAS.PlotData(TasRawData)
+#TAS.PlotData(TasRawData)
 QAPF.PlotData(QapfRawData)
+#QFL.PlotData(QflRawData)
 
 #Then if the data file is in the right form and nothing goes wrong, you will have three files:
 #a svg(Scalable Vector Graphics) file which can be modified directly in Adobe Illustrator or Corel Draw,
