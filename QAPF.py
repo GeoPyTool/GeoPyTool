@@ -232,12 +232,12 @@ def PlotData(QapfRaw,Width=1,Color='k'):
         if( Q>0):
             A=100*a/(q+a+p)
             P=100*p/(q+a+p)
-            x=Q/2+(100-Q)*A/(A+P)
+            x=Q/2+(100-Q)*P/(A+P)
             y=(Q)/2*math.sqrt(3)
         if( F>0):
             A=100*a/(f+a+p)
             P=100*p/(f+a+p)
-            x=F/2+(100-F)*A/(A+P)
+            x=F/2+(100-F)*P/(A+P)
             y=-(F)/2*math.sqrt(3)
         PlotPoints(x,y,QapfRaw.at[i,'Size'],QapfRaw.at[i,'Color'],QapfRaw.at[i,'Alpha'])
         
