@@ -13,7 +13,7 @@ GeoPython is a set of free softwares for geology related daily work: you can red
 GeoPython is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with GeoPython. If not, see http://www.gnu.org/licenses/.
 
-This file is a module of REE-plot.
+This file is a module of Trace Element plot.
 
 
 
@@ -182,12 +182,12 @@ def Cross(A= Point(3,4),B= Point(3,5),C= Point(4,4.5),D= Point(2,3.5)):
 def DrawPoint(a=Point(0,0)):
     plt.scatter(a.x,a.y,marker=a.Marker,c=a.Color,s=a.Size,alpha=a.Alpha)
 
-def DrawLine(X=[0,1],Y=[0,1],LineColor='k',LineWidth=1,LineStyle="-",LineAlpha=0.3,LineLabel= ''):
-    plt.plot(X,Y,color=LineColor, linewidth=LineWidth, linestyle=LineStyle,alpha= LineAlpha,label = LineLabel)
+def DrawLine(X=[0,1],Y=[0,1],LineColor='k',LineWidth=1,LineStyle="-",LineAlpha=0.3):
+    plt.plot(X,Y,color=LineColor, linewidth=LineWidth, linestyle=LineStyle,alpha= LineAlpha)
 
 
-def DrawLines(X=[0,1],Y=[0,1],LineColor='k',LineWidth=1,LineStyle="-",LineAlpha=0.3,LineLabel= ''):
-    plt.plot(X,Y,color=LineColor, linewidth=LineWidth, linestyle=LineStyle,alpha= LineAlpha,label = LineLabel)
+def DrawLines(X=[0,1],Y=[0,1],LineColor='k',LineWidth=1,LineStyle="-",LineAlpha=0.3):
+    plt.plot(X,Y,color=LineColor, linewidth=LineWidth, linestyle=LineStyle,alpha= LineAlpha)
     
 def PlotPoints(X,Y,Size,Color,Alph,Marker):
     SpotSize = [5,25,175,200]
@@ -240,6 +240,7 @@ def DrawREEFrame(LineWidth=1,LineColor='k'):
                )
     plt.xlabel(r'$REE-Standardlized-Pattern$',fontsize=16)
     #plt.ylabel(r'$Na_2O + K_2O wt\%$',fontsize=16)
+
 
 #ax is used to set the axies
     ax = plt.gca()
@@ -328,9 +329,8 @@ def PlotData(REERaw,Width=1,Color='b',Style="-",k=0):
        # NewTmp.append(math.log((REERaw.at[i,'Y'])/REEBase.at[k,'Y']))
 
 
-        DrawLines(X,NewTmp,LineColor= REERaw.at[i,'Color'], LineWidth = REERaw.at[i,'Width'],LineStyle=REERaw.at[i,'Style'],LineAlpha=REERaw.at[i,'Alpha'],LineLabel=REERaw.at[i,'Label'])
+        DrawLines(X,NewTmp,LineColor= REERaw.at[i,'Color'], LineWidth = REERaw.at[i,'Width'],LineStyle=REERaw.at[i,'Style'],LineAlpha=REERaw.at[i,'Alpha'])
 
-    plt.legend(loc='upper right', frameon=False)
     plt.savefig("Result-REE-Plot.png",dpi=600)
     plt.savefig("Resultt-REE-Plot.svg",dpi=600)
     plt.show()
