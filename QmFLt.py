@@ -43,7 +43,17 @@ Color='k'
 def DrawLines(X=[0,1],Y=[0,1],LineWidth=1,LineColor='k',LineStyle="-",):
     plt.plot(X,Y,color=LineColor, linewidth=LineWidth, linestyle=LineStyle,)
     
-    
+def CrossPoint(x0,y0,x1,y1,x2,y2,x3,y3): 
+    a = y1-y0 
+    b = x1*y0-x0*y1 
+    c = x1-x0 
+    d = y3-y2 
+    e = x3*y2-x2*y3 
+    f = x3-x2 
+    y = float(a*e-b*d)/(a*f-c*d) 
+    x = float(y*c-b)/a 
+    print(x,y)
+    return([x,y])   
     
 def DrawTheLines(LineWidth=1,LineColor='k'):
     plt.figure(figsize=(8,4*math.sqrt(3)), dpi=80)
@@ -76,8 +86,8 @@ def DrawTheLines(LineWidth=1,LineColor='k'):
     
     
     
-    LineMid=Drawer.CrossPoint(9,9*math.sqrt(3),84,16*math.sqrt(3),57/2,57/2*math.sqrt(3),100-13/2,13/2*math.sqrt(3))    
-    LineLeft=Drawer.CrossPoint(23,0,55.5,44.5*math.sqrt(3),9,9*math.sqrt(3),84,16*math.sqrt(3))    
+    LineMid=CrossPoint(9,9*math.sqrt(3),84,16*math.sqrt(3),57/2,57/2*math.sqrt(3),100-13/2,13/2*math.sqrt(3))    
+    LineLeft=CrossPoint(23,0,55.5,44.5*math.sqrt(3),9,9*math.sqrt(3),84,16*math.sqrt(3))    
     
     
     XMid=[[LineMid[0],LineLeft[0]],
@@ -111,12 +121,12 @@ def DrawTheLines(LineWidth=1,LineColor='k'):
 
 
 
+def PlotPoints(X,Y,Size,Color,Alph,Marker ='o'):
+    plt.scatter(X,Y, marker= Marker,s=Size,color =Color,alpha=Alph)    
 
-def PlotPoints(X,Y,Size,Color,Alph):
-    SpotSize = [5,25,175,200]
-    SpotColor=['b','g','r','c','m','y','k','w']
-    SpotAlpha=[0.25,0.5,0.75,1]
-    plt.scatter(X,Y, s=SpotSize[Size],color =SpotColor[Color],alpha=SpotAlpha[Alph])
+#PlotPoints(x,y,QflRaw.at[i,'Size'],QflRaw.at[i,'Color'],QflRaw.at[i,'Alpha'],QflRaw.at[i,'Marker'])  
+   
+
 
 def PlotData(QmFLtRaw,Width=1,Color='k'):
     DrawTheLines(Width,Color)
@@ -134,7 +144,7 @@ def PlotData(QmFLtRaw,Width=1,Color='k'):
         x= Q/2+(100-Q)*L/(L+F)
         y= Q/2*math.sqrt(3)
         
-        PlotPoints(x,y,QmFLtRaw.at[i,'Size'],QmFLtRaw.at[i,'Color'],QmFLtRaw.at[i,'Alpha'])  
+        PlotPoints(x,y,QmFLtRaw.at[i,'Size'],QmFLtRaw.at[i,'Color'],QmFLtRaw.at[i,'Alpha'],QmFLtRaw.at[i,'Marker'])  
     plt.savefig("Result-QmFLt-Plot.png",dpi=600)
     plt.savefig("Result-QmFLt-Plot.jpg",dpi=600)
     plt.savefig("Result-QmFLt-Plot.svg",dpi=600)

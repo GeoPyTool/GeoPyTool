@@ -179,18 +179,16 @@ k: black
 w: white
 '''
 
-def PlotPoints(X,Y,Size,Color,Alph):
-    SpotSize = [5,25,175,200]
-    SpotColor=['b','g','r','c','m','y','k','w']
-    SpotAlpha=[0.25,0.5,0.75,1]
-    plt.scatter(X,Y, s=SpotSize[Size],color =SpotColor[Color],alpha=SpotAlpha[Alph])
+def PlotPoints(X,Y,Size,Color,Alph,Marker ='d'):
+    plt.scatter(X,Y, marker= Marker,s=Size,color =Color,alpha=Alph)    
+
 
 def PlotData(TasRaw,Width=1,Color='k'):
     
     DrawTheLines(Width,Color)
     Points = len(TasRaw)    
     for i in range(Points):
-        PlotPoints((TasRaw.at[i,'SiO2']),(TasRaw.at[i,'Na2O']+TasRaw.at[i,'K2O']),TasRaw.at[i,'Size'],TasRaw.at[i,'Color'],TasRaw.at[i,'Alpha'])
+        PlotPoints((TasRaw.at[i,'SiO2']),(TasRaw.at[i,'Na2O']+TasRaw.at[i,'K2O']),TasRaw.at[i,'Size'],TasRaw.at[i,'Color'],TasRaw.at[i,'Alpha'],TasRaw.at[i,'Marker'])
     plt.savefig("Result-TAS-Plot.png",dpi=600)
     plt.savefig("Result-TAS-Plot.jpg",dpi=600)
     plt.savefig("Result-TAS-Plot.svg",dpi=600)

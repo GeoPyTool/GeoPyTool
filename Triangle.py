@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jul  8 12:33:43 2016
+Created on Sun Jul 10 13:38:54 2016
 
 @author: cycleuser
 @email: cycleuser@cycleuser.org
@@ -13,11 +13,10 @@ GeoPython is a set of free softwares for geology related daily work: you can red
 GeoPython is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with GeoPython. If not, see http://www.gnu.org/licenses/.
 
-This file is a module of QFL-plot for sedimentary rocks.
-All data used in this module are from  Dickinson 1979、1985
-
+This file is a module of drawing lines
 
 """
+
 
 #!/usr/bin/env python
 
@@ -25,37 +24,19 @@ All data used in this module are from  Dickinson 1979、1985
 
 lang = "python"
 
+
+#You need to install numpy and matplotlib to use this module
 import matplotlib.pyplot as plt
 import math
-import sys
-sys.path.append("./Drawer.py")
-
-#import the module first and then you can use the functions in it
-import Drawer
-
-Width=1
-
-Color='k'
-
-   
-    
+import numpy as np
+import pandas as pd
 
 def DrawLines(X=[0,1],Y=[0,1],LineWidth=1,LineColor='k',LineStyle="-",):
     plt.plot(X,Y,color=LineColor, linewidth=LineWidth, linestyle=LineStyle,)
     
-def CrossPoint(x0,y0,x1,y1,x2,y2,x3,y3): 
-    a = y1-y0 
-    b = x1*y0-x0*y1 
-    c = x1-x0 
-    d = y3-y2 
-    e = x3*y2-x2*y3 
-    f = x3-x2 
-    y = float(a*e-b*d)/(a*f-c*d) 
-    x = float(y*c-b)/a 
-    print(x,y)
-    return([x,y])    
     
-def DrawTheLines(LineWidth=1,LineColor='k'):
+    
+def DrawTriangle(LineWidth=1,LineColor='k'):
     plt.figure(figsize=(8,4*math.sqrt(3)), dpi=80)
     plt.xlim(-10,110)
     plt.ylim(-10,100)
@@ -84,8 +65,8 @@ def DrawTheLines(LineWidth=1,LineColor='k'):
     
     
     
-    LineMid=CrossPoint(13/2,13/2*math.sqrt(3),100-37/2,37/2*math.sqrt(3),55/2,55/2*math.sqrt(3),100-25/2,25/2*math.sqrt(3))    
-    LineLeft=CrossPoint(15,0,51.5,48.5*math.sqrt(3),13/2,13/2*math.sqrt(3),100-37/2,37/2*math.sqrt(3))    
+    LineMid=Drawer.CrossPoint(13/2,13/2*math.sqrt(3),100-37/2,37/2*math.sqrt(3),55/2,55/2*math.sqrt(3),100-25/2,25/2*math.sqrt(3))    
+    LineLeft=Drawer.CrossPoint(15,0,51.5,48.5*math.sqrt(3),13/2,13/2*math.sqrt(3),100-37/2,37/2*math.sqrt(3))    
     
     
     XMid=[[LineMid[0],LineLeft[0]],
@@ -116,82 +97,9 @@ def DrawTheLines(LineWidth=1,LineColor='k'):
 
 
 
-
-
-
-
-def PlotPoints(X,Y,Size,Color,Alph,Marker ='o'):
-    plt.scatter(X,Y, marker= Marker,s=Size,color =Color,alpha=Alph)    
-
-#PlotPoints(x,y,QflRaw.at[i,'Size'],QflRaw.at[i,'Color'],QflRaw.at[i,'Alpha'],QflRaw.at[i,'Marker'])  
-
-
-def PlotData(QflRaw,Width=1,Color='k'):
-    DrawTheLines(Width,Color)
-    Points = len(QflRaw)     
-    for i in range(Points):        
-        
-        q=QflRaw.at[i,'Q']
-        f=QflRaw.at[i,'F']
-        l=QflRaw.at[i,'L']
-        
-        Q=100*q/(q+f+l)
-        F=100*f/(q+f+l) 
-        L=100*l/(q+f+l) 
-        
-        
-        x= Q/2+(100-Q)*L/(L+F)
-        y= Q/2*math.sqrt(3)
-        
-        
-        PlotPoints(x,y,QflRaw.at[i,'Size'],QflRaw.at[i,'Color'],QflRaw.at[i,'Alpha'],QflRaw.at[i,'Marker'])  
-    plt.savefig("Result-QFL-Plot.png",dpi=600)
-    plt.savefig("Result-QFL-Plot.jpg",dpi=600)
-    plt.savefig("Result-QFL-Plot.svg",dpi=600)
-    plt.show()
-
-
-
-def PlotBaseData(QflRaw,Width=1,Color='k'):
-    DrawTheLines(Width,Color)
-    Points = len(QflRaw)     
-    for i in range(Points):        
-        q=QflRaw.at[i,'Q']
-        f=QflRaw.at[i,'F']
-        l=QflRaw.at[i,'L']
-        
-        Q=100*q/(q+f+l)
-        F=100*f/(q+f+l) 
-        L=100*l/(q+f+l) 
-        
-        
-        x= Q/2+(100-Q)*L/(L+F)
-        y= Q/2*math.sqrt(3)
-        PlotPoints(x,y,QflRaw.at[i,'Size'],QflRaw.at[i,'Color'],QflRaw.at[i,'Alpha'])   
-    plt.savefig("Result-QFL-Plot.png",dpi=600)
-    plt.savefig("Result-QFL-Plot.jpg",dpi=600)
-    plt.savefig("Result-QFL-Plot.svg",dpi=600)
-    plt.show()
-
-
 if __name__ == '__main__':
-
     Width=1
-
     Color="Blue"
-
-
-    DrawTheLines(Width,Color)
-    plt.savefig("Default-QFL-Plot.png",dpi=600)
-    plt.savefig("Default-QFL-Plot.jpg",dpi=600)
-    plt.savefig("Default-QFL-Plot.svg",dpi=600)
-    plt.show()
-
-
-
-
-
-
-
-
-
+    x=[41,45,48.4,49.4,52,52.5,53,57,57.6,63,69]
+    y=[3,5,5.9,7,7.3,8,9.3,9.4,11.5,11.7,14]
+    DrawTriangle()

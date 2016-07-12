@@ -13,17 +13,7 @@ GeoPython is a set of free softwares for geology related daily work: you can red
 GeoPython is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with GeoPython. If not, see http://www.gnu.org/licenses/.
 
-This file is a module of TAS-plot for volcanic rocks.
-All data used in this module are from the book 
-"Igneous Rocks_ a Classification and Glossary of Terms"
- by  R.W. Le Maitre & International Union of Geological Sciences 2002
-Texts below is cited from this book as an introduction of TAS-plot:
-"The TAS (Total Alkali – Silica) classification should be used only if:
-(1) the rock is considered to be volcanic
-(2) a mineral mode cannot be determined, owing either to the presence of glass or to the fine-grained nature of the rock
-(3) a chemical analysis of the rock is available."
-
-
+This file is a module of drawing lines
 
 """
 #!/usr/bin/env python

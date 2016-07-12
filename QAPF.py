@@ -205,11 +205,11 @@ def DrawTheLines(LineWidth=1,LineColor='k'):
 
 
 
-def PlotPoints(X,Y,Size,Color,Alph):
-    SpotSize = [5,25,175,200]
-    SpotColor=['b','g','r','c','m','y','k','w']
-    SpotAlpha=[0.25,0.5,0.75,1]
-    plt.scatter(X,Y, s=SpotSize[Size],color =SpotColor[Color],alpha=SpotAlpha[Alph])
+def PlotPoints(X,Y,Size,Color,Alph,Marker ='o'):
+    plt.scatter(X,Y, marker= Marker,s=Size,color =Color,alpha=Alph)    
+
+#PlotPoints(x,y,QflRaw.at[i,'Size'],QflRaw.at[i,'Color'],QflRaw.at[i,'Alpha'],QflRaw.at[i,'Marker'])  
+
 
 def PlotData(QapfRaw,Width=1,Color='k'):
     
@@ -239,7 +239,7 @@ def PlotData(QapfRaw,Width=1,Color='k'):
             P=100*p/(f+a+p)
             x=F/2+(100-F)*P/(A+P)
             y=-(F)/2*math.sqrt(3)
-        PlotPoints(x,y,QapfRaw.at[i,'Size'],QapfRaw.at[i,'Color'],QapfRaw.at[i,'Alpha'])
+        PlotPoints(x,y,QapfRaw.at[i,'Size'],QapfRaw.at[i,'Color'],QapfRaw.at[i,'Alpha'],QapfRaw.at[i,'Marker'])
         
 
     
