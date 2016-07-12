@@ -85,6 +85,13 @@ pip install numpy
 pip install matplotlib
 pip install pandas
 ```
+
+##Background Information 
+>##背景知识
+
+You can also set width, color and other features in the Xlsx files. And the introduction can be found [here](http://www.jianshu.com/p/67cbc84e57a6)
+>你可以在数据文件中对应的位置设置线宽、颜色等各种属性。对这些属性的说明可以参考[这里](http://www.jianshu.com/p/67cbc84e57a6)
+
 ##Usage Under Windows
 >##在Windows系统中用法
 
@@ -128,38 +135,18 @@ QAPF.PlotData(QapfRawData)
 ```
 
 If the data file is in the right form and nothing goes wrong, you will have three files:
->如果你的数据文件没有什么问题，你就能得到三个文件：
+>如果你的数据文件没有什么问题，你就能得到两个文件：
 
 * a svg(Scalable Vector Graphics) file which can be modified directly in Adobe Illustrator or Corel Draw,
 >* 一个碉堡的 svg（一种矢量图）文件，直接就能用Adobe Illustrator 或者 Corel Draw来打开编辑。
 
 
-* a png (Portable Network Graphics) and a more commonly used jpg.
->* 然后就是一个png图像和一个常用的jpg了。
+* a png (Portable Network Graphics) .
+>* 然后就是一个png图像了。
 
-You can also set the width and color of lines like this:
->你可以用两个可选变量来设定投图的线宽和线色：
 
-```Python
-TAS.PlotData(TasRawData,0.5,'b')
-QAPF.PlotData(QapfRawData,0.3,'r')
-```
 
-They are optional. And the letters for different colors are shown below:
->这两个不填写也不要紧，有默认值。下面列出的是字幕对应的颜色类型：
 
-```language
-0 b: blue
-1 g: green
-2 r: red
-3 c: cyan
-4 m: magenta
-5 y: yellow
-6 k: black
-7 w: white
-```
-Same sequence of colors is used in the data file TAS.xlsx.
->在表格里面设置颜色的时候也用了同样的颜色排序。
 
 And the items on the map stand for these different kinds of rocks.
 >图表中的每一个缩写代表的岩石类型如下所示：
