@@ -232,11 +232,11 @@ def DrawREEFrame(LineWidth=1,LineColor='k'):
                u'Sm',u'Eu',u'Gd',u'Tb',
                u'Dy',u'Ho',u'Er',u'Tm',
                u'Yb',u'Lu',u'Y'])
-    plt.ylim(-0.1,4)
+    plt.ylim(-0.1,5)
     
     
-    plt.yticks(np.linspace(0,2,3,endpoint=True),
-               [u'1',u'10',u'100']
+    plt.yticks(np.linspace(0,3,4,endpoint=True),
+               [u'1',u'10',u'100',u'1000']
                )
     plt.xlabel(r'$REE-Standardlized-Pattern$',fontsize=16)
     #plt.ylabel(r'$Na_2O + K_2O wt\%$',fontsize=16)
