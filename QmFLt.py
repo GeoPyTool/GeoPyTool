@@ -25,13 +25,14 @@ All data used in this module are from  Dickinson 1979、1985
 
 lang = "python"
 
+
+import matplotlib
+matplotlib.use('Agg')
+
+import pandas as pd
 import matplotlib.pyplot as plt
 import math
-import sys
-sys.path.append("./Drawer.py")
 
-#import the module first and then you can use the functions in it
-import Drawer
 
 Width=1
 
@@ -146,7 +147,6 @@ def PlotData(QmFLtRaw,Width=1,Color='k'):
         
         PlotPoints(x,y,QmFLtRaw.at[i,'Size'],QmFLtRaw.at[i,'Color'],QmFLtRaw.at[i,'Alpha'],QmFLtRaw.at[i,'Marker'])  
     plt.savefig("Result-QmFLt-Plot.png",dpi=600)
-    plt.savefig("Result-QmFLt-Plot.jpg",dpi=600)
     plt.savefig("Result-QmFLt-Plot.svg",dpi=600)
     plt.show()
 
@@ -171,24 +171,16 @@ def PlotBaseData(QmFLtRaw,Width=1,Color='k'):
         
         PlotPoints(x,y,QmFLtRaw.at[i,'Size'],QmFLtRaw.at[i,'Color'],QmFLtRaw.at[i,'Alpha'])  
     plt.savefig("Result-QmFLt-Plot.png",dpi=600)
-    plt.savefig("Result-QmFLt-Plot.jpg",dpi=600)
     plt.savefig("Result-QmFLt-Plot.svg",dpi=600)
     plt.show()
 
 
 if __name__ == '__main__':
 
-    Width=1
-
-    Color="Blue"
-
-
-    DrawTheLines(Width,Color)
-    plt.savefig("Default-QmFLt-Plot.png",dpi=600)
-    plt.savefig("Default-QmFLt-Plot.jpg",dpi=600)
-    plt.savefig("Default-QmFLt-Plot.svg",dpi=600)
-    plt.show()
-
+#You need to put you data in a xlsx file in the same form as the example file
+    QmFLtRawData = pd.read_excel("QFL.xlsx")
+#You only need to input the data from the file
+    PlotData(QmFLtRawData)
 
 
 

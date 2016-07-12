@@ -44,7 +44,13 @@ F = 100 £ 30 / 85 = 35.3 Plagioclase ratio = 9
 
 lang = "python"
 
+import matplotlib
+matplotlib.use('Agg')
+import pandas as pd
+
 import matplotlib.pyplot as plt
+
+
 import math
 import numpy as np
 
@@ -244,7 +250,6 @@ def PlotData(QapfRaw,Width=1,Color='k'):
 
     
     plt.savefig("Result-QAPF-Plot.png",dpi=600)
-    plt.savefig("Result-QAPF-Plot.jpg",dpi=600)
     plt.savefig("Result-QAPF-Plot.svg",dpi=600)
     plt.show()
 
@@ -252,16 +257,12 @@ def PlotData(QapfRaw,Width=1,Color='k'):
 
 if __name__ == '__main__':
 
-    Width=1
+    #You need to put you data in a xlsx file in the same form as the example file
+    QAPFRawData = pd.read_excel("QAPF.xlsx")
+ 
 
-    Color="Blue"
-
-
-    DrawTheLines(Width,Color)
-    plt.savefig("Default-Qapf-Plot.png",dpi=600)
-    plt.savefig("Default-Qapf-Plot.jpg",dpi=600)
-    plt.savefig("Default-Qapf-Plot.svg",dpi=600)
-    plt.show()
+    #You only need to input the data from the file
+    PlotData(QAPFRawData)
 
 
 

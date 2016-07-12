@@ -36,9 +36,14 @@ lang = "python"
 
 
 #You need to install numpy and matplotlib to use this module
+import matplotlib
+
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
+
 import numpy as np
-#import pandas as pd
+import pandas as pd
 #sys is needed to add the TAS.py file in the path to import
 #import sys
 #sys.path.append("~/GeoPython/Drawer.py")
@@ -190,23 +195,21 @@ def PlotData(TasRaw,Width=1,Color='k'):
     for i in range(Points):
         PlotPoints((TasRaw.at[i,'SiO2']),(TasRaw.at[i,'Na2O']+TasRaw.at[i,'K2O']),TasRaw.at[i,'Size'],TasRaw.at[i,'Color'],TasRaw.at[i,'Alpha'],TasRaw.at[i,'Marker'])
     plt.savefig("Result-TAS-Plot.png",dpi=600)
-    plt.savefig("Result-TAS-Plot.jpg",dpi=600)
     plt.savefig("Result-TAS-Plot.svg",dpi=600)
     plt.show()
 
 
 
 if __name__ == '__main__':
-    Width=1
+    #You need to put you data in a xlsx file in the same form as the example file
+    TasRawData = pd.read_excel("TAS.xlsx")
+ 
 
-    Color="Blue"
+    #You only need to input the data from the file
+    PlotData(TasRawData)
 
 
-    DrawTheLines(Width,Color)
-    plt.savefig("Default-TAS-Plot.png",dpi=600)
-    plt.savefig("Default-TAS-Plot.jpg",dpi=600)
-    plt.savefig("Default-TAS-Plot.svg",dpi=600)
-    plt.show()
+   
 
 
 

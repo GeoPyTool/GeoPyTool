@@ -27,15 +27,15 @@ lang = "python"
 
 
 #You need to install numpy and matplotlib to use this module
+
+import matplotlib
+matplotlib.use('Agg')
+
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-import pandas as pd
-#import pandas as pd
-#sys is needed to add the TAS.py file in the path to import
-#import sys
-#sys.path.append("~/GeoPython/Drawer.py")
-#import Drawer
+
 
 
 
@@ -331,6 +331,9 @@ def PlotData(REERaw,Width=1,Color='b',Style="-",k=0):
 
         DrawLines(X,NewTmp,LineColor= REERaw.at[i,'Color'], LineWidth = REERaw.at[i,'Width'],LineStyle=REERaw.at[i,'Style'],LineAlpha=REERaw.at[i,'Alpha'])
 
+    plt.savefig("Result-REE-Plot.png",dpi=600)
+    plt.savefig("Resultt-REE-Plot.svg",dpi=600)
+    plt.show()
 
 '''
         Tmp=Line(A,B)        
@@ -350,25 +353,16 @@ def PlotData(REERaw,Width=1,Color='b',Style="-",k=0):
         Tmp.AddPoint(Point(15, math.log((REERaw.at[i,'Y'])/REEBase.at[k,'Y'])))
         
         WholeData.append(Tmp)
-         '''    
-        
-        
+'''
+
+
     
 
 
 
 if __name__ == '__main__':
-    Width=1
-
-    Color="Blue"
-
-    REEBaseData= pd.read_excel("REEBase.xlsx")
-    DrawREEFrame(Width,Color)
-    plt.savefig("Default-REE-Plot.png",dpi=600)
-    plt.savefig("Default-REE-Plot.jpg",dpi=600)
-    plt.savefig("Default-REE-Plot.svg",dpi=600)
-    plt.show()
-
+    REERawData= pd.read_excel("REE.xlsx")
+    PlotData(REERawData)
 
 
 

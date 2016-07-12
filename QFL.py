@@ -25,13 +25,13 @@ All data used in this module are from  Dickinson 1979、1985
 
 lang = "python"
 
-import matplotlib.pyplot as plt
-import math
-import sys
-sys.path.append("./Drawer.py")
+import matplotlib
+matplotlib.use('Agg')
 
-#import the module first and then you can use the functions in it
-import Drawer
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import math
 
 Width=1
 
@@ -146,7 +146,6 @@ def PlotData(QflRaw,Width=1,Color='k'):
         
         PlotPoints(x,y,QflRaw.at[i,'Size'],QflRaw.at[i,'Color'],QflRaw.at[i,'Alpha'],QflRaw.at[i,'Marker'])  
     plt.savefig("Result-QFL-Plot.png",dpi=600)
-    plt.savefig("Result-QFL-Plot.jpg",dpi=600)
     plt.savefig("Result-QFL-Plot.svg",dpi=600)
     plt.show()
 
@@ -176,16 +175,10 @@ def PlotBaseData(QflRaw,Width=1,Color='k'):
 
 if __name__ == '__main__':
 
-    Width=1
-
-    Color="Blue"
-
-
-    DrawTheLines(Width,Color)
-    plt.savefig("Default-QFL-Plot.png",dpi=600)
-    plt.savefig("Default-QFL-Plot.jpg",dpi=600)
-    plt.savefig("Default-QFL-Plot.svg",dpi=600)
-    plt.show()
+#You need to put you data in a xlsx file in the same form as the example file
+    QFLRawData = pd.read_excel("QFL.xlsx")
+#You only need to input the data from the file
+    PlotData(QFLRawData)
 
 
 
