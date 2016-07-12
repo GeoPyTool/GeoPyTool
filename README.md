@@ -85,9 +85,15 @@ pip install numpy
 pip install matplotlib
 pip install pandas
 ```
+##Usage Under Windows
+>##在Windows系统中用法
 
-##Usage
->##用法
+Just put your data in the correspoinding Xlsx file and double click the correspoinding EXE file.
+>把你的数据按照示范放到模板文件中，然后双击对应名字的exe程序就行了。
+
+
+##Usage with Python
+>##在Python下的用法
 
 In order to use these modules, sys is needed to add the files in the path to import:
 >要使用这些模块，首先要导入 sys 来把下面这些文件加入到路径中来导入：
@@ -184,3 +190,5 @@ R=Rhyolite
 ![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-QAPF-Plot.jpg)
 
 ![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-QFL-Plot.png)
+
+![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-REE-Plot.png)
