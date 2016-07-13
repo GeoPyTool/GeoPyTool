@@ -186,37 +186,7 @@ def DrawLine(X=[0,1],Y=[0,1],LineColor='k',LineWidth=1,LineStyle="-",LineAlpha=0
     plt.plot(X,Y,color=LineColor, linewidth=LineWidth, linestyle=LineStyle,alpha= LineAlpha,label = LineLabel)
 
 
-def DrawLines(X=[0,1],Y=[0,1],LineColor='k',LineWidth=1,LineStyle="-",LineAlpha=0.3,LineLabel= ''):
-    plt.plot(X,Y,color=LineColor, linewidth=LineWidth, linestyle=LineStyle,alpha= LineAlpha,label = LineLabel)
-    
-def PlotPoints(X,Y,Size,Color,Alph,Marker):
-    SpotSize = [5,25,175,200]
-    SpotColor=['b','g','r','c','m','y','k','w']
-    SpotAlpha=[0.25,0.5,0.75,1]
-    plt.scatter(X,Y, marker= Marker,s=SpotSize[Size],color =SpotColor[Color],alpha=SpotAlpha[Alph])    
-
-
-
-
-
-
-def Sign(What=[u'La',u'Ce',u'Pr',u'Nd',
-               u'Sm',u'Eu',u'Gd',u'Tb',
-               u'Dy',u'Ho',u'Er',u'Tm',
-               u'Yb',u'Lu',u'Y'],
-         Where=[(1,0.5),(2,0.5),(3,0.5),(4,0.5),
-                (5,0.5),(6,0.5),(7,0.5),(8,0.5),
-                (9,0.5),(10,0.5),(11,0.5),(12,0.5),
-                (13,0.5),(14,0.5),(15,0.5)]):
-    #Label are the names of different kinds of rocks
-    Label=What
-
-#LabelPosition are the positions of those Labels
-    LabelPosition =Where
-
-    for i in range(len(LabelPosition)):
-        plt.annotate(Label[i],xy=(LabelPosition[i]), xycoords='data',xytext=(-4,-24), textcoords='offset points', fontsize=12,)
-    
+Element=['La','Ce','Pr','Nd','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu']  
 
 
 def DrawREEFrame(LineWidth=1,LineColor='k'):
@@ -224,22 +194,18 @@ def DrawREEFrame(LineWidth=1,LineColor='k'):
 #This DrawTheLines function is used to draw the lines in the figure
     plt.figure(figsize=(8,6), dpi=80)
     plt.xlim(0,16)
-    #plt.xticks(np.linspace(1,15,15,endpoint=True))
     
     
     plt.xticks(np.linspace(1,15,15,endpoint=True),
-       [u'La',u'Ce',u'Pr',u'Nd',
-               u'Sm',u'Eu',u'Gd',u'Tb',
-               u'Dy',u'Ho',u'Er',u'Tm',
-               u'Yb',u'Lu',u'Y'])
-    plt.ylim(-0.1,5)
+       Element)
+       
+    plt.ylim(-1,6)
     
     
-    plt.yticks(np.linspace(0,3,4,endpoint=True),
-               [u'1',u'10',u'100',u'1000']
+    plt.yticks(np.linspace(-1,3,5,endpoint=True),
+               [u'',u'1',u'10',u'100',u'1000']
                )
     plt.xlabel(r'$REE-Standardlized-Pattern$',fontsize=16)
-    #plt.ylabel(r'$Na_2O + K_2O wt\%$',fontsize=16)
 
 #ax is used to set the axies
     ax = plt.gca()
@@ -247,7 +213,7 @@ def DrawREEFrame(LineWidth=1,LineColor='k'):
     ax.spines['top'].set_color('none')
 
     ax.xaxis.set_ticks_position('bottom')
-    ax.spines['bottom'].set_position(('data',0))
+    ax.spines['bottom'].set_position(('data',-1))
 
 
     ax.yaxis.set_ticks_position('left')
@@ -255,107 +221,30 @@ def DrawREEFrame(LineWidth=1,LineColor='k'):
 
 
 
-    
-'''
-b: blue
-g: green
-r: red
-c: cyan
-m: magenta
-y: yellow
-k: black
-w: white
-'''
-
-
-
-#WholeData=[]
-
-X=[1,2,3,4,5,6,7,8,9,10,11,12,13,14]
-
-def PlotData(REERaw,Width=1,Color='b',Style="-",k=0):
+def PlotData(REERaw,Width=1,Color='b',Style="-"):
     DrawREEFrame(LineWidth=1,LineColor='k')
-    REEBase= pd.read_excel("REEBase.xlsx")
+    #REEBase= pd.read_excel("REE.xlsx")   
+
+    for l in range(len(REERaw)):
+        if(REERaw.at[l,'DataType']=='Standard' or REERaw.at[l,'DataType']=='standard' or REERaw.at[l,'DataType']=='STANDARD'):
+            k=l
+    
+    
     for i in range(len(REERaw)):
-        
-        A=Point(1, math.log((REERaw.at[i,'La'])/REEBase.at[k,'La']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        B=Point(2, math.log((REERaw.at[i,'Ce'])/REEBase.at[k,'Ce']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        C=Point(3, math.log((REERaw.at[i,'Pr'])/REEBase.at[k,'Pr']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        D=Point(4, math.log((REERaw.at[i,'Nd'])/REEBase.at[k,'Nd']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        E=Point(5, math.log((REERaw.at[i,'Sm'])/REEBase.at[k,'Sm']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        F=Point(6, math.log((REERaw.at[i,'Eu'])/REEBase.at[k,'Eu']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        G=Point(7, math.log((REERaw.at[i,'Gd'])/REEBase.at[k,'Gd']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        H=Point(8, math.log((REERaw.at[i,'Tb'])/REEBase.at[k,'Tb']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        I=Point(9, math.log((REERaw.at[i,'Dy'])/REEBase.at[k,'Dy']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        J=Point(10, math.log((REERaw.at[i,'Ho'])/REEBase.at[k,'Ho']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        K=Point(11, math.log((REERaw.at[i,'Eu'])/REEBase.at[k,'Eu']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        L=Point(12, math.log((REERaw.at[i,'Tm'])/REEBase.at[k,'Tm']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        M=Point(13, math.log((REERaw.at[i,'Yb'])/REEBase.at[k,'Yb']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-        N=Point(14, math.log((REERaw.at[i,'Lu'])/REEBase.at[k,'Lu']),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])
-       # O=(Point(15, math.log((REERaw.at[i,'Y'])/REEBase.at[k,'Y'])))         
-        
-        DrawPoint(A)
-        DrawPoint(B)
-        DrawPoint(C)
-        DrawPoint(D)
-        DrawPoint(E)
-        DrawPoint(F)
-        DrawPoint(G)
-        DrawPoint(H)
-        DrawPoint(I)
-        DrawPoint(J)
-        DrawPoint(K)
-        DrawPoint(L)
-        DrawPoint(M)
-        DrawPoint(N)
-        #DrawPoint(O)
-        
-        NewTmp=[]
-        NewTmp.append(math.log((REERaw.at[i,'La'])/REEBase.at[k,'La']))
-        NewTmp.append(math.log((REERaw.at[i,'Ce'])/REEBase.at[k,'Ce']))
-        NewTmp.append(math.log((REERaw.at[i,'Pr'])/REEBase.at[k,'Pr']))
-        NewTmp.append(math.log((REERaw.at[i,'Nd'])/REEBase.at[k,'Nd']))
-        NewTmp.append(math.log((REERaw.at[i,'Sm'])/REEBase.at[k,'Sm']))
-        NewTmp.append(math.log((REERaw.at[i,'Eu'])/REEBase.at[k,'Eu']))
-        NewTmp.append(math.log((REERaw.at[i,'Gd'])/REEBase.at[k,'Gd']))
-        NewTmp.append(math.log((REERaw.at[i,'Tb'])/REEBase.at[k,'Tb']))
-        NewTmp.append(math.log((REERaw.at[i,'Dy'])/REEBase.at[k,'Dy']))
-        NewTmp.append(math.log((REERaw.at[i,'Ho'])/REEBase.at[k,'Ho']))
-        NewTmp.append(math.log((REERaw.at[i,'Eu'])/REEBase.at[k,'Eu']))
-        NewTmp.append(math.log((REERaw.at[i,'Tm'])/REEBase.at[k,'Tm']))
-        NewTmp.append(math.log((REERaw.at[i,'Yb'])/REEBase.at[k,'Yb']))
-        NewTmp.append(math.log((REERaw.at[i,'Lu'])/REEBase.at[k,'Lu']))
-       # NewTmp.append(math.log((REERaw.at[i,'Y'])/REEBase.at[k,'Y']))
-
-
-        DrawLines(X,NewTmp,LineColor= REERaw.at[i,'Color'], LineWidth = REERaw.at[i,'Width'],LineStyle=REERaw.at[i,'Style'],LineAlpha=REERaw.at[i,'Alpha'],LineLabel=REERaw.at[i,'Label'])
-
+        if(REERaw.at[i,'DataType']=='User' or REERaw.at[i,'DataType']=='user'or REERaw.at[i,'DataType']=='USER'):
+            LineX =[]    
+            LineY =[] 
+            for j in range(len(Element)-1):
+                 TmpPoint=(Point(j+1, math.log((REERaw.at[i,Element[j]])/REERaw.at[k,Element[j]]),Color=REERaw.at[i,'Color'],Size=REERaw.at[i,'Size'],Alpha=REERaw.at[i,'Alpha'],Marker=REERaw.at[i,'Marker'])) 
+                 LineX.append (TmpPoint.x)
+                 LineY.append (TmpPoint.y)
+                 DrawPoint(TmpPoint)
+                        
+            DrawLine(LineX,LineY,LineColor= REERaw.at[i,'Color'], LineWidth = REERaw.at[i,'Width'],LineStyle=REERaw.at[i,'Style'],LineAlpha=REERaw.at[i,'Alpha'],LineLabel=REERaw.at[i,'Label'])
     plt.legend(loc='upper right', frameon=False)
     plt.savefig("Result-REE-Plot.png",dpi=600)
     plt.savefig("Resultt-REE-Plot.svg",dpi=600)
     plt.show()
-
-'''
-        Tmp=Line(A,B)        
-        
-        Tmp.AddPoint(Point(3, math.log((REERaw.at[i,'Pr'])/REEBase.at[k,'Pr'])))
-        Tmp.AddPoint(Point(4, math.log((REERaw.at[i,'Nd'])/REEBase.at[k,'Nd'])))
-        Tmp.AddPoint(Point(5, math.log((REERaw.at[i,'Sm'])/REEBase.at[k,'Sm'])))
-        Tmp.AddPoint(Point(6, math.log((REERaw.at[i,'Eu'])/REEBase.at[k,'Eu'])))
-        Tmp.AddPoint(Point(7, math.log((REERaw.at[i,'Gd'])/REEBase.at[k,'Gd'])))
-        Tmp.AddPoint(Point(8, math.log((REERaw.at[i,'Tb'])/REEBase.at[k,'Tb'])))
-        Tmp.AddPoint(Point(9, math.log((REERaw.at[i,'Dy'])/REEBase.at[k,'Dy'])))
-        Tmp.AddPoint(Point(10, math.log((REERaw.at[i,'Ho'])/REEBase.at[k,'Ho'])))
-        Tmp.AddPoint(Point(11, math.log((REERaw.at[i,'Eu'])/REEBase.at[k,'Eu'])))
-        Tmp.AddPoint(Point(12, math.log((REERaw.at[i,'Tm'])/REEBase.at[k,'Tm'])))
-        Tmp.AddPoint(Point(13, math.log((REERaw.at[i,'Yb'])/REEBase.at[k,'Yb'])))
-        Tmp.AddPoint(Point(14, math.log((REERaw.at[i,'Lu'])/REEBase.at[k,'Lu'])))
-        Tmp.AddPoint(Point(15, math.log((REERaw.at[i,'Y'])/REEBase.at[k,'Y'])))
-        
-        WholeData.append(Tmp)
-'''
-
-
     
 
 

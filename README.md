@@ -179,3 +179,5 @@ R=Rhyolite
 ![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-QFL-Plot.png)
 
 ![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-REE-Plot.png)
+
+![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-TAS-Plot.png)
