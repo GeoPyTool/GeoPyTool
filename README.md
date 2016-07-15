@@ -172,12 +172,12 @@ R=Rhyolite
 
 
 
-![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-TAS-Plot.png)
+![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/TAS-Plot.png)
 
-![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-QAPF-Plot.jpg)
+![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/QAPF-Plot.jpg)
 
-![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-QFL-Plot.png)
+![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/QFL-Plot.png)
 
-![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-REE-Plot.png)
+![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/REE-Plot.png)
 
-![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/Result-TAS-Plot.png)
+![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/TAS-Plot.png)
