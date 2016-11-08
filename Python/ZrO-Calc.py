@@ -22,8 +22,11 @@ for i in range(len(Raw.Elements)):
     ZirconAverage.append(Raw.ZirconAverage[i])
     BulkAverage.append(Raw.BulkAverage[i])
 
-Element3Name="La Ce Pr Eu Tm Lu"
+Element3Name="La    Ce	Pr	Nd	Sm	Eu	Gd	Tb	Dy	Ho	Er	Tm	Lu	"
 Element3=Element3Name.split()
+
+
+
 
 Element4Name="Th U Ce4 Hf"
 Element4=Element4Name.split()
@@ -134,10 +137,15 @@ for i in YforCE3:
 plt.plot( XforCE3,YforCE3,'b-')  
 
 
-DCE3=CE3[1]-p3(CE3[0])
-SightCE3="D-Ce3="+str(DCE3)
+PCE3=(CE3[1]-p3(CE3[0]))
 
-plt.xlabel(SightCE3,fontsize=16)
+PCE4=(CE4[1]-p4(CE4[0]))
+
+
+
+Sight=r"Ce4 ="+str(PCE3) +r" Ce3 ="+str(PCE4)
+
+plt.xlabel(Sight,fontsize=16)
 
 plt.subplots_adjust(bottom = 0.1)
 plt.scatter(
@@ -174,11 +182,15 @@ for i in YforCE4:
 
 plt.plot( XforCE4,YforCE4,'b-')  
 
+PCE3=(CE3[1]-p3(CE3[0]))
 
-DCE4=CE4[1]-p4(CE4[0])
-SightCE4="D-Ce4="+str(DCE4)
+PCE4=(CE4[1]-p4(CE4[0]))
 
-plt.xlabel(SightCE4,fontsize=16)
+
+
+Sight=r"Ce4/Ce3 ="+str(PCE3/PCE4)
+
+plt.xlabel(Sight,fontsize=16)
 
 plt.scatter(
     XE4,YE4, marker = 'o', color='green',
