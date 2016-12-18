@@ -124,6 +124,8 @@ geopython.qmflt("qfl.xlsx")
 geopython.ree("ree.xlsx")
 geopython.qapf("qapf.xlsx")
 geopython.wulf("strike.xlsx")
+geopython.schmidt("strike.xlsx")
+
 ```
 
 Remember that you need to import the module first and then you can use the functions in it.
@@ -139,22 +141,6 @@ If python told you that it cannot find a xlsx file, you must have entered to the
 Then you only need to input the data from the file, and everything will be done.
 >然后你就在程序中如下所示这样读取一下，然后用对应模块的函数帮你搞定一切了。（注意大小写！）
 
-```Python
-from geopython import geopython
-
-geopython.tas("tas.xlsx")
-
-geopython.qfl("qfl.xlsx")
-
-geopython.qmflt("qfl.xlsx")
-
-geopython.ree("ree.xlsx")
-
-geopython.qapf("qapf.xlsx")
-
-geopython.wulf("strike.xlsx")
-
-```
 
 If the data file is in the right form and nothing goes wrong, you will have three files, which will be in the same location of these xlsx files:
 >如果你的数据文件没有什么问题，你就能得到图像了，这些图像会存放在excel表格文件所在的同一目录下：
