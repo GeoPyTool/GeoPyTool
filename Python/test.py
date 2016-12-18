@@ -1,23 +1,13 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jul 11 17:56:30 2016
+import geopython
 
-@author: cyceuser
-"""
+geopython.tas("tas.xlsx")
 
-import sys
-sys.path.append("./Shape.py")
-sys.path.append("./GeoPy.py")
+geopython.qfl("qfl.xlsx")
 
-import Shape
-import GeoPy
+geopython.qmflt("qfl.xlsx")
 
-from Shape import Point
+geopython.ree("ree.xlsx")
 
-oint= Point(5,5,Marker='o',Color= 'Blue',Size= 75)
+geopython.qapf("qapf.xlsx")
 
-DrawPoint(oint)
-
-
-
- 
+geopython.wulf("strike.xlsx")
