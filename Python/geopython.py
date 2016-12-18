@@ -8,7 +8,6 @@ created on Sat Dec 17 22:28:24 2016
 
 lang = "python"
 
-
 import matplotlib
 
 matplotlib.use('Agg')
@@ -18,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import math
+
 
 def tasline(linewidth=1, linecolor='k'):
     # this function is used to draw the lines in the tas diagram
@@ -98,12 +98,15 @@ def tasline(linewidth=1, linecolor='k'):
         plt.annotate(labels[i], xy=(Items[i]), xycoords='data', xytext=(-6, -3), textcoords='offset points',
                      fontsize=12, )
 
+
 def plotpoint(x, y, size, color, alph, marker='d'):
     # this function is used to put data point on the picture
     plt.scatter(x, y, marker=marker, s=size, color=color, alpha=alph)
 
-def drawline(X=[0, 1], Y=[0, 1], LineWidth=1, LineColor='k', LineStyle="-", LineAlpha=0.3,LineLabel= ''):
-    plt.plot(X,Y,color=LineColor, linewidth=LineWidth, linestyle=LineStyle,alpha= LineAlpha,label = LineLabel)
+
+def drawline(X=[0, 1], Y=[0, 1], LineWidth=1, LineColor='k', LineStyle="-", LineAlpha=0.3, LineLabel=''):
+    plt.plot(X, Y, color=LineColor, linewidth=LineWidth, linestyle=LineStyle, alpha=LineAlpha, label=LineLabel)
+
 
 def crosspoint(x0, y0, x1, y1, x2, y2, x3, y3):
     a = y1 - y0
@@ -125,7 +128,7 @@ def tas(name="tas.xlsx", width=1, color='k'):
     Points = len(tasraw)
     for i in range(Points):
         plotpoint((tasraw.at[i, 'SiO2']), (tasraw.at[i, 'Na2O'] + tasraw.at[i, 'K2O']), tasraw.at[i, 'Size'],
-                   tasraw.at[i, 'Color'], tasraw.at[i, 'Alpha'], tasraw.at[i, 'Marker'])
+                  tasraw.at[i, 'Color'], tasraw.at[i, 'Alpha'], tasraw.at[i, 'Marker'])
     plt.savefig("tas-Plot.png", dpi=600)
     plt.savefig("tas-Plot.svg", dpi=600)
     plt.show()
@@ -189,7 +192,8 @@ def qflline(LineWidth=1, LineColor='k'):
         plt.annotate(Label[i], xy=(LabelPosition[i]), xycoords='data', xytext=(0, 0), textcoords='offset points',
                      fontsize=16, )
 
-def qfl(name="qfl.xlsx",width=1,color='k'):
+
+def qfl(name="qfl.xlsx", width=1, color='k'):
     qflraw = pd.read_excel(name)
     qflline(width, color)
     Points = len(qflraw)
@@ -209,6 +213,7 @@ def qfl(name="qfl.xlsx",width=1,color='k'):
     plt.savefig("QFL-Plot.png", dpi=600)
     plt.savefig("QFL-Plot.svg", dpi=600)
     plt.show()
+
 
 def qmfltline(LineWidth=1, LineColor='k'):
     plt.figure(figsize=(8, 4 * math.sqrt(3)), dpi=80)
@@ -271,6 +276,7 @@ def qmfltline(LineWidth=1, LineColor='k'):
         plt.annotate(Label[i], xy=(LabelPosition[i]), xycoords='data', xytext=(0, 0), textcoords='offset points',
                      fontsize=16, )
 
+
 def qmflt(name="qfl.xlsx", Width=1, Color='k'):
     QmFLtRaw = pd.read_excel(name)
     qmfltline(Width, Color)
@@ -288,7 +294,7 @@ def qmflt(name="qfl.xlsx", Width=1, Color='k'):
         y = Q / 2 * math.sqrt(3)
 
         plotpoint(x, y, QmFLtRaw.at[i, 'Size'], QmFLtRaw.at[i, 'Color'], QmFLtRaw.at[i, 'Alpha'],
-                   QmFLtRaw.at[i, 'Marker'])
+                  QmFLtRaw.at[i, 'Marker'])
     plt.savefig("QmFLt-Plot.png", dpi=600)
     plt.savefig("QmFLt-Plot.svg", dpi=600)
     plt.show()
@@ -322,6 +328,7 @@ def reeline(LineWidth=1, LineColor='k'):
 
     ax.yaxis.set_ticks_position('left')
     ax.spines['left'].set_position(('data', 0))
+
 
 def ree(name="ree.xlsx", Width=1, Color='b', Style="-"):
     reeraw = pd.read_excel(name)
@@ -521,8 +528,12 @@ def qapf(name="qapf.xlsx", Width=1, Color='k'):
     plt.show()
 
 
-def eqar(A):  ### A is an angle in degrees
+def eqar(A):
     return (2 ** .5) * 90 * np.sin(np.pi * (90. - A) / (2. * 180.))
+
+
+def eqan(A):
+    return 90 * np.tan(np.pi * (90. - A) / (2. * 180.))
 
 
 def getangular(A, B, C):
@@ -544,7 +555,7 @@ def wulf(name="strike.xlsx", Width=1, Color='k'):
     plt.xlim((0, 360))
     plt.ylim((0, 90))
 
-    list1 = [eqar(x) for x in range(0, 90, 15)]
+    list1 = [eqan(x) for x in range(0, 90, 15)]
     list2 = [str(x) for x in range(0, 90, 15)]
     plt.rgrids(list1, list2)
 
@@ -556,15 +567,49 @@ def wulf(name="strike.xlsx", Width=1, Color='k'):
         Width = wulfraw.at[i, "Width"]
         Color = wulfraw.at[i, "Color"]
         Alpha = wulfraw.at[i, "Alpha"]
-        r = np.arange(S - 90, S + 90, 1)
+        r = np.arange(S - 90, S + 91, 1)
         BearR = [np.radians(-A + 90) for A in r]
-        Line = (eqar(getangular(D, S, r)))
+        Line = (eqan(getangular(D, S, r)))
 
         plt.plot(BearR, Line, color=Color, linewidth=Width, alpha=Alpha)
 
     plt.thetagrids(range(360 + 90, 0 + 90, -20), [str(x) for x in range(0, 360, 20)])
     plt.savefig("Wulff.png", dpi=600)
     plt.savefig("Wulff.svg", dpi=600)
+    plt.show()
+
+
+def schmidt(name="strike.xlsx", Width=1, Color='k'):
+    schmidtraw = pd.read_excel(name)
+
+    Data = []
+
+    plt.axes(polar=True)
+    plt.polar([0], [90])
+    plt.xlim((0, 360))
+    plt.ylim((0, 90))
+
+    list1 = [eqar(x) for x in range(0, 90, 15)]
+    list2 = [str(x) for x in range(0, 90, 15)]
+    plt.rgrids(list1, list2)
+
+    for i in range(len(schmidtraw)):
+        Data.append(
+            [schmidtraw.at[i, "Name"], schmidtraw.at[i, "Strike"], schmidtraw.at[i, "Dip"], schmidtraw.at[i, "Color"],
+             schmidtraw.at[i, "Width"], schmidtraw.at[i, "Alpha"], schmidtraw.at[i, "Marker"]])
+        S = schmidtraw.at[i, "Strike"]
+        D = schmidtraw.at[i, "Dip"]
+        Width = schmidtraw.at[i, "Width"]
+        Color = schmidtraw.at[i, "Color"]
+        Alpha = schmidtraw.at[i, "Alpha"]
+        Marker = schmidtraw.at[i, "Marker"]
+
+        plt.plot(np.radians(90 - S), eqar(D), color=Color, linewidth=Width, alpha=Alpha, marker=Marker)
+
+    plt.plot(120, 30, color='K', linewidth=4, alpha=Alpha, marker='o')
+    plt.thetagrids(range(360 + 90, 0 + 90, -20), [str(x) for x in range(0, 360, 20)])
+    plt.savefig("Schmidt.png", dpi=600)
+    plt.savefig("Schmidt.svg", dpi=600)
     plt.show()
 
 
@@ -576,3 +621,4 @@ if __name__ == '__main__':
     ree("ree.xlsx")
     qapf("qapf.xlsx")
     wulf("strike.xlsx")
+    schmidt("strike.xlsx")
