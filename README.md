@@ -1,5 +1,5 @@
 Title: GeoPython,a project of using Python for geology related daily work
-Date: 2016-7-7 6:20
+Date: 2016-12-18 16:20
 Category: Python
 
 
@@ -15,13 +15,11 @@ https://github.com/cycleuser/GeoPython
 #####Copyright 2016 cycleuser
 
 
-![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/QQgroup.png)
-
 |MileStone|Date|Function|
 |--|--|--|
 |Beginning Date|2016-07-07 6:20|TAS|
 |Adding QAPF|2016-07-09 08:32|QAPF|
-
+|Adding Wulff|2016-12-18 08:32|Wulf|
 
 ##Introduction
 
@@ -172,12 +170,11 @@ If the data file is in the right form and nothing goes wrong, you will have thre
 
 
 
-![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/TAS-Plot.png)
+![](https://github.com/cycleuser/GeoPython/blob/master/TAS-Plot.png?raw=true)
 
-![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/QAPF-Plot.jpg)
 
 ![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/QFL-Plot.png)
 
 ![](https://raw.githubusercontent.com/cycleuser/GeoPython/master/REE-Plot.png)
 
-![](https://raw.githubusercontent.com/cycleuser/GeoPython/Wulff.png)
+![](https://github.com/cycleuser/GeoPython/blob/master/Wulff.png?raw=true)
