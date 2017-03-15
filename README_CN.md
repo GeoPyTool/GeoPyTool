@@ -4,11 +4,12 @@ Category: Python
 
 #[GeoPython，用于地质学的日常工作的 Python 工具集](https://github.com/cycleuser/GeoPython)
 
-#####author: cycleuser
-#####email: cycleuser@cycleuser.org
-#####Copyright 2017 cycleuser
+author: cycleuser
+email: cycleuser@cycleuser.org
+Copyright 2017 cycleuser
 
 
+#####我们的QQ群： 560675626
 |MileStone|Date|Function|
 |--|--|--|
 |Beginning Date|2016-07-07 6:20|TAS|
@@ -16,7 +17,7 @@ Category: Python
 |Adding Wulff|2016-12-18 08:32|Wulf|
 |Reconsitution|2017-03-15 15:30|Wulf|
 
-##j简介
+##简介
 
 
 GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是一套自由软件：你可以重新分发或者做出修改，但必须基于由自由软件基金会发布的GNU通用公共许可证第三版的许可,或其后的版本。
