@@ -1,13 +1,10 @@
-import geopython
+import geopython as gp
 
-geopython.tas("tas.xlsx")
-
-geopython.qfl("qfl.xlsx")
-
-geopython.qmflt("qfl.xlsx")
-
-geopython.ree("ree.xlsx")
-
-geopython.qapf("qapf.xlsx")
-
-geopython.wulf("strike.xlsx")
+gp.Tas().read()
+gp.Ree().read()
+gp.Trace().read()
+gp.Qfl().read()
+gp.Qmflt().read()
+gp.QapfP().read()
+gp.QapfV().read()
+gp.Polar().read()

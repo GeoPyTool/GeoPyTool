@@ -1,0 +1,7 @@
+# This is an implicit value, here for clarity
+--index https://pypi.python.org/simple/
+
+numpy==1.10.4
+pandas==0.18.1
+xlrd==1.0.0
+matplotlib==1.5.1
