@@ -48,7 +48,7 @@ pip install xlrd
 pip install geopython
 ```
 
-然后打开你的python，进入到数据目录，目前样本数据文件还要在[这里](https://github.com/cycleuser/GeoPython/tree/master/Python)下载。下载好样本文件，把自己的数据填入，然后用下面的命令就可以运行了：
+然后打开你的python，进入到数据目录，目前样本数据文件还要在[这里](https://github.com/cycleuser/GeoPython/blob/master/Python/DataFileSamples.zip)下载。下载好样本文件，把自己的数据填入，然后用下面的命令就可以运行了：
 
 ```Bash
 ipython
