@@ -86,3 +86,25 @@ If the data file is in the right form and nothing goes wrong, you will have thre
 * a png (Portable Network Graphics) .
 
 
+TAS:
+![](https://github.com/cycleuser/GeoPython/blob/master/tas.xlsxtas.png?raw=true)
+
+Trace:
+![](https://github.com/cycleuser/GeoPython/blob/master/trace.xlsx.png)
+
+Ree:
+![](https://github.com/cycleuser/GeoPython/blob/master/ree.xlsx.png?raw=true)
+
+QFL:
+![](https://github.com/cycleuser/GeoPython/blob/master/qfl.xlsxqfl.png)
+
+QAPF:
+![](https://github.com/cycleuser/GeoPython/blob/master/qapf.xlsxqapfP.png?raw=true)
+
+Wulf:
+![](https://github.com/cycleuser/GeoPython/blob/master/strike.xlsxWulff.png)
+
+Schmidt:
+![](https://github.com/cycleuser/GeoPython/blob/master/strike.xlsxSchmidt.png)
+
+

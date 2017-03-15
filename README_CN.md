@@ -83,3 +83,26 @@ gp.Polar("strike.xlsx").read()              # 构造产状的吴尔夫网和施�
 * 然后就是一个png图像了。
 
 
+TAS:
+![](https://github.com/cycleuser/GeoPython/blob/master/tas.xlsxtas.png?raw=true)
+
+Trace:
+![](https://github.com/cycleuser/GeoPython/blob/master/trace.xlsx.png)
+
+Ree:
+![](https://github.com/cycleuser/GeoPython/blob/master/ree.xlsx.png?raw=true)
+
+QFL:
+![](https://github.com/cycleuser/GeoPython/blob/master/qfl.xlsxqfl.png)
+
+QAPF:
+![](https://github.com/cycleuser/GeoPython/blob/master/qapf.xlsxqapfP.png?raw=true)
+
+Wulf:
+![](https://github.com/cycleuser/GeoPython/blob/master/strike.xlsxWulff.png)
+
+Schmidt:
+![](https://github.com/cycleuser/GeoPython/blob/master/strike.xlsxSchmidt.png)
+
+
+
