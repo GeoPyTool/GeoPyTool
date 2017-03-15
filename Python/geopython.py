@@ -848,8 +848,7 @@ class Tas(Frame):
         self.Y_Gap = Y_Gap
 
         self.FontSize = FontSize
-        xLabel = r'$SiO_2 wt\%$'+"\n"+self.description
-        self.xLabel = xLabel
+        self.xLabel = xLabel+"\n"+self.description
         self.yLabel = yLabel
 
         self.Lines = [
@@ -2480,16 +2479,469 @@ class Polar():
         plt.savefig(self.name+"Schmidt.svg", dpi=300)
         plt.show()
 
-if __name__ == '__main__':
+class LogLine(Line):
 
-    Tas().read()
-    Ree().read()
-    Trace().read()
-    Qfl().read()
-    Qmflt().read()
-    QapfP().read()
-    QapfV().read()
-    Polar().read()
+    """
+    inherit Line, a class for plotting lines with math.log(x,10)
+    """
+
+    def __init__(self, Points=[(0, 0), (1, 1)], Sort='', Width=1, Color='blue', Style="-", Alpha=0.3, Label=''):
+        """
+        setup the datas
+        """
+        super().__init__()
+        self.Sort = Sort
+        self.Width = Width
+        self.Color = Color
+        self.Style = Style
+        self.Alpha = Alpha
+        self.Label = Label
+
+        if (len(Points) == 2):
+            self.X = [math.log(Points[0][0],10), math.log(Points[1][0],10)]
+            self.Y = [math.log(Points[0][1],10), math.log(Points[1][1],10)]
+            self.Points = Points
+
+        elif (len(Points) > 2):
+            self.Points = Points
+
+        else:
+            print("Cannot draw line with one point")
+
+
+    def order(self, TMP=[]):
+        X_TMP = []
+        Y_TMP = []
+        for i in TMP:
+            X_TMP.append(math.log(i[0],10))
+            Y_TMP.append(math.log(i[1],10))
+        self.X = X_TMP
+        self.Y = Y_TMP
+
+class LogPoint(Point):
+
+    """
+    inherit Point, a class for plotting Points with math.log(x,10)
+    """
+    def __init__(self, X=0, Y=0, Size=12, Color='red', Alpha=0.3, Marker='o', Label=''):
+        """
+        just set up the values
+        """
+        super().__init__()
+        self.X = math.log(X,10)
+        self.Y = math.log(Y,10)
+        self.Location = (X, Y)
+        self.Size = Size
+        self.Color = Color
+        self.Alpha = Alpha
+        self.Marker = Marker
+        self.Label = Label
+
+class Pearce(Frame):
+    """
+    inherit Frame, read xlsx or csv file and use Rb-(Y+Nb) to plot tas diagram
+    :param Lines: the lines consisting the frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+
+    Lines = []
+    Tags = []
+    Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG']
+    Locations = [(1, 3), (1, 1), (3, 3), (3, 1)]
+    description = "Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites "
+    text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
+    name = "pearce.xlsx"
+
+    def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=0, Right=3.5, X0=0, X1=3, X_Gap=4, Base=0, Top=3.5, Y0=0,
+                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Y+Nb (PPM)', yLabel=r'Rb (PPM)',text = [u'1', u'10', u'100', u'1000', u'10000'], Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [(1, 3), (1, 1), (3, 3), (3, 1)]):
+        """
+        just set up the basic settings
+        """
+        super().__init__()
+        self.name = name
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel+"\n"+self.description
+        self.yLabel = yLabel
+
+        self.Tags = []
+        self.Labels = []
+        self.Locations = []
+        self.text = []
+
+        self.text = text
+        self.Labels=Labels
+        self.Locations=Locations
+
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+
+        self.text = text
+        self.Lines = [LogLine([(2, 80), (55, 300)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(55,300),(400,2000)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(55,300),(51.5,8)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(51.5,8),(50,1)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(51.5,8),(2000,400)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),]
+
+    def show(self):
+        """
+        show the frame and lines on canvas
+        """
+        plt.figure(figsize=(self.Width, self.Height), dpi=self.Dpi)
+        plt.xlim(self.Left, self.Right)
+        plt.ylim(self.Base, self.Top)
+        plt.xticks(np.linspace(self.X0, self.X1, self.X_Gap, endpoint=True), self.text)
+        plt.yticks(np.linspace(self.Y0, self.Y1, self.Y_Gap, endpoint=True), self.text)
+        plt.xlabel(self.xLabel, fontsize=self.FontSize)
+        plt.ylabel(self.yLabel, fontsize=self.FontSize)
+        for i in self.Lines:
+            i.show()
+        for i in self.Tags:
+            i.show()
+
+
+
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
+            LogPoint( (raw.at[i, 'Y'] + raw.at[i, 'Nb']),raw.at[i, 'Rb'], Size=raw.at[i, 'Size'],
+                  Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
+        plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
+        plt.savefig(self.name+"pearce.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce.svg", dpi=300, bbox_inches='tight')
+        plt.show()
+
+class Pearce2(Pearce):
+    """
+    inherit Frame, read xlsx or csv file and use Rb-(Yb-Ta) plot tas diagram
+    :param Lines: the lines consisting the frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+
+
+    def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=-0.5, Right=3.5, X0=0, X1=3, X_Gap=4, Base=0, Top=3.5, Y0=0,
+                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Yb+Ta (PPM)', yLabel=r'Rb (PPM)',text = [u'1', u'10', u'100', u'1000'],Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [(0.5, 3), (0.5, 1), (2, 2.8), (2, 1)]):
+        """
+        just set up the basic settings
+        """
+        super().__init__()
+        self.name = name
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel+"\n"+self.description
+        self.yLabel = yLabel
+
+        self.Tags = []
+        self.Labels = []
+        self.Locations = []
+        self.text = []
+
+        self.text = text
+        self.Labels=Labels
+        self.Locations=Locations
+
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+
+        self.Lines = [LogLine([(0.5,140),(6,200)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(6,200),(50,2000)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(6,200),(6,8)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(6,8),(6,1)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(6,8),(200,400)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),]
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
+            LogPoint( (raw.at[i, 'Yb'] + raw.at[i, 'Ta']),raw.at[i, 'Rb'], Size=raw.at[i, 'Size'],
+                  Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
+        plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
+        plt.savefig(self.name+"pearce2.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce2.svg", dpi=300, bbox_inches='tight')
+        plt.show()
+
+class Pearce3(Pearce):
+    """
+    inherit Frame, read xlsx or csv file and use Nb-Y to plot tas diagram
+    :param Lines: the lines consisting the frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+
+    def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=-0.5, Right=3.5, X0=0, X1=3, X_Gap=4, Base=0, Top=3.5, Y0=0,
+                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Y (PPM)', yLabel=r'Nb (PPM)',text = [u'1', u'10', u'100', u'1000'],Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [(0.5, 1.5), (0.5, 2), (2, 2), (2, 1)]):
+        """
+        just set up the basic settings
+        """
+        super().__init__()
+        self.name = name
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel+"\n"+self.description
+        self.yLabel = yLabel
+
+        self.Tags = []
+        self.Labels = []
+        self.Locations = []
+        self.text = []
+
+        self.text = text
+        self.Labels=Labels
+        self.Locations=Locations
+
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+        self.Lines = [LogLine([(1,2000),(50,10)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(40,1),(50,10)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(50,10),(1000,100)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(25,25),(1000,400)], Sort='', Width=1, Color='black', Style="--", Alpha=0.3)]
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
+            LogPoint( raw.at[i, 'Y'],raw.at[i, 'Nb'], Size=raw.at[i, 'Size'],
+                  Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
+        plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
+        plt.savefig(self.name+"pearce3.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce3.svg", dpi=300, bbox_inches='tight')
+        plt.show()
+
+class Pearce4(Pearce):
+    """
+    inherit Frame, read xlsx or csv file and use Ta-Yb to plot tas diagram
+    :param Lines: the lines consisting the frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+
+
+    def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=-1.5, Right=2.5, X0=-1, X1=2, X_Gap=4, Base=-1.5, Top=2.5, Y0=-1,
+                 Y1=2, Y_Gap=4, FontSize=12, xLabel=r'Yb (PPM)', yLabel=r'Ta (PPM)',text = [u'0.1', u'1', u'10', u'100'],Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [ (-1, 0.1),(-1, -1), (0.7, 1), (2, 0.5)]):
+        """
+        just set up the basic settings
+        """
+        super().__init__()
+        self.name = name
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel+"\n"+self.description
+        self.yLabel = yLabel
+
+        self.Tags = []
+        self.Labels = []
+        self.Locations = []
+        self.text=[]
+
+        self.text=text
+        self.Labels=Labels
+        self.Locations=Locations
+
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+        self.Lines = [LogLine([(0.55,20),(3,2)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(0.1,0.35),(3,2)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(3,2),(5,1)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(5,0.05),(5,1)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(5,1),(100,7)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(3,2),(100,20)], Sort='', Width=1, Color='black', Style="--", Alpha=0.3),]
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
+            LogPoint( raw.at[i, 'Yb'],raw.at[i, 'Ta'] , Size=raw.at[i, 'Size'],
+                  Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
+        plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
+        plt.savefig(self.name+"pearce4.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce4.svg", dpi=300, bbox_inches='tight')
+        plt.show()
+
+
+if __name__ == '__main__':
+    pass
+
+
 """
     Tas().read()
     Ree().read()
@@ -2499,5 +2951,9 @@ if __name__ == '__main__':
     QapfP().read()
     QapfV().read()
     Polar().read()
+    Pearce().read()
+    Pearce2().read()
+    Pearce3().read()
+    Pearce4().read()
 """
 

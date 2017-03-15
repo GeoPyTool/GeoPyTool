@@ -51,12 +51,12 @@ class Tool():
 
         """
         Return the crosspoint of two line A and B.
-        @:param A: first line
-        @:type A: a list consist of two tuples, beginning and end point of the line
-        @:param B: second line
-        @:type B: a list consist of two tuples, beginning and end point of the line
-        @:return: the crosspoint of A and B
-        @:rtype: a list consist of two numbers, the x-y of the crosspoint
+        :param A: first line
+        :type A: a list consist of two tuples, beginning and end point of the line
+        :param B: second line
+        :type B: a list consist of two tuples, beginning and end point of the line
+        :return: the crosspoint of A and B
+        :rtype: a list consist of two numbers, the x-y of the crosspoint
         """
 
         x0, y0 = A[0]
@@ -79,10 +79,10 @@ class Tool():
         """
         Turn an x-y-z triangular coord to an a-b coord.
         if z is negative, calc with its abs then return (a, -b).
-        @:param x,y,z: the three numbers of the triangular coord
-        @:type x,y,z: float or double are both OK, just numbers
-        @:return:  the corresponding a-b coord
-        @:rtype:   a tuple consist of a and b
+        :param x,y,z: the three numbers of the triangular coord
+        :type x,y,z: float or double are both OK, just numbers
+        :return:  the corresponding a-b coord
+        :rtype:   a tuple consist of a and b
         """
 
         if(z>=0):
@@ -121,10 +121,10 @@ class Tool():
         """
         Turn an a-b coord to an x-y-z triangular coord .
         if z is negative, calc with its abs then return (a, -b).
-        @:param a,b: the numbers of the a-b coord
-        @:type a,b: float or double are both OK, just numbers
-        @:return:  the corresponding x-y-z triangular coord
-        @:rtype:   a tuple consist of x,y,z
+        :param a,b: the numbers of the a-b coord
+        :type a,b: float or double are both OK, just numbers
+        :return:  the corresponding x-y-z triangular coord
+        :rtype:   a tuple consist of x,y,z
         """
 
         if(b>=0):
@@ -142,12 +142,12 @@ class Tool():
 
         """
         Return the crosspoint of two line A and B in triangular coord.
-        @:param A: first line
-        @:type A: a list consist of two tuples, beginning and end point of the line
-        @:param B: second line
-        @:type B: a list consist of two tuples, beginning and end point of the line
-        @:return:  the crosspoint of A and B
-        @:rtype:   a list consist of three numbers, the x-y-z of the triangular coord
+        :param A: first line
+        :type A: a list consist of two tuples, beginning and end point of the line
+        :param B: second line
+        :type B: a list consist of two tuples, beginning and end point of the line
+        :return:  the crosspoint of A and B
+        :rtype:   a list consist of three numbers, the x-y-z of the triangular coord
         """
 
         x0, y0 = self.TriToBin(A[0][0], A[0][1], A[0][2])
@@ -170,12 +170,12 @@ class Tool():
 
         """
          Fill a region in triangular coord.
-        @:param P: the peak points of the region in triangular coord
-        @:type P: a list consist of at least three tuples, which are the points in triangular coord
-        @:param Color: the color used to fill the region
-        @:type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
-        @:param Alpha: the transparency used to fill the region
-        @:type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+        :param P: the peak points of the region in triangular coord
+        :type P: a list consist of at least three tuples, which are the points in triangular coord
+        :param Color: the color used to fill the region
+        :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+        :param Alpha: the transparency used to fill the region
+        :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
         """
 
         a = []
@@ -190,12 +190,12 @@ class Tool():
 
         """
         Fill a region in planimetric rectangular coord.
-        @:param P: the peak points of the region in planimetric rectangular coord
-        @:type P: a list consist of at least three tuples, which are the points in planimetric rectangular coord
-        @:param Color: the color used to fill the region
-        @:type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
-        @:param Alpha: the transparency used to fill the region
-        @:type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+        :param P: the peak points of the region in planimetric rectangular coord
+        :type P: a list consist of at least three tuples, which are the points in planimetric rectangular coord
+        :param Color: the color used to fill the region
+        :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+        :param Alpha: the transparency used to fill the region
+        :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
         """
         a = []
         b = []
@@ -210,29 +210,29 @@ class Frame():
 
     """
     a Frame of TAS, REE, Trace Elements and other similar x-y plots
-    @:param Width,Height: the width and height of the generated figure
-    @:type Width,Height: two int numbers
-    @:param Dpi: dots per inch
-    @:type Dpi: an int number
-    @:type
+    :param Width,Height: the width and height of the generated figure
+    :type Width,Height: two int numbers
+    :param Dpi: dots per inch
+    :type Dpi: an int number
+    :type
 
-    @:param Left,Right: the left and right limit of X axis
-    @:typeLeft,Right: two int numbers
+    :param Left,Right: the left and right limit of X axis
+    :typeLeft,Right: two int numbers
 
-    @:param Base,Top: the left and right limit of Y axis
-    @:typeBase,Top: two int numbers
+    :param Base,Top: the left and right limit of Y axis
+    :typeBase,Top: two int numbers
 
-    @:param X0,X1,X_Gap: the left and right limit of X label, and the numbers of gap between them
-    @:typeX0,X1,X_Gap: three int numbers
+    :param X0,X1,X_Gap: the left and right limit of X label, and the numbers of gap between them
+    :typeX0,X1,X_Gap: three int numbers
 
-    @:param Y0,Y1,Y_Gap: the left and right limit of Y label, and the numbers of gap between them
-    @:typeY0,Y1,Y_Gap: three int numbers
+    :param Y0,Y1,Y_Gap: the left and right limit of Y label, and the numbers of gap between them
+    :typeY0,Y1,Y_Gap: three int numbers
 
-    @:param FontSize: size of font of labels
-    @:typeFontSize: an int number
+    :param FontSize: size of font of labels
+    :typeFontSize: an int number
 
-    @:param xLabel, yLabel: the labels put alongside with x and y axises
-    @:type xLabel, yLabel: two strings
+    :param xLabel, yLabel: the labels put alongside with x and y axises
+    :type xLabel, yLabel: two strings
     """
 
     Width = 8
@@ -307,20 +307,20 @@ class Point():
 
     """
     a Point class
-    @:param X,Y: the values of its x-y coord
-    @:type X,Y: two float numbers
-    @:param Location: gather X and Y as a tuple for further use
-    @:type Location: just a tuple with two numbers
-    @:param Size: the size of the Point to draw on canvas
-    @:type Size: a number , int or maybe float also OK , better around 1 to 20, not too large or too small
-    @:param Color: the color of the Point to draw on canvas
-    @:type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
-    @:param Alpha: the transparency of the Point
-    @:type Alpha: a float number from 0 to 1, higher darker, lower more transparent
-    @:param Marker: the marker used for the Point
-    @:type Marker: a string; o, d, *, ^ , maybe there would be some other types , from matplotlib
-    @:param Label: label of the Point, telling what it is and distinguish it from other points
-    @:type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    :param X,Y: the values of its x-y coord
+    :type X,Y: two float numbers
+    :param Location: gather X and Y as a tuple for further use
+    :type Location: just a tuple with two numbers
+    :param Size: the size of the Point to draw on canvas
+    :type Size: a number , int or maybe float also OK , better around 1 to 20, not too large or too small
+    :param Color: the color of the Point to draw on canvas
+    :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+    :param Alpha: the transparency of the Point
+    :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+    :param Marker: the marker used for the Point
+    :type Marker: a string; o, d, *, ^ , maybe there would be some other types , from matplotlib
+    :param Label: label of the Point, telling what it is and distinguish it from other points
+    :type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
     """
 
     X = 0
@@ -359,18 +359,18 @@ class Points():
 
     """
     a class for multiple Points
-    @:param X,Y: the values of its x-y coords
-    @:type X,Y: two lists consist of float numbers
-    @:param Size: the size of the Points to draw on canvas
-    @:type Size: a number , int or maybe float also OK , better around 1 to 20, not too large or too small
-    @:param Color: the color of the Points to draw on canvas
-    @:type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
-    @:param Alpha: the transparency of the Points
-    @:type Alpha: a float number from 0 to 1, higher darker, lower more transparent
-    @:param Marker: the marker used for the Points
-    @:type Marker: a string; o, d, *, ^ , maybe there would be some other types , from matplotlib
-    @:param Label: label of the Points, telling what they are and distinguish them from other points
-    @:type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    :param X,Y: the values of its x-y coords
+    :type X,Y: two lists consist of float numbers
+    :param Size: the size of the Points to draw on canvas
+    :type Size: a number , int or maybe float also OK , better around 1 to 20, not too large or too small
+    :param Color: the color of the Points to draw on canvas
+    :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+    :param Alpha: the transparency of the Points
+    :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+    :param Marker: the marker used for the Points
+    :type Marker: a string; o, d, *, ^ , maybe there would be some other types , from matplotlib
+    :param Label: label of the Points, telling what they are and distinguish them from other points
+    :type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
     """
 
     X = []
@@ -414,14 +414,14 @@ class Points():
 class Tag():
     """
     a class for Tag put on canvas
-    @:param Label: label of the Tag, telling what it is and distinguish them from other tags
-    @:type Label: a strings , if leave as "" or '' such kind of blank string, the label will not show on canvas
-    @:param Location: the location of the Tag
-    @:type Location: a tuple consist of x-y values of its coords
-    @:param X_offset,Y_offset: the values of its x-y offsets on coords
-    @:type X_offset,Y_offset: two float numbers
-    @:param FontSize: the size of font of the Tag
-    @:type FontSize: a number , int or maybe float also OK , better around 8 to 12, not too large or too small
+    :param Label: label of the Tag, telling what it is and distinguish them from other tags
+    :type Label: a strings , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    :param Location: the location of the Tag
+    :type Location: a tuple consist of x-y values of its coords
+    :param X_offset,Y_offset: the values of its x-y offsets on coords
+    :type X_offset,Y_offset: two float numbers
+    :param FontSize: the size of font of the Tag
+    :type FontSize: a number , int or maybe float also OK , better around 8 to 12, not too large or too small
     """
 
     Label = u'Label'
@@ -470,26 +470,26 @@ class TriTag(Tag,Tool):
 class Line():
     """
     a line class
-    @:param Begin: the Beginning point of the line
-    @:type Begin: a Point Instance
-    @:param End: the End point of the line
-    @:type End: a Point Instance
-    @:param Points: gathering all the Point Instances
-    @:type Points: a list
-    @:param X,Y: the gathered x and y values of the line to use in plotting
-    @:type X,Y: two lists containing float numbers
-    @:param Width: the width of the line
-    @:type Width: an int number , mayby float is OK
-    @:param Color: the color of the Line to draw on canvas
-    @:type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
-    @:param Style: the style used for the Line
-    @:type Style: a string; -, --,-., : maybe there would be some other types , from matplotlib
-    @:param Alpha: the transparency of the Point
-    @:type Alpha: a float number from 0 to 1, higher darker, lower more transparent
-    @:param Label: label of the Line, telling what it is and distinguish it from other lines
-    @:type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
-    @:param Sort: the sequence used for sorting the points consisting the line
-    @:type Sort: a string, x means sort the points with their x values, y means use y instead of x, other means use the sequence of points as these points are put to the line
+    :param Begin: the Beginning point of the line
+    :type Begin: a Point Instance
+    :param End: the End point of the line
+    :type End: a Point Instance
+    :param Points: gathering all the Point Instances
+    :type Points: a list
+    :param X,Y: the gathered x and y values of the line to use in plotting
+    :type X,Y: two lists containing float numbers
+    :param Width: the width of the line
+    :type Width: an int number , mayby float is OK
+    :param Color: the color of the Line to draw on canvas
+    :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+    :param Style: the style used for the Line
+    :type Style: a string; -, --,-., : maybe there would be some other types , from matplotlib
+    :param Alpha: the transparency of the Point
+    :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+    :param Label: label of the Line, telling what it is and distinguish it from other lines
+    :type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    :param Sort: the sequence used for sorting the points consisting the line
+    :type Sort: a string, x means sort the points with their x values, y means use y instead of x, other means use the sequence of points as these points are put to the line
     """
 
     Begin = Point(0, 0)
@@ -579,10 +579,10 @@ class TriPoint(Point,Tool):
 
     """
     inherit Point and Tool, a Point class for triangular coord
-    @:param x,y,z: the list for gathering the x,y,z values of points consisting the line
-    @:type x,y,z: three lists
-    @:param sum: a value used in calc of coord transfer
-    @:type sum: just a number, both int or float are OK
+    :param x,y,z: the list for gathering the x,y,z values of points consisting the line
+    :type x,y,z: three lists
+    :param sum: a value used in calc of coord transfer
+    :type sum: just a number, both int or float are OK
     """
     x = 0
     y = 0
@@ -616,8 +616,8 @@ class TriLine(Line,Tool):
 
     """
     inherit Line and Tool, line class for triangular coord
-    @:param x,y,z: the list for gathering the x,y,z values of points consisting the line
-    @:type x,y,z: three lists
+    :param x,y,z: the list for gathering the x,y,z values of points consisting the line
+    :type x,y,z: three lists
     """
     x = []
     y = []
@@ -685,10 +685,10 @@ class TriLine(Line,Tool):
 class Tri():
     """
     a class of triangular frame
-    @:param Label: the label at the tree corners of the triangular
-    @:type Label: a list consist of three strings
-    @:param LabelPosition: just the Position of these Labels
-    @:type LabelPosition: x-y style coords , three of them
+    :param Label: the label at the tree corners of the triangular
+    :type Label: a list consist of three strings
+    :param LabelPosition: just the Position of these Labels
+    :type LabelPosition: x-y style coords , three of them
     """
     Label = [u'Q', u'F', u'L']
     LabelPosition = [(48, 50 * np.sqrt(3) + 2),
@@ -724,18 +724,18 @@ class Tri():
 class DualTri():
     """
     a class of a double triangulars frame
-    @:param Label: the label at the tree corners of the triangular
-    @:type Label: a list consist of three strings
-    @:param LabelPosition: just the Position of these Labels
-    @:type LabelPosition: x-y style coords , three of them
-    @:param Labels: description of the different region
-    @:type Labels: a list containing multiple strings
-    @:param Locations: the locations of those each one in the Labels
-    @:type Locations: a list of triangular coord points
-    @:param Offset: the offset value used to adjust the appearance of each one in the Labels
-    @:type Offset: a list of x-y coord offset values
-    @:param name: the file name used to read and use
-    @:type name: a string
+    :param Label: the label at the tree corners of the triangular
+    :type Label: a list consist of three strings
+    :param LabelPosition: just the Position of these Labels
+    :type LabelPosition: x-y style coords , three of them
+    :param Labels: description of the different region
+    :type Labels: a list containing multiple strings
+    :param Locations: the locations of those each one in the Labels
+    :type Locations: a list of triangular coord points
+    :param Offset: the offset value used to adjust the appearance of each one in the Labels
+    :type Offset: a list of x-y coord offset values
+    :param name: the file name used to read and use
+    :type name: a string
     """
 
 
@@ -796,17 +796,17 @@ class Tas(Frame):
 
     """
     inherit Frame, read xlsx or csv file and use SiO2 , Na2O and K2O to plot tas diagram
-    @:param Lines: the lines consisting the Tas frame
-    @:type Lines: a list of lines
-    @:param Tags: tags used for the items of Tas diagram
-    @:type Tagas: a list of strings
-    @:param Labels: labels on the canvas
-    @:type Labels: a list of strings
-    @:param Locations: the locations of these labels
-    @:type Locations: a list of tuple containing two numbers as x-y coords
-    @:param description: the description of the tas diagram
-    @:param name: the file name used for tas diagram
-    @:type name: a string
+    :param Lines: the lines consisting the Tas frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of Tas diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
     """
 
     Lines = []
@@ -848,8 +848,7 @@ class Tas(Frame):
         self.Y_Gap = Y_Gap
 
         self.FontSize = FontSize
-        xLabel = r'$SiO_2 wt\%$'+"\n"+self.description
-        self.xLabel = xLabel
+        self.xLabel = xLabel+"\n"+self.description
         self.yLabel = yLabel
 
         self.Lines = [
@@ -935,18 +934,18 @@ class Ree(Frame):
 
     """
     inherit Frame, read xlsx or csv file and use the Rare Earth Elements to plot the ree diagram
-    @:param Element: the elements used in this diagram
-    @:type Element: a list of strings
-    @:param Labels: a ref of Element
-    @:type Labels: a list of strings
-    @:param WholeData: gathering all data and find the min and max of the data file to set the limits of Y
-    @:type WholeData: a list of float numbers
-    @:param X0,X1: the left and right limits of X
-    @:type X0,X1: two int or float numbers
-    @:param X_Gap: the space between the left and right limits of X
-    @:type X_Gap: an int number
-    @:param name: the file name to use in this diagram
-    @:type name: a string
+    :param Element: the elements used in this diagram
+    :type Element: a list of strings
+    :param Labels: a ref of Element
+    :type Labels: a list of strings
+    :param WholeData: gathering all data and find the min and max of the data file to set the limits of Y
+    :type WholeData: a list of float numbers
+    :param X0,X1: the left and right limits of X
+    :type X0,X1: two int or float numbers
+    :param X_Gap: the space between the left and right limits of X
+    :type X_Gap: an int number
+    :param name: the file name to use in this diagram
+    :type name: a string
     """
 
     Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
@@ -1059,12 +1058,12 @@ class Trace(Ree):
 
     """
     inherit Frame, read xlsx or csv file and use the Trace Elements to plot the trace diagram
-    @:param Element: the elements used in this diagram
-    @:type Element: a list of strings
-    @:param Labels: a ref of Element
-    @:type Labels: a list of strings
-    @:param name: the file name to use in this diagram
-    @:type name: a string
+    :param Element: the elements used in this diagram
+    :type Element: a list of strings
+    :param Labels: a ref of Element
+    :type Labels: a list of strings
+    :param name: the file name to use in this diagram
+    :type name: a string
     """
 
     Element = ['Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
@@ -1103,12 +1102,12 @@ class Trace(Ree):
 class Trace2(Trace):
     """
     inherit Frame, read xlsx or csv file and use the Trace Elements to plot the trace2 diagram
-    @:param Element: the elements used in this diagram
-    @:type Element: a list of strings
-    @:param Labels: a ref of Element
-    @:type Labels: a list of strings
-    @:param name: the file name to use in this diagram
-    @:type name: a string
+    :param Element: the elements used in this diagram
+    :type Element: a list of strings
+    :param Labels: a ref of Element
+    :type Labels: a list of strings
+    :param name: the file name to use in this diagram
+    :type name: a string
     """
     Element = ['Rb',u'Ba',u'Th',u'U',u'Nb',u'Ta',u'K',u'La',u'Ce',u'Pr',u'Sr',u'P',u'Nd',u'Zr',u'Hf',u'Sm',u'Eu',u'Ti',u'Tb',u'Dy',u'Y',u'Ho',u'Er',u'Tm',u'Yb',u'Lu']
     Labels = Element
@@ -1145,14 +1144,14 @@ class Qfl(Tri,Tool):
 
     """
     inherit Tri and Tool, read xlsx or csv file and make QFL diagram
-    @:param Tags: the Tags on this diagram for description of different units
-    @:type Tags: a list of strings
-    @:param Labels: the labels of the different units
-    @:type Labels: a list of strings
-    @:param Locations: the triangular coord location of these Labels
-    @:type Locations: a list of tuples, these tuples contains the triangular coords
-    @:param Offset: the x-y offset of these labels on canvas
-    @:type Offset: a list of tuples containing x-y values
+    :param Tags: the Tags on this diagram for description of different units
+    :type Tags: a list of strings
+    :param Labels: the labels of the different units
+    :type Labels: a list of strings
+    :param Locations: the triangular coord location of these Labels
+    :type Locations: a list of tuples, these tuples contains the triangular coords
+    :param Offset: the x-y offset of these labels on canvas
+    :type Offset: a list of tuples containing x-y values
     """
 
     Tags = []
@@ -1283,14 +1282,14 @@ class Qmflt(Qfl,Tool):
 
     """
     inherit Qfl and Tool, read xlsx or csv file and make Qmflt diagram
-    @:param Tags: the Tags on this diagram for description of different units
-    @:type Tags: a list of strings
-    @:param Labels: the labels of the different units
-    @:type Labels: a list of strings
-    @:param Locations: the triangular coord location of these Labels
-    @:type Locations: a list of tuples, these tuples contains the triangular coords
-    @:param Offset: the x-y offset of these labels on canvas
-    @:type Offset: a list of tuples containing x-y values
+    :param Tags: the Tags on this diagram for description of different units
+    :type Tags: a list of strings
+    :param Labels: the labels of the different units
+    :type Labels: a list of strings
+    :param Locations: the triangular coord location of these Labels
+    :type Locations: a list of tuples, these tuples contains the triangular coords
+    :param Offset: the x-y offset of these labels on canvas
+    :type Offset: a list of tuples containing x-y values
     """
 
     Tags = []
@@ -1489,14 +1488,14 @@ class Qapf(DualTri,Tool):
 
     """
     inherit DualTri and Tool, read xlsx or csv file and make basic Qapf diagram
-    @:param Tags: the Tags on this diagram for description of different units
-    @:type Tags: a list of strings
-    @:param Labels: the labels of the different units
-    @:type Labels: a list of strings
-    @:param Locations: the triangular coord location of these Labels
-    @:type Locations: a list of tuples, these tuples contains the triangular coords
-    @:param Offset: the x-y offset of these labels on canvas
-    @:type Offset: a list of tuples containing x-y values
+    :param Tags: the Tags on this diagram for description of different units
+    :type Tags: a list of strings
+    :param Labels: the labels of the different units
+    :type Labels: a list of strings
+    :param Locations: the triangular coord location of these Labels
+    :type Locations: a list of tuples, these tuples contains the triangular coords
+    :param Offset: the x-y offset of these labels on canvas
+    :type Offset: a list of tuples containing x-y values
     """
 
     Tags = []
@@ -1793,14 +1792,14 @@ class QapfP(Qapf):
 
     """
     inherit Qapf, read xlsx or csv file and make Qapf diagram for Plutonic Rocks
-    @:param Tags: the Tags on this diagram for description of different units
-    @:type Tags: a list of strings
-    @:param Labels: the labels of the different units
-    @:type Labels: a list of strings
-    @:param Locations: the triangular coord location of these Labels
-    @:type Locations: a list of tuples, these tuples contains the triangular coords
-    @:param Offset: the x-y offset of these labels on canvas
-    @:type Offset: a list of tuples containing x-y values
+    :param Tags: the Tags on this diagram for description of different units
+    :type Tags: a list of strings
+    :param Labels: the labels of the different units
+    :type Labels: a list of strings
+    :param Locations: the triangular coord location of these Labels
+    :type Locations: a list of tuples, these tuples contains the triangular coords
+    :param Offset: the x-y offset of these labels on canvas
+    :type Offset: a list of tuples containing x-y values
     """
 
     Tags = []
@@ -2092,14 +2091,14 @@ class QapfP(Qapf):
 class QapfV(Qapf):
     """
     inherit Qapf, read xlsx or csv file and make Qapf diagram for Volcanic rocks
-    @:param Tags: the Tags on this diagram for description of different units
-    @:type Tags: a list of strings
-    @:param Labels: the labels of the different units
-    @:type Labels: a list of strings
-    @:param Locations: the triangular coord location of these Labels
-    @:type Locations: a list of tuples, these tuples contains the triangular coords
-    @:param Offset: the x-y offset of these labels on canvas
-    @:type Offset: a list of tuples containing x-y values
+    :param Tags: the Tags on this diagram for description of different units
+    :type Tags: a list of strings
+    :param Labels: the labels of the different units
+    :type Labels: a list of strings
+    :param Locations: the triangular coord location of these Labels
+    :type Locations: a list of tuples, these tuples contains the triangular coords
+    :param Offset: the x-y offset of these labels on canvas
+    :type Offset: a list of tuples containing x-y values
     """
 
     Tags = []
@@ -2353,8 +2352,8 @@ class Polar():
 
     """
     Polar Stereographic projection for structural data
-    @:param name: the file used to plot
-    @:type name: a string
+    :param name: the file used to plot
+    :type name: a string
     """
     Label = [u'N', u'S', u'W', u'E']
     LabelPosition = []
@@ -2480,16 +2479,469 @@ class Polar():
         plt.savefig(self.name+"Schmidt.svg", dpi=300)
         plt.show()
 
-if __name__ == '__main__':
+class LogLine(Line):
 
-    Tas().read()
-    Ree().read()
-    Trace().read()
-    Qfl().read()
-    Qmflt().read()
-    QapfP().read()
-    QapfV().read()
-    Polar().read()
+    """
+    inherit Line, a class for plotting lines with math.log(x,10)
+    """
+
+    def __init__(self, Points=[(0, 0), (1, 1)], Sort='', Width=1, Color='blue', Style="-", Alpha=0.3, Label=''):
+        """
+        setup the datas
+        """
+        super().__init__()
+        self.Sort = Sort
+        self.Width = Width
+        self.Color = Color
+        self.Style = Style
+        self.Alpha = Alpha
+        self.Label = Label
+
+        if (len(Points) == 2):
+            self.X = [math.log(Points[0][0],10), math.log(Points[1][0],10)]
+            self.Y = [math.log(Points[0][1],10), math.log(Points[1][1],10)]
+            self.Points = Points
+
+        elif (len(Points) > 2):
+            self.Points = Points
+
+        else:
+            print("Cannot draw line with one point")
+
+
+    def order(self, TMP=[]):
+        X_TMP = []
+        Y_TMP = []
+        for i in TMP:
+            X_TMP.append(math.log(i[0],10))
+            Y_TMP.append(math.log(i[1],10))
+        self.X = X_TMP
+        self.Y = Y_TMP
+
+class LogPoint(Point):
+
+    """
+    inherit Point, a class for plotting Points with math.log(x,10)
+    """
+    def __init__(self, X=0, Y=0, Size=12, Color='red', Alpha=0.3, Marker='o', Label=''):
+        """
+        just set up the values
+        """
+        super().__init__()
+        self.X = math.log(X,10)
+        self.Y = math.log(Y,10)
+        self.Location = (X, Y)
+        self.Size = Size
+        self.Color = Color
+        self.Alpha = Alpha
+        self.Marker = Marker
+        self.Label = Label
+
+class Pearce(Frame):
+    """
+    inherit Frame, read xlsx or csv file and use Rb-(Y+Nb) to plot tas diagram
+    :param Lines: the lines consisting the frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+
+    Lines = []
+    Tags = []
+    Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG']
+    Locations = [(1, 3), (1, 1), (3, 3), (3, 1)]
+    description = "Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites "
+    text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
+    name = "pearce.xlsx"
+
+    def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=0, Right=3.5, X0=0, X1=3, X_Gap=4, Base=0, Top=3.5, Y0=0,
+                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Y+Nb (PPM)', yLabel=r'Rb (PPM)',text = [u'1', u'10', u'100', u'1000', u'10000'], Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [(1, 3), (1, 1), (3, 3), (3, 1)]):
+        """
+        just set up the basic settings
+        """
+        super().__init__()
+        self.name = name
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel+"\n"+self.description
+        self.yLabel = yLabel
+
+        self.Tags = []
+        self.Labels = []
+        self.Locations = []
+        self.text = []
+
+        self.text = text
+        self.Labels=Labels
+        self.Locations=Locations
+
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+
+        self.text = text
+        self.Lines = [LogLine([(2, 80), (55, 300)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(55,300),(400,2000)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(55,300),(51.5,8)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(51.5,8),(50,1)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(51.5,8),(2000,400)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),]
+
+    def show(self):
+        """
+        show the frame and lines on canvas
+        """
+        plt.figure(figsize=(self.Width, self.Height), dpi=self.Dpi)
+        plt.xlim(self.Left, self.Right)
+        plt.ylim(self.Base, self.Top)
+        plt.xticks(np.linspace(self.X0, self.X1, self.X_Gap, endpoint=True), self.text)
+        plt.yticks(np.linspace(self.Y0, self.Y1, self.Y_Gap, endpoint=True), self.text)
+        plt.xlabel(self.xLabel, fontsize=self.FontSize)
+        plt.ylabel(self.yLabel, fontsize=self.FontSize)
+        for i in self.Lines:
+            i.show()
+        for i in self.Tags:
+            i.show()
+
+
+
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
+            LogPoint( (raw.at[i, 'Y'] + raw.at[i, 'Nb']),raw.at[i, 'Rb'], Size=raw.at[i, 'Size'],
+                  Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
+        plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
+        plt.savefig(self.name+"pearce.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce.svg", dpi=300, bbox_inches='tight')
+        plt.show()
+
+class Pearce2(Pearce):
+    """
+    inherit Frame, read xlsx or csv file and use Rb-(Yb-Ta) plot tas diagram
+    :param Lines: the lines consisting the frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+
+
+    def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=-0.5, Right=3.5, X0=0, X1=3, X_Gap=4, Base=0, Top=3.5, Y0=0,
+                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Yb+Ta (PPM)', yLabel=r'Rb (PPM)',text = [u'1', u'10', u'100', u'1000'],Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [(0.5, 3), (0.5, 1), (2, 2.8), (2, 1)]):
+        """
+        just set up the basic settings
+        """
+        super().__init__()
+        self.name = name
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel+"\n"+self.description
+        self.yLabel = yLabel
+
+        self.Tags = []
+        self.Labels = []
+        self.Locations = []
+        self.text = []
+
+        self.text = text
+        self.Labels=Labels
+        self.Locations=Locations
+
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+
+        self.Lines = [LogLine([(0.5,140),(6,200)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(6,200),(50,2000)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(6,200),(6,8)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(6,8),(6,1)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(6,8),(200,400)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),]
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
+            LogPoint( (raw.at[i, 'Yb'] + raw.at[i, 'Ta']),raw.at[i, 'Rb'], Size=raw.at[i, 'Size'],
+                  Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
+        plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
+        plt.savefig(self.name+"pearce2.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce2.svg", dpi=300, bbox_inches='tight')
+        plt.show()
+
+class Pearce3(Pearce):
+    """
+    inherit Frame, read xlsx or csv file and use Nb-Y to plot tas diagram
+    :param Lines: the lines consisting the frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+
+    def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=-0.5, Right=3.5, X0=0, X1=3, X_Gap=4, Base=0, Top=3.5, Y0=0,
+                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Y (PPM)', yLabel=r'Nb (PPM)',text = [u'1', u'10', u'100', u'1000'],Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [(0.5, 1.5), (0.5, 2), (2, 2), (2, 1)]):
+        """
+        just set up the basic settings
+        """
+        super().__init__()
+        self.name = name
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel+"\n"+self.description
+        self.yLabel = yLabel
+
+        self.Tags = []
+        self.Labels = []
+        self.Locations = []
+        self.text = []
+
+        self.text = text
+        self.Labels=Labels
+        self.Locations=Locations
+
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+        self.Lines = [LogLine([(1,2000),(50,10)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(40,1),(50,10)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(50,10),(1000,100)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(25,25),(1000,400)], Sort='', Width=1, Color='black', Style="--", Alpha=0.3)]
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
+            LogPoint( raw.at[i, 'Y'],raw.at[i, 'Nb'], Size=raw.at[i, 'Size'],
+                  Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
+        plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
+        plt.savefig(self.name+"pearce3.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce3.svg", dpi=300, bbox_inches='tight')
+        plt.show()
+
+class Pearce4(Pearce):
+    """
+    inherit Frame, read xlsx or csv file and use Ta-Yb to plot tas diagram
+    :param Lines: the lines consisting the frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+
+
+    def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=-1.5, Right=2.5, X0=-1, X1=2, X_Gap=4, Base=-1.5, Top=2.5, Y0=-1,
+                 Y1=2, Y_Gap=4, FontSize=12, xLabel=r'Yb (PPM)', yLabel=r'Ta (PPM)',text = [u'0.1', u'1', u'10', u'100'],Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [ (-1, 0.1),(-1, -1), (0.7, 1), (2, 0.5)]):
+        """
+        just set up the basic settings
+        """
+        super().__init__()
+        self.name = name
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel+"\n"+self.description
+        self.yLabel = yLabel
+
+        self.Tags = []
+        self.Labels = []
+        self.Locations = []
+        self.text=[]
+
+        self.text=text
+        self.Labels=Labels
+        self.Locations=Locations
+
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+        self.Lines = [LogLine([(0.55,20),(3,2)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(0.1,0.35),(3,2)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(3,2),(5,1)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(5,0.05),(5,1)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(5,1),(100,7)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(3,2),(100,20)], Sort='', Width=1, Color='black', Style="--", Alpha=0.3),]
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
+            LogPoint( raw.at[i, 'Yb'],raw.at[i, 'Ta'] , Size=raw.at[i, 'Size'],
+                  Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
+        plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
+        plt.savefig(self.name+"pearce4.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce4.svg", dpi=300, bbox_inches='tight')
+        plt.show()
+
+
+if __name__ == '__main__':
+    pass
+
+
 """
     Tas().read()
     Ree().read()
@@ -2499,5 +2951,9 @@ if __name__ == '__main__':
     QapfP().read()
     QapfV().read()
     Polar().read()
+    Pearce().read()
+    Pearce2().read()
+    Pearce3().read()
+    Pearce4().read()
 """
 
