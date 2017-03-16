@@ -40,8 +40,9 @@ pip install xlrd
 
 ##Usage Under Windows
 
-For Windows Users, just put your data in the correspoinding Xlsx file and double click the correspoinding EXE files from [here](https://github.com/cycleuser/GeoPython/tree/master/Windows).
+For Windows Users, just put your data in the correspoinding Xlsx file and double click the correspoinding EXE files from [here](https://pan.baidu.com/s/1hrCXmoW).
 
+![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
 
 ##Usage with Python
 
@@ -86,25 +87,5 @@ If the data file is in the right form and nothing goes wrong, you will have thre
 * a png (Portable Network Graphics) .
 
 
-TAS:
-![](https://github.com/cycleuser/GeoPython/blob/master/tas.xlsxtas.png?raw=true)
-
-Trace:
-![](https://github.com/cycleuser/GeoPython/blob/master/trace.xlsx.png)
-
-Ree:
-![](https://github.com/cycleuser/GeoPython/blob/master/ree.xlsx.png?raw=true)
-
-QFL:
-![](https://github.com/cycleuser/GeoPython/blob/master/qfl.xlsxqfl.png)
-
-QAPF:
-![](https://github.com/cycleuser/GeoPython/blob/master/qapf.xlsxqapfP.png?raw=true)
-
-Wulf:
-![](https://github.com/cycleuser/GeoPython/blob/master/strike.xlsxWulff.png)
-
-Schmidt:
-![](https://github.com/cycleuser/GeoPython/blob/master/strike.xlsxSchmidt.png)
-
+![](https://github.com/cycleuser/GeoPython/blob/master/Sample.png?raw=true)
 

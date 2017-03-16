@@ -37,8 +37,8 @@ pip install xlrd
 
 ##在Windows系统中使用
 
-我已经将程序功能打包成了一个个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。可以在[这里下载](https://github.com/cycleuser/GeoPython/tree/master/Windows)，解压缩之后，把你的数据按照示范放到模板文件中，然后双击对应名字的exe程序就行了。
-
+我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。可以在[这里下载](https://pan.baidu.com/s/1hrCXmoW)，解压缩之后，把你的数据按照示范放到模板文件中，然后双击对应名字的exe程序就行了。
+![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
 
 ##在 Python 中使用
 
@@ -84,26 +84,4 @@ gp.Polar("strike.xlsx").read()              # 构造产状的吴尔夫网和施�
 * 然后就是一个png图像了。
 
 
-TAS:
-![](https://github.com/cycleuser/GeoPython/blob/master/tas.xlsxtas.png?raw=true)
-
-Trace:
-![](https://github.com/cycleuser/GeoPython/blob/master/trace.xlsx.png)
-
-Ree:
-![](https://github.com/cycleuser/GeoPython/blob/master/ree.xlsx.png?raw=true)
-
-QFL:
-![](https://github.com/cycleuser/GeoPython/blob/master/qfl.xlsxqfl.png)
-
-QAPF:
-![](https://github.com/cycleuser/GeoPython/blob/master/qapf.xlsxqapfP.png?raw=true)
-
-Wulf:
-![](https://github.com/cycleuser/GeoPython/blob/master/strike.xlsxWulff.png)
-
-Schmidt:
-![](https://github.com/cycleuser/GeoPython/blob/master/strike.xlsxSchmidt.png)
-
-
-
+![](https://github.com/cycleuser/GeoPython/blob/master/Sample.png?raw=true)

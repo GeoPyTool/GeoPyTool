@@ -3153,25 +3153,30 @@ class Harker():
         """
         Use the setup to set up figure feature.
         """
-        fig = plt.figure(figsize=(self.Width, self.Height), dpi=self.Dpi)
 
-        l=len(self.yLabel)
+        l=len(self.y)
         if(l%2==0):
             a = int(l/ 2)
         else:
             a = int((l+1) / 2)
 
+
+
+        fig = plt.figure(figsize=(self.Width,self.Width*a/2), dpi=self.Dpi)
+
         gs = gridspec.GridSpec(a, 2, width_ratios=[1, 1])
 
-        for i in range(len(self.yLabel)):
+        for i in range(len(self.y)):
             self.all.append(plt.subplot(gs[i]))
+
+
 
 
         for i in range(len(self.all)):
             self.all[i].set_xlim(self.Left, self.Right)
             self.all[i].set_xticks(np.linspace(self.X0, self.X1, self.X_Gap, endpoint=True))
-            self.all[i].set_xlabel(self.xLabel, fontsize=self.FontSize)
-            self.all[i].set_ylabel(self.yLabel[i], fontsize=self.FontSize)
+            self.all[i].set_xlabel(self.x, fontsize=self.FontSize)
+            self.all[i].set_ylabel(self.y[i], fontsize=self.FontSize)
 
 
     def plot(self,k=0):
@@ -3222,7 +3227,7 @@ class Harker():
 
 
 if __name__ == '__main__':
-    pass
+    Harker(x='SiO2', y=['CaO', 'Na2O', 'TiO2', 'K2O', 'P2O5']).read()
 
 """
     Tas().read()
