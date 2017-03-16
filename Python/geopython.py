@@ -37,6 +37,7 @@ import matplotlib
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 import numpy as np
 import pandas as pd
 import math
@@ -2537,7 +2538,7 @@ class LogPoint(Point):
         self.Marker = Marker
         self.Label = Label
 
-class Pearce(Frame):
+class Pearce1(Frame):
     """
     inherit Frame, read xlsx or csv file and use Rb-(Y+Nb) to plot tas diagram
     :param Lines: the lines consisting the frame
@@ -2627,9 +2628,6 @@ class Pearce(Frame):
         for i in self.Tags:
             i.show()
 
-
-
-
     def read(self):
         """
         read the Excel, then use self.show() to show the frame, then Plot points, job done~
@@ -2654,11 +2652,11 @@ class Pearce(Frame):
             LogPoint( (raw.at[i, 'Y'] + raw.at[i, 'Nb']),raw.at[i, 'Rb'], Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
-        plt.savefig(self.name+"pearce.png", dpi=300, bbox_inches='tight')
-        plt.savefig(self.name+"pearce.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce1.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name+"pearce1.svg", dpi=300, bbox_inches='tight')
         plt.show()
 
-class Pearce2(Pearce):
+class Pearce2(Pearce1):
     """
     inherit Frame, read xlsx or csv file and use Rb-(Yb-Ta) plot tas diagram
     :param Lines: the lines consisting the frame
@@ -2752,7 +2750,7 @@ class Pearce2(Pearce):
         plt.savefig(self.name+"pearce2.svg", dpi=300, bbox_inches='tight')
         plt.show()
 
-class Pearce3(Pearce):
+class Pearce3(Pearce1):
     """
     inherit Frame, read xlsx or csv file and use Nb-Y to plot tas diagram
     :param Lines: the lines consisting the frame
@@ -2843,7 +2841,7 @@ class Pearce3(Pearce):
         plt.savefig(self.name+"pearce3.svg", dpi=300, bbox_inches='tight')
         plt.show()
 
-class Pearce4(Pearce):
+class Pearce4(Pearce1):
     """
     inherit Frame, read xlsx or csv file and use Ta-Yb to plot tas diagram
     :param Lines: the lines consisting the frame
@@ -2937,10 +2935,294 @@ class Pearce4(Pearce):
         plt.savefig(self.name+"pearce4.svg", dpi=300, bbox_inches='tight')
         plt.show()
 
+class MultiFrame(Frame):
+
+    """
+    Multiple Frames of Rb-Y+Nb or Rb-Yb+Ta and other similar x-y plots
+    :param Width,Height: the width and height of the generated figure
+    :type Width,Height: two int numbers
+    :param Dpi: dots per inch
+    :type Dpi: an int number
+    :type
+
+    :param Left,Right: the left and right limit of X axis
+    :typeLeft,Right: two lists of int numbers
+
+    :param Base,Top: the left and right limit of Y axis
+    :typeBase,Top: two lists of int numbers
+
+    :param X0,X1,X_Gap: the left and right limit of X label, and the numbers of gap between them
+    :typeX0,X1,X_Gap: three lists of int numbers
+
+    :param Y0,Y1,Y_Gap: the left and right limit of Y label, and the numbers of gap between them
+    :typeY0,Y1,Y_Gap: three lists of int numbers
+
+    :param FontSize: size of font of labels
+    :typeFontSize: an int number
+
+    :param xLabel, yLabel: the labels put alongside with x and y axises
+    :type xLabel, yLabel: two lists of strings
+    """
+
+
+    Left = []
+    Right = []
+
+    Base = []
+    Top = []
+
+    X0 = []
+    X1 = []
+    X_Gap = []
+
+    Y0 = []
+    Y1 = []
+    Y_Gap = []
+
+    xLabel = []
+    yLabel = []
+
+    all=[]
+    Lines=[]
+
+    def __init__(self, Width=8, Height=8, Dpi=80, Left=[0,0,0], Right=[10,10,10], X0=[0,0,0],X1=[10,10,10],X_Gap=[11,11,11],Y0=[0,0,0],Y1=[10,10,10],Y_Gap=[11,11,11],Base=[0,0,0], Top=[10,10,10],FontSize=16,
+                 xLabel=[r'X Label',r'X Label',r'X Label'], yLabel=[r'Y Label',r'Y Label',r'Y Label']):
+        """
+        Just set up all.
+        """
+        super().__init__()
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel
+        self.yLabel = yLabel
+
+    def show(self):
+
+        """
+        Use the setup to set up figure feature.
+        """
+        fig = plt.figure(figsize=(self.Width, self.Height), dpi=self.Dpi)
+
+        l=len(self.xLabel)
+        if(l%2==0):
+            a = int(l/ 2)
+        else:
+            a = int((l+1) / 2)
+
+        gs = gridspec.GridSpec(a, 2, width_ratios=[1, 1])
+
+        for i in range(len(self.xLabel)):
+            self.all.append(plt.subplot(gs[i]))
+
+
+        for i in range(len(self.all)):
+            self.all[i].set_xlim(self.Left[i],self.Right[i])
+            self.all[i].set_ylim(self.Base[i], self.Top[i])
+            self.all[i].set_xticks(np.linspace(self.X0[i], self.X1[i], self.X_Gap[i], endpoint=True))
+            self.all[i].set_yticks(np.linspace(self.Y0[i], self.Y1[i], self.Y_Gap[i], endpoint=True))
+            self.all[i].set_xlabel(self.xLabel[i], fontsize=self.FontSize)
+            self.all[i].set_ylabel(self.yLabel[i], fontsize=self.FontSize)
+
+        self.Lines = [LogLine([(2, 80), (55, 300)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(55,300),(400,2000)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(55,300),(51.5,8)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(51.5,8),(50,1)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+                      LogLine([(51.5,8),(2000,400)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),]
+        for i in self.Lines:
+            i.show()
+
+class Pearce():
+    """
+    just a wrapper, read xlsx or csv file and use Rb-(Y+Nb) and Rb-(Yb+Ta) to plot tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+    name="pearce.xlsx"
+    def __init__(self,name="pearce.xlsx"):
+        self.name=name
+    def read(self):
+        Pearce1(self.name).read()
+        Pearce2(self.name).read()
+        Pearce3(self.name).read()
+        Pearce4(self.name).read()
+
+class Harker():
+
+    """
+    Multiple Frames of Rb-Y+Nb or Rb-Yb+Ta and other similar x-y plots
+    :param Width,Height: the width and height of the generated figure
+    :type Width,Height: two int numbers
+    :param Dpi: dots per inch
+    :type Dpi: an int number
+    :type
+
+    :param Left,Right: the left and right limit of X axis
+    :typeLeft,Right: two lists of int numbers
+
+    :param Base,Top: the left and right limit of Y axis
+    :typeBase,Top: two lists of int numbers
+
+    :param X0,X1,X_Gap: the left and right limit of X label, and the numbers of gap between them
+    :typeX0,X1,X_Gap: three lists of int numbers
+
+    :param Y0,Y1,Y_Gap: the left and right limit of Y label, and the numbers of gap between them
+    :typeY0,Y1,Y_Gap: three lists of int numbers
+
+    :param FontSize: size of font of labels
+    :typeFontSize: an int number
+
+    :param xLabel, yLabel: the labels put alongside with x and y axises
+    :type xLabel, yLabel: two lists of strings
+    """
+
+
+    Left = 45
+    Right = 75
+
+
+    X0 = 45
+    X1 = 75
+    X_Gap = 6
+
+
+    xLabel = r'$SiO_2 wt\%$'
+    yLabel = []
+
+    all=[]
+    Lines=[]
+
+    Base=[]
+    Top=[]
+    Gap=[]
+
+    raw=''
+
+    PointLabels = []
+
+    name = "harker.xlsx"
+    x='SiO2'
+    y = ['Al2O3', 'MgO', 'FeO', 'CaO', 'Na2O', 'TiO2', 'K2O', 'P2O5']
+
+    def __init__(self,name = "harker.xlsx", Width=8, Height=16, Dpi=80, Left=45, Right=75, X0=45,X1=75,X_Gap=6,FontSize=12,
+                 x='SiO2', y=['Al2O3','MgO','FeO','CaO','Na2O','TiO2','K2O','P2O5']):
+        """
+        Just set up all.
+        """
+        super().__init__()
+        self.name=name
+
+        self.x= x
+        self.y= y
+
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = r'$SiO_2 wt\%$'
+        self.yLabel = [r'$Al_2O_3 wt\%$',r'$MgO wt\%$',r'$FeO wt\%$',r'$CaO wt\%$',r'$Na_2O wt\%$',r'$TiO_2 wt\%$',r'$K_2O wt\%$',r'$P_2O_5 wt\%$']
+
+    def show(self):
+
+        """
+        Use the setup to set up figure feature.
+        """
+        fig = plt.figure(figsize=(self.Width, self.Height), dpi=self.Dpi)
+
+        l=len(self.yLabel)
+        if(l%2==0):
+            a = int(l/ 2)
+        else:
+            a = int((l+1) / 2)
+
+        gs = gridspec.GridSpec(a, 2, width_ratios=[1, 1])
+
+        for i in range(len(self.yLabel)):
+            self.all.append(plt.subplot(gs[i]))
+
+
+        for i in range(len(self.all)):
+            self.all[i].set_xlim(self.Left, self.Right)
+            self.all[i].set_xticks(np.linspace(self.X0, self.X1, self.X_Gap, endpoint=True))
+            self.all[i].set_xlabel(self.xLabel, fontsize=self.FontSize)
+            self.all[i].set_ylabel(self.yLabel[i], fontsize=self.FontSize)
+
+
+    def plot(self,k=0):
+        Total = []
+        for i in range(len(self.raw)):
+            tmp=self.raw.at[i,self.y[k]]
+            Total.append(tmp)
+            TmpLabel = ''
+            if ((self.raw.at[i, 'Label'] in self.PointLabels) == False):
+                self.PointLabels.append(self.raw.at[i, 'Label'])
+                TmpLabel = self.raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
+            self.all[k].scatter(self.raw.at[i, self.x],  tmp, marker=self.raw.at[i, 'Marker'], s=self.raw.at[i, 'Size'], color=self.raw.at[i, 'Color'], alpha=self.raw.at[i, 'Alpha'],
+                         label=TmpLabel, edgecolors='black')
+
+        A_Base= int(min(Total))-1
+        A_Top= int(max(Total))+1
+        A_Gap= A_Top -A_Base + 1
+
+        self.all[k].set_ylim(A_Base, A_Top)
+        self.all[k].set_yticks(np.linspace(A_Base, A_Top,A_Gap, endpoint=True))
+        if k==0:
+            self.all[k].legend(loc=5, bbox_to_anchor=(2.8, 0.5))
+
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            self.raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            self.raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for k in range(len(self.y)):
+            self.plot(k)
+
+        plt.savefig(self.name + "harker.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "harker.svg", dpi=300, bbox_inches='tight')
+        plt.show()
+
+
 
 if __name__ == '__main__':
     pass
-
 
 """
     Tas().read()
@@ -2952,8 +3234,6 @@ if __name__ == '__main__':
     QapfV().read()
     Polar().read()
     Pearce().read()
-    Pearce2().read()
-    Pearce3().read()
-    Pearce4().read()
+    Harker().read()
 """
 
