@@ -37,7 +37,15 @@ pip install xlrd
 
 ##在Windows系统中使用
 
-我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。可以在[这里下载](https://pan.baidu.com/s/1hrCXmoW)，解压缩之后，把你的数据按照示范放到模板文件中，然后双击对应名字的exe程序就行了。
+我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。可以下载新版本:
+
+解压缩之后，把你的数据按照示范放到对应的模板文件中，然后运行 exe，选择对应的按钮来点击一下就可以了。
+
+
+
+之前发布的旧版本 稀土元素投图 有 bug，， 因为我把元素名称写错了，抱歉。
+
+
 ![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
 
 ##在 Python 中使用
