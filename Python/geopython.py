@@ -425,13 +425,13 @@ class Tag():
     :type FontSize: a number , int or maybe float also OK , better around 8 to 12, not too large or too small
     """
 
-    Label = 'Label'
+    Label = u'Label'
     Location = (0, 0)
     X_offset = -6
     Y_offset = 3
     FontSize = 12
 
-    def __init__(self, Label='Label', Location=(0, 0), X_offset=-6, Y_offset=3, FontSize=12):
+    def __init__(self, Label=u'Label', Location=(0, 0), X_offset=-6, Y_offset=3, FontSize=12):
         """
         set up the values
         """
@@ -456,7 +456,7 @@ class TriTag(Tag,Tool):
     inherit Tag and Tool,a Tag for triangular coord
     """
 
-    def __init__(self, Label='Label', Location=(0, 1, 2), X_offset=-6, Y_offset=3, FontSize=12):
+    def __init__(self, Label=u'Label', Location=(0, 1, 2), X_offset=-6, Y_offset=3, FontSize=12):
 
         """
         set up the values, transfer x,y,z coords to x-y coords
@@ -691,12 +691,12 @@ class Tri():
     :param LabelPosition: just the Position of these Labels
     :type LabelPosition: x-y style coords , three of them
     """
-    Label = ['Q', 'F', 'L']
+    Label = [u'Q', u'F', u'L']
     LabelPosition = [(48, 50 * np.sqrt(3) + 2),
                      (-6, -1),
                      (104, -1)]
 
-    def __init__(self, Label=['Q', 'F', 'L']):
+    def __init__(self, Label=[u'Q', u'F', u'L']):
         """
         set up the values
         """
@@ -740,19 +740,19 @@ class DualTri():
     """
 
 
-    Label = ['Q', 'A', 'P', 'F']
+    Label = [u'Q', u'A', u'P', u'F']
     LabelPosition = [(48, 50 * np.sqrt(3) + 2),
                      (-6, -1),
                      (104, -1),
                      (49, -50 * np.sqrt(3) - 4)]
 
-    Labels = ['Craton \n Interior',
-              'Transitional \n Continental',
-              'Basement \n Uplift',
-              'Recycled \n Orogenic',
-              'Dissected \n Arc',
-              'Transitional \n Arc',
-              'Undissected \n Arc']
+    Labels = [u'Craton \n Interior',
+              u'Transitional \n Continental',
+              u'Basement \n Uplift',
+              u'Recycled \n Orogenic',
+              u'Dissected \n Arc',
+              u'Transitional \n Arc',
+              u'Undissected \n Arc']
     Locations = [(8.5, 1.5, 90),
                  (28.5, 1.5, 70),
                  (58.5, 1.5, 40),
@@ -771,7 +771,7 @@ class DualTri():
 
 
     name = "qapf.xlsx"
-    def __init__(self,name="qapf.xlsx", Label=['Q', 'A', 'P', 'F']):
+    def __init__(self,name="qapf.xlsx", Label=[u'Q', u'A', u'P', u'F']):
         super().__init__()
         self.Label = Label
         self.name=name
@@ -812,7 +812,7 @@ class Tas(Frame):
 
     Lines = []
     Tags = []
-    Labels = ['F', 'Pc', 'U1', 'B', 'S1', 'U2', 'O1', 'S2', 'U3', 'O2', 'S3', 'Ph', 'O3', 'T', 'R']
+    Labels = [u'F', u'Pc', u'U1', u'B', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3', u'T', u'R']
     Locations = [(39, 10), (43, 1.5), (44, 6), (48.5, 2.5), (49, 6), (49, 9.5), (54, 3), (53, 7), (53, 12), (60, 4),
                  (57, 8.5), (57, 14), (67, 5), (65, 10), (75, 9)]
     description = "TAS (total alkali–silica) diagram (after Le Bas et al., 1986, Fig. 2).\nF foidite, Ph phonolite, Pc pocro- basalt,\nU1 tephrite (ol < 10%) basanite(ol > 10%), U2 phonotephrite, U3 tephriphonolite,\nB basalt, S1 trachy- basalt, S2 basaltic trachy- andesite, S3 trachyandesite,\nO1 basaltic andesite, O2 dacite,  O3 andesite,\nT trachyte (q < 20%) trachydacite (q > 20%), R rhyolite"
@@ -949,7 +949,7 @@ class Ree(Frame):
     :type name: a string
     """
 
-    Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'E', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'L']
+    Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
     Labels = Element
     WholeData = []
     X0 = 1
@@ -1040,7 +1040,7 @@ class Ree(Frame):
 
         txt = np.arange(-1, T+8, 1)
         temptxt=[]
-        text = ['', '1', '10', '100', '1000','10000','100000','1000000','10000000']
+        text = [u'', u'1', u'10', u'100', u'1000',u'10000',u'100000',u'1000000',u'10000000']
 
         for i in txt:
             temptxt.append(str(np.power(10.0, i)))
@@ -1067,9 +1067,9 @@ class Trace(Ree):
     :type name: a string
     """
 
-    Element = ['Cs', 'Tl', 'Rb', 'Ba', 'W', 'Th', '', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Pb', 'Pr', 'Mo',
-               'Sr', 'P', 'Nd', 'F', 'Sm', 'Zr', 'Hf', 'E', 'Sn', 'Sb', 'Ti', 'Gd', 'Tb', 'Dy', 'Li',
-               'Y', 'Ho', 'Er', 'Tm', 'Yb', 'L']
+    Element = ['Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
+               u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy', u'Li',
+               u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
     Labels = Element
     name = "trace.xlsx"
 
@@ -1110,7 +1110,7 @@ class Trace2(Trace):
     :param name: the file name to use in this diagram
     :type name: a string
     """
-    Element = ['Rb','Ba','Th','','Nb','Ta','K','La','Ce','Pr','Sr','P','Nd','Zr','Hf','Sm','E','Ti','Tb','Dy','Y','Ho','Er','Tm','Yb','L']
+    Element = ['Rb',u'Ba',u'Th',u'U',u'Nb',u'Ta',u'K',u'La',u'Ce',u'Pr',u'Sr',u'P',u'Nd',u'Zr',u'Hf',u'Sm',u'Eu',u'Ti',u'Tb',u'Dy',u'Y',u'Ho',u'Er',u'Tm',u'Yb',u'Lu']
     Labels = Element
     name = "trace2.xlsx"
 
@@ -1156,13 +1156,13 @@ class Qfl(Tri,Tool):
     """
 
     Tags = []
-    Labels = ['Craton \n Interior',
-              'Transitional \n Continental',
-              'Basement \n Uplift',
-              'Recycled \n Orogenic',
-              'Dissected \n Arc',
-              'Transitional \n Arc',
-              'Undissected \n Arc']
+    Labels = [u'Craton \n Interior',
+              u'Transitional \n Continental',
+              u'Basement \n Uplift',
+              u'Recycled \n Orogenic',
+              u'Dissected \n Arc',
+              u'Transitional \n Arc',
+              u'Undissected \n Arc']
     Locations = [(8.5, 1.5, 90),
                  (28.5, 1.5, 70),
                  (58.5, 1.5, 40),
@@ -1180,7 +1180,7 @@ class Qfl(Tri,Tool):
 
     name = "qfl.xlsx"
 
-    def __init__(self, name="qfl.xlsx",Label=['Q', 'F', 'L']):
+    def __init__(self, name="qfl.xlsx",Label=[u'Q', u'F', u'L']):
         super().__init__()
         self.Label = Label
         self.name=name
@@ -1294,18 +1294,18 @@ class Qmflt(Qfl,Tool):
     """
 
     Tags = []
-    Labels = ['Craton \n Interior',
-              'Transitional \n Continental',
-              'Basement \n Uplift',
+    Labels = [u'Craton \n Interior',
+              u'Transitional \n Continental',
+              u'Basement \n Uplift',
 
-              'Mixed',
-              'Dissected \n Arc',
-              'Transitional \n Arc',
-              'Undissected \n Arc',
+              u'Mixed',
+              u'Dissected \n Arc',
+              u'Transitional \n Arc',
+              u'Undissected \n Arc',
 
-              'Quartzose \n Recycled',
-              'Transitional \n Recycled',
-              'Lithic \n Recycled']
+              u'Quartzose \n Recycled',
+              u'Transitional \n Recycled',
+              u'Lithic \n Recycled']
     Locations = [(15, 5, 90),
                  (30, 8, 62),
                  (60, 10, 30),
@@ -1332,7 +1332,7 @@ class Qmflt(Qfl,Tool):
               (+50, -2),
               (+52, -15)]
     name = "qmflt.xlsx"
-    def __init__(self, name="qmflt.xlsx",Label=['Qm', 'F', 'Lt']):
+    def __init__(self, name="qmflt.xlsx",Label=[u'Qm', u'F', u'Lt']):
         super().__init__()
         self.name="qmflt.xlsx"
         self.Label = Label
@@ -1611,7 +1611,7 @@ class Qapf(DualTri,Tool):
     name = "qapf.xlsx"
     FontSize = 10
 
-    def __init__(self,name="qapf.xlsx", Label=['Q', 'A', 'P', 'F'],FontSize = 10):
+    def __init__(self,name="qapf.xlsx", Label=[u'Q', u'A', u'P', u'F'],FontSize = 10):
         super().__init__()
         self.Label = Label
         self.name=name
@@ -2356,11 +2356,11 @@ class Polar():
     :param name: the file used to plot
     :type name: a string
     """
-    Label = ['N', 'S', 'W', 'E']
+    Label = [u'N', u'S', u'W', u'E']
     LabelPosition = []
     name = "strike.xlsx"
 
-    def __init__(self, name="strike.xlsx",Label=['N','S', 'W', 'E']):
+    def __init__(self, name="strike.xlsx",Label=[u'N',u'S', u'W', u'E']):
         super().__init__()
         self.Label = Label
         self.name=name
@@ -2556,14 +2556,14 @@ class Pearce1(Frame):
 
     Lines = []
     Tags = []
-    Labels = ['syn-COLG', 'VAG', 'WPG', 'ORG']
+    Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG']
     Locations = [(1, 3), (1, 1), (3, 3), (3, 1)]
     description = "Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites "
-    text = ['0.1', '1', '10', '100', '1000', '10000', '100000', '1000000', '10000000']
+    text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
     name = "pearce.xlsx"
 
     def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=0, Right=3.5, X0=0, X1=3, X_Gap=4, Base=0, Top=3.5, Y0=0,
-                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Y+Nb (PPM)', yLabel=r'Rb (PPM)',text = ['1', '10', '100', '1000', '10000'], Labels = ['syn-COLG', 'VAG', 'WPG', 'ORG'],Locations = [(1, 3), (1, 1), (3, 3), (3, 1)]):
+                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Y+Nb (PPM)', yLabel=r'Rb (PPM)',text = [u'1', u'10', u'100', u'1000', u'10000'], Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [(1, 3), (1, 1), (3, 3), (3, 1)]):
         """
         just set up the basic settings
         """
@@ -2674,7 +2674,7 @@ class Pearce2(Pearce1):
 
 
     def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=-0.5, Right=3.5, X0=0, X1=3, X_Gap=4, Base=0, Top=3.5, Y0=0,
-                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Yb+Ta (PPM)', yLabel=r'Rb (PPM)',text = ['1', '10', '100', '1000'],Labels = ['syn-COLG', 'VAG', 'WPG', 'ORG'],Locations = [(0.5, 3), (0.5, 1), (2, 2.8), (2, 1)]):
+                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Yb+Ta (PPM)', yLabel=r'Rb (PPM)',text = [u'1', u'10', u'100', u'1000'],Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [(0.5, 3), (0.5, 1), (2, 2.8), (2, 1)]):
         """
         just set up the basic settings
         """
@@ -2767,7 +2767,7 @@ class Pearce3(Pearce1):
     """
 
     def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=-0.5, Right=3.5, X0=0, X1=3, X_Gap=4, Base=0, Top=3.5, Y0=0,
-                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Y (PPM)', yLabel=r'Nb (PPM)',text = ['1', '10', '100', '1000'],Labels = ['syn-COLG', 'VAG', 'WPG', 'ORG'],Locations = [(0.5, 1.5), (0.5, 2), (2, 2), (2, 1)]):
+                 Y1=3, Y_Gap=4, FontSize=12, xLabel=r'Y (PPM)', yLabel=r'Nb (PPM)',text = [u'1', u'10', u'100', u'1000'],Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [(0.5, 1.5), (0.5, 2), (2, 2), (2, 1)]):
         """
         just set up the basic settings
         """
@@ -2859,7 +2859,7 @@ class Pearce4(Pearce1):
 
 
     def __init__(self, name="pearce.xlsx", Width=8, Height=8, Dpi=80, Left=-1.5, Right=2.5, X0=-1, X1=2, X_Gap=4, Base=-1.5, Top=2.5, Y0=-1,
-                 Y1=2, Y_Gap=4, FontSize=12, xLabel=r'Yb (PPM)', yLabel=r'Ta (PPM)',text = ['0.1', '1', '10', '100'],Labels = ['syn-COLG', 'VAG', 'WPG', 'ORG'],Locations = [ (-1, 0.1),(-1, -1), (0.7, 1), (2, 0.5)]):
+                 Y1=2, Y_Gap=4, FontSize=12, xLabel=r'Yb (PPM)', yLabel=r'Ta (PPM)',text = [u'0.1', u'1', u'10', u'100'],Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG'],Locations = [ (-1, 0.1),(-1, -1), (0.7, 1), (2, 0.5)]):
         """
         just set up the basic settings
         """
@@ -3163,9 +3163,14 @@ class Harker():
 
 
         fig = plt.figure(figsize=(self.Width,self.Width*a/2), dpi=self.Dpi)
+
         gs = gridspec.GridSpec(a, 2, width_ratios=[1, 1])
+
         for i in range(len(self.y)):
             self.all.append(plt.subplot(gs[i]))
+
+
+
 
         for i in range(len(self.all)):
             self.all[i].set_xlim(self.Left, self.Right)
