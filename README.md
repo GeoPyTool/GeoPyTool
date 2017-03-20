@@ -40,7 +40,7 @@ pip install xlrd
 
 ##Usage Under Windows
 
-For Windows Users, just put your data in the correspoinding Xlsx file and double click the correspoinding EXE files from [here](https://pan.baidu.com/s/1o7OqpNO).
+For Windows Users, just put your data in the correspoinding Xlsx file and double click the correspoinding EXE files from [here](https://drive.google.com/file/d/0B299gyAIgmpqdEFSSHp0bTRIMXc/view?usp=sharing).
 
 ![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
 
