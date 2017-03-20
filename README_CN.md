@@ -24,7 +24,30 @@ Copyright 2017 cycleuser
 
 GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是一套自由软件：你可以重新分发或者做出修改，但必须基于由自由软件基金会发布的GNU通用公共许可证第三版的许可,或其后的版本。
 
-##依赖关系
+
+##在 Windows 系统中使用
+
+我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。可以下载[新版本](https://pan.baidu.com/s/1o7OqpNO)
+
+解压缩之后，把你的数据按照示范放到对应的模板文件中，然后运行 exe，选择对应的按钮来点击一下就可以了。
+
+之前发布的旧版本 稀土元素投图 有 bug，， 因为我把元素名称写错了，抱歉。
+
+
+![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
+
+
+
+##在 OSX 系统中使用
+
+苹果系统用户可以从 [这里](https://drive.google.com/file/d/0B299gyAIgmpqdEFSSHp0bTRIMXc/view?usp=sharing) 下载 zip 文件然后解压缩出来一个 App 文件，到下图所示的该文件内部，打开你要用的 Excel 文件，输入数据进去，然后回到 App 文件所在目录，双击这个 App 文件，就能用了。
+
+![](https://github.com/cycleuser/GeoPython/blob/master/OSXUsage.png?raw=true)
+
+##在 Python 中使用
+
+
+###依赖关系
 
 GeoPython 是在 Python 3.5 下写的，基于 numpy， matplotlib， xlrd 以及 pandas。所以这几个包你都得安装。
 
@@ -37,20 +60,8 @@ pip install pandas
 pip install xlrd
 ```
 
-##在Windows系统中使用
 
-我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。可以下载[新版本](https://pan.baidu.com/s/1o7OqpNO)
-
-解压缩之后，把你的数据按照示范放到对应的模板文件中，然后运行 exe，选择对应的按钮来点击一下就可以了。
-
-
-
-之前发布的旧版本 稀土元素投图 有 bug，， 因为我把元素名称写错了，抱歉。
-
-
-![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
-
-##在 Python 中使用
+###安装过程
 
 推荐在 Python 中使用，这样可以使用到最新的开发版本，体验到全部最新的功能。安装方法很简单，使用 pip 即可：
 

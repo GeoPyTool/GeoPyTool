@@ -23,9 +23,24 @@ Category: Python
 
 GeoPython is a project of using Python for geology related daily work. It is a set of free softwares: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
+##Usage Under Windows
+
+For Windows Users, just put your data in the correspoinding Xlsx file and double click the correspoinding EXE files from [here](https://drive.google.com/file/d/0B299gyAIgmpqdEFSSHp0bTRIMXc/view?usp=sharing).
+
+![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
+
+##Usage Under OSX
+
+For OSX Users, Download the zip file [here](https://drive.google.com/file/d/0B299gyAIgmpqdEFSSHp0bTRIMXc/view?usp=sharing) and then extrat to get a App file. Got into the location as shown below and input your data into each files then go back and double click the App file.
+![](https://github.com/cycleuser/GeoPython/blob/master/OSXUsage.png?raw=true)
 
 
-##Dependence
+
+
+##Usage with Python
+
+
+###Dependence
 
 This module is written with Python3.4 and based on numpy, matplotlib and pandas. That means you need to install them.
 
@@ -38,14 +53,7 @@ pip install pandas
 pip install xlrd
 ```
 
-##Usage Under Windows
-
-For Windows Users, just put your data in the correspoinding Xlsx file and double click the correspoinding EXE files from [here](https://drive.google.com/file/d/0B299gyAIgmpqdEFSSHp0bTRIMXc/view?usp=sharing).
-
-![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
-
-##Usage with Python
-
+###Installation
 First, you need to install `geopython` using pip:
 
 ```Bash
