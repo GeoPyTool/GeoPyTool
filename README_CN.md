@@ -10,14 +10,12 @@ Copyright 2017 cycleuser
 
 
 #####我们的QQ群： 560675626
-
-
 |MileStone|Date|Function|
 |--|--|--|
 |Beginning Date|2016-07-07 6:20|TAS|
 |Adding QAPF|2016-07-09 08:32|QAPF|
 |Adding Wulff|2016-12-18 08:32|Wulf|
-|Reconsitution|2017-03-15 15:30|Pearce and Harker|
+|Reconsitution|2017-03-15 15:30|Wulf|
 
 ##简介
 
@@ -40,7 +38,7 @@ GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是�
 
 ##在 OSX 系统中使用
 
-苹果系统用户可以从 [这里](https://drive.google.com/file/d/0B299gyAIgmpqdEFSSHp0bTRIMXc/view?usp=sharing) 下载 zip 文件然后解压缩出来一个 App 文件，到下图所示的该文件内部，打开你要用的 Excel 文件，输入数据进去，然后回到 App 文件所在目录，双击这个 App 文件，就能用了。
+苹果系统用户可以从 [这里](https://pan.baidu.com/s/1c1Wcz5m) 下载 zip 文件然后解压缩出来一个 App 文件，到下图所示的该文件内部，打开你要用的 Excel 文件，输入数据进去，然后回到 App 文件所在目录，双击这个 App 文件，就能用了。
 
 ![](https://github.com/cycleuser/GeoPython/blob/master/OSXUsage.png?raw=true)
 
