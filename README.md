@@ -31,7 +31,7 @@ For Windows Users, just put your data in the correspoinding Xlsx file and double
 
 ##Usage Under OSX
 
-For OSX Users, Download the zip file [here](https://drive.google.com/file/d/0B299gyAIgmpqdEFSSHp0bTRIMXc/view?usp=sharing) and then extrat to get a App file. Got into the location as shown below and input your data into each files then go back and double click the App file.
+For OSX Users, Download the zip file [here](https://drive.google.com/open?id=0B299gyAIgmpqOHR4dWIydHI3Rk0) and then extrat to get a App file. Got into the location as shown below and input your data into each files then go back and double click the App file.
 ![](https://github.com/cycleuser/GeoPython/blob/master/OSXUsage.png?raw=true)
 
 
