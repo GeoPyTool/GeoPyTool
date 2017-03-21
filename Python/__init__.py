@@ -3033,7 +3033,7 @@ class MultiFrame(Frame):
             self.all.append(plt.subplot(gs[i]))
 
 
-        for i in range(len(self.all)):
+        for i in range(len(self.y)):
             self.all[i].set_xlim(self.Left[i],self.Right[i])
             self.all[i].set_ylim(self.Base[i], self.Top[i])
             self.all[i].set_xticks(np.linspace(self.X0[i], self.X1[i], self.X_Gap[i], endpoint=True))
@@ -3127,6 +3127,35 @@ class Harker():
         Just set up all.
         """
         super().__init__()
+
+        self.Left = 45
+        self.Right = 75
+
+        self.X0 = 45
+        self.X1 = 75
+        self.X_Gap = 6
+
+        self.xLabel = r'$SiO_2 wt\%$'
+        self.yLabel = []
+
+        self.all = []
+        self.Lines = []
+
+        self.Base = []
+        self.Top = []
+        self.Gap = []
+
+        self.raw = ''
+
+        self.PointLabels = []
+
+        self.name = "harker.xlsx"
+        self.x = 'SiO2'
+        self.y = ['Al2O3', 'MgO', 'FeO', 'CaO', 'Na2O', 'TiO2', 'K2O', 'P2O5']
+
+
+
+
         self.name=name
 
         self.x= x
@@ -3172,14 +3201,44 @@ class Harker():
 
 
 
-        for i in range(len(self.all)):
+
+    def plot(self,k=0):
+
+
+
+        if (self.x == 'SiO2'):
+            self.Left = 45
+            self.Right = 75
+            self.X0, self.X1= 45,75
+
+        else:
+            Total = []
+            for i in range(len(self.raw)):
+                tmp = self.raw.at[i, self.x]
+                Total.append(tmp)
+            X_Base = int(min(Total)) - 1
+            X_Top = int(max(Total)) + 1
+            X_Gap = X_Top - X_Base + 1
+
+            self.Left,self.Right,self.X_Gap= X_Base,X_Top,X_Gap
+            self.X0, self.X1,self.X_Gap=  X_Base,X_Top,X_Gap
+
+        for i in range(len(self.y)):
             self.all[i].set_xlim(self.Left, self.Right)
             self.all[i].set_xticks(np.linspace(self.X0, self.X1, self.X_Gap, endpoint=True))
             self.all[i].set_xlabel(self.x, fontsize=self.FontSize)
             self.all[i].set_ylabel(self.y[i], fontsize=self.FontSize)
 
 
-    def plot(self,k=0):
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+
+        self.raw=raw
+
+
         Total = []
         for i in range(len(self.raw)):
             tmp=self.raw.at[i,self.y[k]]
@@ -3194,14 +3253,15 @@ class Harker():
             self.all[k].scatter(self.raw.at[i, self.x],  tmp, marker=self.raw.at[i, 'Marker'], s=self.raw.at[i, 'Size'], color=self.raw.at[i, 'Color'], alpha=self.raw.at[i, 'Alpha'],
                          label=TmpLabel, edgecolors='black')
 
-        A_Base= int(min(Total))-1
-        A_Top= int(max(Total))+1
-        A_Gap= A_Top -A_Base + 1
+        Y_Base= int(min(Total))-1
+        Y_Top= int(max(Total))+1
+        Y_Gap= Y_Top -Y_Base + 1
 
-        self.all[k].set_ylim(A_Base, A_Top)
-        self.all[k].set_yticks(np.linspace(A_Base, A_Top,A_Gap, endpoint=True))
+        self.all[k].set_ylim(Y_Base, Y_Top)
+        self.all[k].set_yticks(np.linspace(Y_Base, Y_Top, Y_Gap, endpoint=True))
         if k==0:
             self.all[k].legend(loc=5, bbox_to_anchor=(2.8, 0.5))
+
 
 
     def read(self):
@@ -3212,10 +3272,11 @@ class Harker():
         self.show()
 
         if ("csv" in self.name):
-            self.raw = pd.read_csv(self.name)
+            raw = pd.read_csv(self.name)
         elif ("xlsx" in self.name):
-            self.raw = pd.read_excel(self.name)
-        PointLabels = []
+            raw = pd.read_excel(self.name)
+
+        self.raw=raw
 
         for k in range(len(self.y)):
             self.plot(k)

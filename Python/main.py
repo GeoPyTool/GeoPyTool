@@ -2,28 +2,56 @@
 # -*- coding: utf-8 -*-
 
 """
-ZetCode PyQt5 tutorial 
+created on Sat Dec 17 22:28:24 2016
+@author: cycleuser
+# Create Date: 2015-07-13
+# Modify Date: 2017-03-13
+a tool set for daily geology related task.
+# prerequisite:
+#   based on Python 3.x
+#   need math,numpy,pandas,matplotlib,xlrd
 
-In this Simple, we determine the event sender
-object.
+# usage:
+    1) opern a ipython console
+    2) import geopython as gp
+    3) TasSample= gp.Tas("tas.xlsx")
+    4) TasSample.read()
 
-author: Jan Bodnar
-website: zetcode.com
-last edited: January 2015
+# Geology related classes available:
+    1) Tas
+    2) Ree
+    3) Trace & Trace2 (with different sequence of trace elements)
+    4) Qfl & Qmflt & Qapf
+    5) Polar (projection of wulf net & schmidt net)
+
+# know issues:
+    1) Only work on Python 3.x
+
+# Other
+    Any issues or improvements please contact cycleuser@cycleuser.org
+    or leave a message to my blog: http://blog.cycleuser.org
 """
 
+
 import sys
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QApplication
+from PyQt5.QtWidgets import QLabel,QMainWindow, QPushButton, QApplication,QWidget, QPushButton, QLineEdit,QInputDialog, QApplication
 import geopython as gp
 
 
 class Simple(QMainWindow):
+
+
+    x = 'SiO2'
+
+    y = [ 'Al2O3','MgO', 'FeO', 'CaO', 'Na2O', 'TiO2', 'K2O', 'P2O5']
+
     def __init__(self):
         super().__init__()
 
         self.initUI()
 
     def initUI(self):
+
 
 
         Tas = QPushButton("Tas", self)
@@ -68,15 +96,56 @@ class Simple(QMainWindow):
 
 
 
-        self.statusBar()
+        self.lbl_X = QLabel(self)
+        set_X = QLineEdit(self)
 
-        self.setGeometry(600, 600, 300, 300)
-        self.setWindowTitle('Event sender')
+        set_X.move(30, 230)
+        self.lbl_X.move(150, 230)
+
+        set_X.textChanged[str].connect(self.XChanged)
+
+
+
+        self.lbl_Y = QLabel(self)
+        set_Y = QLineEdit(self)
+
+        set_Y.move(30, 290)
+        self.lbl_Y.move(150, 290)
+
+        set_Y.textChanged[str].connect(self.YChanged)
+
+
+
+        self.statusBar()
+        self.setGeometry(600, 600, 300, 500)
+        self.setWindowTitle('GeoPython-GUI-Reluctantly')
         self.show()
+
+
+    def XChanged(self, text):
+        self.x=''
+        self.x = str(text)
+        self.lbl_X.setText(text)
+        self.lbl_X.adjustSize()
+
+    def YChanged(self, text):
+        self.y = []
+        self.y = str(text).split()
+        self.lbl_Y.setText(text)
+        self.lbl_Y.adjustSize()
+
+
 
     def buttonClicked(self):
         sender = self.sender()
         self.statusBar().showMessage(sender.text() + ' was pressed')
+
+    def showDialog(self):
+        text, ok = QInputDialog.getText(self, 'Input Dialog',
+                                        'Enter Your X:')
+
+        if ok:
+            self.SetX.setText(str(text))
 
     def Tas(self):
         gp.Tas().read()
@@ -107,8 +176,8 @@ class Simple(QMainWindow):
         gp.Pearce().read()
 
     def Harker(self):
-        gp.Harker().read()
-
+        print(self.x,"\t",self.y)
+        gp.Harker(x=self.x,y=self.y).read()
 
 
 if __name__ == '__main__':
