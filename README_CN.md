@@ -29,7 +29,7 @@ GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是�
 
 ##在 Windows 系统中使用
 
-我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。可以下载[新版本](https://pan.baidu.com/s/1o7OqpNO)
+我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。可以下载[新版本](https://pan.baidu.com/s/1hscFPEc)
 
 解压缩之后，把你的数据按照示范放到对应的模板文件中，然后运行 exe，选择对应的按钮来点击一下就可以了。
 
@@ -42,7 +42,7 @@ GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是�
 
 ##在 OSX 系统中使用
 
-苹果系统用户可以从 [这里](https://pan.baidu.com/s/1c1Wcz5m) 下载 zip 文件然后解压缩出来一个 App 文件，到下图所示的该文件内部，打开你要用的 Excel 文件，输入数据进去，然后回到 App 文件所在目录，双击这个 App 文件，就能用了。生成的图像跟数据文件一样，也在这个 App 文件内部的 Contents 目录下的 Resources 文件夹内，这个问题我后续会解决的。
+苹果系统用户可以从 [这里](https://pan.baidu.com/s/1sllQX7R) 下载 zip 文件然后解压缩出来一个 App 文件，到下图所示的该文件内部，打开你要用的 Excel 文件，输入数据进去，然后回到 App 文件所在目录，双击这个 App 文件，就能用了。生成的图像跟数据文件一样，也在这个 App 文件内部的 Contents 目录下的 Resources 文件夹内，这个问题我后续会解决的。
 
 ![](https://github.com/cycleuser/GeoPython/blob/master/OSXUsage.png?raw=true)
 
