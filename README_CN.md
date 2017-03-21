@@ -42,8 +42,14 @@ pip install xlrd
 解压缩之后，把你的数据按照示范放到对应的模板文件中，然后运行 exe，选择对应的按钮来点击一下就可以了。
 
 
-
 ![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
+
+##OS X 系统中使用
+
+
+苹果系统用户可以从[ 这里 ](http://link.zhihu.com/?target=https%3A//pan.baidu.com/s/1sllQX7R)下载 zip 文件然后解压缩出来一个 App 文件，到下图所示的该文件内部，打开你要用的 Excel 文件，输入数据进去，然后回到 App 文件所在目录，双击这个 App 文件，就能用了。生成的图像跟数据文件一样，也在这个 App 文件内部的 Contents 目录下的 Resources 文件夹内，这个问题我后续会解决的。
+
+![](https://github.com/cycleuser/GeoPython/blob/master/OSXUsage.png?raw=true)
 
 ##在 Python 中使用
 
