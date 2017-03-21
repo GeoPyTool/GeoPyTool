@@ -826,6 +826,9 @@ class Tas(Frame):
         just set up the basic settings
         """
         super().__init__()
+        self.raw = ''
+
+
         self.name = name
         for i in range(len(self.Labels)):
             self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
@@ -961,6 +964,7 @@ class Ree(Frame):
                  Y1=3, Y_Gap=5, FontSize=16,
                  xLabel=r'$REE-Standardlized-Pattern$', yLabel=''):
         super().__init__()
+        self.raw = ''
 
         self.name=name
         self.Width = Width
@@ -1077,6 +1081,8 @@ class Trace(Ree):
                  Y1=3, Y_Gap=5, FontSize=16,
                  xLabel=r'$Trace-Elements-Standardlized-Pattern$', yLabel=''):
         super().__init__()
+        self.raw = ''
+
         self.name=name
         self.Width = Width
         self.Height = Height
@@ -1118,6 +1124,9 @@ class Trace2(Trace):
                  Y1=3, Y_Gap=5, FontSize=16,
                  xLabel=r'$Trace-Elements-Standardlized-Pattern$', yLabel=''):
         super().__init__()
+
+        self.raw = ''
+
         self.name=name
         self.Width = Width
         self.Height = Height
@@ -1182,6 +1191,9 @@ class Qfl(Tri,Tool):
 
     def __init__(self, name="qfl.xlsx",Label=[u'Q', u'F', u'L']):
         super().__init__()
+
+        self.raw = ''
+
         self.Label = Label
         self.name=name
         for i in range(len(self.Labels)):
@@ -1334,6 +1346,10 @@ class Qmflt(Qfl,Tool):
     name = "qmflt.xlsx"
     def __init__(self, name="qmflt.xlsx",Label=[u'Qm', u'F', u'Lt']):
         super().__init__()
+
+        self.raw = ''
+
+
         self.name="qmflt.xlsx"
         self.Label = Label
         for i in range(len(self.Labels)):
@@ -1613,6 +1629,10 @@ class Qapf(DualTri,Tool):
 
     def __init__(self,name="qapf.xlsx", Label=[u'Q', u'A', u'P', u'F'],FontSize = 10):
         super().__init__()
+
+        self.raw = ''
+
+
         self.Label = Label
         self.name=name
         self.FontSize=FontSize
@@ -2362,6 +2382,14 @@ class Polar():
 
     def __init__(self, name="strike.xlsx",Label=[u'N',u'S', u'W', u'E']):
         super().__init__()
+
+        self.raw = ''
+
+        self.Label = [u'N', u'S', u'W', u'E']
+        self.LabelPosition = []
+        self.name = "strike.xlsx"
+
+
         self.Label = Label
         self.name=name
 
@@ -2568,6 +2596,9 @@ class Pearce1(Frame):
         just set up the basic settings
         """
         super().__init__()
+
+        self.raw = ''
+
         self.name = name
 
         self.Width = Width
@@ -2679,6 +2710,9 @@ class Pearce2(Pearce1):
         just set up the basic settings
         """
         super().__init__()
+
+        self.raw = ''
+
         self.name = name
 
         self.Width = Width
@@ -2772,6 +2806,12 @@ class Pearce3(Pearce1):
         just set up the basic settings
         """
         super().__init__()
+
+        self.raw = ''
+
+
+
+
         self.name = name
 
         self.Width = Width
@@ -2864,6 +2904,9 @@ class Pearce4(Pearce1):
         just set up the basic settings
         """
         super().__init__()
+
+        self.raw = ''
+
         self.name = name
 
         self.Width = Width
@@ -2992,6 +3035,28 @@ class MultiFrame(Frame):
         """
         super().__init__()
 
+        self.Left = []
+        self.Right = []
+
+        self.Base = []
+        self.Top = []
+
+        self.X0 = []
+        self.X1 = []
+        self.X_Gap = []
+
+        self.Y0 = []
+        self.Y1 = []
+        self.Y_Gap = []
+
+        self.xLabel = []
+        self.yLabel = []
+
+        self.all = []
+        self.Lines = []
+
+
+
         self.Width = Width
         self.Height = Height
         self.Dpi = Dpi
@@ -3057,6 +3122,7 @@ class Pearce():
     """
     name="pearce.xlsx"
     def __init__(self,name="pearce.xlsx"):
+        self.raw = ''
         self.name=name
     def read(self):
         Pearce1(self.name).read()
@@ -3128,26 +3194,9 @@ class Harker():
         """
         super().__init__()
 
-        self.Left = 45
-        self.Right = 75
-
-        self.X0 = 45
-        self.X1 = 75
-        self.X_Gap = 6
-
-        self.xLabel = r'$SiO_2 wt\%$'
-        self.yLabel = []
-
-        self.all = []
-        self.Lines = []
-
-        self.Base = []
-        self.Top = []
-        self.Gap = []
 
         self.raw = ''
 
-        self.PointLabels = []
 
         self.name = "harker.xlsx"
         self.x = 'SiO2'
