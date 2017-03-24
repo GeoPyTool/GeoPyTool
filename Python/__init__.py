@@ -921,11 +921,11 @@ class Tas(Frame):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
 
             Point(raw.at[i, 'SiO2'], (raw.at[i, 'Na2O'] + raw.at[i, 'K2O']), Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
@@ -1276,12 +1276,11 @@ class Qfl(Tri,Tool):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
-
             TriPoint((raw.at[i, 'F'], raw.at[i, 'L'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
                      Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                      Label=TmpLabel).show()
@@ -1484,11 +1483,11 @@ class Qmflt(Qfl,Tool):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
 
             TriPoint((raw.at[i, 'F'], raw.at[i, 'Lt'], raw.at[i, 'Qm']), Size=raw.at[i, 'Size'],
                      Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
@@ -1788,11 +1787,11 @@ class Qapf(DualTri,Tool):
             p = raw.at[i, 'P']
 
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
 
             if(q!=0 and q!=''):
                 TriPoint((raw.at[i, 'A'], raw.at[i, 'P'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
@@ -2088,11 +2087,11 @@ class QapfP(Qapf):
             p = raw.at[i, 'P']
 
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
 
             if(q!=0 and q!=''):
                 TriPoint((raw.at[i, 'A'], raw.at[i, 'P'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
@@ -2348,11 +2347,11 @@ class QapfV(Qapf):
             p = raw.at[i, 'P']
 
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
 
             if(q!=0 and q!=''):
                 TriPoint((raw.at[i, 'A'], raw.at[i, 'P'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
@@ -2674,12 +2673,11 @@ class Pearce1(Frame):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
-
             LogPoint( (raw.at[i, 'Y'] + raw.at[i, 'Nb']),raw.at[i, 'Rb'], Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
@@ -2771,11 +2769,11 @@ class Pearce2(Pearce1):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
 
             LogPoint( (raw.at[i, 'Yb'] + raw.at[i, 'Ta']),raw.at[i, 'Rb'], Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
@@ -2868,12 +2866,12 @@ class Pearce3(Pearce1):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
-
             LogPoint( raw.at[i, 'Y'],raw.at[i, 'Nb'], Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
@@ -2965,11 +2963,12 @@ class Pearce4(Pearce1):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if ((raw.at[i, 'Label'] in PointLabels) == False):
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
+                TmpLabel = ''
+            else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            else:
-                TmpLabel = ''
 
             LogPoint( raw.at[i, 'Yb'],raw.at[i, 'Ta'] , Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
@@ -3293,11 +3292,12 @@ class Harker():
             tmp=self.raw.at[i,self.y[k]]
             Total.append(tmp)
             TmpLabel = ''
-            if ((self.raw.at[i, 'Label'] in self.PointLabels) == False):
-                self.PointLabels.append(self.raw.at[i, 'Label'])
-                TmpLabel = self.raw.at[i, 'Label']
-            else:
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in self.PointLabels or raw.at[i, 'Label'] =='' ):
                 TmpLabel = ''
+            else:
+                self.PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
 
             self.all[k].scatter(self.raw.at[i, self.x],  tmp, marker=self.raw.at[i, 'Marker'], s=self.raw.at[i, 'Size'], color=self.raw.at[i, 'Color'], alpha=self.raw.at[i, 'Alpha'],
                          label=TmpLabel, edgecolors='black')
@@ -3333,7 +3333,6 @@ class Harker():
         plt.savefig(self.name + "harker.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "harker.svg", dpi=300, bbox_inches='tight')
         plt.show()
-
 
 
 if __name__ == '__main__':
