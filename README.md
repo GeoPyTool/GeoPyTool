@@ -3,7 +3,7 @@ Date: 2016-12-18 16:20
 Category: Python
 
 
-#[GeoPython, a Python tool set for geology related daily work](https://github.com/cycleuser/GeoPython)
+#[GeoPython, a Python tool set for geology related daily work](https://github.com/chinageology/GeoPython)
 
 
 
@@ -23,17 +23,19 @@ Category: Python
 
 GeoPython is a project of using Python for geology related daily work. It is a set of free softwares: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
+##[Download](https://github.com/chinageology/GeoPython/blob/master/Download.md)
+
 ##Usage Under Windows
 
-For Windows Users, just put your data in the correspoinding Xlsx file and double click the correspoinding EXE files from [here](https://drive.google.com/open?id=0B299gyAIgmpqME9fVll1UU51OFk).
+For Windows Users, donwload the Windows version zip file and extrat the whole file into a folder, then just put your data in the correspoinding Xlsx file and double click the correspoinding main.exe and click on the function you need.
 
-![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/Usage.png?raw=true)
 
 ##Usage Under OSX
 
-For OSX Users, Download the zip file [here](https://drive.google.com/open?id=0B299gyAIgmpqem1SLUhSel9Hd3c) and then extrat to get a App file. Got into the location as shown below and input your data into each files then go back and double click the App file. The Svg and Png generated would also be saved at `the App/Contents/Resources` , same as the Data files. I would fix this in the former versions.
+For OSX Users, Download the OSX version zip file  and then extrat to get a App file. Got into the location as shown below and input your data into each files then go back and double click the App file. The Svg and Png generated would also be saved at `the App/Contents/Resources` , same as the Data files. I would fix this in the former versions.
 
-![](https://github.com/cycleuser/GeoPython/blob/master/OSXUsage.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/OSXUsage.png?raw=true)
 
 
 
@@ -61,7 +63,7 @@ First, you need to install `geopython` using pip:
 pip install geopython
 ```
 
-Then open you python console, and enter to the location path of data files, which are the xlsx files that  you still need to download from  [here](https://github.com/cycleuser/GeoPython/blob/master/Python/DataFileSamples.zip). Then you can use geopython as the codes below:
+Then open you python console, and enter to the location path of data files, which are the xlsx files that  you still need to download from  [here](https://github.com/chinageology/GeoPython/blob/master/Python/DataFileSamples.zip). Then you can use geopython as the codes below:
 
 ```Bash
 ipython
@@ -96,5 +98,5 @@ If the data file is in the right form and nothing goes wrong, you will have thre
 * a png (Portable Network Graphics) .
 
 
-![](https://github.com/cycleuser/GeoPython/blob/master/Sample.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/Sample.png?raw=true)
 

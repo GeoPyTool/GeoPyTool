@@ -2,7 +2,7 @@ Title: GeoPython，用于地质学的日常工作的 Python 工具集
 Date: 2016-12-18 16:20
 Category: Python
 
-#[GeoPython，用于地质学的日常工作的 Python 工具集](https://github.com/cycleuser/GeoPython)
+#[GeoPython，用于地质学的日常工作的 Python 工具集](https://github.com/chinageology/GeoPython)
 
 author: cycleuser
 email: cycleuser@cycleuser.org
@@ -22,6 +22,8 @@ Copyright 2017 cycleuser
 
 GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是一套自由软件：你可以重新分发或者做出修改，但必须基于由自由软件基金会发布的GNU通用公共许可证第三版的许可,或其后的版本。
 
+##[下载链接](https://github.com/chinageology/GeoPython/blob/master/Download.md)
+
 ##依赖关系
 
 GeoPython 是在 Python 3.5 下写的，基于 numpy， matplotlib， xlrd 以及 pandas。所以这几个包你都得安装。
@@ -37,19 +39,17 @@ pip install xlrd
 
 ##在Windows系统中使用
 
-我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。可以下载[新版本](https://pan.baidu.com/s/1o7OqpNO)
-
-解压缩之后，把你的数据按照示范放到对应的模板文件中，然后运行 exe，选择对应的按钮来点击一下就可以了。
+我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。下载 Windows 版本的 zip 文件，解压缩之后，把你的数据按照示范放到对应的模板文件中，然后运行 exe，选择对应的按钮来点击一下就可以了。
 
 
-![](https://github.com/cycleuser/GeoPython/blob/master/Usage.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/Usage.png?raw=true)
 
 ##OS X 系统中使用
 
 
-苹果系统用户可以从[ 这里 ](http://link.zhihu.com/?target=https%3A//pan.baidu.com/s/1sllQX7R)下载 zip 文件然后解压缩出来一个 App 文件，到下图所示的该文件内部，打开你要用的 Excel 文件，输入数据进去，然后回到 App 文件所在目录，双击这个 App 文件，就能用了。生成的图像跟数据文件一样，也在这个 App 文件内部的 Contents 目录下的 Resources 文件夹内，这个问题我后续会解决的。
+苹果系统用户下载 OSX 版本的 zip 文件然后解压缩出来一个 App 文件，到下图所示的该文件内部，打开你要用的 Excel 文件，输入数据进去，然后回到 App 文件所在目录，双击这个 App 文件，就能用了。生成的图像跟数据文件一样，也在这个 App 文件内部的 Contents 目录下的 Resources 文件夹内，这个问题我后续会解决的。
 
-![](https://github.com/cycleuser/GeoPython/blob/master/OSXUsage.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/OSXUsage.png?raw=true)
 
 ##在 Python 中使用
 
@@ -60,7 +60,7 @@ pip install xlrd
 pip install geopython
 ```
 
-然后打开你的python，进入到数据目录，目前样本数据文件还要在[这里](https://github.com/cycleuser/GeoPython/blob/master/Python/DataFileSamples.zip)下载。下载好样本文件，把自己的数据填入，然后用下面的命令就可以运行了：
+然后打开你的python，进入到数据目录，目前样本数据文件还要在[这里](https://github.com/chinageology/GeoPython/blob/master/Python/DataFileSamples.zip)下载。下载好样本文件，把自己的数据填入，然后用下面的命令就可以运行了：
 
 ```Bash
 ipython
@@ -95,4 +95,4 @@ gp.Polar("strike.xlsx").read()              # 构造产状的吴尔夫网和施�
 * 然后就是一个png图像了。
 
 
-![](https://github.com/cycleuser/GeoPython/blob/master/Sample.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/Sample.png?raw=true)
