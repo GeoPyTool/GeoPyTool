@@ -55,69 +55,75 @@ class Simple(QMainWindow):
 
 
         Tas = QPushButton("Tas", self)
-        Tas.move(30, 50)
+        Tas.move(80, 30)
         Tas.clicked.connect(self.Tas)
 
         Ree = QPushButton("Ree", self)
-        Ree.move(150, 50)
+        Ree.move(250, 30)
         Ree.clicked.connect(self.Ree)
 
         Trace = QPushButton("Trace", self)
-        Trace.move(30, 80)
+        Trace.move(80, 80)
         Trace.clicked.connect(self.Trace)
 
         Qfl = QPushButton("Qfl", self)
-        Qfl.move(150, 80)
+        Qfl.move(250, 80)
         Qfl.clicked.connect(self.Qfl)
 
         Qmflt = QPushButton("Qmflt", self)
-        Qmflt.move(30, 110)
+        Qmflt.move(80, 130)
         Qmflt.clicked.connect(self.Qmflt)
 
         QapfP = QPushButton("QapfP", self)
-        QapfP.move(150, 110)
+        QapfP.move(250, 130)
         QapfP.clicked.connect(self.QapfP)
 
         QapfV = QPushButton("QapfV", self)
-        QapfV.move(30, 140)
+        QapfV.move(80, 180)
         QapfV.clicked.connect(self.QapfV)
 
         Polar = QPushButton("Polar", self)
-        Polar.move(150, 140)
+        Polar.move(250, 180)
         Polar.clicked.connect(self.Polar)
 
         Pearce = QPushButton("Pearce", self)
-        Pearce.move(30, 170)
+        Pearce.move(80, 180)
         Pearce.clicked.connect(self.Pearce)
 
         Harker = QPushButton("Harker", self)
-        Harker.move(150, 170)
+        Harker.move(250, 180)
         Harker.clicked.connect(self.Harker)
 
+        self.lbl_hintX = QLabel(self)
+        self.lbl_hintX.move(80, 250)
+        self.lbl_hintX.setText("Input X for Harker:")
+        self.lbl_hintX.adjustSize()
 
 
-        self.lbl_X = QLabel(self)
+        self.lbl_hintY = QLabel(self)
+        self.lbl_hintY.move(250, 250)
+        self.lbl_hintY.setText("Input Y for Harker:")
+        self.lbl_hintY.adjustSize()
+
+
         set_X = QLineEdit(self)
-
-        set_X.move(30, 230)
-        self.lbl_X.move(150, 230)
+        set_X.move(80, 280)
 
         set_X.textChanged[str].connect(self.XChanged)
 
-
-
-        self.lbl_Y = QLabel(self)
         set_Y = QLineEdit(self)
-
-        set_Y.move(30, 290)
-        self.lbl_Y.move(150, 290)
+        set_Y.move(250, 280)
 
         set_Y.textChanged[str].connect(self.YChanged)
 
 
+        self.lbl_X = QLabel(self)
+        self.lbl_X.move(80, 330)
+        self.lbl_Y = QLabel(self)
+        self.lbl_Y.move(250, 330)
 
         self.statusBar()
-        self.setGeometry(600, 600, 300, 500)
+        self.setGeometry(600, 600, 500, 500)
         self.setWindowTitle('GeoPython-GUI-Reluctantly')
         self.show()
 
@@ -125,13 +131,13 @@ class Simple(QMainWindow):
     def XChanged(self, text):
         self.x=''
         self.x = str(text)
-        self.lbl_X.setText(text)
+        self.lbl_X.setText("X:"+text)
         self.lbl_X.adjustSize()
 
     def YChanged(self, text):
         self.y = []
         self.y = str(text).split()
-        self.lbl_Y.setText(text)
+        self.lbl_Y.setText("Y:"+text)
         self.lbl_Y.adjustSize()
 
 

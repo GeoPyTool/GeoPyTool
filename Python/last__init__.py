@@ -1018,35 +1018,21 @@ class Ree(Frame):
                 l, 'DataType'] == 'STANDARD'):
                 k = l
 
-
-
-
         for i in range(len(raw)):
             if (raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[
                 i, 'DataType'] == 'USER'):
-
-                TmpLabel = ''
-
-
                 Lines = []
                 for j in range(len(self.Element)):
                     tmp= raw.at[i, self.Element[j]]/ raw.at[k, self.Element[j]]
                     Lines.append((j + 1, math.log(tmp,10)))
                     self.WholeData.append(math.log(tmp,10))
-
-                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                        TmpLabel = ''
-                    else:
-                        PointLabels.append(raw.at[i, 'Label'])
-                        TmpLabel = raw.at[i, 'Label']
-
                     Point(j + 1, math.log(tmp,10),
                           Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'],
-                          Marker=raw.at[i, 'Marker'],
-                     Label=TmpLabel).show()
+                          Marker=raw.at[i, 'Marker']).show()
 
                 Line(Lines, Color=raw.at[i, 'Color'], Width=raw.at[i, 'Width'],
-                     Style=raw.at[i, 'Style'], Alpha=raw.at[i, 'Alpha']).show()
+                     Style=raw.at[i, 'Style'], Alpha=raw.at[i, 'Alpha'],
+                     Label=raw.at[i, 'Label']).show()
 
         self.Base = min(self.WholeData)
         self.Top = max(self.WholeData)

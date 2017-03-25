@@ -826,9 +826,6 @@ class Tas(Frame):
         just set up the basic settings
         """
         super().__init__()
-        self.raw = ''
-
-
         self.name = name
         for i in range(len(self.Labels)):
             self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
@@ -921,11 +918,11 @@ class Tas(Frame):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
 
             Point(raw.at[i, 'SiO2'], (raw.at[i, 'Na2O'] + raw.at[i, 'K2O']), Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
@@ -964,7 +961,6 @@ class Ree(Frame):
                  Y1=3, Y_Gap=5, FontSize=16,
                  xLabel=r'$REE-Standardlized-Pattern$', yLabel=''):
         super().__init__()
-        self.raw = ''
 
         self.name=name
         self.Width = Width
@@ -1018,35 +1014,21 @@ class Ree(Frame):
                 l, 'DataType'] == 'STANDARD'):
                 k = l
 
-
-
-
         for i in range(len(raw)):
             if (raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[
                 i, 'DataType'] == 'USER'):
-
-                TmpLabel = ''
-
-
                 Lines = []
                 for j in range(len(self.Element)):
                     tmp= raw.at[i, self.Element[j]]/ raw.at[k, self.Element[j]]
                     Lines.append((j + 1, math.log(tmp,10)))
                     self.WholeData.append(math.log(tmp,10))
-
-                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                        TmpLabel = ''
-                    else:
-                        PointLabels.append(raw.at[i, 'Label'])
-                        TmpLabel = raw.at[i, 'Label']
-
                     Point(j + 1, math.log(tmp,10),
                           Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'],
-                          Marker=raw.at[i, 'Marker'],
-                     Label=TmpLabel).show()
+                          Marker=raw.at[i, 'Marker']).show()
 
                 Line(Lines, Color=raw.at[i, 'Color'], Width=raw.at[i, 'Width'],
-                     Style=raw.at[i, 'Style'], Alpha=raw.at[i, 'Alpha']).show()
+                     Style=raw.at[i, 'Style'], Alpha=raw.at[i, 'Alpha'],
+                     Label=raw.at[i, 'Label']).show()
 
         self.Base = min(self.WholeData)
         self.Top = max(self.WholeData)
@@ -1095,8 +1077,6 @@ class Trace(Ree):
                  Y1=3, Y_Gap=5, FontSize=16,
                  xLabel=r'$Trace-Elements-Standardlized-Pattern$', yLabel=''):
         super().__init__()
-        self.raw = ''
-
         self.name=name
         self.Width = Width
         self.Height = Height
@@ -1138,9 +1118,6 @@ class Trace2(Trace):
                  Y1=3, Y_Gap=5, FontSize=16,
                  xLabel=r'$Trace-Elements-Standardlized-Pattern$', yLabel=''):
         super().__init__()
-
-        self.raw = ''
-
         self.name=name
         self.Width = Width
         self.Height = Height
@@ -1205,9 +1182,6 @@ class Qfl(Tri,Tool):
 
     def __init__(self, name="qfl.xlsx",Label=[u'Q', u'F', u'L']):
         super().__init__()
-
-        self.raw = ''
-
         self.Label = Label
         self.name=name
         for i in range(len(self.Labels)):
@@ -1290,11 +1264,12 @@ class Qfl(Tri,Tool):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
             TriPoint((raw.at[i, 'F'], raw.at[i, 'L'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
                      Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                      Label=TmpLabel).show()
@@ -1359,10 +1334,6 @@ class Qmflt(Qfl,Tool):
     name = "qmflt.xlsx"
     def __init__(self, name="qmflt.xlsx",Label=[u'Qm', u'F', u'Lt']):
         super().__init__()
-
-        self.raw = ''
-
-
         self.name="qmflt.xlsx"
         self.Label = Label
         for i in range(len(self.Labels)):
@@ -1497,11 +1468,11 @@ class Qmflt(Qfl,Tool):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
 
             TriPoint((raw.at[i, 'F'], raw.at[i, 'Lt'], raw.at[i, 'Qm']), Size=raw.at[i, 'Size'],
                      Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
@@ -1642,10 +1613,6 @@ class Qapf(DualTri,Tool):
 
     def __init__(self,name="qapf.xlsx", Label=[u'Q', u'A', u'P', u'F'],FontSize = 10):
         super().__init__()
-
-        self.raw = ''
-
-
         self.Label = Label
         self.name=name
         self.FontSize=FontSize
@@ -1801,11 +1768,11 @@ class Qapf(DualTri,Tool):
             p = raw.at[i, 'P']
 
             TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
 
             if(q!=0 and q!=''):
                 TriPoint((raw.at[i, 'A'], raw.at[i, 'P'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
@@ -2101,11 +2068,11 @@ class QapfP(Qapf):
             p = raw.at[i, 'P']
 
             TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
 
             if(q!=0 and q!=''):
                 TriPoint((raw.at[i, 'A'], raw.at[i, 'P'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
@@ -2361,11 +2328,11 @@ class QapfV(Qapf):
             p = raw.at[i, 'P']
 
             TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
 
             if(q!=0 and q!=''):
                 TriPoint((raw.at[i, 'A'], raw.at[i, 'P'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
@@ -2395,14 +2362,6 @@ class Polar():
 
     def __init__(self, name="strike.xlsx",Label=[u'N',u'S', u'W', u'E']):
         super().__init__()
-
-        self.raw = ''
-
-        self.Label = [u'N', u'S', u'W', u'E']
-        self.LabelPosition = []
-        self.name = "strike.xlsx"
-
-
         self.Label = Label
         self.name=name
 
@@ -2609,9 +2568,6 @@ class Pearce1(Frame):
         just set up the basic settings
         """
         super().__init__()
-
-        self.raw = ''
-
         self.name = name
 
         self.Width = Width
@@ -2687,11 +2643,12 @@ class Pearce1(Frame):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
             LogPoint( (raw.at[i, 'Y'] + raw.at[i, 'Nb']),raw.at[i, 'Rb'], Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
@@ -2722,9 +2679,6 @@ class Pearce2(Pearce1):
         just set up the basic settings
         """
         super().__init__()
-
-        self.raw = ''
-
         self.name = name
 
         self.Width = Width
@@ -2783,11 +2737,11 @@ class Pearce2(Pearce1):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
 
             LogPoint( (raw.at[i, 'Yb'] + raw.at[i, 'Ta']),raw.at[i, 'Rb'], Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
@@ -2818,12 +2772,6 @@ class Pearce3(Pearce1):
         just set up the basic settings
         """
         super().__init__()
-
-        self.raw = ''
-
-
-
-
         self.name = name
 
         self.Width = Width
@@ -2880,12 +2828,12 @@ class Pearce3(Pearce1):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
+
             LogPoint( raw.at[i, 'Y'],raw.at[i, 'Nb'], Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
@@ -2916,9 +2864,6 @@ class Pearce4(Pearce1):
         just set up the basic settings
         """
         super().__init__()
-
-        self.raw = ''
-
         self.name = name
 
         self.Width = Width
@@ -2977,12 +2922,11 @@ class Pearce4(Pearce1):
 
         for i in range(len(raw)):
             TmpLabel = ''
-            TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
-            else:
+            if ((raw.at[i, 'Label'] in PointLabels) == False):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+            else:
+                TmpLabel = ''
 
             LogPoint( raw.at[i, 'Yb'],raw.at[i, 'Ta'] , Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
@@ -3047,28 +2991,6 @@ class MultiFrame(Frame):
         Just set up all.
         """
         super().__init__()
-
-        self.Left = []
-        self.Right = []
-
-        self.Base = []
-        self.Top = []
-
-        self.X0 = []
-        self.X1 = []
-        self.X_Gap = []
-
-        self.Y0 = []
-        self.Y1 = []
-        self.Y_Gap = []
-
-        self.xLabel = []
-        self.yLabel = []
-
-        self.all = []
-        self.Lines = []
-
-
 
         self.Width = Width
         self.Height = Height
@@ -3135,7 +3057,6 @@ class Pearce():
     """
     name="pearce.xlsx"
     def __init__(self,name="pearce.xlsx"):
-        self.raw = ''
         self.name=name
     def read(self):
         Pearce1(self.name).read()
@@ -3207,9 +3128,26 @@ class Harker():
         """
         super().__init__()
 
+        self.Left = 45
+        self.Right = 75
+
+        self.X0 = 45
+        self.X1 = 75
+        self.X_Gap = 6
+
+        self.xLabel = r'$SiO_2 wt\%$'
+        self.yLabel = []
+
+        self.all = []
+        self.Lines = []
+
+        self.Base = []
+        self.Top = []
+        self.Gap = []
 
         self.raw = ''
 
+        self.PointLabels = []
 
         self.name = "harker.xlsx"
         self.x = 'SiO2'
@@ -3306,12 +3244,11 @@ class Harker():
             tmp=self.raw.at[i,self.y[k]]
             Total.append(tmp)
             TmpLabel = ''
-            TmpLabel = ''
-            if (raw.at[i, 'Label'] in self.PointLabels or raw.at[i, 'Label'] =='' ):
-                TmpLabel = ''
+            if ((self.raw.at[i, 'Label'] in self.PointLabels) == False):
+                self.PointLabels.append(self.raw.at[i, 'Label'])
+                TmpLabel = self.raw.at[i, 'Label']
             else:
-                self.PointLabels.append(raw.at[i, 'Label'])
-                TmpLabel = raw.at[i, 'Label']
+                TmpLabel = ''
 
             self.all[k].scatter(self.raw.at[i, self.x],  tmp, marker=self.raw.at[i, 'Marker'], s=self.raw.at[i, 'Size'], color=self.raw.at[i, 'Color'], alpha=self.raw.at[i, 'Alpha'],
                          label=TmpLabel, edgecolors='black')
@@ -3347,6 +3284,7 @@ class Harker():
         plt.savefig(self.name + "harker.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "harker.svg", dpi=300, bbox_inches='tight')
         plt.show()
+
 
 
 if __name__ == '__main__':
