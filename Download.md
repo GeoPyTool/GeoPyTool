@@ -18,13 +18,12 @@ Category: Python
 |Adding QAPF|2016-07-09 08:32|QAPF|
 |Adding Wulff|2016-12-18 08:32|Wulf|
 |Reconsitution|2017-03-15 15:30|Pearce and  Harker|
-
+|Zircon Ce|2017-03-25 15:30|Ballard|
 Download links:
 
 Windows:
-[https://pan.baidu.com/s/1pLM3ejh](https://pan.baidu.com/s/1pLM3ejh)
-
+[Download](https://pan.baidu.com/s/1o8Ljq5O)
 
 
 OS X:
-[https://pan.baidu.com/s/1i4RiP9r](https://pan.baidu.com/s/1i4RiP9r)
+[Download](https://pan.baidu.com/s/1skCF0NN)

@@ -87,12 +87,19 @@ class Simple(QMainWindow):
         Polar.clicked.connect(self.Polar)
 
         Pearce = QPushButton("Pearce", self)
-        Pearce.move(80, 180)
+        Pearce.move(80, 360)
         Pearce.clicked.connect(self.Pearce)
 
+
         Harker = QPushButton("Harker", self)
-        Harker.move(250, 180)
+        Harker.move(250, 360)
         Harker.clicked.connect(self.Harker)
+
+
+        Ballard = QPushButton("Ballard", self)
+        Ballard.move(80, 410)
+        Ballard.clicked.connect(self.Ballard)
+
 
         self.lbl_hintX = QLabel(self)
         self.lbl_hintX.move(80, 250)
@@ -184,6 +191,9 @@ class Simple(QMainWindow):
     def Harker(self):
         print(self.x,"\t",self.y)
         gp.Harker(x=self.x,y=self.y).read()
+
+    def Ballard(self):
+        gp.Ballard().read()
 
 
 if __name__ == '__main__':

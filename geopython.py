@@ -13,7 +13,7 @@ a tool set for daily geology related task.
 # usage:
     1) opern a ipython console
     2) import geopython as gp
-    3) TasSample= gp.Tas("tas.xlsx")
+    3) TasSample= Tas("tas.xlsx")
     4) TasSample.read()
 
 # Geology related classes available:
@@ -34,7 +34,6 @@ a tool set for daily geology related task.
 lang = "python"
 
 import matplotlib
-
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
@@ -3349,9 +3348,219 @@ class Harker():
         plt.show()
 
 
-if __name__ == '__main__':
-    Harker(x='SiO2', y=['CaO', 'Na2O', 'TiO2', 'K2O', 'P2O5']).read()
+class Ballard():
+    """
+    Claculation of Ce4/Ce3 in Zircon
+    """
 
+    name = "Ballard.xlsx"
+    raw = ''
+
+
+
+    Elements = []
+    Elements3 = []
+    UnUsedElements3 = []
+    Elements4 = []
+    E3 = []
+    UnUsedE3 = []
+    E4 = []
+
+    Sample = []
+    Rock = []
+
+    x3 = []
+    y3 = []
+
+    UnUsedx3 = []
+    UnUsedy3 = []
+
+    x4 = []
+    y4 = []
+
+    Ce3 = []
+    Ce4 = []
+
+    a = []
+    b = []
+
+    def __init__(self,name="Ballard.xlsx"):
+        self.raw=''
+        self.raw=pd.read_excel(self.name)
+
+        self.a = self.raw.index.values.tolist()
+        self.b = self.raw.columns.values.tolist()
+
+
+        self.RockCe = self.raw.at['Rock', 'Ce']
+
+        for i in self.b:
+            if i != 'Label' and i != 'Eu(II)' and i != 'Ce' and i != 'Ce(+4)':
+                self.Elements.append(i)
+
+                Ri = self.raw.at['Ri', i]
+                Ro = self.raw.at['Ro', i]
+                X = (Ri / 3 + Ro / 6) * (Ri - Ro) * (Ri - Ro)
+
+                S = self.raw.at['Sample', i]
+                R = self.raw.at['Rock', i]
+
+                self.Sample.append(S)
+                self.Rock.append(R)
+                Y = np.log(S / R)
+
+                if self.raw.at['valence', i] == 3 and self.raw.at['use', i] == 'yes':
+                    self.Elements3.append(i)
+                    self.E3.append([i, S, R])
+                    self.x3.append(X)
+                    self.y3.append(Y)
+
+                elif self.raw.at['valence', i] == 3 and self.raw.at['use', i] == 'no':
+                    self.UnUsedElements3.append(i)
+                    self.UnUsedE3.append([i, S, R])
+                    self.UnUsedx3.append(X)
+                    self.UnUsedy3.append(Y)
+
+                elif self.raw.at['valence', i] == 4 and self.raw.at['use', i] == 'yes':
+
+                    self.Elements4.append(i)
+                    self.E3.append([i, S, R])
+                    self.x4.append(X)
+                    self.y4.append(Y)
+
+
+            elif i == 'Ce':
+                Ri = self.raw.at['Ri', i]
+                Ro = self.raw.at['Ro', i]
+                X = (Ri / 3 + Ro / 6) * (Ri - Ro) * (Ri - Ro)
+
+                S = self.raw.at['Sample', i]
+                R = self.raw.at['Rock', i]
+
+                self.Sample.append(S)
+                self.Rock.append(R)
+                Y = np.log(S / R)
+                self.Ce3 = [X, Y]
+
+
+
+            elif i == 'Ce(+4)':
+                Ri = self.raw.at['Ri', i]
+                Ro = self.raw.at['Ro', i]
+                X = (Ri / 3 + Ro / 6) * (Ri - Ro) * (Ri - Ro)
+
+                S = self.raw.at['Sample', i]
+                R = self.raw.at['Rock', i]
+
+                self.Sample.append(S)
+                self.Rock.append(R)
+                self.Y = np.log(S / R)
+                self.Ce4 = [X, Y]
+
+
+    def Calc3(self):
+
+        self.z3 = np.polyfit(self.x3, self.y3, 1)
+        self.p3 = np.poly1d(self.z3)
+
+        Xline3 = np.linspace(min(self.x3), max(self.UnUsedx3), 30)
+        Yline3 = self.p3(Xline3)
+
+        Ce3test = str(np.power(np.e, self.p3(self.Ce3[0]) + np.log(self.RockCe)))
+        DCe3test = str(np.power(np.e, self.p3(self.Ce3[0])))
+
+        xlabel3 = "ZirconData is " + str(self.Ce3[1]) + "\n Testdata is" + str(self.p3(self.Ce3[0]))+ "\n  est'd Ce(III) (ppm)=" + Ce3test + "\n  est'd DCe(III)(Zir/Met) (ppm)=" + DCe3test
+
+        plt.xlabel(xlabel3, fontsize=12)
+
+        plt.ylabel(r'Ln D $Zircon/Rock%$', fontsize=12)
+        plt.plot(Xline3, Yline3, 'r-')
+
+        Point(self.Ce3[0], self.p3(self.Ce3[0]), Label='', Color='red').show()
+        plt.annotate("Ce3 Calculated", xy=(self.Ce3[0], self.p3(self.Ce3[0])), xytext=(10, -25), textcoords='offset points',
+                     ha='right', va='bottom',
+                     bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.3),
+                     arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        Point(self.Ce3[0], self.Ce3[1], Label='', Color='red').show()
+        plt.annotate("Ce3 Zircon", xy=(self.Ce3[0], self.Ce3[1]), xytext=(10, 25), textcoords='offset points', ha='right',
+                     va='bottom',
+                     bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.3),
+                     arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        Line(Points=[(self.Ce3[0], self.Ce3[1]), (self.Ce3[0], self.p3(self.Ce3[0]))], Style='--', Color='red', Alpha=0.5).show()
+
+        for i in range(len(self.x3)):
+            Point(self.x3[i], self.y3[i], Label='', Color='red').show()
+            plt.annotate(self.Elements3[i], xy=(self.x3[i], self.y3[i]), xytext=(10, 25), textcoords='offset points', ha='right',
+                         va='bottom',
+                         bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.3),
+                         arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        for i in range(len(self.UnUsedx3)):
+            Point(self.UnUsedx3[i], self.UnUsedy3[i], Label='', Color='red').show()
+            plt.annotate(self.UnUsedElements3[i], xy=(self.UnUsedx3[i], self.UnUsedy3[i]), xytext=(10, 25), textcoords='offset points',
+                         ha='right', va='bottom',
+                         bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.3),
+                         arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        plt.savefig("zircon-Ce3.png", dpi=300, bbox_inches='tight')
+        plt.savefig("zircon-Ce3.svg", dpi=300, bbox_inches='tight')
+
+    def Calc4(self):
+        plt.figure(2)
+        plt.subplot(111)
+        self.z4 = np.polyfit(self.x4, self.y4, 1)
+        self.p4 = np.poly1d(self.z4)
+
+        Xline4 = np.linspace(min(self.x4), max(self.x4), 30)
+        Yline4 = self.p4(Xline4)
+
+        Ce4test = str(np.power(np.e, self.p4(self.Ce4[0]) + np.log(self.RockCe)))
+        DCe4test = str(np.power(np.e, self.p4(self.Ce4[0])))
+
+        xlabel4 = "ZirconData is " + str(self.Ce4[1]) + "\n Testdata is" + str(self.p4(self.Ce4[0]))+ "\n  est'd Ce(III) (ppm)=" + Ce4test + "\n  est'd DCe(III)(Zir/Met) (ppm)=" + DCe4test
+
+        plt.xlabel(xlabel4, fontsize=12)
+
+        plt.ylabel(r'Ln D $Zircon/Rock%$', fontsize=12)
+        plt.plot(Xline4, Yline4, 'r-')
+
+        Point(self.Ce4[0], self.p4(self.Ce4[0]), Label='', Color='red').show()
+        plt.annotate("Ce4 Calculated", xy=(self.Ce4[0], self.p4(self.Ce4[0])), xytext=(10, -25), textcoords='offset points',
+                     ha='right', va='bottom',
+                     bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.4),
+                     arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        Point(self.Ce4[0], self.Ce4[1], Label='', Color='red').show()
+        plt.annotate("Ce4 Zircon", xy=(self.Ce4[0], self.Ce4[1]), xytext=(10, 25), textcoords='offset points', ha='right',
+                     va='bottom',
+                     bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.4),
+                     arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        Line(Points=[(self.Ce4[0], self.Ce4[1]), (self.Ce4[0], self.p4(self.Ce4[0]))], Style='--', Color='red', Alpha=0.5).show()
+
+        for i in range(len(self.x4)):
+            Point(self.x4[i], self.y4[i], Label='', Color='red').show()
+            plt.annotate(self.Elements4[i], xy=(self.x4[i], self.y4[i]), xytext=(10, 25), textcoords='offset points', ha='right',
+                         va='bottom',
+                         bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.4),
+                         arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+
+        plt.savefig("zircon-Ce4.png", dpi=300, bbox_inches='tight')
+        plt.savefig("zircon-Ce4.svg", dpi=300, bbox_inches='tight')
+
+    def read(self):
+        self.Calc3()
+        self.Calc4()
+
+
+
+
+if __name__ == '__main__':
+
+    Ballard().read()
 """
     Tas().read()
     Ree().read()
@@ -3363,5 +3572,6 @@ if __name__ == '__main__':
     Polar().read()
     Pearce().read()
     Harker().read()
+    Harker(x='SiO2', y=['CaO', 'Na2O', 'TiO2', 'K2O', 'P2O5']).read()
 """
 
