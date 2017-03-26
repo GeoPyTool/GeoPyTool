@@ -22,8 +22,9 @@ Category: Python
 Download links:
 
 Windows:
-[https://pan.baidu.com/s/1i4RiP9r](https://pan.baidu.com/s/1i4RiP9r)
+[https://pan.baidu.com/s/1pLM3ejh](https://pan.baidu.com/s/1pLM3ejh)
+
 
 
 OS X:
-[https://pan.baidu.com/s/1pLM3ejh](https://pan.baidu.com/s/1pLM3ejh)
+[https://pan.baidu.com/s/1i4RiP9r](https://pan.baidu.com/s/1i4RiP9r)
