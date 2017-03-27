@@ -22,7 +22,7 @@ Category: Python
 Download links:
 
 Windows:
-[Download](https://pan.baidu.com/s/1o8Ljq5O)
+[Download](https://pan.baidu.com/s/1nvdlZ0t)
 
 
 OS X:
