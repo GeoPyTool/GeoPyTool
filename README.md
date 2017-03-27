@@ -27,6 +27,10 @@ GeoPython is a project of using Python for geology related daily work. It is a s
 
 ##Usage Under Windows
 
+
+If you are using Windows 7, there might comes an`api-ms-win-crt`related error. You needto install KB2999226 and then install the `Visual C++ Redistributable 2015`.
+Of course, a sweet guy like me just packed them up and share here: [32 bit Windows7 ](https://pan.baidu.com/s/1kVwSQ95)，[64 bit WInodws7 ](https://pan.baidu.com/s/1qY34ocW),
+
 For Windows Users, donwload the Windows version zip file and extrat the whole file into a folder, then just put your data in the correspoinding Xlsx file and double click the correspoinding main.exe and click on the function you need.
 
 ![](https://github.com/chinageology/GeoPython/blob/master/Usage.png?raw=true)
