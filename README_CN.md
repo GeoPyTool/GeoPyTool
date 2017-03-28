@@ -10,12 +10,15 @@ Copyright 2017 cycleuser
 
 
 #####我们的QQ群： 560675626
-|MileStone|Date|Function|
+
+|进度|日期|新功能|
 |--|--|--|
-|Beginning Date|2016-07-07 6:20|TAS|
-|Adding QAPF|2016-07-09 08:32|QAPF|
-|Adding Wulff|2016-12-18 08:32|Wulf|
-|Reconsitution|2017-03-15 15:30|Wulf|
+|开始功能积累|2016-07-07 6:20|TAS|
+|增加 QAPF|2016-07-09 08:32|QAPF|
+|增加吴尔夫网和施密特网|2016-12-18 08:32|Wulf|
+|全部功能重构|2017-03-15 15:30|Pearce and  Harker|
+|单个锆石 Ce 计算|2017-03-25 15:30|Ballard|
+|多个锆石 Ce 计算|2017-03-28 15:30|MultiBallard|
 
 ##简介
 

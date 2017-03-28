@@ -41,6 +41,7 @@ import numpy as np
 import pandas as pd
 import math
 import sys
+import csv
 
 class Tool():
     """
@@ -3347,7 +3348,6 @@ class Harker():
         plt.savefig(self.name + "harker.svg", dpi=300, bbox_inches='tight')
         plt.show()
 
-
 class Ballard():
     """
     Claculation of Ce4/Ce3 in Zircon
@@ -3555,12 +3555,261 @@ class Ballard():
         self.Calc3()
         self.Calc4()
 
+class MultiBallard():
+    """
+    Claculation of Ce4/Ce3 of multiple Zircons in a same rock
+    """
+    # -*- coding: utf-8 -*-
+    """
+    Created on Mon Nov  7 15:55:03 2016
 
+    @author: cycleuser
+    """
+    name = "MultiBallard.xlsx"
+
+    PointLabels = []
+
+    Base = 0
+    Zircon = []
+    Elements = []
+    Elements3 = []
+    Elements3_Plot_Only = []
+    Elements4 = []
+    x = []
+    x3 = []
+    x3_Plot_Only = []
+    x4 = []
+    y = []
+    y3 = []
+    y3_Plot_Only = []
+    y4 = []
+    z3 = []
+    z4 = []
+    xCe3 = []
+    yCe3 = []
+    xCe4 = []
+    yCe4 = []
+    Ce3test = []
+    DCe3test = []
+    Ce4test = []
+    DCe4test = []
+    Ce4_3_Ratio = []
+    a = 0
+    b = 0
+    raw = 0
+    RockCe = 0
+    ZirconCe = []
+
+
+    def getx(self,Ri=1, Ro=1):
+        X = (Ri / 3 + Ro / 6) * (Ri - Ro) * (Ri - Ro)
+        return (X)
+
+    def ToCsv(self,name='MultiBallardResultCalculated.csv', DataToWrite=[
+        ["Zircon Sample Label", "Zircon Ce4_3 Ratio", "Melt Ce4_3 Ratio", "DCe4", "DCe3", "DCe Zircon/Melt"], ]):
+        with open(name, 'w', newline='') as fp:
+            a = csv.writer(fp, delimiter=',')
+            a.writerows(DataToWrite)
+
+    def __init__(self,name="MultiBallard.xlsx"):
+        self.raw=[]
+        self.name=name
+
+        if ("csv" in self.name):
+            self.raw = pd.read_csv(self.name)
+        elif ("xlsx" in name):
+            self.raw = pd.read_excel(self.name)
+
+        self.a = self.raw.index.values.tolist()
+        self.b = self.raw.columns.values.tolist()
+
+        self.RockCe = self.raw.at[4, 'Ce']
+        self.ZirconCe = []
+
+        for i in range(len(self.raw)):
+            if (self.raw.at[i, "DataType"] == "Base"):
+                self.Base = i
+            elif (self.raw.at[i, "DataType"] == "Zircon"):
+                self.Zircon.append(i)
+
+        for j in self.b:
+            if (j == 'Ce'):
+                ri = self.raw.at[2, j]
+                ro = self.raw.at[3, j]
+                if (self.raw.at[0, j] == 3):
+                    self.xCe3.append(self.getx(ri, ro))
+            elif (j == 'Ce4'):
+                ri = self.raw.at[2, j]
+                ro = self.raw.at[3, j]
+                if (self.raw.at[0, j] == 4):
+                    self.xCe4.append(self.getx(ri, ro))
+
+            elif (self.raw.at[1, j] == 'yes'):
+                ri = self.raw.at[2, j]
+                ro = self.raw.at[3, j]
+                if (self.raw.at[0, j] == 3):
+                    self.x3.append(self.getx(ri, ro))
+                    self.Elements3.append(j)
+
+                elif (self.raw.at[0, j] == 4):
+                    self.x4.append(self.getx(ri, ro))
+                    self.Elements4.append(j)
+                    self.Elements.append(j)
+
+            elif (self.raw.at[1, j] == 'no'):
+                ri = self.raw.at[2, j]
+                ro = self.raw.at[3, j]
+                if (self.raw.at[0, j] == 3):
+                    self.x3_Plot_Only.append(self.getx(ri, ro))
+                    self.Elements3_Plot_Only.append(j)
+                    self.Elements.append(j)
+
+    def read(self):
+        for i in self.Zircon:
+            self.ZirconCe.append(self.raw.at[i, 'Ce'])
+            tmpy3 = []
+            tmpy4 = []
+            tmpy3_Plot_Only = []
+
+            for j in self.b:
+                if (j == 'Ce'):
+                    ybase = self.raw.at[self.Base, j]
+                    yi = self.raw.at[i, j]
+                    ytemp = np.log(yi / ybase)
+                    self.yCe3.append(ytemp)
+                elif (j == 'Ce4'):
+                    ybase = self.raw.at[self.Base, j]
+                    yi = self.raw.at[i, j]
+                    ytemp = np.log(yi / ybase)
+                    self.yCe4.append(ytemp)
+                elif (self.raw.at[1, j] == 'yes'):
+                    ybase = self.raw.at[self.Base, j]
+                    yi = self.raw.at[i, j]
+                    ytemp = np.log(yi / ybase)
+                    if (self.raw.at[0, j] == 3):
+                        tmpy3.append(ytemp)
+
+                    elif (self.raw.at[0, j] == 4):
+                        tmpy4.append(ytemp)
+                elif (self.raw.at[1, j] == 'no'):
+                    ybase = self.raw.at[self.Base, j]
+                    yi = self.raw.at[i, j]
+                    ytemp = np.log(yi / ybase)
+                    if (self.raw.at[0, j] == 3):
+                        tmpy3_Plot_Only.append(ytemp)
+            self.y3.append(tmpy3)
+            self.y4.append(tmpy4)
+            self.y3_Plot_Only.append(tmpy3_Plot_Only)
+
+        plt.ylabel(r'Ln D $Zircon/Rock%$', fontsize=12)
+
+        for k in range(len(self.y3)):
+
+            tmpz3 = np.polyfit(self.x3, self.y3[k], 1)
+            self.z3.append(tmpz3)
+
+            for i in range(len(self.x3)):
+                x, y = self.x3[i], self.y3[k][i]
+                Point(x, y, Label='', Size=5, Color='blue', Alpha=0.5).show()
+
+            if k == 0:
+                for i in range(len(self.x3)):
+                    plt.annotate(self.Elements3[i], xy=(self.x3[i], self.y3[0][i]), xytext=(10, 25), textcoords='offset points',
+                                 ha='right', va='bottom', bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.3),
+                                 arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        for i in self.z3:
+            Xline3 = np.linspace(min(self.x3), max(max(self.x3_Plot_Only), max(self.x3)), 30)
+            p3 = np.poly1d(i)
+            Yline3 = p3(Xline3)
+            plt.plot(Xline3, Yline3, 'b-')
+
+            self.Ce3test.append(np.power(np.e, p3(self.xCe3) + np.log(self.RockCe))[0])
+            self.DCe3test.append(np.power(np.e, p3(self.xCe3))[0])
+
+        for k in range(len(self.yCe3)):
+
+            x, y = self.xCe3, self.yCe3[k]
+            Point(x, y, Label='', Size=20, Color='k', Alpha=0.5).show()
+
+            if k == 0:
+                plt.annotate('Ce3', xy=(self.xCe3[k], max(self.yCe3)), xytext=(10, 25), textcoords='offset points', ha='right',
+                             va='bottom', bbox=dict(boxstyle='round,pad=0.5', fc='red', alpha=0.3),
+                             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        for k in range(len(self.y3_Plot_Only)):
+
+            for i in range(len(self.x3_Plot_Only)):
+                x, y = self.x3_Plot_Only[i], self.y3_Plot_Only[k][i]
+                Point(x, y, Label='', Size=10, Color='blue', Alpha=0.3).show()
+
+            if k == 0:
+                for i in range(len(self.x3_Plot_Only)):
+                    plt.annotate(self.Elements3_Plot_Only[i], xy=(self.x3_Plot_Only[i], self.y3_Plot_Only[0][i]), xytext=(10, -25),
+                                 textcoords='offset points', ha='right', va='bottom',
+                                 bbox=dict(boxstyle='round,pad=0.5', fc='green', alpha=0.2),
+                                 arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        plt.savefig(self.name + "zircon-Ce3.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "zircon-Ce3.svg", dpi=300, bbox_inches='tight')
+
+        plt.figure(2)
+
+        plt.ylabel(r'Ln D $Zircon/Rock%$', fontsize=12)
+        plt.subplot(111)
+
+        for k in range(len(self.y4)):
+
+            tmpz4 = np.polyfit(self.x4, self.y4[k], 1)
+            self.z4.append(tmpz4)
+
+            for i in range(len(self.x4)):
+                x, y = self.x4[i], self.y4[k][i]
+                Point(x, y, Label='', Size=5, Color='r', Alpha=0.5).show()
+
+            if k == 0:
+                for i in range(len(self.x4)):
+                    plt.annotate(self.Elements4[i], xy=(self.x4[i], self.y4[0][i]), xytext=(10, 25), textcoords='offset points',
+                                 ha='right', va='bottom', bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.3),
+                                 arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        for i in self.z4:
+            Xline4 = np.linspace(min(self.x4), max(self.x4), 30)
+            p4 = np.poly1d(i)
+            Yline4 = p4(Xline4)
+            plt.plot(Xline4, Yline4, 'r-')
+
+            self.Ce4test.append(np.power(np.e, p4(self.xCe4) + np.log(self.RockCe))[0])
+            self.DCe4test.append(np.power(np.e, p4(self.xCe4))[0])
+
+        for k in range(len(self.yCe4)):
+
+            x, y = self.xCe4, self.yCe4[k]
+            Point(x, y, Label='', Size=20, Color='k', Alpha=0.5).show()
+            if k == 0:
+                plt.annotate('Ce4', xy=(self.xCe4[k], max(self.yCe4)), xytext=(10, 25), textcoords='offset points', ha='right',
+                             va='bottom', bbox=dict(boxstyle='round,pad=0.5', fc='red', alpha=0.3),
+                             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+        plt.savefig(self.name + "zircon-Ce4.png", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "zircon-Ce4.svg", dpi=300, bbox_inches='tight')
+
+        DataToWrite = [
+            ["Zircon Sample Label", "Zircon Ce4_3 Ratio", "Melt Ce4_3 Ratio", "DCe4", "DCe3", "DCe Zircon/Melt"], ]
+
+        for i in range(len(self.ZirconCe)):
+            TMP = self.raw.at[self.Zircon[i], "Label"]
+            ZirconTmp = (self.RockCe - self.ZirconCe[i] / self.DCe3test[i]) / (self.ZirconCe[i] / self.DCe4test[i] - self.RockCe)
+            MeltTmp = (self.ZirconCe[i] - self.Ce3test[i]) / self.Ce3test[i] * self.DCe3test[i] / self.DCe4test[i]
+            self.Ce4_3_Ratio.append(ZirconTmp)
+            DataToWrite.append([TMP, ZirconTmp, MeltTmp, self.DCe4test[i], self.DCe3test[i], self.ZirconCe[i] / self.RockCe])
+
+        self.ToCsv(name= self.name+'_ResultCalculated.csv', DataToWrite=DataToWrite)
 
 
 if __name__ == '__main__':
 
-    Ballard().read()
+    MultiBallard().read()
 """
     Tas().read()
     Ree().read()

@@ -18,6 +18,8 @@ Category: Python
 |Adding QAPF|2016-07-09 08:32|QAPF|
 |Adding Wulff|2016-12-18 08:32|Wulf|
 |Reconsitution|2017-03-15 15:30|Pearce and  Harker|
+|Single Zircon Ce|2017-03-25 15:30|Ballard|
+|Multiple Zircon Ce|2017-03-28 15:30|MultiBallard|
 
 ##Introduction
 

@@ -101,6 +101,11 @@ class Simple(QMainWindow):
         Ballard.clicked.connect(self.Ballard)
 
 
+        MultiBallard = QPushButton("MultiBallard", self)
+        MultiBallard.move(250, 410)
+        MultiBallard.clicked.connect(self.MultiBallard)
+
+
         self.lbl_hintX = QLabel(self)
         self.lbl_hintX.move(80, 250)
         self.lbl_hintX.setText("Input X for Harker:")
@@ -194,6 +199,9 @@ class Simple(QMainWindow):
 
     def Ballard(self):
         gp.Ballard().read()
+
+    def MultiBallard(self):
+        gp.MultiBallard().read()
 
 
 if __name__ == '__main__':
