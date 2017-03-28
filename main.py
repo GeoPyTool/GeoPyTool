@@ -203,6 +203,11 @@ class Simple(QMainWindow):
     def MultiBallard(self):
         gp.MultiBallard().read()
 
+def Show():
+    app = QApplication(sys.argv)
+    ex = Simple()
+    sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
