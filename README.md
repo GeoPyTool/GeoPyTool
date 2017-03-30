@@ -69,7 +69,7 @@ First, you need to install `geopython` using pip:
 pip install geopython
 ```
 
-Then open you python console, and enter to the location path of data files, which are the xlsx files that  you still need to download from  [here](https://github.com/chinageology/GeoPython/blob/master/Python/DataFileSamples.zip). Then you can use geopython as the codes below:
+Then open you python console, and enter to the location path of data files, which are the xlsx files that  you still need to download from  [here](https://github.com/chinageology/GeoPython/blob/master/DataFileSamples.zip). Then you can use geopython as the codes below:
 
 ```Bash
 ipython
