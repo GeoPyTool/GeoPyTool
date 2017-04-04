@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='geopython',
-      version='0.2.11',
+      version='0.2.15',
       description='a tool set for daily geology related task.',
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',
@@ -14,5 +14,6 @@ setup(name='geopython',
                          "pandas",
                          "xlrd",
                          "matplotlib",
+                         "chempy ",
                          ],
      )

@@ -19,7 +19,7 @@ Copyright 2017 cycleuser
 |全部功能重构|2017-03-15 15:30|Pearce and  Harker|
 |单个锆石 Ce 计算|2017-03-25 15:30|Ballard|
 |多个锆石 Ce 计算|2017-03-28 15:30|MultiBallard|
-
+|多样品CIPW计算|2017-04-3 12:30|MultiCIPW|
 ##简介
 
 
