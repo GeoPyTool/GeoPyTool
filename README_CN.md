@@ -4,9 +4,12 @@ Category: Python
 
 # [GeoPython，用于地质学的日常工作的 Python 工具集](https://github.com/chinageology/GeoPython)
 
-author: cycleuser
-email: cycleuser@cycleuser.org
-Copyright 2017 cycleuser
+
+##### author: cycleuser
+
+##### email: cycleuser@cycleuser.org
+
+##### Copyright 2017 cycleuser
 
 
 ##### 我们的QQ群： 560675626

@@ -8,7 +8,9 @@ Category: Python
 
 
 ##### author: cycleuser
+
 ##### email: cycleuser@cycleuser.org
+
 ##### Copyright 2017 cycleuser
 
 
@@ -22,7 +24,7 @@ Category: Python
 |Multiple Zircon Ce|2017-03-28 15:30|MultiBallard|
 |Multiple Samples CIPW Norm|2017-04-3 12:30|MultiCIPW|
 
-##Introduction
+## Introduction
 
 GeoPython is a project of using Python for geology related daily work. It is a set of free softwares: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -63,7 +65,7 @@ pip install pandas
 pip install xlrd
 ```
 
-###Installation
+### Installation
 First, you need to install `geopython` using pip:
 
 ```Bash
