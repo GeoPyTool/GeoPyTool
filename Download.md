@@ -29,4 +29,4 @@ Windows:
 
 
 OS X:
-[Download](https://pan.baidu.com/s/1mhW2S8g)
+[Download](https://pan.baidu.com/s/1hr8o9zI)
