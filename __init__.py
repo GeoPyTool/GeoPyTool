@@ -3820,9 +3820,17 @@ class CIPW():
                 "Magnetite",
                 "Hematite", ]
 
+    Calced = ['Fe3+/(Total Fe) in rock',
+              'Mg/(Mg+Total Fe) in rock',
+              'Mg/(Mg+Fe2+) in rock',
+              'Mg/(Mg+Fe2+) in silicates',
+              'Ca/(Ca+Na) in rock',
+              'Plagioclase An content',
+              'Differentiation Index']
     DataWeight = {}
     DataVolume = {}
     DataBase = {}
+    DataCalced = {}
 
     def __init__(self, name="CIPW.xlsx"):
 
@@ -3963,10 +3971,22 @@ class CIPW():
             self.DataResult.update({k: {}})
             self.DataWeight.update({k: {}})
             self.DataVolume.update({k: {}})
+            self.DataCalced.update({k: {}})
 
             a = self.DataMole[i]
             for j in list(a):
                 self.DataCalculating[j].append(a[j])
+
+            Fe3 = self.DataCalculating['Fe2O3'][i]
+            Fe2 = self.DataCalculating['FeO'][i]
+            Mg = self.DataCalculating['MgO'][i]
+            Ca = self.DataCalculating['CaO'][i]
+            Na = self.DataCalculating['Na2O'][i]
+
+            self.DataCalced[k].update({'Fe3+/(Total Fe) in rock': 100 * Fe3 * 2 / (Fe3 * 2 + Fe2)})
+            self.DataCalced[k].update({'Mg/(Mg+Total Fe) in rock': 100 * Mg / (Mg + Fe3 * 2 + Fe2)})
+            self.DataCalced[k].update({'Mg/(Mg+Fe2+) in rock': 100 * Mg / (Mg + Fe2)})
+            self.DataCalced[k].update({'Ca/(Ca+Na) in rock': 100 * Ca / (Ca + Na * 2)})
 
             self.DataCalculating['CaO'][i] += self.DataCalculating['Sr'][i]
             self.DataCalculating['Sr'][i] = 0
@@ -4430,6 +4450,16 @@ class CIPW():
             Magnetite = self.DataCalculating['Fe2O3'][i]
             Hematite = self.DataCalculating['Ba'][i]
 
+            # =IF(AH11>0,AH11/(AH11+AH9),0)
+
+            Fe2 = self.DataCalculating['FeO'][i]
+            Mg = self.DataCalculating['MgO'][i]
+
+            if Mg > 0:
+                self.DataCalced[k].update({'Mg/(Mg+Fe2+) in silicates': 100 * Mg / (Mg + Fe2)})
+            else:
+                self.DataCalced[k].update({'Mg/(Mg+Fe2+) in silicates': 0})
+
             self.DataCalculating['FeO'][i] += self.DataCalculating['MgO'][i]
 
             self.DataCalculating['MgO'][i] = 0
@@ -4624,6 +4654,13 @@ class CIPW():
 
             Quartz += (6 * Old_Albite) - (Albite * 6) - (Nepheline * 2)
 
+            # =IF(AL8=0,0,AL8/(AL8+(AP14*2)))
+
+            if Anorthite == 0:
+                self.DataCalced[k].update({'Plagioclase An content': 0})
+            else:
+                self.DataCalced[k].update({'Plagioclase An content': 100 * Anorthite / (Anorthite + 2 * Albite)})
+
             # =IF(AL15>0,IF(AP5>=0,"Orthoclase",IF(AL15+(AP5/2)>0,"Both","Leucite")),"None")
 
             if Orthoclase <= 0:
@@ -4784,6 +4821,12 @@ class CIPW():
                 exec(
                     'self.DataVolume[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + i + '\"][0]/self.DataBase[\"' + i + '\"][1]}) ')
 
+            self.DI = 0
+            for i in ['Quartz', 'Anorthite', 'Albite', 'Orthoclase', 'Nepheline', 'Leucite', 'Kalsilite']:
+                exec('self.DI+=' + i + '*self.DataBase[\"' + i + '\"][0]')
+
+            self.DataCalced[k].update({'Differentiation Index': self.DI})
+
     def WriteData(self, target='DataResult'):
         DataToWrite = []
         TMP_DataToWrite = ['Samples']
@@ -4800,10 +4843,27 @@ class CIPW():
             DataToWrite.append(TMP_DataToWrite)
         Tool().ToCsv(name=self.name[0:-5] + '_' + target[4:] + '_CIPW.csv', DataToWrite=DataToWrite)
 
+    def WriteCalced(self, target='DataCalced'):
+        DataToWrite = []
+        TMP_DataToWrite = ['Samples']
+        for j in self.Calced:
+            TMP_DataToWrite.append(str(j))
+        DataToWrite.append(TMP_DataToWrite)
+        for i in range(len(self.DataMole)):
+            TMP_DataToWrite = []
+            k = self.raw.at[i, 'Label']
+            TMP_DataToWrite = [k]
+            for j in self.Calced:
+                command = 'TMP_DataToWrite.append(str(self.' + target + '[k][j]))'
+                exec(command)
+            DataToWrite.append(TMP_DataToWrite)
+        Tool().ToCsv(name=self.name[0:-5] + '_' + target[4:] + '_CIPW.csv', DataToWrite=DataToWrite)
+
     def read(self):
         self.WriteData(target='DataResult')
         self.WriteData(target='DataWeight')
         self.WriteData(target='DataVolume')
+        self.WriteCalced(target='DataCalced')
 
 
 if __name__ == '__main__':
