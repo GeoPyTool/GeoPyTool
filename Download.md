@@ -3,13 +3,13 @@ Date: 2016-12-18 16:20
 Category: Python
 
 
-#[GeoPython, a Python tool set for geology related daily work](https://github.com/chinageology/GeoPython)
+# [GeoPython, a Python tool set for geology related daily work](https://github.com/chinageology/GeoPython)
 
 
 
-#####author: cycleuser
-#####email: cycleuser@cycleuser.org
-#####Copyright 2017 cycleuser
+##### author: cycleuser
+##### email: cycleuser@cycleuser.org
+##### Copyright 2017 cycleuser
 
 
 |MileStone|Date|Function|

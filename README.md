@@ -3,13 +3,13 @@ Date: 2016-12-18 16:20
 Category: Python
 
 
-#[GeoPython, a Python tool set for geology related daily work](https://github.com/chinageology/GeoPython)
+# [GeoPython, a Python tool set for geology related daily work](https://github.com/chinageology/GeoPython)
 
 
 
-#####author: cycleuser
-#####email: cycleuser@cycleuser.org
-#####Copyright 2017 cycleuser
+##### author: cycleuser
+##### email: cycleuser@cycleuser.org
+##### Copyright 2017 cycleuser
 
 
 |MileStone|Date|Function|
@@ -26,9 +26,9 @@ Category: Python
 
 GeoPython is a project of using Python for geology related daily work. It is a set of free softwares: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-##[Download](https://github.com/chinageology/GeoPython/blob/master/Download.md)
+## [Download](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 
-##Usage Under Windows
+## Usage Under Windows
 
 
 If you are using Windows 7, there might comes an`api-ms-win-crt`related error. You needto install KB2999226 and then install the `Visual C++ Redistributable 2015`.
@@ -38,19 +38,19 @@ For Windows Users, donwload the Windows version zip file and extrat the whole fi
 
 ![](https://github.com/chinageology/GeoPython/blob/master/Usage.png?raw=true)
 
-##Usage Under OSX
+## Usage Under OSX
 
-For OSX Users, Download the OSX version zip file  and then extrat to get a App file. Got into the location as shown below and input your data into each files then go back and double click the App file. The Svg and Png generated would also be saved at `the App/Contents/Resources` , same as the Data files. I would fix this in the former versions.
+For OSX Users, Download the OSX version zip file  and then extrat to get a App file. Got into the location of  `the App`and input your data into each files then double click `the App`file. The Svg and Png generated would also be saved at the same location of `the App` , same as the Data files. I would fix this in the former versions.
 
 ![](https://github.com/chinageology/GeoPython/blob/master/OSXUsage.png?raw=true)
 
 
 
 
-##Usage with Python
+## Usage with Python
 
 
-###Dependence
+### Dependence
 
 This module is written with Python3.4 and based on numpy, matplotlib and pandas. That means you need to install them.
 

@@ -2,14 +2,14 @@ Title: GeoPython，用于地质学的日常工作的 Python 工具集
 Date: 2016-12-18 16:20
 Category: Python
 
-#[GeoPython，用于地质学的日常工作的 Python 工具集](https://github.com/chinageology/GeoPython)
+# [GeoPython，用于地质学的日常工作的 Python 工具集](https://github.com/chinageology/GeoPython)
 
 author: cycleuser
 email: cycleuser@cycleuser.org
 Copyright 2017 cycleuser
 
 
-#####我们的QQ群： 560675626
+##### 我们的QQ群： 560675626
 
 |进度|日期|新功能|
 |--|--|--|
@@ -25,9 +25,9 @@ Copyright 2017 cycleuser
 
 GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是一套自由软件：你可以重新分发或者做出修改，但必须基于由自由软件基金会发布的GNU通用公共许可证第三版的许可,或其后的版本。
 
-##[下载链接](https://github.com/chinageology/GeoPython/blob/master/Download.md)
+## [下载链接](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 
-##依赖关系
+## 依赖关系
 
 GeoPython 是在 Python 3.5 下写的，基于 numpy， matplotlib， xlrd 以及 pandas。所以这几个包你都得安装。
 
@@ -40,7 +40,7 @@ pip install pandas
 pip install xlrd
 ```
 
-##在Windows系统中使用
+## 在Windows系统中使用
 
 如果你在使用 Windows7 操作系统，可能会出现`api-ms-win-crt`无法定位这样的错误，所以先要安装 KB2999226 这个补丁，然后安装 `Visual C++ Redistributable 2015`。
 当然，我已经把这部分打包了，[32位操作系统下载](https://pan.baidu.com/s/1kVwSQ95)，[64位操作系统下载](https://pan.baidu.com/s/1qY34ocW)。
@@ -50,14 +50,14 @@ pip install xlrd
 
 ![](https://github.com/chinageology/GeoPython/blob/master/Usage.png?raw=true)
 
-##OS X 系统中使用
+## OS X 系统中使用
 
 
-苹果系统用户下载 OSX 版本的 zip 文件然后解压缩出来一个 App 文件，到下图所示的该文件内部，打开你要用的 Excel 文件，输入数据进去，然后回到 App 文件所在目录，双击这个 App 文件，就能用了。生成的图像跟数据文件一样，也在这个 App 文件内部的 Contents 目录下的 Resources 文件夹内，这个问题我后续会解决的。
+苹果系统用户下载 OSX 版本的 zip 文件然后解压缩出来一个 App 文件，到APP文件所在同一目录，打开你要用的 Excel 文件，输入数据进去，然后双击这个 App 文件，就能用了。生成的图像跟数据文件一样，也在 App 文件所在目录。
 
 ![](https://github.com/chinageology/GeoPython/blob/master/OSXUsage.png?raw=true)
 
-##在 Python 中使用
+## 在 Python 中使用
 
 推荐在 Python 中使用，这样可以使用到最新的开发版本，体验到全部最新的功能。安装方法很简单，使用 pip 即可：
 
