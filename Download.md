@@ -25,14 +25,16 @@ Category: Python
 Download links:
 
 Windows:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqMGM4cDZWQWZmVE0)
+
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqN2pwaDlFYnlaLTQ)
 
 
 [Baidu Download](https://pan.baidu.com/s/1hrCYtN2)
 
 
 OS X:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqZktMUFRXckRFVFk)
+
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqN3U1THZCeU1NcVk)
 
 
 [Baidu Download](https://pan.baidu.com/s/1c2ciYvm)
