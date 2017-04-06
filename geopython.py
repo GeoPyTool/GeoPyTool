@@ -252,8 +252,8 @@ class Frame():
     :type xLabel, yLabel: two strings
     """
 
-    Width = 8
-    Height = 6
+    Width = 16
+    Height = 9
     Dpi = 80
 
     Left = 0
@@ -274,7 +274,7 @@ class Frame():
     xLabel = r'X Label'
     yLabel = r'Y Label'
 
-    def __init__(self, Width=8, Height=6, Dpi=80, Left=0, Right=80, X_Gap=9, Base=0, Top=60, Y_Gap=7, FontSize=16,
+    def __init__(self, Width=16, Height=9, Dpi=80, Left=0, Right=80, X_Gap=9, Base=0, Top=60, Y_Gap=7, FontSize=16,
                  xLabel=r'X Label', yLabel=r'Y Label'):
         """
         Just set up all.
@@ -2398,7 +2398,7 @@ class QapfV(Qapf):
         plt.savefig(self.name+"qapfV.svg", dpi=300, bbox_inches='tight')
         plt.show()
 
-class Polar():
+class Polar(Frame):
 
     """
     Polar Stereographic projection for structural data
@@ -2424,6 +2424,9 @@ class Polar():
 
     def read(self):
         self.wulf()
+
+        plt.figure(2)
+        plt.subplot(111)
         self.schmidt()
 
     def eqar(self,A):
@@ -2444,6 +2447,8 @@ class Polar():
         """
         read the Excel, then draw the wulf net and Plot points, job done~
         """
+
+        plt.figure(figsize=(self.Width, self.Height), dpi=self.Dpi)
         if ("csv" in self.name):
             raw = pd.read_csv(self.name)
         elif ("xlsx" in self.name):
@@ -2492,6 +2497,7 @@ class Polar():
         """
         read the Excel, then draw the schmidt net and Plot points, job done~
         """
+        plt.figure(figsize=(self.Width, self.Height), dpi=self.Dpi)
         if ("csv" in self.name):
             raw = pd.read_csv(self.name)
         elif ("xlsx" in self.name):
