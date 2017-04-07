@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='geopython',
-      version='0.2.17',
+      version='0.2.18',
       description='a tool set for daily geology related task.',
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',

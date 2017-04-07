@@ -828,7 +828,7 @@ class Tas(Frame):
     Labels = [u'F', u'Pc', u'U1', u'B', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3', u'T', u'R']
     Locations = [(39, 10), (43, 1.5), (44, 6), (48.5, 2.5), (49, 6), (49, 9.5), (54, 3), (53, 7), (53, 12), (60, 4),
                  (57, 8.5), (57, 14), (67, 5), (65, 10), (75, 9)]
-    description = "TAS (total alkali–silica) diagram (after Le Bas et al., 1986, Fig. 2).\nF foidite, Ph phonolite, Pc pocro- basalt,\nU1 tephrite (ol < 10%) basanite(ol > 10%), U2 phonotephrite, U3 tephriphonolite,\nB basalt, S1 trachy- basalt, S2 basaltic trachy- andesite, S3 trachyandesite,\nO1 basaltic andesite, O2 dacite,  O3 andesite,\nT trachyte (q < 20%) trachydacite (q > 20%), R rhyolite"
+    description = "TAS (total alkali–silica) diagram (after Le Bas et al., 1986, Fig. 2).\nF foidite, Ph phonolite, Pc pocro- basalt,\nU1 tephrite (ol < 10%) basanite(ol > 10%), U2 phonotephrite, U3 tephriphonolite,\nB basalt, S1 trachy- basalt, S2 basaltic trachy- andesite, S3 trachyandesite,\nO1 basaltic andesite, O2 andesite, O3 dacite,  \nT trachyte (q < 20%) trachydacite (q > 20%), R rhyolite"
 
     name = "tas.xlsx"
 
