@@ -22,7 +22,7 @@ a tool set for daily geology related task.
     2) Ree
     3) Trace & Trace2 (with different sequence of trace elements)
     4) Qfl & Qmflt & Qapf
-    5) Wulf (projection of wulf net & schmidt net and Rose map)
+    5) Polar (projection of wulf net & schmidt net)
 
 # know issues:
     1) Only work on Python 3.x
@@ -309,6 +309,8 @@ def Show():
 
 
 if __name__ == '__main__':
+    path = '../../../'
+    os.chdir(path)
 
     app = QApplication(sys.argv)
     ex = Simple()
