@@ -21,7 +21,7 @@ Category: Python
 |Single Zircon Ce|2017-03-25 15:30|Ballard|
 |Multiple Zircon Ce|2017-03-28 15:30|MultiBallard|
 |Multiple Samples CIPW Norm|2017-04-3 12:30|MultiCIPW|
-
+|Multiple Rose Map|2017-04-9 16:30|Rose Map|
 Download links:
 
 Windows:
