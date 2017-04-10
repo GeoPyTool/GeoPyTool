@@ -21,21 +21,12 @@ Category: Python
 |Single Zircon Ce|2017-03-25 15:30|Ballard|
 |Multiple Zircon Ce|2017-03-28 15:30|MultiBallard|
 |Multiple Samples CIPW Norm|2017-04-3 12:30|MultiCIPW|
+|Multiple Rose Map|2017-04-9 16:30|Rose Map|
 
-Download links:
+[English Instruction](README.html)
 
-Windows:
+[中文说明](README_CN.html)
 
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqN2pwaDlFYnlaLTQ)
+[Download](Download.html)
 
-
-[Baidu Download](https://pan.baidu.com/s/1hrCYtN2)
-
-
-OS X:
-
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqN3U1THZCeU1NcVk)
-
-
-[Baidu Download](https://pan.baidu.com/s/1c2ciYvm)
-
+[API](API.html)

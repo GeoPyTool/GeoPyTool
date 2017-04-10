@@ -1,20 +1,22 @@
 ﻿# !/usr/bin/env python3#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
+sign = """
 created on Sat Dec 17 22:28:24 2016
 @author: cycleuser
 # Create Date: 2015-07-13
-# Modify Date: 2017-03-13
+# Modify Date: 2017-04-10
 a tool set for daily geology related task.
 # prerequisite:
 #   based on Python 3.x
-#   need math,numpy,pandas,matplotlib,xlrd
+#   need math,numpy,pandas,matplotlib,xlrd,chempy
 
-# usage:
+# Simple Sample:
     1) opern a ipython console
     2) import geopython as gp
     3) TasSample= Tas("tas.xlsx")
     4) TasSample.read()
+    5) from geopython import gui
+    6) gui.Show()
 
 # Geology related classes available:
     1) Tas
@@ -22,16 +24,21 @@ a tool set for daily geology related task.
     3) Trace & Trace2 (with different sequence of trace elements)
     4) Qfl & Qmflt & Qapf
     5) Polar (projection of wulf net & schmidt net)
-
+    6) Harker diagram
+    7) CIPW Norm calculation
+    8) Zircon Ce4/Ce3 calculation (Ballard 2002)
+    
+    
 # know issues:
     1) Only work on Python 3.x
 
 # Other
-    Any issues or improvements please contact cycleuser@cycleuser.org
-    or leave a message to my blog: http://blog.cycleuser.org
+Any issues or improvements please open an issue at [here](https://github.com/chinageology/GeoPython/issues)
+or leave a message to [our website](http://geopython.com)
 """
 
 lang = "python"
+
 
 import matplotlib
 
@@ -45,6 +52,7 @@ import sys
 import csv
 from chempy import Substance
 
+print(sign)
 
 class Tool():
     """
