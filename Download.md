@@ -26,16 +26,16 @@ Download links:
 
 Windows:
 
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqN2pwaDlFYnlaLTQ)
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqYm56cGh6Y2lHcHc)
 
 
-[Baidu Download](https://pan.baidu.com/s/1hrCYtN2)
+[Baidu Download](https://pan.baidu.com/s/1bLstcU)
 
 
 OS X:
 
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqN3U1THZCeU1NcVk)
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqTWtNOEU1WmQzUkE)
 
 
-[Baidu Download](https://pan.baidu.com/s/1c2ciYvm)
+[Baidu Download](https://pan.baidu.com/s/1gf1fArp)
 

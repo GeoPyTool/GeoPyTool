@@ -813,7 +813,7 @@ class DualTri():
                          fontsize=16, )
 
 
-class Tas(Frame):
+class Tas_Old(Frame):
     """
     inherit Frame, read xlsx or csv file and use SiO2 , Na2O and K2O to plot tas diagram
     :param Lines: the lines consisting the Tas frame
@@ -837,8 +837,9 @@ class Tas(Frame):
     description = "TAS (total alkali–silica) diagram (after Le Bas et al., 1986, Fig. 2).\nF foidite, Ph phonolite, Pc pocro- basalt,\nU1 tephrite (ol < 10%) basanite(ol > 10%), U2 phonotephrite, U3 tephriphonolite,\nB basalt, S1 trachy- basalt, S2 basaltic trachy- andesite, S3 trachyandesite,\nO1 basaltic andesite, O2 andesite, O3 dacite,  \nT trachyte (q < 20%) trachydacite (q > 20%), R rhyolite"
 
     name = "tas.xlsx"
+    tag = "tas-Le Bas 1986"
 
-    def __init__(self, name="tas.xlsx", Width=8, Height=6, Dpi=80, Left=35, Right=79, X0=37, X1=77, X_Gap=11, Base=0,
+    def __init__(self, name="tas.xlsx", Width=16, Height=9, Dpi=80, Left=35, Right=79, X0=37, X1=77, X_Gap=11, Base=0,
                  Top=16, Y0=1,
                  Y1=15, Y_Gap=15, FontSize=12,
                  xLabel=r'$SiO_2 wt\%$', yLabel=r'$na_2O + K_2O wt\%$'):
@@ -875,17 +876,17 @@ class Tas(Frame):
         self.yLabel = yLabel
 
         self.Lines = [
-            Line([(41, 0.5), (41, 3), (45, 3)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
-            Line([(45, 0.5), (45, 3), (45, 5), (49.4, 7.3), (53, 9.3), (57.6, 11.7), (63, 14)], Sort='', Width=1,
+            Line([(41, 0), (41, 3), (45, 3)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+            Line([(45, 0), (45, 3), (45, 5), (49.4, 7.3), (53, 9.3), (57.6, 11.7), (63, 14)], Sort='', Width=1,
                  Color='black', Style="-", Alpha=0.3),
             Line([(45, 5), (52, 5), (57, 5.9), (63, 7), (69, 8)], Sort='', Width=1, Color='black', Style="-",
                  Alpha=0.3),
-            Line([(76.5, 0.5), (69, 8), (69, 13)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
-            Line([(63, 0.5), (63, 7), (57.6, 11.7), (52.5, 14), (50, 2.5 * 2.3 / 5.1 + 14)], Sort='', Width=1,
+            Line([(77.3, 0), (69, 8), (69, 13)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+            Line([(63, 0), (63, 7), (57.6, 11.7), (52.5, 14), (50, 2.5 * 2.3 / 5.1 + 14)], Sort='', Width=1,
                  Color='black', Style="-", Alpha=0.3),
-            Line([(57, 0.5), (57, 5.9), (53, 9.3), (48.4, 11.5)], Sort='', Width=1, Color='black', Style="-",
+            Line([(57, 0), (57, 5.9), (53, 9.3), (48.4, 11.5)], Sort='', Width=1, Color='black', Style="-",
                  Alpha=0.3),
-            Line([(52, 0.5), (52, 5), (49.4, 7.3), (45, 9.4)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+            Line([(52, 0), (52, 5), (49.4, 7.3), (45, 9.4)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
             Line([(41, 3), (41, 7), (45, 9.4)], Sort='', Width=1, Color='black', Style="--", Alpha=0.3),
             Line([(45, 9.4), (48.4, 11.5), (52.5, 14)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
             Line([(41.75, 1), (52.5, 5)], Sort='x', Color='black', Style=':', Label='MacDonald & Katsura 1964'),
@@ -949,9 +950,173 @@ class Tas(Frame):
             Point(raw.at[i, 'SiO2'], (raw.at[i, 'Na2O'] + raw.at[i, 'K2O']), Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
-        plt.savefig(self.name + "tas.png", dpi=300, bbox_inches='tight')
-        plt.savefig(self.name + "tas.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag+'.png', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag+'.svg', dpi=300, bbox_inches='tight')
         plt.show()
+
+class Tas(Frame):
+    """
+    inherit Frame, read xlsx or csv file and use SiO2 , Na2O and K2O to plot tas diagram
+    :param Lines: the lines consisting the Tas frame
+    :type Lines: a list of lines
+    :param Tags: tags used for the items of Tas diagram
+    :type Tagas: a list of strings
+    :param Labels: labels on the canvas
+    :type Labels: a list of strings
+    :param Locations: the locations of these labels
+    :type Locations: a list of tuple containing two numbers as x-y coords
+    :param description: the description of the tas diagram
+    :param name: the file name used for tas diagram
+    :type name: a string
+    """
+
+    Lines = []
+    Tags = []
+    Labels = [u'F', u'Pc', u'U1', u'Ba',u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3', u'T', u'Td', u'R',u'Q',u'S/N/L']
+    Locations = [(39, 10), (43, 1.5), (44, 6), (47.5, 3.5),(49.5, 1.5), (49, 6), (49, 9.5), (54, 3), (53, 7), (53, 12), (60, 4),
+                 (57, 8.5), (57, 14), (67, 5), (65, 12), (67, 9), (75, 9),(85,1),(55,18.5)]
+    description = "TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF foidite, Ph phonolite, Pc pocro- basalt,\nU1 tephrite (ol < 10%) basanite(ol > 10%), U2 phonotephrite, U3 tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt S1 trachy- basalt, S2 basaltic trachy- andesite, S3 trachyandesite,\nO1 basaltic andesite, O2 andesite, O3 dacite,  \nT trachyte , Td trachydacite , R rhyolite"
+
+    name = "tas.xlsx"
+    tag = "tas-Wilson1989"
+
+    def __init__(self, name="tas.xlsx", Width=16, Height=9, Dpi=80, Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
+                 Top=19, Y0=1,
+                 Y1=19, Y_Gap=19, FontSize=12,
+                 xLabel=r'$SiO_2 wt\%$', yLabel=r'$na_2O + K_2O wt\%$'):
+        """
+        just set up the basic settings
+        """
+        super().__init__()
+        self.raw = ''
+
+        self.name = name
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+        self.Width = Width
+        self.Height = Height
+        self.Dpi = Dpi
+
+        self.Left = Left
+        self.Right = Right
+
+        self.Base = Base
+        self.Top = Top
+
+        self.X0 = X0
+        self.X1 = X1
+        self.X_Gap = X_Gap
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+        self.xLabel = xLabel + "\n" + self.description
+        self.yLabel = yLabel
+
+        self.Lines = [
+            Line([(41, 0), (41, 3), (45, 3)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+            Line([(45, 0), (45, 3), (45, 5), (49.4, 7.3), (53, 9.3), (57.6, 11.7), (61, 13.5), (63, 16.2)], Sort='', Width=1,
+                 Color='black', Style="-", Alpha=0.3),
+            Line([(52, 5), (57, 5.9), (63, 7), (69, 8), (71.8,13.5),(61,8.6)], Sort='', Width=1, Color='black', Style="-",
+                 Alpha=0.3),
+            Line([(45, 2), (45, 5), (52, 5), (45, 2)], Sort='', Width=1,
+                 Color='black', Style="-",
+                 Alpha=0.3),
+            Line([(69, 8), (77.3, 0), (87.5, 4.7), (85.9, 6.8), (71.8,13.5), (63, 16.2), (57, 18), (52.5,18),(37,14),(35,9),(37,3),(41,3)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+            Line([(63, 0), (63, 7), (57.6, 11.7), (52.5, 14), (52.5,18)], Sort='', Width=1,
+                 Color='black', Style="-", Alpha=0.3),
+            Line([(57, 0), (57, 5.9), (53, 9.3), (48.4, 11.5)], Sort='', Width=1, Color='black', Style="-",
+                 Alpha=0.3),
+            Line([(52, 0), (52, 5), (49.4, 7.3), (45, 9.4)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+            Line([(41, 3), (41, 7), (45, 9.4)], Sort='', Width=1, Color='black', Style="--", Alpha=0.3),
+            Line([(45, 9.4), (48.4, 11.5), (52.5, 14)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+            Line([(41.75, 1), (52.5, 5)], Sort='x', Color='black', Style=':', Label='MacDonald & Katsura 1964'),
+            Line([(45.85, 2.75), (46.85, 3.0), (50.0, 4.0), (53.1, 5.0), (55.0, 5.8), (55.6, 6.0), (60.0, 6.8),
+                  (61.5, 7.0), (65.0, 7.35), (70.0, 7.85), (71.6, 8.0), (75.0, 8.3), (76.4, 8.4)], Sort='x',
+                 Color='green', Style='-.', Label='Kuno 1966'),
+            Line([(39.8, 0.35), (65.6, 9.7)], Sort='x', Color='red', Style='--', Label='MacDonald 1968'),
+            Line([(39.2, 0.0), (40.0, 0.4), (43.2, 2.0), (45.0, 2.8), (48.0, 4.0), (50.0, 4.75), (53.7, 6.0),
+                  (55.0, 6.4), (60.0, 8.0), (65.0, 8.8)], Sort='x', Color='blue', Style='-',
+                 Label='Irvine & Baragar 1971')]
+
+    def show(self):
+        """
+        show the tas frame and lines of tas on canvas
+        """
+
+        plt.figure(figsize=(self.Width, self.Height), dpi=self.Dpi)
+
+        plt.xlim(self.Left, self.Right)
+        plt.ylim(self.Base, self.Top)
+
+        plt.xticks(np.linspace(self.X0, self.X1, self.X_Gap, endpoint=True))
+        plt.yticks(np.linspace(self.Y0, self.Y1, self.Y_Gap, endpoint=True))
+
+        plt.xlabel(self.xLabel, fontsize=self.FontSize)
+        plt.ylabel(self.yLabel, fontsize=self.FontSize)
+        for i in self.Lines:
+            i.show()
+        for i in self.Tags:
+            i.show()
+
+        x = np.arange(self.X0, self.X1, 1)
+        y1 = np.power((x - 43) * 3.3, 0.5)
+        y2 = np.power((x - 43) * 9, 0.5)
+        y3 = np.power((x - 43) * 6, 0.5)
+
+        line_up, = plt.plot(x, y1, color='black', linewidth=0.8, linestyle=':', alpha=0.8, label='sigma=3.3')
+        line_down, = plt.plot(x, y2, color='black', linewidth=0.8, linestyle='-.', alpha=0.9, label='sigma=9')
+
+    def read(self):
+        """
+        read the Excel, then use self.show() to show the frame, then Plot points, job done~
+        """
+
+        self.show()
+
+        if ("csv" in self.name):
+            raw = pd.read_csv(self.name)
+        elif ("xlsx" in self.name):
+            raw = pd.read_excel(self.name)
+        PointLabels = []
+
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+
+            Point(raw.at[i, 'SiO2'], (raw.at[i, 'Na2O'] + raw.at[i, 'K2O']), Size=raw.at[i, 'Size'],
+                  Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
+        plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
+        plt.savefig(self.name + self.tag+'.png', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag+'.svg', dpi=300, bbox_inches='tight')
+        plt.show()
+
+
+class TasV(Tas):
+    Labels = [u'F', u'Pc', u'U1', u'Ba', u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3', u'T',
+              u'Td', u'R', u'Q', u'S/N/L']
+    Locations = [(39, 10), (43, 1.5), (44, 6), (47.5, 3.5), (49.5, 1.5), (49, 6), (49, 9.5), (54, 3), (53, 7), (53, 12),
+                 (60, 4),
+                 (57, 8.5), (57, 14), (67, 5), (65, 12), (67, 9), (75, 9), (85, 1), (55, 18.5)]
+    description = "TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF Foidite, Ph Phonolite, Pc Pocrobasalt,\nU1 Tephrite (ol < 10%) Basanite(ol > 10%), U2 Phonotephrite, U3 Tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt, S1 Trachybasalt, S2 Basaltic Trachyandesite, S3 Trachyandesite,\nO1 Basaltic Andesite, O2 Andesite, O3 Dacite,  \nT Trachyte , Td Trachydacite , R Rhyolite, Q Silexite \n S/N/L Sodalitite/Nephelinolith/Leucitolith"
+    tag = "tas-Wilson1989-volcano"
+
+
+class TasI(Tas):
+    Labels = [u'F', u'Pc', u'U1', u'Ba', u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3', u'T',
+              u'Td', u'R', u'Q', u'T/U/I']
+    Locations = [(39, 10), (43, 1.5), (44, 6), (47.5, 3.5), (49.5, 1.5), (49, 6), (49, 9.5), (54, 3), (53, 7), (53, 12),
+                 (60, 4),
+                 (57, 8.5), (57, 14), (67, 5), (65, 12), (67, 9), (75, 9), (85, 1), (55, 18.5)]
+    description = "TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF Foidolite, Ph Foid Syenite, Pc Peridotgabbro,\nU1 Foid Gabbro, U2 Foid Monzodiorite, U3 Foid Monzosyenite,\nBa alkalic gabbro,Bs subalkalic gabbro, S1 Monzogabbro, S2 Monzodiorite, S3 Monzonite,\nO1 Gabbroic Diorite, O2 Diorite, O3 Graodiorite,  \nT Syenite , Td Quartz Monzonite , R Granite, Q Quartzolite \n T/U/I Tawite/Urtite/Italite"
+    tag = "tas-Wilson1989-intrusion"
 
 
 class Ree(Frame):

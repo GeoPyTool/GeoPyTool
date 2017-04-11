@@ -59,49 +59,58 @@ class Simple(QMainWindow):
 
 
 
-        Tas = QPushButton("Tas", self)
+        Tas = QPushButton("Tas-1986", self)
         Tas.move(80, 30)
         Tas.clicked.connect(self.Tas)
 
+
+        TasW = QPushButton("Tas Wilson", self)
+        TasW.move(250, 30)
+        TasW.clicked.connect(self.TasW)
+
+        TasV = QPushButton("Tas Volcano", self)
+        TasV.move(420, 30)
+        TasV.clicked.connect(self.TasV)
+
+        TasI = QPushButton("Tas Intrusion", self)
+        TasI.move(590, 30)
+        TasI.clicked.connect(self.TasI)
+
+
+
+
+
         Ree = QPushButton("Ree", self)
-        Ree.move(250, 30)
+        Ree.move(80, 80)
         Ree.clicked.connect(self.Ree)
 
 
-        CIPW= QPushButton("CIPW", self)
-        CIPW.move(420, 30)
-        CIPW.clicked.connect(self.CIPW)
-
-
-
-
-        Wulf = QPushButton("Wulff", self)
-        Wulf.move(420, 130)
-        Wulf.clicked.connect(self.Wulf)
-
-
-        Schmidt= QPushButton("Schmidt", self)
-        Schmidt.move(590, 130)
-        Schmidt.clicked.connect(self.Schmidt)
-
-        SingleRose= QPushButton("SingleRose", self)
-        SingleRose.move(420, 180)
-        SingleRose.clicked.connect(self.SingleRose)
-
-
-        MultiRose= QPushButton("MultiRose", self)
-        MultiRose.move(590, 180)
-        MultiRose.clicked.connect(self.MultiRose)
-
 
         Trace1 = QPushButton("Trace Cs->", self)
-        Trace1.move(80, 80)
+        Trace1.move(250, 80)
         Trace1.clicked.connect(self.Trace1)
 
 
         Trace2 = QPushButton("Trace Rb->", self)
-        Trace2.move(250, 80)
+        Trace2.move(420, 80)
         Trace2.clicked.connect(self.Trace2)
+
+
+
+        CIPW= QPushButton("CIPW", self)
+        CIPW.move(590, 80)
+        CIPW.clicked.connect(self.CIPW)
+
+
+        Ballard = QPushButton("Ballard", self)
+        Ballard.move(590, 130)
+        Ballard.clicked.connect(self.Ballard)
+
+
+        MultiBallard = QPushButton("MultiBallard", self)
+        MultiBallard.move(590, 180)
+        MultiBallard.clicked.connect(self.MultiBallard)
+
 
         Qfl = QPushButton("Qfl", self)
         Qfl.move(250, 130)
@@ -131,14 +140,31 @@ class Simple(QMainWindow):
         Harker.clicked.connect(self.Harker)
 
 
-        Ballard = QPushButton("Ballard", self)
-        Ballard.move(80, 410)
-        Ballard.clicked.connect(self.Ballard)
 
 
-        MultiBallard = QPushButton("MultiBallard", self)
-        MultiBallard.move(250, 410)
-        MultiBallard.clicked.connect(self.MultiBallard)
+
+
+        SingleRose= QPushButton("SingleRose", self)
+        SingleRose.move(420, 360)
+        SingleRose.clicked.connect(self.SingleRose)
+
+
+        MultiRose= QPushButton("MultiRose", self)
+        MultiRose.move(590, 360)
+        MultiRose.clicked.connect(self.MultiRose)
+
+        Wulf = QPushButton("Wulff", self)
+        Wulf.move(420, 410)
+        Wulf.clicked.connect(self.Wulf)
+
+
+        Schmidt= QPushButton("Schmidt", self)
+        Schmidt.move(590, 410)
+        Schmidt.clicked.connect(self.Schmidt)
+
+
+
+
 
 
         self.lbl_hintX = QLabel(self)
@@ -247,7 +273,21 @@ class Simple(QMainWindow):
             self.SetX.setText(str(text))
 
     def Tas(self):
+        gp.Tas_Old().read()
+
+
+
+    def TasW(self):
         gp.Tas().read()
+
+
+    def TasV(self):
+        gp.TasV().read()
+
+
+    def TasI(self):
+        gp.TasI().read()
+
 
     def Ree(self):
         gp.Ree().read()
