@@ -3884,7 +3884,7 @@ class Ballard():
         DCe4test = str(np.power(np.e, self.p4(self.Ce4[0])))
 
         xlabel4 = "ZirconData is " + str(self.Ce4[1]) + "\n Testdata is" + str(self.p4(
-            self.Ce4[0])) + "\n  est'd Ce(III) (ppm)=" + Ce4test + "\n  est'd DCe(III)(Zir/Met) (ppm)=" + DCe4test
+            self.Ce4[0])) + "\n  est'd Ce(IV) (ppm)=" + Ce4test + "\n  est'd DCe(IV)(Zir/Met) (ppm)=" + DCe4test
 
         plt.xlabel(xlabel4, fontsize=12)
 
