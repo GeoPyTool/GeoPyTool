@@ -4061,6 +4061,8 @@ class MultiBallard():
             self.y4.append(tmpy4)
             self.y3_Plot_Only.append(tmpy3_Plot_Only)
 
+        plt.figure(1)
+
         plt.ylabel(r'Ln D $Zircon/Rock%$', fontsize=12)
 
         for k in range(len(self.y3)):
@@ -4119,7 +4121,6 @@ class MultiBallard():
         plt.figure(2)
 
         plt.ylabel(r'Ln D $Zircon/Rock%$', fontsize=12)
-        plt.subplot(111)
 
         for k in range(len(self.y4)):
 

@@ -273,79 +273,134 @@ class Simple(QMainWindow):
             self.SetX.setText(str(text))
 
     def Tas(self):
-        gp.Tas_Old().read()
-
-
+        a=0
+        a=gp.Tas_Old()
+        a.read()
+        a = 0
 
     def TasW(self):
-        gp.Tas().read()
-
+        a=0
+        a=gp.Tas()
+        a.read()
+        a = 0
 
     def TasV(self):
-        gp.TasV().read()
-
+        a=0
+        a=gp.TasV()
+        a.read()
+        a = 0
 
     def TasI(self):
-        gp.TasI().read()
+        a = 0
+        a=gp.TasI()
+        a.read()
+        a = 0
 
 
     def Ree(self):
-        gp.Ree().read()
+        a = 0
+        a = gp.Ree()
+        a.read()
+        a = 0
 
     def CIPW(self):
-        gp.CIPW().read()
+        a = 0
+        a = gp.CIPW()
+        a.read()
+        a = 0
 
     def Trace1(self):
-        gp.Trace().read()
-
+        a = 0
+        a=gp.Trace()
+        a.read()
+        a = 0
 
     def Trace2(self):
-        gp.Trace2().read()
+        a=0
+        a=gp.Trace2()
+        a.read()
+        a = 0
 
     def Qfl(self):
-        gp.Qfl().read()
+        a=0
+        a=gp.Qfl()
+        a.read()
+        a=0
 
     def Qmflt(self):
-        gp.Qmflt().read()
+        a=0
+        a =gp.Qmflt()
+        a.read()
+        a=0
 
     def QapfP(self):
+        a=0
         gp.QapfP().read()
+        a=0
 
     def QapfV(self):
-        gp.QapfV().read()
+        a=0
+        a =gp.QapfV()
+        a.read()
+        a=0
 
     def Wulf(self):
-        gp.Polar().wulf()
+        a=0
+        a =gp.Polar()
+        a.wulf()
+        a=0
 
     def Schmidt(self):
-        gp.Polar().schmidt()
+        a=0
+        a =gp.Polar()
+        a.schmidt()
+        a=0
 
 
     def SingleRose(self):
-        gp.Polar().singlerose(Name=self.SR.split())
+        a=0
+        a =gp.Polar()
+        a.singlerose(Name=self.SR.split())
+        a=0
 
 
     def MultiRose(self):
-        gp.Polar().multirose(Name=self.MR.split()[0])
+        a=0
+        a =gp.Polar()
+        a.multirose(Name=self.MR.split()[0])
+        a=0
 
 
     def Pearce(self):
-        gp.Pearce().read()
+        a=0
+        a =gp.Pearce()
+        a.read()
+        a=0
 
     def Harker(self):
         print(self.x,"\t",self.y)
-        gp.Harker(x=self.x,y=self.y).read()
+        a=0
+        a =gp.Harker(x=self.x,y=self.y)
+        a.read()
+        a=0
 
     def Ballard(self):
-        gp.Ballard().read()
+        a=0
+        a = gp.Ballard()
+        a.read()
+        a=0
 
     def MultiBallard(self):
-        gp.MultiBallard().read()
+        b=0
+        b=gp.MultiBallard()
+        b.read()
+        b=0
 
 def Show():
     app = QApplication(sys.argv)
     ex = Simple()
     sys.exit(app.exec_())
+
 
 
 if __name__ == '__main__':
