@@ -3817,6 +3817,7 @@ class Ballard():
                 self.Ce4 = [X, Y]
 
     def Calc3(self):
+        plt.figure(3)
 
         self.z3 = np.polyfit(self.x3, self.y3, 1)
         self.p3 = np.poly1d(self.z3)
@@ -3872,8 +3873,7 @@ class Ballard():
         plt.savefig("zircon-Ce3.svg", dpi=300, bbox_inches='tight')
 
     def Calc4(self):
-        plt.figure(2)
-        plt.subplot(111)
+        plt.figure(4)
         self.z4 = np.polyfit(self.x4, self.y4, 1)
         self.p4 = np.poly1d(self.z4)
 
