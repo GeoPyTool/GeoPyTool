@@ -42,6 +42,7 @@ import matplotlib
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+plt.rcParams['svg.fonttype'] = 'none'
 from matplotlib import gridspec
 import numpy as np
 import pandas as pd
