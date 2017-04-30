@@ -9,7 +9,7 @@ sign = """
     # prerequisite:
     #   based on Python 3.x
     #   need math,numpy,pandas,matplotlib,xlrd,chempy
-    
+
     # Simple Sample:
     1) opern a ipython console
     2) import geopython as gp
@@ -17,7 +17,7 @@ sign = """
     4) TasSample.read()
     5) from geopython import gui
     6) gui.Show()
-    
+
     # Geology related classes available:
     1) Tas
     2) Ree
@@ -27,11 +27,11 @@ sign = """
     6) Harker diagram
     7) CIPW Norm calculation
     8) Zircon Ce4/Ce3 calculation (Ballard 2002)
-    
-    
+
+
     # know issues:
     1) Only work on Python 3.x
-    
+
     # Other
     Any issues or improvements please open an issue at [here](https://github.com/chinageology/GeoPython/issues)
     or leave a message to [our website](http://geopython.com)
@@ -43,6 +43,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.rcParams['svg.fonttype'] = 'none'
+plt.rcParams['pdf.fonttype'] = 'truetype'
+
 from matplotlib import gridspec
 import numpy as np
 import pandas as pd
@@ -52,6 +54,7 @@ import csv
 from chempy import Substance
 
 print(sign)
+
 
 class Tool():
     """
@@ -951,9 +954,12 @@ class Tas_Old(Frame):
             Point(raw.at[i, 'SiO2'], (raw.at[i, 'Na2O'] + raw.at[i, 'K2O']), Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
-        plt.savefig(self.name + self.tag+'.png', dpi=300, bbox_inches='tight')
-        plt.savefig(self.name + self.tag+'.svg', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag + '.png', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag + '.svg', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag + '.pdf', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag + '.eps', dpi=300, bbox_inches='tight')
         plt.show()
+
 
 class Tas(Frame):
     """
@@ -973,9 +979,11 @@ class Tas(Frame):
 
     Lines = []
     Tags = []
-    Labels = [u'F', u'Pc', u'U1', u'Ba',u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3', u'T', u'Td', u'R',u'Q',u'S/N/L']
-    Locations = [(39, 10), (43, 1.5), (44, 6), (47.5, 3.5),(49.5, 1.5), (49, 6), (49, 9.5), (54, 3), (53, 7), (53, 12), (60, 4),
-                 (57, 8.5), (57, 14), (67, 5), (65, 12), (67, 9), (75, 9),(85,1),(55,18.5)]
+    Labels = [u'F', u'Pc', u'U1', u'Ba', u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3', u'T',
+              u'Td', u'R', u'Q', u'S/N/L']
+    Locations = [(39, 10), (43, 1.5), (44, 6), (47.5, 3.5), (49.5, 1.5), (49, 6), (49, 9.5), (54, 3), (53, 7), (53, 12),
+                 (60, 4),
+                 (57, 8.5), (57, 14), (67, 5), (65, 12), (67, 9), (75, 9), (85, 1), (55, 18.5)]
     description = "TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF foidite, Ph phonolite, Pc pocro- basalt,\nU1 tephrite (ol < 10%) basanite(ol > 10%), U2 phonotephrite, U3 tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt S1 trachy- basalt, S2 basaltic trachy- andesite, S3 trachyandesite,\nO1 basaltic andesite, O2 andesite, O3 dacite,  \nT trachyte , Td trachydacite , R rhyolite"
 
     name = "tas.xlsx"
@@ -1019,15 +1027,19 @@ class Tas(Frame):
 
         self.Lines = [
             Line([(41, 0), (41, 3), (45, 3)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
-            Line([(45, 0), (45, 3), (45, 5), (49.4, 7.3), (53, 9.3), (57.6, 11.7), (61, 13.5), (63, 16.2)], Sort='', Width=1,
+            Line([(45, 0), (45, 3), (45, 5), (49.4, 7.3), (53, 9.3), (57.6, 11.7), (61, 13.5), (63, 16.2)], Sort='',
+                 Width=1,
                  Color='black', Style="-", Alpha=0.3),
-            Line([(52, 5), (57, 5.9), (63, 7), (69, 8), (71.8,13.5),(61,8.6)], Sort='', Width=1, Color='black', Style="-",
+            Line([(52, 5), (57, 5.9), (63, 7), (69, 8), (71.8, 13.5), (61, 8.6)], Sort='', Width=1, Color='black',
+                 Style="-",
                  Alpha=0.3),
             Line([(45, 2), (45, 5), (52, 5), (45, 2)], Sort='', Width=1,
                  Color='black', Style="-",
                  Alpha=0.3),
-            Line([(69, 8), (77.3, 0), (87.5, 4.7), (85.9, 6.8), (71.8,13.5), (63, 16.2), (57, 18), (52.5,18),(37,14),(35,9),(37,3),(41,3)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
-            Line([(63, 0), (63, 7), (57.6, 11.7), (52.5, 14), (52.5,18)], Sort='', Width=1,
+            Line(
+                [(69, 8), (77.3, 0), (87.5, 4.7), (85.9, 6.8), (71.8, 13.5), (63, 16.2), (57, 18), (52.5, 18), (37, 14),
+                 (35, 9), (37, 3), (41, 3)], Sort='', Width=1, Color='black', Style="-", Alpha=0.3),
+            Line([(63, 0), (63, 7), (57.6, 11.7), (52.5, 14), (52.5, 18)], Sort='', Width=1,
                  Color='black', Style="-", Alpha=0.3),
             Line([(57, 0), (57, 5.9), (53, 9.3), (48.4, 11.5)], Sort='', Width=1, Color='black', Style="-",
                  Alpha=0.3),
@@ -1095,8 +1107,10 @@ class Tas(Frame):
             Point(raw.at[i, 'SiO2'], (raw.at[i, 'Na2O'] + raw.at[i, 'K2O']), Size=raw.at[i, 'Size'],
                   Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel).show()
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
-        plt.savefig(self.name + self.tag+'.png', dpi=300, bbox_inches='tight')
-        plt.savefig(self.name + self.tag+'.svg', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag + '.png', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag + '.svg', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag + '.pdf', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + self.tag + '.eps', dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -1253,6 +1267,8 @@ class Ree(Frame):
 
         plt.savefig(self.name + ".png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + ".svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + '.pdf', dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + '.eps', dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -1487,6 +1503,8 @@ class Qfl(Tri, Tool):
 
         plt.savefig(self.name + "qfl.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "qfl.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qfl.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qfl.eps", dpi=300, bbox_inches='tight')
 
 
 class Qmflt(Qfl, Tool):
@@ -1685,6 +1703,8 @@ class Qmflt(Qfl, Tool):
 
         plt.savefig(self.name + "qmflt.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "qmflt.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qmflt.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qmflt.eps", dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -1983,6 +2003,8 @@ class Qapf(DualTri, Tool):
 
         plt.savefig(self.name + "qapf.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "qapf.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qapf.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qapf.eps", dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -2270,6 +2292,8 @@ class QapfP(Qapf):
 
         plt.savefig(self.name + "qapfP.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "qapfP.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qapfP.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qapfP.eps", dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -2522,6 +2546,8 @@ class QapfV(Qapf):
 
         plt.savefig(self.name + "qapfV.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "qapfV.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qapfV.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "qapfV.eps", dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -2640,6 +2666,8 @@ class Polar(Frame):
 
         plt.savefig(self.name + "Wulff.png", dpi=300)
         plt.savefig(self.name + "Wulff.svg", dpi=300)
+        plt.savefig(self.name + "Wulff.pdf", dpi=300)
+        plt.savefig(self.name + "Wulff.eps", dpi=300)
         plt.show()
 
     def schmidt(self, Width=1, Color='k'):
@@ -2710,6 +2738,8 @@ class Polar(Frame):
 
         plt.savefig(self.name + "Schmidt.png", dpi=300)
         plt.savefig(self.name + "Schmidt.svg", dpi=300)
+        plt.savefig(self.name + "Schmidt.pdf", dpi=300)
+        plt.savefig(self.name + "Schmidt.eps", dpi=300)
         plt.show()
 
     def Trans(self, S=(0, 100, 110), D=(0, 30, 40)):
@@ -2801,7 +2831,9 @@ class Polar(Frame):
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
 
         plt.savefig(self.name + "Rose.png", dpi=300)
-        plt.savefig(self.name +  "Rose.svg", dpi=300)
+        plt.savefig(self.name + "Rose.svg", dpi=300)
+        plt.savefig(self.name + "Rose.pdf", dpi=300)
+        plt.savefig(self.name + "Rose.eps", dpi=300)
         plt.show()
 
     def multirose(self, Gap=10, Width=1, Name='Dip'):
@@ -2878,8 +2910,10 @@ class Polar(Frame):
 
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
 
-        plt.savefig(self.name + Name +  "MultiRose.png", dpi=300)
-        plt.savefig(self.name + Name +  "MultiRose.svg", dpi=300)
+        plt.savefig(self.name + Name + "MultiRose.png", dpi=300)
+        plt.savefig(self.name + Name + "MultiRose.svg", dpi=300)
+        plt.savefig(self.name + Name + "MultiRose.pdf", dpi=300)
+        plt.savefig(self.name + Name + "MultiRose.eps", dpi=300)
         plt.show()
 
 
@@ -3062,6 +3096,8 @@ class Pearce1(Frame):
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
         plt.savefig(self.name + "pearce1.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "pearce1.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "pearce1.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "pearce1.eps", dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -3162,6 +3198,8 @@ class Pearce2(Pearce1):
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
         plt.savefig(self.name + "pearce2.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "pearce2.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "pearce2.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "pearce2.eps", dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -3260,6 +3298,8 @@ class Pearce3(Pearce1):
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
         plt.savefig(self.name + "pearce3.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "pearce3.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "pearce3.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "pearce3.eps", dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -3361,6 +3401,8 @@ class Pearce4(Pearce1):
         plt.legend(loc=5, bbox_to_anchor=(1.5, 0.5))
         plt.savefig(self.name + "pearce4.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "pearce4.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "pearce4.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "pearce4.eps", dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -3700,6 +3742,8 @@ class Harker():
 
         plt.savefig(self.name + "harker.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "harker.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "harker.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "harker.eps", dpi=300, bbox_inches='tight')
         plt.show()
 
 
@@ -3864,6 +3908,8 @@ class Ballard():
 
         plt.savefig("zircon-Ce3.png", dpi=300, bbox_inches='tight')
         plt.savefig("zircon-Ce3.svg", dpi=300, bbox_inches='tight')
+        plt.savefig("zircon-Ce3.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig("zircon-Ce3.eps", dpi=300, bbox_inches='tight')
 
     def Calc4(self):
         plt.figure(4)
@@ -3911,6 +3957,8 @@ class Ballard():
 
         plt.savefig("zircon-Ce4.png", dpi=300, bbox_inches='tight')
         plt.savefig("zircon-Ce4.svg", dpi=300, bbox_inches='tight')
+        plt.savefig("zircon-Ce4.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig("zircon-Ce4.eps", dpi=300, bbox_inches='tight')
 
     def read(self):
         self.Calc3()
@@ -4118,6 +4166,8 @@ class MultiBallard():
 
         plt.savefig(self.name + "zircon-Ce3.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "zircon-Ce3.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "zircon-Ce3.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "zircon-Ce3.eps", dpi=300, bbox_inches='tight')
 
         plt.figure(2)
 
@@ -4160,6 +4210,8 @@ class MultiBallard():
 
         plt.savefig(self.name + "zircon-Ce4.png", dpi=300, bbox_inches='tight')
         plt.savefig(self.name + "zircon-Ce4.svg", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "zircon-Ce4.pdf", dpi=300, bbox_inches='tight')
+        plt.savefig(self.name + "zircon-Ce4.eps", dpi=300, bbox_inches='tight')
 
         DataToWrite = [
             ["Zircon Sample Label", "Zircon Ce4_3 Ratio", "Melt Ce4_3 Ratio", "DCe4", "DCe3", "DCe Zircon/Melt"], ]
@@ -4167,7 +4219,7 @@ class MultiBallard():
         for i in range(len(self.ZirconCe)):
             TMP = self.raw.at[self.Zircon[i], "Label"]
             ZirconTmp = (self.RockCe - self.ZirconCe[i] / self.DCe3test[i]) / (
-            self.ZirconCe[i] / self.DCe4test[i] - self.RockCe)
+                self.ZirconCe[i] / self.DCe4test[i] - self.RockCe)
             MeltTmp = (self.ZirconCe[i] - self.Ce3test[i]) / self.Ce3test[i] * self.DCe3test[i] / self.DCe4test[i]
             self.Ce4_3_Ratio.append(ZirconTmp)
             DataToWrite.append(
