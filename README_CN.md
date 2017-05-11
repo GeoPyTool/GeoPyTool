@@ -51,14 +51,14 @@ pip install xlrd
 我已经将程序功能打包成了一个单独的 zip 包，内置了 exe 文件和 使用的 数据文档样本。下载 Windows 版本的 zip 文件，解压缩之后，把你的数据按照示范放到对应的模板文件中，然后运行 exe，选择对应的按钮来点击一下就可以了。
 
 
-![](https://github.com/chinageology/GeoPython/blob/master/Usage.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/img/Usage.png?raw=true)
 
 ## OS X 系统中使用
 
 
 苹果系统用户下载 OSX 版本的 zip 文件然后解压缩出来一个 App 文件，到APP文件所在同一目录，打开你要用的 Excel 文件，输入数据进去，然后双击这个 App 文件，就能用了。生成的图像跟数据文件一样，也在 App 文件所在目录。
 
-![](https://github.com/chinageology/GeoPython/blob/master/OSXUsage.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/img/OSXUsage.png?raw=true)
 
 ## 在 Python 中使用
 
@@ -104,4 +104,4 @@ gp.Polar("strike.xlsx").read()              # 构造产状的吴尔夫网和施�
 * 然后就是一个png图像了。
 
 
-![](https://github.com/chinageology/GeoPython/blob/master/Sample.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/img/Sample.png?raw=true)

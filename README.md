@@ -38,13 +38,13 @@ Of course, a sweet guy like me just packed them up and share here: [32 bit Windo
 
 For Windows Users, donwload the Windows version zip file and extrat the whole file into a folder, then just put your data in the correspoinding Xlsx file and double click the correspoinding main.exe and click on the function you need.
 
-![](https://github.com/chinageology/GeoPython/blob/master/Usage.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/img/Usage.png?raw=true)
 
 ## Usage Under OSX
 
 For OSX Users, Download the OSX version zip file  and then extrat to get a App file. Got into the location of  `the App`and input your data into each files then double click `the App`file. The Svg and Png generated would also be saved at the same location of `the App` , same as the Data files. I would fix this in the former versions.
 
-![](https://github.com/chinageology/GeoPython/blob/master/OSXUsage.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/img/OSXUsage.png?raw=true)
 
 
 
@@ -107,5 +107,5 @@ If the data file is in the right form and nothing goes wrong, you will have thre
 * a png (Portable Network Graphics) .
 
 
-![](https://github.com/chinageology/GeoPython/blob/master/Sample.png?raw=true)
+![](https://github.com/chinageology/GeoPython/blob/master/img/Sample.png?raw=true)
 
