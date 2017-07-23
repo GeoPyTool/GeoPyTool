@@ -23,10 +23,26 @@ Category: Python
 |Single Zircon Ce|2017-03-25 15:30|Ballard|
 |Multiple Zircon Ce|2017-03-28 15:30|MultiBallard|
 |Multiple Samples CIPW Norm|2017-04-3 12:30|MultiCIPW|
+|NewGUI|2017-07-23 12:30|GUI Powered By PyQt5|
 
 ## Introduction
 
 GeoPython is a project of using Python for geology related daily work. It is a set of free softwares: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+
+## New GUI！
+
+![](NewGUI.jpg)
+
+Here is a new version of GUI, that is still under development.
+
+The files of this New GUI can be found under the [NewGUI](/NewGUI) folder.
+
+Only a few functions are available for now, at the moment I am typing here there is only TAS and not even a whole good TAS function.
+
+We may all know that nice things always happen gradually. So please be patient and give me some time.
+
+I must apologize for the slow development, that is partially caused by my bad physical situation from the tumor operation at the end of last year, and mainly because my bad choice of choosing Kivy in the past. Kivy is cute and funny, but not as reliable as PyQt at all. That means I must learn to use PyQt5 from beginning to use it as the framework of the GUI of GeoPython.
 
 ## [Download](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 
