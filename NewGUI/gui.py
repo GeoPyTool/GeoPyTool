@@ -19,14 +19,19 @@ a tool set for daily geology related task.
 
 
 from CustomClass import PandasModel
-from CustomClass import PlotModel
 from CustomClass import CustomQTableView
+
+from CustomClass import PlotModel
+from CustomClass import AppForm
+from CustomClass import MyPopup
 
 import sys
 import random
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 
 import pandas as pd
 import numpy as np
@@ -41,15 +46,21 @@ from PyQt5.QtWidgets import (QWidget, QMessageBox, QLabel,QMainWindow, QMenu, QH
 
 
 
-
 class Ui_MainWindow(QtWidgets.QWidget):
 
     #raw=0
     raw = pd.DataFrame(index=[], columns=[])  # raw is initialized as a blank dataframe
 
+
     def setupUi(self, MainWindow,):
+
+        self.w = MyPopup()
+        self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+
+        self.pop=AppForm()
+
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(800, 800)
 
         self.model = PandasModel(self.raw)
 
@@ -60,15 +71,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
 
         self.tableView = CustomQTableView(self.centralwidget)
-        self.tableView.setGeometry(QtCore.QRect(10, 10, 384, 384))
+        self.tableView.setGeometry(QtCore.QRect(10, 10, 780, 384))
         self.tableView.setObjectName("tableView")
         self.tableView.setSortingEnabled(True)
-
-
-        self.MyCanvas=PlotModel(self.centralwidget, width=5, height=4, dpi=100)
-        self.MyCanvas.setGeometry(QtCore.QRect(404, 10, 384, 384))
-        self.MyCanvas.setObjectName("MyCanvas")
-        #self.MyConvas.compute_initial_figure()
 
         self.pushButtonOpen = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonOpen.setGeometry(QtCore.QRect(30, 404, 110, 32))
@@ -76,12 +81,15 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonSave = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonSave.setGeometry(QtCore.QRect(30, 444, 110, 32))
         self.pushButtonSave.setObjectName("pushButtonSave")
-        self.pushButtonXYplot = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonXYplot.setGeometry(QtCore.QRect(150, 404, 110, 32))
-        self.pushButtonXYplot.setObjectName("pushButtonXYplot")
-        self.pushButtonTriplot = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonTriplot.setGeometry(QtCore.QRect(150, 444, 110, 32))
-        self.pushButtonTriplot.setObjectName("pushButtonTriplot")
+
+
+
+        self.pushButtonTAS = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonTAS.setGeometry(QtCore.QRect(150, 404, 110, 32))
+        self.pushButtonTAS.setObjectName("pushButtonTAS")
+        self.pushButtonSaveImg = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonSaveImg.setGeometry(QtCore.QRect(150, 444, 110, 32))
+        self.pushButtonSaveImg.setObjectName("pushButtonSaveImg")
         self.pushButtonStereoplot = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonStereoplot.setGeometry(QtCore.QRect(410, 404, 110, 32))
         self.pushButtonStereoplot.setObjectName("pushButtonStereoplot")
@@ -155,7 +163,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonSave.clicked.connect(self.saveDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
 
-        self.pushButtonXYplot.clicked.connect(self.TASplot)
+        self.pushButtonTAS.clicked.connect(self.TASplot)
+
+        self.pushButtonAuto.clicked.connect(self.Auto)
+
+
+        self.pushButtonSaveImg.clicked.connect(self.saveImgFile)
 
 
     def getfile(self):
@@ -183,10 +196,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
 
-
-
-
-
     def saveDataFile(self):
 
 
@@ -208,15 +217,40 @@ class Ui_MainWindow(QtWidgets.QWidget):
             elif ("xls" in DataFileOutput):self.model._df.to_excel(DataFileOutput, encoding='utf-8')
 
     def saveImgFile(self):
-        fileName2, ok2 = QFileDialog.getSaveFileName(self,
+        ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                     "文件保存",
                                     "C:/",
                                     "pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)")  # 设置文件扩展名过滤,注意用双分号间隔
 
+        if (ImgFileOutput != ''):
+            self.w.MyCanvas.print_figure(ImgFileOutput, dpi= 300 )
+            #self.statusBar().showMessage('Saved to %s' % ImgFileOutput, 2000)
+
     def TASplot(self):
 
-        self.MyCanvas.TAS(self.model._df)
+        self.pop = AppForm(df=self.model._df)
+        self.pop.TAS()
+        self.pop.show()
 
+
+
+        #self.w = MyPopup(xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', xlim=(30, 90), ylim=(0, 20))
+        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+
+        #self.w.MyCanvas.TASv(self.model._df)
+        #self.w.show()
+
+
+
+
+    def Auto(self):
+        print("Opening a new popup window...")
+        #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
+        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+
+        self.pop = AppForm(df=self.model._df)
+        self.pop.TAS()
+        self.pop.show()
 
 
     def retranslateUi(self, MainWindow):
@@ -224,8 +258,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         MainWindow.setWindowTitle(_translate("MainWindow", "GeoPython"))
         self.pushButtonOpen.setText(_translate("MainWindow", "Open"))
         self.pushButtonSave.setText(_translate("MainWindow", "Save"))
-        self.pushButtonXYplot.setText(_translate("MainWindow", "X-Y plot"))
-        self.pushButtonTriplot.setText(_translate("MainWindow", "Triangular plot"))
+        self.pushButtonTAS.setText(_translate("MainWindow", "TAS Plot"))
+        self.pushButtonSaveImg.setText(_translate("MainWindow", "SaveImg"))
         self.pushButtonStereoplot.setText(_translate("MainWindow", "Stereo plot"))
         self.pushButtonCIPW.setText(_translate("MainWindow", "CIPW"))
         self.pushButtonAuto.setText(_translate("MainWindow", "Auto"))
@@ -249,7 +283,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
 
 
-if __name__ == "__main__":
+def main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
@@ -258,3 +292,5 @@ if __name__ == "__main__":
     MainWindow.show()
     sys.exit(app.exec_())
 
+if __name__ == "__main__":
+    main()
