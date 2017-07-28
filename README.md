@@ -32,7 +32,8 @@ GeoPython is a project of using Python for geology related daily work. It is a s
 
 ## New GUI！
 
-![](NewGUI.jpg)
+
+
 
 Here is a new version of GUI, that is still under development.
 
@@ -43,6 +44,18 @@ Only a few functions are available for now, at the moment I am typing here there
 We may all know that nice things always happen gradually. So please be patient and give me some time.
 
 I must apologize for the slow development, that is partially caused by my bad physical situation from the tumor operation at the end of last year, and mainly because my bad choice of choosing Kivy in the past. Kivy is cute and funny, but not as reliable as PyQt at all. That means I must learn to use PyQt5 from beginning to use it as the framework of the GUI of GeoPython.
+
+
+The New TAS function need Data template file named as [TAS.xlsx](NewGui/TAS.xlsx)
+![](img\NewTAS.png)
+
+
+The New Zircon Ce function need Data template file named as [ZirconCe.xlsx](NewGui/ZirconCe.xlsx)
+
+![](img\NewZirconCe.png)
+
+
+
 
 ## [Download](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 

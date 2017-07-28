@@ -34,13 +34,12 @@ GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是�
 
 ## 全新图形界面！
 
-![](NewGUI.jpg)
+
 
 我正在制作一个新的图形界面，不过目前还在开发中。
 
 这个图形版本的源代码都在 [NewGUI](/NewGUI) 这个文件夹里面。
 
-Only a few functions are available for now, at the moment I am typing here there is only TAS and not even a whole good TAS function.
 
 目前实现的功能还很少，只是搭建了大概的轮廓： open 按钮点击选择数据文件，载入数据之后，可以在表格试图中排序和修改，并且可以通过 save 按钮来保存；右侧的图只是能显示出来而已，细节都还没顾得上，特别粗糙。
 
@@ -49,6 +48,18 @@ Only a few functions are available for now, at the moment I am typing here there
 首先是由于我去年年底到今年年初的肿瘤手术以及身体恢复状况不佳；其次一个更重要的原因是去年我押宝 Kivy 的决定现在看来很愚蠢，因为 Kivy 虽然跨平台开发挺有趣，但是稳定性和可靠性比较坑。所以我从头学习了一点点 PyQt5，作为图形框架来继续 GUI 的开发。
 
 目前功能太简陋，但是希望大家给我一点时间，耐心围观一下什么的。我相信美好的事情终究会发生。
+
+
+
+全新的 TAS 功能使用的数据文件模板为：[TAS.xlsx](NewGui/TAS.xlsx)
+![](img\NewTAS.png)
+
+
+
+全新的 锆石 Ce 比例计算氧逸度功能使用的数据文件模板为： [ZirconCexlsx](NewGui/ZirconCe.xlsx)
+
+![](img\NewZirconCe.png)
+
 
 ## [下载链接](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 

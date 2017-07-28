@@ -23,9 +23,13 @@ from CustomClass import CustomQTableView
 
 from CustomClass import PlotModel
 from CustomClass import AppForm
+from CustomClass import Zircon
+
 from CustomClass import MyPopup
 
+import math
 import sys
+import csv
 import random
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -58,6 +62,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
         self.pop=AppForm()
+        self.zirconpop=Zircon()
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 800)
@@ -87,9 +92,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonTAS = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonTAS.setGeometry(QtCore.QRect(150, 404, 110, 32))
         self.pushButtonTAS.setObjectName("pushButtonTAS")
-        self.pushButtonSaveImg = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonSaveImg.setGeometry(QtCore.QRect(150, 444, 110, 32))
-        self.pushButtonSaveImg.setObjectName("pushButtonSaveImg")
+        self.pushButtonZircon = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonZircon.setGeometry(QtCore.QRect(150, 444, 110, 32))
+        self.pushButtonZircon.setObjectName("pushButtonZircon")
         self.pushButtonStereoplot = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonStereoplot.setGeometry(QtCore.QRect(410, 404, 110, 32))
         self.pushButtonStereoplot.setObjectName("pushButtonStereoplot")
@@ -99,9 +104,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonAuto = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonAuto.setGeometry(QtCore.QRect(410, 444, 110, 32))
         self.pushButtonAuto.setObjectName("pushButtonAuto")
-        self.pushButtonCe = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonCe.setGeometry(QtCore.QRect(280, 404, 110, 32))
-        self.pushButtonCe.setObjectName("pushButtonCe")
+        self.pushButtonSpyder = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonSpyder.setGeometry(QtCore.QRect(280, 404, 110, 32))
+        self.pushButtonSpyder.setObjectName("pushButtonSpyder")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
@@ -168,7 +173,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonAuto.clicked.connect(self.Auto)
 
 
-        self.pushButtonSaveImg.clicked.connect(self.saveImgFile)
+        self.pushButtonZircon.clicked.connect(self.Zircon)
 
 
     def getfile(self):
@@ -241,16 +246,17 @@ class Ui_MainWindow(QtWidgets.QWidget):
         #self.w.show()
 
 
-
-
-    def Auto(self):
+    def Zircon(self):
         print("Opening a new popup window...")
         #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
-        self.pop = AppForm(df=self.model._df)
-        self.pop.TAS()
-        self.pop.show()
+        self.zirconpop = Zircon(df=self.model._df)
+        self.zirconpop.MultiBallard()
+        self.zirconpop.show()
+
+    def Auto(self):
+        pass
 
 
     def retranslateUi(self, MainWindow):
@@ -259,11 +265,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonOpen.setText(_translate("MainWindow", "Open"))
         self.pushButtonSave.setText(_translate("MainWindow", "Save"))
         self.pushButtonTAS.setText(_translate("MainWindow", "TAS Plot"))
-        self.pushButtonSaveImg.setText(_translate("MainWindow", "SaveImg"))
+        self.pushButtonZircon.setText(_translate("MainWindow", "Zircon Ce"))
         self.pushButtonStereoplot.setText(_translate("MainWindow", "Stereo plot"))
         self.pushButtonCIPW.setText(_translate("MainWindow", "CIPW"))
         self.pushButtonAuto.setText(_translate("MainWindow", "Auto"))
-        self.pushButtonCe.setText(_translate("MainWindow", "Zircon Ce"))
+        self.pushButtonSpyder.setText(_translate("MainWindow", "Spyder"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.menuPlot.setTitle(_translate("MainWindow", "Plot"))
