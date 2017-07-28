@@ -17,7 +17,7 @@ Category: Python
 
 ##### Windows:
 
-[Baidu Download](https://pan.baidu.com/s/1dFw5FSP)
+[Baidu Download](https://pan.baidu.com/s/1boMbY03)
 
 ##### OS X:
 
