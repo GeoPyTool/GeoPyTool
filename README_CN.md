@@ -34,9 +34,17 @@ GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是�
 
 ## 在 Python 中使用
 
-单独的 app 应用文件，以后将只提供 Windows 平台的 exe 文件；对其他平台的用户，建议大家在 Python 环境中使用 GeoPython，这样能省去开发者打包上传的时间，而且大家也能及时更新下载到最新的版本。
+单独的 app 应用文件，以后将只提供 Windows 平台的 exe 文件；对其他平台的用户，建议大家在 Python 环境中使用 GeoPython，这样能省去开发者打包上传的时间，而且大家也能及时更新下载到最新的版本。而且这样大家逐渐开始尝试使用 Python，由于 GeoPython 现在有了重建中的图形界面，所以应该不会感觉到太多的痛苦。
+
 
 ## 使用 PIP 安装
+
+首先当然是大家要安装一个 Python，需要用 3.5 版本以上的，大家可以去[清华的源下载](https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/)
+
+推荐使用 Anaconda3-4.0.0 以及更新的 Anaconda3 版本。
+
+关于 Anaconda 的一些帮助可以参考[清华的官方说明](https://mirrors.tuna.tsinghua.edu.cn/help/anaconda/)。
+
 
 ```Bash
 pip install geopython

@@ -37,6 +37,13 @@ Users of other Operating Systems please try to use GeoPython in Python.
 
 ## Installation With PIP
 
+
+The first thing to do is to install a Python Newer than 3.5, which can be download from [Tsinghua Tuna](https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/)
+
+We recommend Anaconda3-4.0.0 and other newer versions of Anaconda3.
+
+
+
 ```Bash
 pip install geopython
 ```
