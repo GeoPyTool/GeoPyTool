@@ -16,8 +16,8 @@ Category: Python
 ## 当前版本（New Version） :
 
 ##### Windows:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqSHVzREoyRHBEbFk)
-[Baidu Download](https://pan.baidu.com/s/1boMbY03)
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqMkJPSktYaDczVk0)
+[Baidu Download](https://pan.baidu.com/s/1bps6coR)
 
 ##### OS X:
 [Google Download](https://drive.google.com/open?id=0B299gyAIgmpqR05xVHJic0JaZ1E)

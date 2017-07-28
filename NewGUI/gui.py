@@ -24,6 +24,11 @@ from CustomClass import CustomQTableView
 from CustomClass import PlotModel
 from CustomClass import AppForm
 from CustomClass import Zircon
+from CustomClass import TAS
+from CustomClass import REE
+from CustomClass import Trace
+from CustomClass import Trace2
+
 
 from CustomClass import MyPopup
 
@@ -61,7 +66,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.w = MyPopup()
         self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
-        self.pop=AppForm()
         self.zirconpop=Zircon()
 
         MainWindow.setObjectName("MainWindow")
@@ -98,15 +102,17 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonStereoplot = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonStereoplot.setGeometry(QtCore.QRect(410, 404, 110, 32))
         self.pushButtonStereoplot.setObjectName("pushButtonStereoplot")
-        self.pushButtonCIPW = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonCIPW.setGeometry(QtCore.QRect(280, 444, 110, 32))
-        self.pushButtonCIPW.setObjectName("pushButtonCIPW")
-        self.pushButtonAuto = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonAuto.setGeometry(QtCore.QRect(410, 444, 110, 32))
-        self.pushButtonAuto.setObjectName("pushButtonAuto")
-        self.pushButtonSpyder = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonSpyder.setGeometry(QtCore.QRect(280, 404, 110, 32))
-        self.pushButtonSpyder.setObjectName("pushButtonSpyder")
+
+
+        self.pushButtonTrace = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonTrace.setGeometry(QtCore.QRect(280, 444, 110, 32))
+        self.pushButtonTrace.setObjectName("pushButtonTrace")
+        self.pushButtonTrace2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonTrace2.setGeometry(QtCore.QRect(410, 444, 110, 32))
+        self.pushButtonTrace2.setObjectName("pushButtonTrace2")
+        self.pushButtonREE = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonREE.setGeometry(QtCore.QRect(280, 404, 110, 32))
+        self.pushButtonREE.setObjectName("pushButtonREE")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
@@ -142,6 +148,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionStereo.setObjectName("actionStereo")
         self.actionCIPW = QtWidgets.QAction(MainWindow)
         self.actionCIPW.setObjectName("actionCIPW")
+
+
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
         self.menuHelp.addAction(self.actionInstruction)
@@ -163,17 +171,45 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonOpen.clicked.connect(self.getDataFile)
         self.actionOpen.triggered.connect(self.getDataFile)
 
-
-
         self.pushButtonSave.clicked.connect(self.saveDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
 
-        self.pushButtonTAS.clicked.connect(self.TASplot)
-
-        self.pushButtonAuto.clicked.connect(self.Auto)
-
-
         self.pushButtonZircon.clicked.connect(self.Zircon)
+
+        self.pushButtonTAS.clicked.connect(self.TAS)
+
+        self.pushButtonREE.clicked.connect(self.REE)
+
+        self.pushButtonTrace.clicked.connect(self.Trace)
+
+        self.pushButtonTrace2.clicked.connect(self.Trace2)
+
+
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "GeoPython"))
+        self.pushButtonOpen.setText(_translate("MainWindow", "Open"))
+        self.pushButtonSave.setText(_translate("MainWindow", "Save"))
+        self.pushButtonTAS.setText(_translate("MainWindow", "TAS"))
+        self.pushButtonZircon.setText(_translate("MainWindow", "Zircon Ce"))
+        self.pushButtonStereoplot.setText(_translate("MainWindow", "Stereo"))
+        self.pushButtonTrace.setText(_translate("MainWindow", "Trace CS-Lu"))
+        self.pushButtonTrace2.setText(_translate("MainWindow", "Trace Rb-Lu"))
+        self.pushButtonREE.setText(_translate("MainWindow", "REE"))
+        self.menuFile.setTitle(_translate("MainWindow", "File"))
+        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
+        self.menuPlot.setTitle(_translate("MainWindow", "Plot"))
+        self.menuCalc.setTitle(_translate("MainWindow", "Calc"))
+        self.menuDIY.setTitle(_translate("MainWindow", "DIY"))
+        self.actionOpen.setText(_translate("MainWindow", "Open"))
+        self.actionSave.setText(_translate("MainWindow", "Save"))
+        self.actionInstruction.setText(_translate("MainWindow", "Instruction"))
+        self.actionWebsite.setText(_translate("MainWindow", "Website"))
+        self.actionX_Y.setText(_translate("MainWindow", "X-Y"))
+        self.actionTriangular.setText(_translate("MainWindow", "Triangular"))
+        self.actionStereo.setText(_translate("MainWindow", "Stereo"))
+        self.actionCIPW.setText(_translate("MainWindow", "CIPW"))
 
 
     def getfile(self):
@@ -231,20 +267,31 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.w.MyCanvas.print_figure(ImgFileOutput, dpi= 300 )
             #self.statusBar().showMessage('Saved to %s' % ImgFileOutput, 2000)
 
-    def TASplot(self):
+    def TAS(self):
 
-        self.pop = AppForm(df=self.model._df)
+        self.pop = TAS(df=self.model._df)
         self.pop.TAS()
         self.pop.show()
 
 
 
-        #self.w = MyPopup(xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', xlim=(30, 90), ylim=(0, 20))
-        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+    def REE(self):
+        self.reepop = REE(df=self.model._df)
+        self.reepop.REE()
+        self.reepop.show()
 
-        #self.w.MyCanvas.TASv(self.model._df)
-        #self.w.show()
 
+    def Trace(self):
+        self.tracepop = Trace(df=self.model._df)
+        self.tracepop.Trace()
+        self.tracepop.show()
+
+
+
+    def Trace2(self):
+        self.trace2pop = Trace2(df=self.model._df)
+        self.trace2pop.Trace2()
+        self.trace2pop.show()
 
     def Zircon(self):
         print("Opening a new popup window...")
@@ -255,35 +302,20 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.zirconpop.MultiBallard()
         self.zirconpop.show()
 
+
+
+
     def Auto(self):
         pass
 
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "GeoPython"))
-        self.pushButtonOpen.setText(_translate("MainWindow", "Open"))
-        self.pushButtonSave.setText(_translate("MainWindow", "Save"))
-        self.pushButtonTAS.setText(_translate("MainWindow", "TAS Plot"))
-        self.pushButtonZircon.setText(_translate("MainWindow", "Zircon Ce"))
-        self.pushButtonStereoplot.setText(_translate("MainWindow", "Stereo plot"))
-        self.pushButtonCIPW.setText(_translate("MainWindow", "CIPW"))
-        self.pushButtonAuto.setText(_translate("MainWindow", "Auto"))
-        self.pushButtonSpyder.setText(_translate("MainWindow", "Spyder"))
-        self.menuFile.setTitle(_translate("MainWindow", "File"))
-        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
-        self.menuPlot.setTitle(_translate("MainWindow", "Plot"))
-        self.menuCalc.setTitle(_translate("MainWindow", "Calc"))
-        self.menuDIY.setTitle(_translate("MainWindow", "DIY"))
-        self.actionOpen.setText(_translate("MainWindow", "Open"))
-        self.actionSave.setText(_translate("MainWindow", "Save"))
-        self.actionInstruction.setText(_translate("MainWindow", "Instruction"))
-        self.actionWebsite.setText(_translate("MainWindow", "Website"))
-        self.actionX_Y.setText(_translate("MainWindow", "X-Y"))
-        self.actionTriangular.setText(_translate("MainWindow", "Triangular"))
-        self.actionStereo.setText(_translate("MainWindow", "Stereo"))
-        self.actionCIPW.setText(_translate("MainWindow", "CIPW"))
+    def Test(self):
+        pass
+        #self.w = MyPopup(xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', xlim=(30, 90), ylim=(0, 20))
+        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
+        #self.w.MyCanvas.TASv(self.model._df)
+        #self.w.show()
 
 
 

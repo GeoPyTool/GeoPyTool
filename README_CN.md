@@ -61,6 +61,16 @@ GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是�
 ![](img\NewZirconCe.png)
 
 
+
+稀土和微量元素数据文件模板：
+[Trace27.xlsx](NewGui/Trace27.xlsx)
+[Trace37.xlsx](NewGui/Trace37.xlsx)
+[REE.xlsx](NewGui/REE.xlsx)
+
+
+![](img\NewTrace.png)
+
+
 ## [下载链接](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 
 ## 依赖关系

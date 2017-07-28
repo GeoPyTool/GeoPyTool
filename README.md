@@ -55,6 +55,14 @@ The New Zircon Ce function need Data template file named as [ZirconCe.xlsx](NewG
 ![](img\NewZirconCe.png)
 
 
+The New REE and Trace Elements function need Data template files:
+[Trace27.xlsx](NewGui/Trace27.xlsx)
+[Trace37.xlsx](NewGui/Trace37.xlsx)
+[REE.xlsx](NewGui/REE.xlsx)
+
+
+![](img\NewTrace.png)
+
 
 
 ## [Download](https://github.com/chinageology/GeoPython/blob/master/Download.md)
