@@ -32,6 +32,30 @@ Category: Python
 GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是一套自由软件：你可以重新分发或者做出修改，但必须基于由自由软件基金会发布的GNU通用公共许可证第三版的许可,或其后的版本。
 
 
+## 在 Python 中使用
+
+单独的 app 应用文件，以后将只提供 Windows 平台的 exe 文件；对其他平台的用户，建议大家在 Python 环境中使用 GeoPython，这样能省去开发者打包上传的时间，而且大家也能及时更新下载到最新的版本。
+
+## 使用 PIP 安装
+
+```Bash
+pip install geopython
+```
+
+## 在 Python 环境内的使用方法
+
+在通过 PIP 安装好了 GeoPython 之后，就可以在 Python 环境中使用它了。只需要在解释器内（例如 ipython 之类的）输入下面几行代码：
+
+```Pythonreter
+import sys
+import geopython as gp
+sys.exit(gp.begin())
+```
+
+这样就能看到全新实现的图形界面的 GeoPython 了。
+
+
+
 ## 全新图形界面！
 
 

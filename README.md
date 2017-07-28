@@ -29,10 +29,31 @@ Category: Python
 
 GeoPython is a project of using Python for geology related daily work. It is a set of free softwares: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
+## Use in Python
+
+The standalone application files would only be provided on Windows platform.
+
+Users of other Operating Systems please try to use GeoPython in Python.
+
+## Installation With PIP
+
+```Bash
+pip install geopython
+```
+
+## Usage in Python interpreter
+
+After the installation step above, GeoPython now becomes available in Python. And you can simply use it by type the following commands in your Python interpreter :
+```Pythonreter
+import sys
+import geopython as gp
+sys.exit(gp.begin())
+```
+
+Then you would see the new GUI that is under development for now.
+
 
 ## New GUI！
-
-
 
 
 Here is a new version of GUI, that is still under development.
