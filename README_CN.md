@@ -90,6 +90,7 @@ sys.exit(gp.begin())
 
 全新的 锆石 Ce 比例计算氧逸度功能使用的数据文件模板为： [ZirconCexlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/ZirconCe.xlsx)
 
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/ZirconIntro.png)
 ![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewZirconCe.png)
 
 
