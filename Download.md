@@ -16,18 +16,21 @@ Category: Python
 ## 当前版本（New Version） :
 
 ##### Windows:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqMkJPSktYaDczVk0)
-[Baidu Download](https://pan.baidu.com/s/1bps6coR)
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqWWk1NUx3NlF3Snc)
+[Baidu Download](https://pan.baidu.com/s/1mhQ30nA)
 
-##### OS X:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqR05xVHJic0JaZ1E)
-[Baidu Download](https://pan.baidu.com/s/1dFw5FSP)
+
 
 
 
 
 
 ## 旧版本（Legacy Version）:
+
+
+##### OS X:
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqR05xVHJic0JaZ1E)
+[Baidu Download](https://pan.baidu.com/s/1dFw5FSP)
 
 ##### Windows:
 [Google Download](https://drive.google.com/open?id=0B299gyAIgmpqMW5ISTZGV1lBVW8)
