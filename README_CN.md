@@ -84,13 +84,13 @@ sys.exit(gp.begin())
 
 
 全新的 TAS 功能使用的数据文件模板为：[TAS.xlsx](NewGui/TAS.xlsx)
-![](img\NewTAS.png)
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTAS.png)
 
 
 
 全新的 锆石 Ce 比例计算氧逸度功能使用的数据文件模板为： [ZirconCexlsx](NewGui/ZirconCe.xlsx)
 
-![](img\NewZirconCe.png)
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewZirconCe.png)
 
 
 
@@ -100,13 +100,13 @@ sys.exit(gp.begin())
 [REE.xlsx](NewGui/REE.xlsx)
 
 
-![](img\NewTrace.png)
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTrace.png)
 
 
 
 全新实现的极射赤平投影和玫瑰花图功能所用的数据文件模板： [Structure.xlsx](NewGui/Structure.xlsx)
 
-![](img\Rose.png)
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/Rose.png)
 
 ## [下载链接](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 

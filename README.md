@@ -75,12 +75,12 @@ I must apologize for the slow development, that is partially caused by my bad ph
 
 
 The New TAS function need Data template file named as [TAS.xlsx](NewGui/TAS.xlsx)
-![](img\NewTAS.png)
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTAS.png)
 
 
 The New Zircon Ce function need Data template file named as [ZirconCe.xlsx](NewGui/ZirconCe.xlsx)
 
-![](img\NewZirconCe.png)
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewZirconCe.png)
 
 
 The New REE and Trace Elements function need Data template files:
@@ -89,12 +89,12 @@ The New REE and Trace Elements function need Data template files:
 [REE.xlsx](NewGui/REE.xlsx)
 
 
-![](img\NewTrace.png)
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTrace.png)
 
 
 The New StereoNet Projection and the RoseMap function need Data template file named as [Structure.xlsx](NewGui/Structure.xlsx)
 
-![](img\Rose.png)
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/Rose.png)
 
 
 ## [Download](https://github.com/chinageology/GeoPython/blob/master/Download.md)
