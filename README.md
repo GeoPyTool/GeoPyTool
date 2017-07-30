@@ -92,6 +92,10 @@ The New REE and Trace Elements function need Data template files:
 ![](img\NewTrace.png)
 
 
+The New StereoNet Projection and the RoseMap function need Data template file named as [Structure.xlsx](NewGui/Structure.xlsx)
+
+![](img\Rose.png)
+
 
 ## [Download](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 

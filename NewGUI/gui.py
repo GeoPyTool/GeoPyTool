@@ -28,10 +28,12 @@ from CustomClass import TAS
 from CustomClass import REE
 from CustomClass import Trace
 from CustomClass import Trace2
-
+from CustomClass import Stereo
+from CustomClass import Rose
 
 from CustomClass import MyPopup
 
+import re
 import math
 import sys
 import csv
@@ -99,9 +101,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonZircon = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonZircon.setGeometry(QtCore.QRect(150, 444, 110, 32))
         self.pushButtonZircon.setObjectName("pushButtonZircon")
-        self.pushButtonStereoplot = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonStereoplot.setGeometry(QtCore.QRect(410, 404, 110, 32))
-        self.pushButtonStereoplot.setObjectName("pushButtonStereoplot")
+
+
+        self.pushButtonStereo = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonStereo.setGeometry(QtCore.QRect(410, 404, 110, 32))
+        self.pushButtonStereo.setObjectName("pushButtonStereo")
 
 
         self.pushButtonTrace = QtWidgets.QPushButton(self.centralwidget)
@@ -110,9 +114,26 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonTrace2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonTrace2.setGeometry(QtCore.QRect(410, 444, 110, 32))
         self.pushButtonTrace2.setObjectName("pushButtonTrace2")
+
         self.pushButtonREE = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonREE.setGeometry(QtCore.QRect(280, 404, 110, 32))
         self.pushButtonREE.setObjectName("pushButtonREE")
+
+
+        self.pushButtonRose = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonRose.setGeometry(QtCore.QRect(540, 404, 110, 32))
+        self.pushButtonRose.setObjectName("pushButtonRose")
+
+
+
+
+        self.pushButtonTri= QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonTri.setGeometry(QtCore.QRect(540, 444, 110, 32))
+        self.pushButtonTri.setObjectName("pushButtonTri")
+
+
+
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
@@ -154,14 +175,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuFile.addAction(self.actionSave)
         self.menuHelp.addAction(self.actionInstruction)
         self.menuHelp.addAction(self.actionWebsite)
-        self.menuPlot.addAction(self.actionX_Y)
-        self.menuPlot.addAction(self.actionTriangular)
-        self.menuPlot.addAction(self.actionStereo)
-        self.menuCalc.addAction(self.actionCIPW)
+
         self.menubar.addAction(self.menuFile.menuAction())
-        self.menubar.addAction(self.menuPlot.menuAction())
-        self.menubar.addAction(self.menuCalc.menuAction())
-        self.menubar.addAction(self.menuDIY.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -184,6 +199,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.pushButtonTrace2.clicked.connect(self.Trace2)
 
+        self.pushButtonStereo.clicked.connect(self.Stereo)
+
+        self.pushButtonRose.clicked.connect(self.Rose)
+
 
 
     def retranslateUi(self, MainWindow):
@@ -193,23 +212,22 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonSave.setText(_translate("MainWindow", "Save"))
         self.pushButtonTAS.setText(_translate("MainWindow", "TAS"))
         self.pushButtonZircon.setText(_translate("MainWindow", "Zircon Ce"))
-        self.pushButtonStereoplot.setText(_translate("MainWindow", "Stereo"))
+        self.pushButtonStereo.setText(_translate("MainWindow", "Stereo"))
+        self.pushButtonRose.setText(_translate("MainWindow", "Rose"))
         self.pushButtonTrace.setText(_translate("MainWindow", "Trace CS-Lu"))
         self.pushButtonTrace2.setText(_translate("MainWindow", "Trace Rb-Lu"))
         self.pushButtonREE.setText(_translate("MainWindow", "REE"))
+
+
+        self.pushButtonTri.setText(_translate("MainWindow", "Tri"))
+
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
-        self.menuPlot.setTitle(_translate("MainWindow", "Plot"))
-        self.menuCalc.setTitle(_translate("MainWindow", "Calc"))
-        self.menuDIY.setTitle(_translate("MainWindow", "DIY"))
+
         self.actionOpen.setText(_translate("MainWindow", "Open"))
         self.actionSave.setText(_translate("MainWindow", "Save"))
         self.actionInstruction.setText(_translate("MainWindow", "Instruction"))
         self.actionWebsite.setText(_translate("MainWindow", "Website"))
-        self.actionX_Y.setText(_translate("MainWindow", "X-Y"))
-        self.actionTriangular.setText(_translate("MainWindow", "Triangular"))
-        self.actionStereo.setText(_translate("MainWindow", "Stereo"))
-        self.actionCIPW.setText(_translate("MainWindow", "CIPW"))
 
 
     def getfile(self):
@@ -273,20 +291,15 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pop.TAS()
         self.pop.show()
 
-
-
     def REE(self):
         self.reepop = REE(df=self.model._df)
         self.reepop.REE()
         self.reepop.show()
 
-
     def Trace(self):
         self.tracepop = Trace(df=self.model._df)
         self.tracepop.Trace()
         self.tracepop.show()
-
-
 
     def Trace2(self):
         self.trace2pop = Trace2(df=self.model._df)
@@ -302,12 +315,18 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.zirconpop.MultiBallard()
         self.zirconpop.show()
 
+    def Stereo(self):
+        self.stereopop = Stereo(df=self.model._df)
+        self.stereopop.Stereo()
+        self.stereopop.show()
 
-
+    def Rose(self):
+        self.rosepop = Rose(df=self.model._df)
+        self.rosepop.Rose()
+        self.rosepop.show()
 
     def Auto(self):
         pass
-
 
     def Test(self):
         pass
@@ -330,5 +349,9 @@ def main():
     MainWindow.show()
     sys.exit(app.exec_())
 
-if __name__ == "__main__":
-    main()
+
+
+
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())

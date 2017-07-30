@@ -103,6 +103,11 @@ sys.exit(gp.begin())
 ![](img\NewTrace.png)
 
 
+
+全新实现的极射赤平投影和玫瑰花图功能所用的数据文件模板： [Structure.xlsx](NewGui/Structure.xlsx)
+
+![](img\Rose.png)
+
 ## [下载链接](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 
 ## 依赖关系
