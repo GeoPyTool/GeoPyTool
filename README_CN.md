@@ -83,28 +83,28 @@ sys.exit(gp.begin())
 
 
 
-全新的 TAS 功能使用的数据文件模板为：[TAS.xlsx](NewGui/TAS.xlsx)
+全新的 TAS 功能使用的数据文件模板为：[TAS.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/TAS.xlsx)
 ![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTAS.png)
 
 
 
-全新的 锆石 Ce 比例计算氧逸度功能使用的数据文件模板为： [ZirconCexlsx](NewGui/ZirconCe.xlsx)
+全新的 锆石 Ce 比例计算氧逸度功能使用的数据文件模板为： [ZirconCexlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/ZirconCe.xlsx)
 
 ![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewZirconCe.png)
 
 
 
 稀土和微量元素数据文件模板：
-[Trace27.xlsx](NewGui/Trace27.xlsx)
-[Trace37.xlsx](NewGui/Trace37.xlsx)
-[REE.xlsx](NewGui/REE.xlsx)
+[Trace27.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/Trace27.xlsx)
+[Trace37.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/Trace37.xlsx)
+[REE.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/REE.xlsx)
 
 
 ![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTrace.png)
 
 
 
-全新实现的极射赤平投影和玫瑰花图功能所用的数据文件模板： [Structure.xlsx](NewGui/Structure.xlsx)
+全新实现的极射赤平投影和玫瑰花图功能所用的数据文件模板： [Structure.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/Structure.xlsx)
 
 ![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/Rose.png)
 
