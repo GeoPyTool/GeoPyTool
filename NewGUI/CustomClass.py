@@ -24,6 +24,494 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import (QWidget, QLabel, QHBoxLayout, QVBoxLayout,
                              QApplication, QPushButton, QSlider,
                              QFileDialog, QAction)
+class Tool():
+    def TriToBin(self, x, y, z):
+
+        """
+        Turn an x-y-z triangular coord to an a-b coord.
+        if z is negative, calc with its abs then return (a, -b).
+        :param x,y,z: the three numbers of the triangular coord
+        :type x,y,z: float or double are both OK, just numbers
+        :return:  the corresponding a-b coord
+        :rtype:   a tuple consist of a and b
+        """
+
+        if (z >= 0):
+            if (x + y + z == 0):
+                return (0, 0)
+            else:
+                Sum = x + y + z
+                X = 100.0 * x / Sum
+                Y = 100.0 * y / Sum
+                Z = 100.0 * z / Sum
+                if (X + Y != 0):
+                    a = Z / 2.0 + (100.0 - Z) * Y / (Y + X)
+                else:
+                    a = Z / 2.0
+                b = Z / 2.0 * (np.sqrt(3))
+                return (a, b)
+        else:
+            z = abs(z)
+            if (x + y + z == 0):
+                return (0, 0)
+            else:
+                Sum = x + y + z
+                X = 100.0 * x / Sum
+                Y = 100.0 * y / Sum
+                Z = 100.0 * z / Sum
+                if (X + Y != 0):
+                    a = Z / 2.0 + (100.0 - Z) * Y / (Y + X)
+                else:
+                    a = Z / 2.0
+                b = Z / 2.0 * (np.sqrt(3))
+                return (a, -b)
+
+    def BinToTri(self, a, b):
+
+        """
+        Turn an a-b coord to an x-y-z triangular coord .
+        if z is negative, calc with its abs then return (a, -b).
+        :param a,b: the numbers of the a-b coord
+        :type a,b: float or double are both OK, just numbers
+        :return:  the corresponding x-y-z triangular coord
+        :rtype:   a tuple consist of x,y,z
+        """
+
+        if (b >= 0):
+            y = a - b / np.sqrt(3)
+            z = b * 2 / np.sqrt(3)
+            x = 100 - (a + b / np.sqrt(3))
+            return (x, y, z)
+        else:
+            y = a + b / np.sqrt(3)
+            z = b * 2 / np.sqrt(3)
+            x = 100 - (a - b / np.sqrt(3))
+            return (x, y, z)
+
+    def Cross(self, A=[(0, 0), (10, 10)], B=[(0, 10), (100, 0)]):
+
+        """
+        Return the crosspoint of two line A and B.
+        :param A: first line
+        :type A: a list consist of two tuples, beginning and end point of the line
+        :param B: second line
+        :type B: a list consist of two tuples, beginning and end point of the line
+        :return: the crosspoint of A and B
+        :rtype: a list consist of two numbers, the x-y of the crosspoint
+        """
+
+        x0, y0 = A[0]
+        x1, y1 = A[1]
+        x2, y2 = B[0]
+        x3, y3 = B[1]
+
+        b1 = (y1 - y0) / (x1 - x0)
+        b2 = (y3 - y2) / (x3 - x2)
+        c1 = y0 - b1 * x0
+        c2 = y2 - b2 * x2
+
+        x = (c2 - c1) / (b1 - b2)
+        y = b1 * x + c1
+
+        return ([x, y])
+
+    def TriCross(self, A=[(100, 0, 0), (0, 50, 60)], B=[(50, 50, 0), (0, 0, 100)]):
+
+        """
+        Return the crosspoint of two line A and B in triangular coord.
+        :param A: first line
+        :type A: a list consist of two tuples, beginning and end point of the line
+        :param B: second line
+        :type B: a list consist of two tuples, beginning and end point of the line
+        :return:  the crosspoint of A and B
+        :rtype:   a list consist of three numbers, the x-y-z of the triangular coord
+        """
+
+        x0, y0 = self.TriToBin(A[0][0], A[0][1], A[0][2])
+        x1, y1 = self.TriToBin(A[1][0], A[1][1], A[1][2])
+        x2, y2 = self.TriToBin(B[0][0], B[0][1], B[0][2])
+        x3, y3 = self.TriToBin(B[1][0], B[1][1], B[1][2])
+
+        b1 = (y1 - y0) / (x1 - x0)
+        b2 = (y3 - y2) / (x3 - x2)
+        c1 = y0 - b1 * x0
+        c2 = y2 - b2 * x2
+
+        x = (c2 - c1) / (b1 - b2)
+        y = b1 * x + c1
+
+        result = self.BinToTri(x, y)
+        return (result)
+
+    def Fill(self, P=[(100, 0), (85, 15), (0, 3)], Color='blue', Alpha=0.3):
+
+        """
+        Fill a region in planimetric rectangular coord.
+        :param P: the peak points of the region in planimetric rectangular coord
+        :type P: a list consist of at least three tuples, which are the points in planimetric rectangular coord
+        :param Color: the color used to fill the region
+        :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+        :param Alpha: the transparency used to fill the region
+        :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+        """
+        a = []
+        b = []
+
+        for i in P:
+            a.append(i[0])
+            b.append(i[1])
+
+        return (a, b)
+
+    def TriFill(self, P=[(100, 0, 0), (85, 15, 0), (0, 3, 97)], Color='blue', Alpha=0.3):
+
+        """
+         Fill a region in triangular coord.
+        :param P: the peak points of the region in triangular coord
+        :type P: a list consist of at least three tuples, which are the points in triangular coord
+        :param Color: the color used to fill the region
+        :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+        :param Alpha: the transparency used to fill the region
+        :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+        """
+
+        a = []
+        b = []
+
+        for i in P:
+            a.append(self.TriToBin(i[0], i[1], i[2])[0])
+            b.append(self.TriToBin(i[0], i[1], i[2])[1])
+
+        return (a, b)
+        #plt.fill(a, b, Color=Color, Alpha=Alpha, )
+
+class Point():
+    """
+    a Point class
+    :param X,Y: the values of its x-y coord
+    :type X,Y: two float numbers
+    :param Location: gather X and Y as a tuple for further use
+    :type Location: just a tuple with two numbers
+    :param Size: the size of the Point to draw on canvas
+    :type Size: a number , int or maybe float also OK , better around 1 to 20, not too large or too small
+    :param Color: the color of the Point to draw on canvas
+    :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+    :param Alpha: the transparency of the Point
+    :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+    :param Marker: the marker used for the Point
+    :type Marker: a string; o, d, *, ^ , maybe there would be some other types , from matplotlib
+    :param Label: label of the Point, telling what it is and distinguish it from other points
+    :type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    """
+
+    X = 0
+    Y = 0
+    Location = (X, Y)
+    Size = 12
+    Color = 'red'
+    Alpha = 0.3
+    Marker = 'o'
+    Label = ''
+
+    def __init__(self, X=0, Y=0, Size=12, Color='red', Alpha=0.3, Marker='o', Label=''):
+        """
+        just set up the values
+        """
+        super().__init__()
+        self.X = X
+        self.Y = Y
+        self.Location = (X, Y)
+        self.Size = Size
+        self.Color = Color
+        self.Alpha = Alpha
+        self.Marker = Marker
+        self.Label = Label
+
+class Points():
+    """
+    a class for multiple Points
+    :param X,Y: the values of its x-y coords
+    :type X,Y: two lists consist of float numbers
+    :param Size: the size of the Points to draw on canvas
+    :type Size: a number , int or maybe float also OK , better around 1 to 20, not too large or too small
+    :param Color: the color of the Points to draw on canvas
+    :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+    :param Alpha: the transparency of the Points
+    :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+    :param Marker: the marker used for the Points
+    :type Marker: a string; o, d, *, ^ , maybe there would be some other types , from matplotlib
+    :param Label: label of the Points, telling what they are and distinguish them from other points
+    :type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    """
+
+    X = []
+    Y = []
+    # Location = (X, Y)
+    Size = 12
+    Color = 'red'
+    Alpha = 0.3
+    Marker = 'o'
+    Label = ''
+    FontSize = 8
+
+    def __init__(self, points=[(0, 0), (0, 1)], Size=12, Color='red', Alpha=0.3, Marker='o', Label='', FontSize=8):
+        """
+        just set up the values
+        """
+        super().__init__()
+        self.X = []
+        self.Y = []
+        for i in points:
+            self.X.append(i[0])
+            self.Y.append(i[1])
+        # self.Location = (self.X, self.Y)
+        self.Size = Size
+        self.Color = Color
+        self.Alpha = Alpha
+        self.Marker = Marker
+        self.Label = Label
+        self.FontSize = FontSize
+
+class Tag():
+    """
+    a class for Tag put on canvas
+    :param Label: label of the Tag, telling what it is and distinguish them from other tags
+    :type Label: a strings , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    :param Location: the location of the Tag
+    :type Location: a tuple consist of x-y values of its coords
+    :param X_offset,Y_offset: the values of its x-y offsets on coords
+    :type X_offset,Y_offset: two float numbers
+    :param FontSize: the size of font of the Tag
+    :type FontSize: a number , int or maybe float also OK , better around 8 to 12, not too large or too small
+    """
+
+    Label = u'Label'
+    Location = (0, 0)
+    X_offset = -6
+    Y_offset = 3
+    FontSize = 12
+
+    def __init__(self, Label=u'Label', Location=(0, 0), X_offset=-6, Y_offset=3, FontSize=12):
+        """
+        set up the values
+        """
+
+        self.Label = Label
+        self.Location = Location
+        self.X_offset = X_offset
+        self.Y_offset = Y_offset
+        self.FontSize = FontSize
+
+class Line():
+    """
+    a line class
+    :param Begin: the Beginning point of the line
+    :type Begin: a Point Instance
+    :param End: the End point of the line
+    :type End: a Point Instance
+    :param Points: gathering all the Point Instances
+    :type Points: a list
+    :param X,Y: the gathered x and y values of the line to use in plotting
+    :type X,Y: two lists containing float numbers
+    :param Width: the width of the line
+    :type Width: an int number , mayby float is OK
+    :param Color: the color of the Line to draw on canvas
+    :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
+    :param Style: the style used for the Line
+    :type Style: a string; -, --,-., : maybe there would be some other types , from matplotlib
+    :param Alpha: the transparency of the Point
+    :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
+    :param Label: label of the Line, telling what it is and distinguish it from other lines
+    :type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    :param Sort: the sequence used for sorting the points consisting the line
+    :type Sort: a string, x means sort the points with their x values, y means use y instead of x, other means use the sequence of points as these points are put to the line
+    """
+
+    Begin = Point(0, 0)
+    End = Point(1, 1)
+    Points = []
+    X = [Begin.X, End.X]
+    Y = [Begin.Y, End.Y]
+    Width = 1
+    Color = 'blue'
+    Style = "-"
+    Alpha = 0.3
+    Label = ''
+    Sort = ''
+
+    def __init__(self, Points=[(0, 0), (1, 1)], Sort='', Width=1, Color='blue', Style="-", Alpha=0.3, Label=''):
+        """
+        setup the datas
+        """
+        super().__init__()
+        self.Sort = Sort
+        self.Width = Width
+        self.Color = Color
+        self.Style = Style
+        self.Alpha = Alpha
+        self.Label = Label
+
+        if (len(Points) == 2):
+            self.X = [Points[0][0], Points[1][0]]
+            self.Y = [Points[0][1], Points[1][1]]
+            self.Points = Points
+
+        elif (len(Points) > 2):
+            self.Points = Points
+
+        else:
+            print("Cannot draw line with one point")
+
+    def sequence(self):
+        """
+        sort the points in the line with given option
+        """
+        if (len(self.Points[0]) == 2):
+            if (self.Sort == 'X' or self.Sort == 'x'):
+                self.Points.sort(key=lambda x: x[0])
+                self.order(self.Points)
+
+            elif (self.Sort == 'Y' or self.Sort == 'y'):
+                self.Points.sort(key=lambda x: x[1])
+                self.order(self.Points)
+            else:
+                self.order(self.Points)
+
+        if (len(self.Points[0]) == 3):
+            if (self.Sort == 'X' or self.Sort == 'x'):
+                self.Points.sort(key=lambda x: x[0])
+                self.order(self.Points)
+
+            elif (self.Sort == 'Y' or self.Sort == 'y'):
+                self.Points.sort(key=lambda x: x[1])
+                self.order(self.Points)
+            elif (self.Sort == 'Z' or self.Sort == 'Z'):
+                self.Points.sort(key=lambda x: x[2])
+                self.order(self.Points)
+            else:
+                self.order(self.Points)
+
+    def order(self, TMP=[]):
+        X_TMP = []
+        Y_TMP = []
+        for i in TMP:
+            X_TMP.append(i[0])
+            Y_TMP.append(i[1])
+        self.X = X_TMP
+        self.Y = Y_TMP
+
+class TriTag(Tag, Tool):
+    """
+    inherit Tag and Tool,a Tag for triangular coord
+    """
+
+    def __init__(self, Label=u'Label', Location=(0, 1, 2), X_offset=-6, Y_offset=3, FontSize=12):
+        """
+        set up the values, transfer x,y,z coords to x-y coords
+        """
+
+        self.Label = Label
+        self.Location = self.TriToBin(Location[0], Location[1], Location[2])
+        self.X_offset = X_offset
+        self.Y_offset = Y_offset
+        self.FontSize = FontSize
+
+class TriPoint(Point, Tool):
+    """
+    inherit Point and Tool, a Point class for triangular coord
+    :param x,y,z: the list for gathering the x,y,z values of points consisting the line
+    :type x,y,z: three lists
+    :param sum: a value used in calc of coord transfer
+    :type sum: just a number, both int or float are OK
+    """
+    x = 0
+    y = 0
+    z = 0
+    sum = 1
+
+    def __init__(self, P=(10, 20, 70), Size=12, Color='red', Alpha=0.3, Marker='o', Label=''):
+        super().__init__()
+
+        self.sum = P[0] + P[1] + abs(P[2])
+        self.x = P[0] * 100 / self.sum
+        self.y = P[1] * 100 / self.sum
+        self.z = P[2] * 100 / self.sum
+
+        self.Location = P
+        self.Size = Size
+        self.Color = Color
+        self.Alpha = Alpha
+        self.Marker = Marker
+        self.Label = Label
+
+        self.X, self.Y = self.TriToBin(self.x, self.y, self.z)
+
+class TriLine(Line, Tool):
+    """
+    inherit Line and Tool, line class for triangular coord
+    :param x,y,z: the list for gathering the x,y,z values of points consisting the line
+    :type x,y,z: three lists
+    """
+    x = []
+    y = []
+    z = []
+
+    X = []
+    Y = []
+
+    def __init__(self, Points=[(0, 0, 0), (1, 1, 1)], Sort='', Width=1, Color='blue', Style="-", Alpha=0.3, Label=''):
+        super().__init__()
+        self.Sort = Sort
+        self.Width = Width
+        self.Color = Color
+        self.Style = Style
+        self.Alpha = Alpha
+        self.Label = Label
+
+        if (len(Points) == 2):
+
+            TriPoint(Points[0])
+
+            self.x = [Points[0][0], Points[1][0]]
+            self.y = [Points[0][1], Points[1][1]]
+            self.z = [Points[0][2], Points[1][2]]
+            self.tritrans()
+            self.Points = Points
+
+        elif (len(Points) > 2):
+            self.Points = Points
+
+            for i in Points:
+                self.x.append(i[0])
+                self.y.append(i[1])
+                self.z.append(i[2])
+
+        else:
+            print("Cannot draw line with one point")
+
+
+
+        self.sequence()
+        self.tritrans()
+
+    def tritrans(self):
+        self.X = []
+        self.Y = []
+        for i in range(len(self.x)):
+            self.X.append((self.TriToBin(self.x[i], self.y[i], self.z[i]))[0])
+            self.Y.append((self.TriToBin(self.x[i], self.y[i], self.z[i]))[1])
+
+    def order(self, TMP=[]):
+        X_TMP = []
+        Y_TMP = []
+        Z_TMP = []
+        for i in TMP:
+            X_TMP.append(i[0])
+            Y_TMP.append(i[1])
+            Z_TMP.append(i[2])
+        self.x = X_TMP
+        self.y = Y_TMP
+        self.z = Z_TMP
 
 class PandasModel(QtCore.QAbstractTableModel):
 
@@ -2375,7 +2863,6 @@ class Rose(AppForm):
 
         return (a, b)
 
-
     def lines(self, Width=1, Color='k'):
         """
         read the Excel, then draw the wulf net and Plot points, job done~
@@ -2577,7 +3064,6 @@ class Rose(AppForm):
             #self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
             self.axes.legend(loc=2, fontsize=9, bbox_to_anchor=(0, 0))
 
-
     def singlerose(self,  Width=1, Color=['red']):
         """
         draw the rose map of single sample with different items~
@@ -2686,9 +3172,6 @@ class Rose(AppForm):
             #self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
             self.axes.legend(loc=2, fontsize=9, bbox_to_anchor=(0, 0))
 
-
-
-
     def multirose(self, Width=1, Name='Dip'):
         """
         draw the rose map of multiple samples~
@@ -2787,8 +3270,6 @@ class Rose(AppForm):
             #self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
             self.axes.legend(loc=2, fontsize=9, bbox_to_anchor=(0, 0))
 
-
-
     def Rose(self):
 
 
@@ -2814,3 +3295,842 @@ class Rose(AppForm):
             self.multirose()
 
         self.canvas.draw()
+
+class Tri(AppForm,Tool):
+
+    _df= pd.DataFrame()
+    _changed= False
+
+    xlabel = r''
+    ylabel = r''
+
+    Tags = []
+
+    Label = [u'C', u'A', u'B']
+    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
+                     (-6, -1),
+                     (104, -1)]
+
+    Labels = [u'Craton \n Interior',
+              u'Transitional \n Continental',
+              u'Basement \n Uplift',
+              u'Recycled \n Orogenic',
+              u'Dissected \n Arc',
+              u'Transitional \n Arc',
+              u'Undissected \n Arc']
+    Locations = [(8.5, 1.5, 90),
+                 (28.5, 1.5, 70),
+                 (58.5, 1.5, 40),
+                 (18, 22, 70),
+                 (35, 30, 35),
+                 (15, 60, 15),
+                 (11, 80, 9)]
+    Offset = [(-80, 2),
+              (-80, 2),
+              (-80, 2),
+              (-20, -5),
+              (-20, -8),
+              (-60, -2),
+              (-40, -5)]
+
+
+    def __init__(self, parent=None,df = pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Triangular')
+
+        self._df=df
+        if(len(df)>0):
+            self._changed = True
+            print("DataFrame recieved to Tri")
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+        self.raw = self._df
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i],
+                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
+                                                        self.Locations[i][2]),
+                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((15.0, 9.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton("&Reset")
+        self.draw_button.clicked.connect(self.Tri)
+
+        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Tri)  # int
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button,self.legend_cb]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def create_status_bar(self):
+        self.status_text = QLabel("Click Save button to save your figure.")
+        self.statusBar().addWidget(self.status_text, 1)
+
+    def create_action(self, text, slot=None, shortcut=None,
+                      icon=None, tip=None, checkable=False,
+                      signal="triggered()"):
+        action = QAction(text, self)
+        if icon is not None:
+            action.setIcon(QIcon(":/%s.png" % icon))
+        if shortcut is not None:
+            action.setShortcut(shortcut)
+        if tip is not None:
+            action.setToolTip(tip)
+            action.setStatusTip(tip)
+        if slot is not None:
+            action.triggered.connect(slot)
+        if checkable:
+            action.setCheckable(True)
+        return action
+
+
+
+    def Tri(self):
+
+
+        self.axes.clear()
+        self.axes.set_xlim(-10, 140)
+        self.axes.set_ylim(-10, 100)
+
+
+        #self.axes.spines['right'].set_color('none')
+        #self.axes.spines['top'].set_color('none')
+        #self.axes.spines['bottom'].set_color('none')
+        #self.axes.spines['left'].set_color('none')
+
+
+
+        s=[TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black', Style="-",
+                Alpha=0.7, Label='')]
+        for i in s:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+        for i in range(len(self.LabelPosition)):
+            self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
+                         textcoords='offset points',
+                         fontsize=16, )
+
+
+
+        a=[TriLine(Points=[(85, 15, 0), (0, 3, 97)], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                Label=''),
+        TriLine(Points=[(45, 0, 55), (0, 75, 25)], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                Label=''),
+        TriLine(Points=[(50, 50, 0), (0, 75, 25)], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label='')]
+
+        for i in a:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+
+        T0 = (85, 15, 0)
+        T1 = (0, 3, 97)
+        T2 = (87, 0, 13)
+        T3 = (0, 63, 37)
+        T4 = self.TriCross(A=[T0, T1], B=[T2, T3])
+
+        T2 = (87, 0, 13)
+        T3 = (0, 63, 37)
+        T5 = (45, 0, 55)
+        T6 = (0, 75, 25)
+
+        T7 = self.TriCross(A=[T2, T3], B=[T5, T6])
+
+        b=[TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label=''),
+        TriLine(Points=[T7, (0, 63, 37)], Sort='', Width=1, Color='black', Style=":", Alpha=0.7,
+                Label='')]
+
+        for i in b:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+        y = 3 * np.sqrt(3) * (82 - 7.5 - np.sqrt(15)) / (18 * np.sqrt(3) - 1.5)
+        z = 82 - np.power(15, 0.5)
+        x = 100 - y - z
+
+        p0 = (85, 15, 0)
+        p1 = (0, 3, 97)
+        p2 = (18, 0, 82)
+        p3 = (0, 36, 64)
+
+        p4 = self.TriCross(A=[p0, p1], B=[p2, p3])
+
+        c=[TriLine(Points=[(18, 0, 82), p4], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                Label='')]
+
+        for i in c:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+
+        p,q=self.TriFill(P=[(100, 0, 0), (85, 15, 0), (0, 3, 97), (0, 0, 100)], Color='blue', Alpha=0.13)
+
+        self.axes.fill(p,q, Color='blue', Alpha=0.13, )
+
+        ap0 = (85, 15, 0)
+        ap1 = (0, 3, 97)
+        ap2 = (0, 75, 25)
+        ap3 = (45, 0, 55)
+
+        ap4 = self.TriCross(A=[ap0, ap1], B=[ap2, ap3])
+
+        m,n=self.TriFill(P=[(0, 75, 25), (0, 3, 97), ap4], Color='red', Alpha=0.13)
+
+        self.axes.fill(m,n, Color='red', Alpha=0.13, )
+
+
+        raw=self._df
+        PointLabels = []
+        TPoints=[]
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'L'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
+                     Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
+                     Label=TmpLabel))
+
+        for i in TPoints:
+            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
+                 label=i.Label, edgecolors='black')
+
+
+
+        if (self.legend_cb.isChecked()):
+            #a = int(self.slider.value())
+            #self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
+            self.axes.legend(loc=4, fontsize=9, bbox_to_anchor=(1.1, 0.5))
+
+
+        self.canvas.draw()
+
+class QFL(AppForm,Tool):
+
+    _df= pd.DataFrame()
+    _changed= False
+
+    xlabel = r''
+    ylabel = r''
+
+    Tags = []
+
+    Label = [u'Q', u'F', u'L']
+    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
+                     (-6, -1),
+                     (104, -1)]
+
+    Labels = [u'Craton \n Interior',
+              u'Transitional \n Continental',
+              u'Basement \n Uplift',
+              u'Recycled \n Orogenic',
+              u'Dissected \n Arc',
+              u'Transitional \n Arc',
+              u'Undissected \n Arc']
+    Locations = [(8.5, 1.5, 90),
+                 (28.5, 1.5, 70),
+                 (58.5, 1.5, 40),
+                 (18, 22, 70),
+                 (35, 30, 35),
+                 (15, 60, 15),
+                 (11, 80, 9)]
+    Offset = [(-80, 2),
+              (-80, 2),
+              (-80, 2),
+              (-20, -5),
+              (-20, -8),
+              (-60, -2),
+              (-40, -5)]
+
+
+    def __init__(self, parent=None,df = pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Q-F-L')
+
+        self._df=df
+        if(len(df)>0):
+            self._changed = True
+            print("DataFrame recieved to Tri")
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+        self.raw = self._df
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i],
+                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
+                                                        self.Locations[i][2]),
+                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((8.0, 6.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton("&Reset")
+        self.draw_button.clicked.connect(self.Tri)
+
+        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Tri)  # int
+
+        self.Tag_cb = QCheckBox("&Tag")
+        self.Tag_cb.setChecked(True)
+        self.Tag_cb.stateChanged.connect(self.Tri)  # int
+
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button,self.legend_cb,self.Tag_cb]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def create_status_bar(self):
+        self.status_text = QLabel("Click Save button to save your figure.")
+        self.statusBar().addWidget(self.status_text, 1)
+
+    def create_action(self, text, slot=None, shortcut=None,
+                      icon=None, tip=None, checkable=False,
+                      signal="triggered()"):
+        action = QAction(text, self)
+        if icon is not None:
+            action.setIcon(QIcon(":/%s.png" % icon))
+        if shortcut is not None:
+            action.setShortcut(shortcut)
+        if tip is not None:
+            action.setToolTip(tip)
+            action.setStatusTip(tip)
+        if slot is not None:
+            action.triggered.connect(slot)
+        if checkable:
+            action.setCheckable(True)
+        return action
+
+
+
+    def Tri(self):
+
+
+        self.axes.clear()
+        self.axes.set_xlim(-10, 140)
+        self.axes.set_ylim(-10, 100)
+
+
+        #self.axes.spines['right'].set_color('none')
+        #self.axes.spines['top'].set_color('none')
+        #self.axes.spines['bottom'].set_color('none')
+        #self.axes.spines['left'].set_color('none')
+
+
+
+        s=[TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black', Style="-",
+                Alpha=0.7, Label='')]
+        for i in s:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+        for i in range(len(self.LabelPosition)):
+            self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
+                         textcoords='offset points',
+                         fontsize=16, )
+
+
+
+        a=[TriLine(Points=[(85, 15, 0), (0, 3, 97)], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                Label=''),
+        TriLine(Points=[(45, 0, 55), (0, 75, 25)], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                Label=''),
+        TriLine(Points=[(50, 50, 0), (0, 75, 25)], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label='')]
+
+        for i in a:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+
+        T0 = (85, 15, 0)
+        T1 = (0, 3, 97)
+        T2 = (87, 0, 13)
+        T3 = (0, 63, 37)
+        T4 = self.TriCross(A=[T0, T1], B=[T2, T3])
+
+        T2 = (87, 0, 13)
+        T3 = (0, 63, 37)
+        T5 = (45, 0, 55)
+        T6 = (0, 75, 25)
+
+        T7 = self.TriCross(A=[T2, T3], B=[T5, T6])
+
+        b=[TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label=''),
+        TriLine(Points=[T7, (0, 63, 37)], Sort='', Width=1, Color='black', Style=":", Alpha=0.7,
+                Label='')]
+
+        for i in b:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+        y = 3 * np.sqrt(3) * (82 - 7.5 - np.sqrt(15)) / (18 * np.sqrt(3) - 1.5)
+        z = 82 - np.power(15, 0.5)
+        x = 100 - y - z
+
+        p0 = (85, 15, 0)
+        p1 = (0, 3, 97)
+        p2 = (18, 0, 82)
+        p3 = (0, 36, 64)
+
+        p4 = self.TriCross(A=[p0, p1], B=[p2, p3])
+
+        c=[TriLine(Points=[(18, 0, 82), p4], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                Label='')]
+
+        for i in c:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+
+        p,q=self.TriFill(P=[(100, 0, 0), (85, 15, 0), (0, 3, 97), (0, 0, 100)], Color='blue', Alpha=0.13)
+
+        self.axes.fill(p,q, Color='blue', Alpha=0.13, )
+
+        ap0 = (85, 15, 0)
+        ap1 = (0, 3, 97)
+        ap2 = (0, 75, 25)
+        ap3 = (45, 0, 55)
+
+        ap4 = self.TriCross(A=[ap0, ap1], B=[ap2, ap3])
+
+        m,n=self.TriFill(P=[(0, 75, 25), (0, 3, 97), ap4], Color='red', Alpha=0.13)
+
+        self.axes.fill(m,n, Color='red', Alpha=0.13, )
+
+
+        raw=self._df
+        PointLabels = []
+        TPoints=[]
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'L'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
+                     Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
+                     Label=TmpLabel))
+
+        for i in TPoints:
+            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
+                 label=i.Label, edgecolors='black')
+
+        if(self.Tag_cb.isChecked()):
+            for i in self.Tags:
+                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
+                             textcoords='offset points',
+                             fontsize=i.FontSize, color='grey', alpha=0.8)
+
+        if (self.legend_cb.isChecked()):
+            #a = int(self.slider.value())
+            #self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
+            self.axes.legend(loc=4, fontsize=9, bbox_to_anchor=(1.1, 0.5))
+
+
+        self.canvas.draw()
+
+class QmFLt(AppForm,Tool):
+
+    _df= pd.DataFrame()
+    _changed= False
+
+    xlabel = r''
+    ylabel = r''
+
+    Tags = []
+
+    Label = [u'Qm', u'F', u'Lt']
+    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
+                     (-6, -1),
+                     (104, -1)]
+
+    Labels = [u'Craton \n Interior',
+              u'Transitional \n Continental',
+              u'Basement \n Uplift',
+
+              u'Mixed',
+              u'Dissected \n Arc',
+              u'Transitional \n Arc',
+              u'Undissected \n Arc',
+
+              u'Quartzose \n Recycled',
+              u'Transitional \n Recycled',
+              u'Lithic \n Recycled']
+    Locations = [(15, 5, 90),
+                 (30, 8, 62),
+                 (60, 10, 30),
+
+                 (30, 25, 45),
+                 (40, 20, 40),
+                 (40, 40, 20),
+                 (20, 70, 10),
+
+                 (10, 3, 60),
+                 (10, 50, 40),
+                 (10, 80, 10)]
+
+    Offset = [(-66, 2),
+              (-108, 2),
+              (-95, 2),
+
+              (-10, +10),
+              (-10, -25),
+              (-40, -20),
+              (-30, -35),
+
+              (+68, -28),
+              (+50, -2),
+              (+52, -15)]
+
+    def __init__(self, parent=None,df = pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Qm-F-lt')
+
+        self._df=df
+        if(len(df)>0):
+            self._changed = True
+            print("DataFrame recieved to Tri")
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+        self.raw = self._df
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i],
+                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
+                                                        self.Locations[i][2]),
+                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((8.0, 6.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton("&Reset")
+        self.draw_button.clicked.connect(self.Tri)
+
+        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Tri)  # int
+
+        self.Tag_cb = QCheckBox("&Tag")
+        self.Tag_cb.setChecked(True)
+        self.Tag_cb.stateChanged.connect(self.Tri)  # int
+
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button,self.legend_cb,self.Tag_cb]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def create_status_bar(self):
+        self.status_text = QLabel("Click Save button to save your figure.")
+        self.statusBar().addWidget(self.status_text, 1)
+
+    def create_action(self, text, slot=None, shortcut=None,
+                      icon=None, tip=None, checkable=False,
+                      signal="triggered()"):
+        action = QAction(text, self)
+        if icon is not None:
+            action.setIcon(QIcon(":/%s.png" % icon))
+        if shortcut is not None:
+            action.setShortcut(shortcut)
+        if tip is not None:
+            action.setToolTip(tip)
+            action.setStatusTip(tip)
+        if slot is not None:
+            action.triggered.connect(slot)
+        if checkable:
+            action.setCheckable(True)
+        return action
+
+
+
+    def Tri(self):
+
+
+        self.axes.clear()
+        self.axes.set_xlim(-10, 140)
+        self.axes.set_ylim(-10, 100)
+
+
+        #self.axes.spines['right'].set_color('none')
+        #self.axes.spines['top'].set_color('none')
+        #self.axes.spines['bottom'].set_color('none')
+        #self.axes.spines['left'].set_color('none')
+
+
+
+        s=[TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black', Style="-",
+                Alpha=0.7, Label='')]
+        for i in s:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+        for i in range(len(self.LabelPosition)):
+            self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
+                         textcoords='offset points',
+                         fontsize=16, )
+
+
+
+
+
+        a=[TriLine(Points=[(77, 23, 0), (0, 11, 89)], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                Label='')]
+
+        for i in a:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+
+        T0 = (77, 23, 0)
+        T1 = (0, 11, 89)
+        T2 = (43, 0, 57)
+        T3 = (0, 87, 13)
+
+        T4 = self.TriCross(A=[T0, T1], B=[T2, T3])
+
+        T2 = (43, 0, 57)
+        T3 = (0, 87, 13)
+
+        T5 = (82, 0, 18)
+        T6 = (0, 68, 32)
+
+        T7 = self.TriCross(A=[T2, T3], B=[T5, T6])
+
+        T0 = (77, 23, 0)
+        T1 = (0, 11, 89)
+
+        T5 = (82, 0, 18)
+        T6 = (0, 68, 32)
+
+        T8 = self.TriCross(A=[T0, T1], B=[T5, T6])
+
+
+        b=[        TriLine(Points=[T4, T2], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label=''),
+
+        TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                Label=''),
+
+        TriLine(Points=[T7, T3], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label=''),
+
+        TriLine(Points=[T8, T7], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label=''),
+
+        TriLine(Points=[T7, (0, 68, 32)], Sort='', Width=1, Color='black', Style=":", Alpha=0.7,
+                Label=''),]
+
+        for i in b:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+        T9 = (13, 87, 0)
+
+
+
+        T10 = (20, 0, 80)
+        T11 = (13, 87, 0)
+        T0 = (77, 23, 0)
+        T1 = (0, 11, 89)
+
+        T12 = self.TriCross(A=[T10, T11], B=[T0, T1])
+
+
+
+        c=[TriLine(Points=[T9, T12], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                Label=''),]
+
+        for i in c:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+
+        p,q= self.TriFill(P=[(100, 0, 0), T0, T1, (0, 0, 100)], Color='blue', Alpha=0.13)
+
+        self.axes.fill(p,q, Color='blue', Alpha=0.13, )
+
+
+
+        m,n=self.TriFill(P=[T12, T11, (0, 100, 0), T1], Color='red', Alpha=0.13)
+
+        self.axes.fill(m,n, Color='red', Alpha=0.13, )
+
+
+
+
+
+
+        T10 = (20, 0, 80)
+        T11 = (13, 87, 0)
+        T13 = (47, 53, 0)
+        T14 = (0, 82, 18)
+
+        T15 = self.TriCross(A=[T10, T11], B=[T13, T14])
+
+        k=[TriLine(Points=[T15, T13], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label=''),
+
+        TriLine(Points=[T15, T14], Sort='', Width=1, Color='black', Style=":", Alpha=0.7,
+                Label=''),]
+
+
+        for i in k:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+        T10 = (20, 0, 80)
+        T16 = (0, 40, 60)
+
+        T17 = self.TriCross(A=[T10, T16], B=[T0, T1])
+
+        k=[TriLine(Points=[T17, T10], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label=''),]
+
+
+        for i in k:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+        T10 = (20, 0, 80)
+        T11 = (13, 87, 0)
+        T18 = (0, 42, 59)
+        T19 = (84, 0, 16)
+
+        T20 = self.TriCross(A=[T10, T11], B=[T18, T19])
+
+        k=[TriLine(Points=[T18, T20], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label=''),]
+        for i in k:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+        T21 = (0, 71, 29)
+        T22 = (58, 42, 0)
+
+        T23 = self.TriCross(A=[T10, T11], B=[T21, T22])
+
+        k=[TriLine(Points=[T23, T21], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                Label=''),]
+        for i in k:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle =i.Style, alpha=i.Alpha,
+                  label=i.Label)
+
+
+        raw=self._df
+        PointLabels = []
+        TPoints=[]
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'Lt'], raw.at[i, 'Qm']), Size=raw.at[i, 'Size'],
+                     Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
+                     Label=TmpLabel))
+
+        for i in TPoints:
+            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
+                 label=i.Label, edgecolors='black')
+
+        if(self.Tag_cb.isChecked()):
+            for i in self.Tags:
+                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
+                             textcoords='offset points',
+                             fontsize=i.FontSize, color='grey', alpha=0.8)
+
+        if (self.legend_cb.isChecked()):
+            #a = int(self.slider.value())
+            #self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
+            self.axes.legend(loc=4, fontsize=9, bbox_to_anchor=(1.1, 0.5))
+
+
+        self.canvas.draw()
+
