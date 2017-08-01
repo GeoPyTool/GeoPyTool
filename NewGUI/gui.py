@@ -32,7 +32,8 @@ from CustomClass import Stereo
 from CustomClass import Rose
 from CustomClass import QFL
 from CustomClass import QmFLt
-
+from CustomClass import MudStone
+from CustomClass import CIPW
 
 from CustomClass import MyPopup
 
@@ -101,9 +102,16 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonTAS = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonTAS.setGeometry(QtCore.QRect(150, 404, 110, 32))
         self.pushButtonTAS.setObjectName("pushButtonTAS")
+
+
         self.pushButtonZircon = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonZircon.setGeometry(QtCore.QRect(150, 444, 110, 32))
         self.pushButtonZircon.setObjectName("pushButtonZircon")
+
+
+        self.pushButtonCIPW = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonCIPW.setGeometry(QtCore.QRect(150, 484, 110, 32))
+        self.pushButtonCIPW.setObjectName("pushButtonCIPW")
 
 
         self.pushButtonStereo = QtWidgets.QPushButton(self.centralwidget)
@@ -128,11 +136,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonRose.setObjectName("pushButtonRose")
 
 
-
-
-        self.pushButtonTri = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonTri.setGeometry(QtCore.QRect(540, 404, 110, 32))
-        self.pushButtonTri.setObjectName("pushButtonTri")
+        self.pushButtonMudStone = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonMudStone.setGeometry(QtCore.QRect(540, 404, 110, 32))
+        self.pushButtonMudStone.setObjectName("pushButtonMudStone")
 
 
 
@@ -211,11 +217,13 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.pushButtonRose.clicked.connect(self.Rose)
 
-        self.pushButtonTri.clicked.connect(self.Tri)
+        self.pushButtonMudStone.clicked.connect(self.Mud)
 
         self.pushButtonQFL.clicked.connect(self.QFL)
 
         self.pushButtonQmFLt.clicked.connect(self.QmFLt)
+
+        self.pushButtonCIPW.clicked.connect(self.CIPW)
 
 
     def retranslateUi(self, MainWindow):
@@ -225,13 +233,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonSave.setText(_translate("MainWindow", "Save"))
         self.pushButtonTAS.setText(_translate("MainWindow", "TAS"))
         self.pushButtonZircon.setText(_translate("MainWindow", "Zircon Ce"))
+        self.pushButtonCIPW.setText(_translate("MainWindow", "CIPW"))
         self.pushButtonStereo.setText(_translate("MainWindow", "Stereo"))
         self.pushButtonRose.setText(_translate("MainWindow", "Rose"))
         self.pushButtonTrace.setText(_translate("MainWindow", "Trace CS-Lu"))
         self.pushButtonTrace2.setText(_translate("MainWindow", "Trace Rb-Lu"))
         self.pushButtonREE.setText(_translate("MainWindow", "REE"))
 
-        self.pushButtonTri.setText(_translate("MainWindow", "Tri"))
+        self.pushButtonMudStone.setText(_translate("MainWindow", "Sand-Silt-Mud"))
         self.pushButtonQFL.setText(_translate("MainWindow", "QFL"))
         self.pushButtonQmFLt.setText(_translate("MainWindow", "QmFLt"))
 
@@ -340,12 +349,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.rosepop.Rose()
         self.rosepop.show()
 
-
-
-
-    def Tri(self):
-        pass
-
     def QFL(self):
         self.tripop = QFL(df=self.model._df)
         self.tripop.Tri()
@@ -356,18 +359,23 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.tripop.Tri()
         self.tripop.show()
 
+    def Mud(self):
+        self.mudpop = MudStone(df=self.model._df)
+        self.mudpop.Tri()
+        self.mudpop.show()
+
+    def CIPW(self):
+        self.cipwpop = CIPW(df=self.model._df)
+        self.cipwpop.CIPW()
+        self.cipwpop.show()
+
+
+    def Tri(self):
+        pass
+
 
     def Auto(self):
         pass
-
-    def Test(self):
-        pass
-        #self.w = MyPopup(xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', xlim=(30, 90), ylim=(0, 20))
-        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
-
-        #self.w.MyCanvas.TASv(self.model._df)
-        #self.w.show()
-
 
 
 

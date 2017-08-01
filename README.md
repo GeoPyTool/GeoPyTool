@@ -45,6 +45,7 @@ We recommend Anaconda3-4.0.0 and other newer versions of Anaconda3.
 
 
 ```Bash
+pip install --upgrade git+git://github.com/python-quantities/python-quantities.git@master
 pip install geopython
 ```
 

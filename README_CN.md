@@ -47,6 +47,7 @@ GeoPython 是一个将 Python 用于地质学的日常工作的计划。这是�
 
 
 ```Bash
+pip install --upgrade git+git://github.com/python-quantities/python-quantities.git@master
 pip install geopython
 ```
 
