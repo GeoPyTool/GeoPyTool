@@ -34,6 +34,7 @@ from CustomClass import QFL
 from CustomClass import QmFLt
 from CustomClass import MudStone
 from CustomClass import CIPW
+from CustomClass import QAPF
 
 from CustomClass import MyPopup
 
@@ -152,6 +153,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonQmFLt.setObjectName("pushButtonQmFLt")
 
 
+        self.pushButtonQAPF= QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonQAPF.setGeometry(QtCore.QRect(540, 524, 110, 32))
+        self.pushButtonQAPF.setObjectName("pushButtonQAPF")
 
 
 
@@ -225,6 +229,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.pushButtonCIPW.clicked.connect(self.CIPW)
 
+        self.pushButtonQAPF.clicked.connect(self.QAPF)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -244,6 +249,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonQFL.setText(_translate("MainWindow", "QFL"))
         self.pushButtonQmFLt.setText(_translate("MainWindow", "QmFLt"))
 
+        self.pushButtonQAPF.setText(_translate("MainWindow", "QAPF"))
 
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
@@ -368,6 +374,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.cipwpop = CIPW(df=self.model._df)
         self.cipwpop.CIPW()
         self.cipwpop.show()
+
+
+    def QAPF(self):
+        self.qapfpop = QAPF(df=self.model._df)
+        self.qapfpop.QAPF()
+        self.qapfpop.show()
+
+
 
 
     def Tri(self):
