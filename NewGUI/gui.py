@@ -35,6 +35,9 @@ from CustomClass import QmFLt
 from CustomClass import MudStone
 from CustomClass import CIPW
 from CustomClass import QAPF
+from CustomClass import Pearce
+
+
 
 from CustomClass import MyPopup
 
@@ -92,10 +95,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.tableView.setSortingEnabled(True)
 
         self.pushButtonOpen = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonOpen.setGeometry(QtCore.QRect(30, 404, 110, 32))
+        self.pushButtonOpen.setGeometry(QtCore.QRect(20, 404, 110, 32))
         self.pushButtonOpen.setObjectName("pushButtonOpen")
         self.pushButtonSave = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonSave.setGeometry(QtCore.QRect(30, 444, 110, 32))
+        self.pushButtonSave.setGeometry(QtCore.QRect(20, 444, 110, 32))
         self.pushButtonSave.setObjectName("pushButtonSave")
 
 
@@ -156,6 +159,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonQAPF= QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonQAPF.setGeometry(QtCore.QRect(540, 524, 110, 32))
         self.pushButtonQAPF.setObjectName("pushButtonQAPF")
+
+
+
+        self.pushButtonPearce = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonPearce.setGeometry(QtCore.QRect(670, 404, 110, 32))
+        self.pushButtonPearce.setObjectName("pushButtonPearce")
+
+
 
 
 
@@ -231,6 +242,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.pushButtonQAPF.clicked.connect(self.QAPF)
 
+        self.pushButtonPearce.clicked.connect(self.Pearce)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "GeoPython"))
@@ -250,6 +263,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonQmFLt.setText(_translate("MainWindow", "QmFLt"))
 
         self.pushButtonQAPF.setText(_translate("MainWindow", "QAPF"))
+
+        self.pushButtonPearce.setText(_translate("MainWindow", "Pearce"))
 
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
@@ -380,6 +395,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.qapfpop = QAPF(df=self.model._df)
         self.qapfpop.QAPF()
         self.qapfpop.show()
+
+    def Pearce(self):
+        self.pearcepop = Pearce(df=self.model._df)
+        self.pearcepop.Pearce()
+        self.pearcepop.show()
+
 
 
 

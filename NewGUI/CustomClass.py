@@ -1425,6 +1425,16 @@ class AppForm(QMainWindow):
         self.axes.plot(x, y,color = color, linewidth = linewidth, linestyle = linestyle , label = linelabel , alpha = alpha)
         return(x,y)
 
+    def DrawLogLine(self,l=[(41, 0), (41, 3), (45, 3)] ,color= 'grey', linewidth=0.5, linestyle= '-', linelabel = '', alpha= 0.5 ):
+        x=[]
+        y=[]
+        for i in l:
+            x.append(math.log(i[0], 10))
+            y.append(math.log(i[1], 10))
+
+        self.axes.plot(x, y,color = color, linewidth = linewidth, linestyle = linestyle , label = linelabel , alpha = alpha)
+        return(x,y)
+
     def save_plot(self):
         file_choices = "pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)"
 
@@ -1642,6 +1652,13 @@ class TAS(AppForm):
                  Top=19, Y0=1,Y1=19, Y_Gap=19, FontSize= 12 ,xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$',width=12, height=12, dpi=300):
 
         self.axes.clear()
+
+
+
+
+        self.axes.set_xlabel(self.xlabel)
+        self.axes.set_ylabel(self.ylabel)
+
         PointLabels=[]
         x=[]
         y=[]
@@ -1752,6 +1769,9 @@ class TAS(AppForm):
                 self.DrawLine([(80, 0), (80, -0.5)],color= 'black', linewidth=0.8, alpha= 0.8)
                 self.DrawLine([(90, 0), (90, -0.5)],color= 'black', linewidth=0.8, alpha= 0.8)
 
+            self.canvas.draw()
+
+"""
                 self.axes.annotate("0", (29, 0), xycoords='data', xytext=(-10, 0),
                                    textcoords='offset points',
                                    fontsize=9, color='black', alpha=0.8)
@@ -1798,10 +1818,8 @@ class TAS(AppForm):
                 self.axes.annotate(ylabel, (22, 13), xycoords='data', xytext=(0,0),
                                    textcoords='offset points',
                                    fontsize=9, color='black', alpha=0.8,rotation = 90)
+                """
 
-
-
-            self.canvas.draw()
 
 class REEold(AppForm):
 
@@ -2038,6 +2056,8 @@ class REE(AppForm):
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
 
+
+
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -2098,24 +2118,12 @@ class REE(AppForm):
 
         self.axes.clear()
 
-        self.axes = self.fig.add_subplot(111)
 
         self.WholeData = []
 
         raw = self._df
 
-        self.width = width
-        self.height = height
-        self.dpi = dpi
 
-        self.X0 = 1
-        self.X1 = len(self.Element) + 1
-
-        self.X_Gap = X1
-
-        self.Y0 = Y0
-        self.Y1 = Y1
-        self.Y_Gap = Y_Gap
 
         self.FontSize = FontSize
 
@@ -2127,31 +2135,30 @@ class REE(AppForm):
 
 
         for i in range(len(raw)):
-            if (raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[
-                i, 'DataType'] == 'USER'):
+            #raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
 
-                TmpLabel = ''
+            TmpLabel = ''
 
-                LinesX = []
-                LinesY = []
-                for j in range(len(self.Element)):
-                    tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
-                    LinesX.append(j + 1)
-                    LinesY.append(math.log(tmp, 10))
-                    self.WholeData.append(math.log(tmp, 10))
+            LinesX = []
+            LinesY = []
+            for j in range(len(self.Element)):
+                tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
+                LinesX.append(j + 1)
+                LinesY.append(math.log(tmp, 10))
+                self.WholeData.append(math.log(tmp, 10))
 
-                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                        TmpLabel = ''
-                    else:
-                        PointLabels.append(raw.at[i, 'Label'])
-                        TmpLabel = raw.at[i, 'Label']
+                if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                    TmpLabel = ''
+                else:
+                    PointLabels.append(raw.at[i, 'Label'])
+                    TmpLabel = raw.at[i, 'Label']
 
-                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
+                self.axes.scatter(j+1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
+                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                  label=TmpLabel, edgecolors='black')
 
-                self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
-                               linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
+            self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
+                           linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
 
         Tale = 0
         Head = 0
@@ -2162,7 +2169,7 @@ class REE(AppForm):
 
         Location = round(Tale - (Head - Tale) / 5)
 
-        count = round((Head - Tale) / 5 * 7)
+        count = round((Head - Tale) / 5 * 7)+1
 
         if (self.legend_cb.isChecked()):
             a = int(self.slider.value())
@@ -6368,10 +6375,58 @@ class QAPF(AppForm,Tool):
 class Pearce(AppForm):
     Lines = []
     Tags = []
-    Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG']
-    Locations = [(1, 3), (1, 1), (3, 3), (3, 1)]
     description = "Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites "
     text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
+
+    Condation0 = {'BaseLines':[[(2, 80), (55, 300)],
+                 [(55, 300), (400, 2000)],
+                 [(55, 300), (51.5, 8)],
+                 [(51.5, 8), (50, 1)],
+                 [(51.5, 8), (2000, 400)], ],
+                  'xLabel' : r'Y+Nb (PPM)',
+                  'yLabel' : r'Rb (PPM)',
+                  'Labels':[u'syn-COLG', u'VAG', u'WPG', u'ORG'],
+                  'Locations':[(1, 3), (1, 1), (3, 3), (3, 1)]
+                  }
+
+
+    Condation1 = {'BaseLines':[[(0.5, 140), (6, 200)],
+                  [(6, 200), (50, 2000)],
+                  [(6, 200), (6, 8)],
+                  [(6, 8), (6, 1)],
+                  [(6, 8), (200, 400)], ],
+                  'xLabel' : r'Yb+Ta (PPM)',
+                  'yLabel' : r'Rb (PPM)',
+                  'Labels':[u'syn-COLG', u'VAG', u'WPG', u'ORG'],
+                  'Locations':[(0.5, 3), (0.5, 1), (2, 2.8), (2, 1)]
+                  }
+
+
+    Condation2 = {'BaseLines':[[(1, 2000), (50, 10)],
+                    [(40, 1), (50, 10)],
+                    [(50, 10), (1000, 100)],
+                    [(25, 25), (1000, 400)], ],
+                  'xLabel' : r'Y (PPM)',
+                  'yLabel' : r'Nb (PPM)',
+                  'Labels':[u'syn-COLG', u'VAG', u'WPG', u'ORG'],
+                  'Locations':[(0.5, 1.5), (0.5, 2), (2, 2), (2, 1)]
+                  }
+
+
+    Condation3 = {'BaseLines':[[(0.55, 20), (3, 2)],
+                      [(0.1, 0.35), (3, 2)],
+                      [(3, 2), (5, 1)],
+                      [(5, 0.05), (5, 1)],
+                      [(5, 1), (100, 7)],
+                      [(3, 2), (100, 20)],  ],
+                  'xLabel' : r'Yb (PPM)',
+                  'yLabel' : r'Ta (PPM)',
+                  'Labels':[u'syn-COLG', u'VAG', u'WPG', u'ORG'],
+                  'Locations':[(-1, 0.1), (-1, -1), (0.7, 1), (2, 0.5)]
+                  }
+
+    condation=[Condation0,Condation1,Condation2,Condation3]
+
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -6382,8 +6437,7 @@ class Pearce(AppForm):
             self._changed = True
             print("DataFrame recieved to Pearce")
 
-        for i in range(len(self.Labels)):
-            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
 
         self.create_main_frame()
         self.create_status_bar()
@@ -6395,6 +6449,7 @@ class Pearce(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
+        #self.axes.hold(False)
 
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
@@ -6410,7 +6465,7 @@ class Pearce(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Pearce)  # int
 
-        slider_label = QLabel('Location:')
+        self.slider_label = QLabel('Location:')
         self.slider = QSlider(Qt.Horizontal)
         self.slider.setRange(1, 5)
         self.slider.setValue(1)
@@ -6418,13 +6473,30 @@ class Pearce(AppForm):
         self.slider.setTickPosition(QSlider.TicksBothSides)
         self.slider.valueChanged.connect(self.Pearce)  # int
 
+        self.detail_cb = QCheckBox("&Detail")
+        self.detail_cb.setChecked(True)
+        self.detail_cb.stateChanged.connect(self.Pearce)  # int
+
+
+
+
+        self.standard = QSlider(Qt.Horizontal)
+        self.standard.setRange(0, 3)
+        self.standard.setValue(0)
+        self.standard.setTracking(True)
+        self.standard.setTickPosition(QSlider.TicksBothSides)
+        self.standard.valueChanged.connect(self.Pearce)  # int
+
+
+        self.standard_label = QLabel('Type')
+
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
         for w in [self.save_button, self.draw_button,
-                  self.legend_cb, slider_label, self.slider]:
+                  self.legend_cb, self.slider_label, self.slider,self.detail_cb,self.standard_label,self.standard]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -6436,50 +6508,74 @@ class Pearce(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
+
     def Pearce(self):
 
-        self.axes.clear()
 
-        self.axes = self.fig.add_subplot(111)
 
         self.WholeData = []
 
-        raw = self._df
+        raw = self._dfß
+
+        a=int(self.standard.value())
 
 
+
+        self.axes.clear()
+
+
+        self.axes.set_xlabel(self.condation[a]['xLabel'])
+        self.axes.set_ylabel(self.condation[a]['yLabel'])
+
+        BaseLines = self.condation[a]['BaseLines']
+
+        for i in BaseLines:
+            self.DrawLogLine(l=i)
         PointLabels = []
-        k = 0
-        for l in range(len(raw)):
-            if (raw.at[l, 'DataType'] == 'Standard' or raw.at[l, 'DataType'] == 'standard' or raw.at[
-                l, 'DataType'] == 'STANDARD'):
-                k = l
+
+
+        self.Tags=[]
+
+        for i in range(len(self.condation[a]['Labels'])):
+            self.Tags.append(Tag(Label=self.condation[a]['Labels'][i], Location=self.condation[a]['Locations'][i]))
+
+
+
 
         for i in range(len(raw)):
-            if (raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[
-                i, 'DataType'] == 'USER'):
+            #raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
 
+            TmpLabel = ''
+
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
                 TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
 
-                LinesX = []
-                LinesY = []
-                for j in range(len(self.Element)):
-                    tmp = raw.at[i, self.Element[j]] / raw.at[k, self.Element[j]]
-                    LinesX.append(j + 1)
-                    LinesY.append(math.log(tmp, 10))
-                    self.WholeData.append(math.log(tmp, 10))
 
-                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                        TmpLabel = ''
-                    else:
-                        PointLabels.append(raw.at[i, 'Label'])
-                        TmpLabel = raw.at[i, 'Label']
+            x,y=0,0
 
-                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
+            if ( a == 0):
+                x,y = (raw.at[i, 'Y'] + raw.at[i, 'Nb']), raw.at[i, 'Rb']
+            elif (a == 1):
+                x,y = (raw.at[i, 'Yb'] + raw.at[i, 'Ta']), raw.at[i, 'Rb']
+            elif (a == 2):
+                x,y= raw.at[i, 'Y'], raw.at[i, 'Nb']
+            elif (a == 3):
+                x,y= raw.at[i, 'Yb'], raw.at[i, 'Ta']
 
-                self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
-                               linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
+
+            self.axes.scatter(math.log(x, 10), math.log(y, 10), marker=raw.at[i, 'Marker'],
+                          s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                          label=TmpLabel, edgecolors='black')
+
+
+
+
 
         Tale = 0
         Head = 0
@@ -6496,24 +6592,11 @@ class Pearce(AppForm):
             a = int(self.slider.value())
             self.axes.legend(loc=a, fontsize=9)
 
-        self.DrawLine([(0, Location), (16, Location)], color='black', linewidth=0.8, alpha=0.8)
 
-        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
-
-        for i in range(count):
-            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
-                          linewidth=0.8, alpha=0.8)
-
-            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
-                               xycoords='data', xytext=(-15, 0),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8, rotation=90)
-
-        for i in range(min(len(self.xticks), len(self.xticklabels))):
-            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
-                          linewidth=0.8, alpha=0.8)
-            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8)
+        if (self.detail_cb.isChecked()):
+            for i in self.Tags:
+                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
+                                   textcoords='offset points',
+                                   fontsize=8, color='grey', alpha=0.8)
 
         self.canvas.draw()
