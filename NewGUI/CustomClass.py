@@ -1803,7 +1803,7 @@ class TAS(AppForm):
 
             self.canvas.draw()
 
-class REE(AppForm):
+class REEold(AppForm):
 
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
@@ -1984,6 +1984,215 @@ class REE(AppForm):
                                fontsize=8, color='black', alpha=0.8)
        
         self.canvas.draw()
+
+
+class REE(AppForm):
+    xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
+
+    StandardsName=['C1 Chondrite Sun and McDonough,1989','Chondrite Taylor and McLennan,1985','Chondrite Haskin et al.,1966','Chondrite Nakamura,1977','MORB Sun and McDonough,1989']
+
+    NameChosen = 'C1 Chondrite Sun and McDonough,1989'
+    Standards = {'C1 Chondrite Sun and McDonough,1989': {'La': 0.237, 'Ce': 0.612, 'Pr': 0.095, 'Nd': 0.467, 'Sm': 0.153,
+                                             'Eu': 0.058, 'Gd': 0.2055, 'Tb': 0.0374, 'Dy': 0.254, 'Ho': 0.0566,
+                                             'Er': 0.1655, 'Tm': 0.0255, 'Yb': 0.17, 'Lu': 0.0254},
+     'Chondrite Taylor and McLennan,1985': {'La': 0.367, 'Ce': 0.957, 'Pr': 0.137, 'Nd': 0.711, 'Sm': 0.231,
+                                            'Eu': 0.087, 'Gd': 0.306, 'Tb': 0.058, 'Dy': 0.381, 'Ho': 0.0851,
+                                            'Er': 0.249, 'Tm': 0.0356, 'Yb': 0.248, 'Lu': 0.0381},
+     'Chondrite Haskin et al.,1966': {'La': 0.32, 'Ce': 0.787, 'Pr': 0.112, 'Nd': 0.58, 'Sm': 0.185, 'Eu': 0.071,
+                                      'Gd': 0.256, 'Tb': 0.05, 'Dy': 0.343, 'Ho': 0.07, 'Er': 0.225, 'Tm': 0.03,
+                                      'Yb': 0.186, 'Lu': 0.034},
+     'Chondrite Nakamura,1977': {'La': 0.33, 'Ce': 0.865, 'Pr': 0.112, 'Nd': 0.63, 'Sm': 0.203, 'Eu': 0.077,
+                                 'Gd': 0.276, 'Tb': 0.047, 'Dy': 0.343, 'Ho': 0.07, 'Er': 0.225, 'Tm': 0.03, 'Yb': 0.22,
+                                 'Lu': 0.034},
+     'MORB Sun and McDonough,1989': {'La': 2.5, 'Ce': 7.5, 'Pr': 1.32, 'Nd': 7.3, 'Sm': 2.63, 'Eu': 1.02, 'Gd': 3.68,
+                                     'Tb': 0.67, 'Dy': 4.55, 'Ho': 1.052, 'Er': 2.97, 'Tm': 0.46, 'Yb': 3.05,
+                                     'Lu': 0.46}}
+
+
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('REE Standardlized Pattern Diagram')
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            print("DataFrame recieved to REE")
+
+        self.Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
+        self.WholeData = []
+        self.X0 = 1
+        self.X1 = 15
+        self.X_Gap = 15
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton("&Reset")
+        self.draw_button.clicked.connect(self.REE)
+
+        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.REE)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.REE)  # int
+
+
+
+
+        self.standard = QSlider(Qt.Horizontal)
+        self.standard.setRange(0, 4)
+        self.standard.setValue(0)
+        self.standard.setTracking(True)
+        self.standard.setTickPosition(QSlider.TicksBothSides)
+        self.standard.valueChanged.connect(self.REE)  # int
+
+
+        self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button,
+                  self.legend_cb, self.slider_label, self.slider,self.standard_label,self.standard]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def REE(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
+            Top=6, Y0=-1,
+            Y1=3, Y_Gap=5, FontSize=12,
+            xLabel=r'$REE-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
+
+        self.axes.clear()
+
+        self.axes = self.fig.add_subplot(111)
+
+        self.WholeData = []
+
+        raw = self._df
+
+        self.width = width
+        self.height = height
+        self.dpi = dpi
+
+        self.X0 = 1
+        self.X1 = len(self.Element) + 1
+
+        self.X_Gap = X1
+
+        self.Y0 = Y0
+        self.Y1 = Y1
+        self.Y_Gap = Y_Gap
+
+        self.FontSize = FontSize
+
+        PointLabels = []
+        k = 0
+
+        standardnamechosen = self.StandardsName[int(self.standard.value())]
+        standardchosen = self.Standards[standardnamechosen]
+
+
+        for i in range(len(raw)):
+            if (raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[
+                i, 'DataType'] == 'USER'):
+
+                TmpLabel = ''
+
+                LinesX = []
+                LinesY = []
+                for j in range(len(self.Element)):
+                    tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
+                    LinesX.append(j + 1)
+                    LinesY.append(math.log(tmp, 10))
+                    self.WholeData.append(math.log(tmp, 10))
+
+                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                        TmpLabel = ''
+                    else:
+                        PointLabels.append(raw.at[i, 'Label'])
+                        TmpLabel = raw.at[i, 'Label']
+
+                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel, edgecolors='black')
+
+                self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
+                               linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
+
+        Tale = 0
+        Head = 0
+
+        if (len(self.WholeData) > 0):
+            Tale = min(self.WholeData)
+            Head = max(self.WholeData)
+
+        Location = round(Tale - (Head - Tale) / 5)
+
+        count = round((Head - Tale) / 5 * 7)
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a, fontsize=9)
+
+        self.DrawLine([(0, Location), (16, Location)], color='black', linewidth=0.8, alpha=0.8)
+
+        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
+
+
+        self.standard_label.setText('Standard: ' + self.StandardsName[int(self.standard.value())])
+
+        for i in range(count):
+            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
+                          linewidth=0.8, alpha=0.8)
+
+            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
+                               xycoords='data', xytext=(-15, 0),
+                               textcoords='offset points',
+                               fontsize=8, color='black', alpha=0.8, rotation=90)
+
+        for i in range(min(len(self.xticks), len(self.xticklabels))):
+            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
+                          linewidth=0.8, alpha=0.8)
+            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
+                               textcoords='offset points',
+                               fontsize=8, color='black', alpha=0.8)
+
+        self.canvas.draw()
+
 
 class Trace(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37]
@@ -6155,3 +6364,156 @@ class QAPF(AppForm,Tool):
 
         self.canvas.draw()
 
+
+class Pearce(AppForm):
+    Lines = []
+    Tags = []
+    Labels = [u'syn-COLG', u'VAG', u'WPG', u'ORG']
+    Locations = [(1, 3), (1, 1), (3, 3), (3, 1)]
+    description = "Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites "
+    text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle("Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites ")
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            print("DataFrame recieved to Pearce")
+
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i], Location=self.Locations[i]))
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton("&Reset")
+        self.draw_button.clicked.connect(self.Pearce)
+
+        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Pearce)  # int
+
+        slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Pearce)  # int
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button,
+                  self.legend_cb, slider_label, self.slider]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Pearce(self):
+
+        self.axes.clear()
+
+        self.axes = self.fig.add_subplot(111)
+
+        self.WholeData = []
+
+        raw = self._df
+
+
+        PointLabels = []
+        k = 0
+        for l in range(len(raw)):
+            if (raw.at[l, 'DataType'] == 'Standard' or raw.at[l, 'DataType'] == 'standard' or raw.at[
+                l, 'DataType'] == 'STANDARD'):
+                k = l
+
+        for i in range(len(raw)):
+            if (raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[
+                i, 'DataType'] == 'USER'):
+
+                TmpLabel = ''
+
+                LinesX = []
+                LinesY = []
+                for j in range(len(self.Element)):
+                    tmp = raw.at[i, self.Element[j]] / raw.at[k, self.Element[j]]
+                    LinesX.append(j + 1)
+                    LinesY.append(math.log(tmp, 10))
+                    self.WholeData.append(math.log(tmp, 10))
+
+                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                        TmpLabel = ''
+                    else:
+                        PointLabels.append(raw.at[i, 'Label'])
+                        TmpLabel = raw.at[i, 'Label']
+
+                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel, edgecolors='black')
+
+                self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
+                               linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
+
+        Tale = 0
+        Head = 0
+
+        if (len(self.WholeData) > 0):
+            Tale = min(self.WholeData)
+            Head = max(self.WholeData)
+
+        Location = round(Tale - (Head - Tale) / 5)
+
+        count = round((Head - Tale) / 5 * 7)
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a, fontsize=9)
+
+        self.DrawLine([(0, Location), (16, Location)], color='black', linewidth=0.8, alpha=0.8)
+
+        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
+
+        for i in range(count):
+            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
+                          linewidth=0.8, alpha=0.8)
+
+            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
+                               xycoords='data', xytext=(-15, 0),
+                               textcoords='offset points',
+                               fontsize=8, color='black', alpha=0.8, rotation=90)
+
+        for i in range(min(len(self.xticks), len(self.xticklabels))):
+            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
+                          linewidth=0.8, alpha=0.8)
+            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
+                               textcoords='offset points',
+                               fontsize=8, color='black', alpha=0.8)
+
+        self.canvas.draw()
