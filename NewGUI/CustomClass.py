@@ -6515,7 +6515,7 @@ class Pearce(AppForm):
 
         self.WholeData = []
 
-        raw = self._dfß
+        raw = self._df
 
         a=int(self.standard.value())
 

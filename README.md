@@ -48,7 +48,7 @@ After installation of Python, you can use the following commands in your termina
 
 ```Bash
 pip install --upgrade git+git://github.com/python-quantities/python-quantities.git@master
-pip install geopython
+pip install --upgrade geopython --no-cache-dir
 ```
 
 If there comes no error message, everything should have been done successfully.
@@ -68,6 +68,17 @@ import sys
 import geopython as gp
 sys.exit(gp.begin())
 ```
+
+
+OR
+
+
+```Python
+import sys
+import geopython as gp
+gp.main()
+```
+
 
 You would see the GUI of **GeoPython**, which is under development for now. So it is a good idea to update **GeoPython** with pip everytime before you use it:
 
