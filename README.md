@@ -100,8 +100,6 @@ We may all know that nice things always happen gradually. So please be patient a
 I must apologize for the slow development, that is partially caused by my bad physical situation from the tumor operation at the end of last year, and mainly because my bad choice of choosing Kivy in the past. Kivy is cute and funny, but not as reliable as PyQt at all. That means I must learn to use PyQt5 from beginning to use it as the framework of the GUI of GeoPython.
 
 
-The New TAS function need Data template file named as [TAS.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/TAS.xlsx)
-![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTAS.png)
 
 
 The New Zircon Ce function need Data template file named as [ZirconCe.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/ZirconCe.xlsx)
@@ -109,12 +107,11 @@ The New Zircon Ce function need Data template file named as [ZirconCe.xlsx](http
 ![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewZirconCe.png)
 
 
-The New REE and Trace Elements function need Data template files:
-[Trace27.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/Trace27.xlsx)
-[Trace37.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/Trace37.xlsx)
-[REE.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/REE.xlsx)
+The New  TAS, REE and Trace Elements functions share a same Data template files:
+[Data.xlsx](https://github.com/chinageology/GeoPython/blob/master/NewGUI/Data.xlsx)
 
 
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTAS.png)
 ![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTrace.png)
 
 
