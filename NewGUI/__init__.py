@@ -126,9 +126,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonTrace = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonTrace.setGeometry(QtCore.QRect(280, 444, 110, 32))
         self.pushButtonTrace.setObjectName("pushButtonTrace")
-        self.pushButtonTrace2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonTrace2.setGeometry(QtCore.QRect(280, 484, 110, 32))
-        self.pushButtonTrace2.setObjectName("pushButtonTrace2")
+
+        #self.pushButtonTrace2 = QtWidgets.QPushButton(self.centralwidget)
+        #self.pushButtonTrace2.setGeometry(QtCore.QRect(280, 484, 110, 32))
+        #self.pushButtonTrace2.setObjectName("pushButtonTrace2")
 
         self.pushButtonREE = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonREE.setGeometry(QtCore.QRect(280, 404, 110, 32))
@@ -226,8 +227,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.pushButtonTrace.clicked.connect(self.Trace)
 
-        self.pushButtonTrace2.clicked.connect(self.Trace2)
-
         self.pushButtonStereo.clicked.connect(self.Stereo)
 
         self.pushButtonRose.clicked.connect(self.Rose)
@@ -254,8 +253,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonCIPW.setText(_translate("MainWindow", "CIPW"))
         self.pushButtonStereo.setText(_translate("MainWindow", "Stereo"))
         self.pushButtonRose.setText(_translate("MainWindow", "Rose"))
-        self.pushButtonTrace.setText(_translate("MainWindow", "Trace CS-Lu"))
-        self.pushButtonTrace2.setText(_translate("MainWindow", "Trace Rb-Lu"))
+        self.pushButtonTrace.setText(_translate("MainWindow", "Trace"))
+
         self.pushButtonREE.setText(_translate("MainWindow", "REE"))
 
         self.pushButtonMudStone.setText(_translate("MainWindow", "Sand-Silt-Mud"))
@@ -345,11 +344,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.tracepop = Trace(df=self.model._df)
         self.tracepop.Trace()
         self.tracepop.show()
-
-    def Trace2(self):
-        self.trace2pop = Trace2(df=self.model._df)
-        self.trace2pop.Trace2()
-        self.trace2pop.show()
 
     def Zircon(self):
         print("Opening a new popup window...")
