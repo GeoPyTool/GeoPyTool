@@ -49,14 +49,14 @@ Git is also needed to be used in installation of Python-Quantities.
 ###### 32bit：
 
 |Item |Address |
-|:|:|
+|--|--|
 |Anaconda|https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-4.4.0-Windows-x86.exe|
 |Git|https://github.com/git-for-windows/git/releases/download/v2.14.1.windows.1/Git-2.14.1-32-bit.exe|
 
 ###### 64bit：
 
 |Item |Address |
-|:|:|
+|--|--|
 |Anaconda|https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-4.4.0-Windows-x86_64.exe|
 |Git|https://github.com/git-for-windows/git/releases/download/v2.14.1.windows.1/Git-2.14.1-64-bit.exe|
 
