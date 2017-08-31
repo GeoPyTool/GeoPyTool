@@ -24,6 +24,7 @@ Category: Python
 |Multiple Zircon Ce|2017-03-28 15:30|MultiBallard|
 |Multiple Samples CIPW Norm|2017-04-3 12:30|MultiCIPW|
 |NewGUI|2017-07-23 12:30|GUI Powered By PyQt5|
+|All Rebuild|2017-08-31 23:30|Harker Back|
 
 ## Introduction
 
