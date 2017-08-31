@@ -42,12 +42,35 @@ The first thing to do is to install Python, newer than 3.5, which can be downloa
 
 Anaconda3-4.0.0 and other newer versions of Anaconda3 are recommended.
 
+Git is also needed to be used in installation of Python-Quantities.
+
+##### Useful links for Windows users to install GeoPython with PIP:
+
+###### 32bit：
+
+|Item |Address |
+|:|:|
+|Anaconda|https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-4.4.0-Windows-x86.exe|
+|Git|https://github.com/git-for-windows/git/releases/download/v2.14.1.windows.1/Git-2.14.1-32-bit.exe|
+
+###### 64bit：
+
+|Item |Address |
+|:|:|
+|Anaconda|https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-4.4.0-Windows-x86_64.exe|
+|Git|https://github.com/git-for-windows/git/releases/download/v2.14.1.windows.1/Git-2.14.1-64-bit.exe|
+
+
 ### Install GeoPython with PIP
+
 
 After installation of Python, you can use the following commands in your terminal to install GeoPython:
 
 ```Bash
 pip install --upgrade git+git://github.com/python-quantities/python-quantities.git@master
+
+pip install cython numpy matplotlib pandas xlrd chempy
+
 pip install --upgrade geopython --no-cache-dir
 ```
 
