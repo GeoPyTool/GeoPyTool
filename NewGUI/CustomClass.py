@@ -195,7 +195,6 @@ class Tool():
         return (a, b)
         # plt.fill(a, b, Color=Color, Alpha=Alpha, )
 
-
 class Point():
     """
     a Point class
@@ -237,7 +236,6 @@ class Point():
         self.Alpha = Alpha
         self.Marker = Marker
         self.Label = Label
-
 
 class Points():
     """
@@ -284,7 +282,6 @@ class Points():
         self.Label = Label
         self.FontSize = FontSize
 
-
 class Tag():
     """
     a class for Tag put on canvas
@@ -314,7 +311,6 @@ class Tag():
         self.X_offset = X_offset
         self.Y_offset = Y_offset
         self.FontSize = FontSize
-
 
 class Line():
     """
@@ -414,7 +410,6 @@ class Line():
         self.X = X_TMP
         self.Y = Y_TMP
 
-
 class TriTag(Tag, Tool):
     """
     inherit Tag and Tool,a Tag for triangular coord
@@ -430,7 +425,6 @@ class TriTag(Tag, Tool):
         self.X_offset = X_offset
         self.Y_offset = Y_offset
         self.FontSize = FontSize
-
 
 class TriPoint(Point, Tool):
     """
@@ -461,7 +455,6 @@ class TriPoint(Point, Tool):
         self.Label = Label
 
         self.X, self.Y = self.TriToBin(self.x, self.y, self.z)
-
 
 class TriLine(Line, Tool):
     """
@@ -527,7 +520,6 @@ class TriLine(Line, Tool):
         self.x = X_TMP
         self.y = Y_TMP
         self.z = Z_TMP
-
 
 class PandasModel(QtCore.QAbstractTableModel):
     _df = pd.DataFrame()
@@ -623,7 +615,6 @@ class PandasModel(QtCore.QAbstractTableModel):
         self._df.reset_index(inplace=True, drop=True)
         self.layoutChanged.emit()
 
-
 class CustomQTableView(QtWidgets.QTableView):
     def __init__(self, *args):
         super().__init__(*args)
@@ -632,7 +623,6 @@ class CustomQTableView(QtWidgets.QTableView):
 
     def keyPressEvent(self, event):  # Reimplement the event here, in your case, do nothing
         return
-
 
 class PlotModel(FigureCanvas):
     """这是一个窗口部件，即QWidget（当然也是FigureCanvasAgg）"""
@@ -824,7 +814,6 @@ class PlotModel(FigureCanvas):
 
             self.draw()
 
-
 class MyPopup(QWidget):
     _df = pd.DataFrame()
     _changed = False
@@ -868,7 +857,6 @@ class MyPopup(QWidget):
 
         # self.setGeometry(500, 500, 500, 600)
         self.setWindowTitle('Image')
-
 
 class Zircon(QMainWindow):
     _df = pd.DataFrame()
@@ -1366,7 +1354,6 @@ class Zircon(QMainWindow):
         print("\n")
         print(self.newdf)
 
-
 class AppForm(QMainWindow):
     _df = pd.DataFrame()
     _changed = False
@@ -1513,7 +1500,6 @@ class AppForm(QMainWindow):
         if checkable:
             action.setCheckable(True)
         return action
-
 
 class TAS(AppForm):
     _df = pd.DataFrame()
@@ -1732,227 +1718,6 @@ class TAS(AppForm):
 
             self.canvas.draw()
 
-
-"""
-                self.axes.annotate("0", (29, 0), xycoords='data', xytext=(-10, 0),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("5", (29, 5), xycoords='data', xytext=(-10, 0),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("10", (29, 10), xycoords='data', xytext=(-13, 0),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("15", (29, 15), xycoords='data', xytext=(-13, 0),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("20", (29, 20), xycoords='data', xytext=(-13, 0),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-
-
-                self.axes.annotate("30", (30, -0.5), xycoords='data', xytext=(0, -10),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("40", (40, -0.5), xycoords='data', xytext=(0, -10),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("50", (50, -0.5), xycoords='data', xytext=(0, -10),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("60", (60, -0.5), xycoords='data', xytext=(0, -10),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("70", (70, -0.5), xycoords='data', xytext=(0, -10),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("80", (80, -0.5), xycoords='data', xytext=(0, -10),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-                self.axes.annotate("90", (90, -0.5), xycoords='data', xytext=(0, -10),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-
-                self.axes.annotate(xlabel, (55, -3), xycoords='data', xytext=(0, 0),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8)
-
-                self.axes.annotate(ylabel, (22, 13), xycoords='data', xytext=(0,0),
-                                   textcoords='offset points',
-                                   fontsize=9, color='black', alpha=0.8,rotation = 90)
-                """
-
-
-class REEold(AppForm):
-    xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-    xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('REE Standardlized Pattern Diagram')
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            print("DataFrame recieved to REE")
-
-        self.Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
-        self.WholeData = []
-        self.X0 = 1
-        self.X1 = 15
-        self.X_Gap = 15
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 100
-        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton("&Save")
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton("&Reset")
-        self.draw_button.clicked.connect(self.REE)
-
-        self.legend_cb = QCheckBox("&Legend")
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.REE)  # int
-
-        slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.REE)  # int
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button,
-                  self.legend_cb, slider_label, self.slider]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def REE(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
-            Top=6, Y0=-1,
-            Y1=3, Y_Gap=5, FontSize=12,
-            xLabel=r'$REE-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
-
-        self.axes.clear()
-
-        self.axes = self.fig.add_subplot(111)
-
-        self.WholeData = []
-
-        raw = self._df
-
-        self.width = width
-        self.height = height
-        self.dpi = dpi
-
-        self.X0 = 1
-        self.X1 = len(self.Element) + 1
-
-        self.X_Gap = X1
-
-        self.Y0 = Y0
-        self.Y1 = Y1
-        self.Y_Gap = Y_Gap
-
-        self.FontSize = FontSize
-
-        PointLabels = []
-        k = 0
-        for l in range(len(raw)):
-            if (raw.at[l, 'DataType'] == 'Standard' or raw.at[l, 'DataType'] == 'standard' or raw.at[
-                l, 'DataType'] == 'STANDARD'):
-                k = l
-
-        for i in range(len(raw)):
-            if (raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[
-                i, 'DataType'] == 'USER'):
-
-                TmpLabel = ''
-
-                LinesX = []
-                LinesY = []
-                for j in range(len(self.Element)):
-                    tmp = raw.at[i, self.Element[j]] / raw.at[k, self.Element[j]]
-                    LinesX.append(j + 1)
-                    LinesY.append(math.log(tmp, 10))
-                    self.WholeData.append(math.log(tmp, 10))
-
-                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                        TmpLabel = ''
-                    else:
-                        PointLabels.append(raw.at[i, 'Label'])
-                        TmpLabel = raw.at[i, 'Label']
-
-                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
-
-                self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
-                               linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
-
-        Tale = 0
-        Head = 0
-
-        if (len(self.WholeData) > 0):
-            Tale = min(self.WholeData)
-            Head = max(self.WholeData)
-
-        Location = round(Tale - (Head - Tale) / 5)
-
-        count = round((Head - Tale) / 5 * 7)
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, fontsize=9)
-
-        self.DrawLine([(0, Location), (16, Location)], color='black', linewidth=0.8, alpha=0.8)
-
-        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
-
-        for i in range(count):
-            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
-                          linewidth=0.8, alpha=0.8)
-
-            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
-                               xycoords='data', xytext=(-15, 0),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8, rotation=90)
-
-        for i in range(min(len(self.xticks), len(self.xticklabels))):
-            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
-                          linewidth=0.8, alpha=0.8)
-            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8)
-
-        self.canvas.draw()
-
-
 class REE(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
@@ -2137,357 +1902,6 @@ class REE(AppForm):
                                fontsize=8, color='black', alpha=0.8)
 
         self.canvas.draw()
-
-
-class Trace_old(AppForm):
-    xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-              30, 31, 32, 33, 34, 35, 36, 37]
-    xticklabels = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
-                   u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
-                   u'Li',
-                   u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('37 Trace Elements Standardlized Pattern Diagram')
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            print("DataFrame recieved to Trace")
-
-        self.Element = ['Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr',
-                        u'Mo',
-                        u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
-                        u'Li',
-                        u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
-        self.WholeData = []
-        self.X0 = 1
-        self.X1 = 37
-        self.X_Gap = 37
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 100
-        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton("&Save")
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton("&Reset")
-        self.draw_button.clicked.connect(self.Trace)
-
-        self.legend_cb = QCheckBox("&Legend")
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Trace)  # int
-
-        slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Trace)  # int
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button,
-                  self.legend_cb, slider_label, self.slider]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def Trace(self, Left=0, Right=16, X0=1, X1=37, X_Gap=37, Base=-1,
-              Top=6, Y0=-1,
-              Y1=3, Y_Gap=5, FontSize=12,
-              xLabel=r'$REE-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
-
-        self.axes.clear()
-
-        self.axes = self.fig.add_subplot(111)
-
-        self.WholeData = []
-
-        raw = self._df
-
-        self.width = width
-        self.height = height
-        self.dpi = dpi
-
-        self.X0 = 1
-        self.X1 = len(self.Element) + 1
-
-        self.X_Gap = X1
-
-        self.Y0 = Y0
-        self.Y1 = Y1
-        self.Y_Gap = Y_Gap
-
-        self.FontSize = FontSize
-
-        PointLabels = []
-        k = 0
-        for l in range(len(raw)):
-            if (raw.at[l, 'DataType'] == 'Standard' or raw.at[l, 'DataType'] == 'standard' or raw.at[
-                l, 'DataType'] == 'STANDARD'):
-                k = l
-
-        for i in range(len(raw)):
-            if (raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[
-                i, 'DataType'] == 'USER'):
-
-                TmpLabel = ''
-
-                LinesX = []
-                LinesY = []
-                for j in range(len(self.Element)):
-                    tmp = raw.at[i, self.Element[j]] / raw.at[k, self.Element[j]]
-                    LinesX.append(j + 1)
-                    LinesY.append(math.log(tmp, 10))
-                    self.WholeData.append(math.log(tmp, 10))
-
-                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                        TmpLabel = ''
-                    else:
-                        PointLabels.append(raw.at[i, 'Label'])
-                        TmpLabel = raw.at[i, 'Label']
-
-                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
-
-                self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
-                               linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
-
-        Tale = 0
-        Head = 0
-
-        if (len(self.WholeData) > 0):
-            Tale = min(self.WholeData)
-            Head = max(self.WholeData)
-
-        Location = round(Tale - (Head - Tale) / 5)
-
-        count = round((Head - Tale) / 5 * 7)
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, fontsize=9)
-
-        self.DrawLine([(0, Location), (self.X1, Location)], color='black', linewidth=0.8, alpha=0.8)
-
-        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
-
-        for i in range(count):
-            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
-                          linewidth=0.8, alpha=0.8)
-            print(Location + i)
-            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
-                               xycoords='data', xytext=(-15, 0),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8, rotation=90)
-
-        for i in range(min(len(self.xticks), len(self.xticklabels))):
-            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
-                          linewidth=0.8, alpha=0.8)
-            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8)
-
-        self.canvas.draw()
-
-
-class Trace2(AppForm):
-    xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
-    xticklabels = [u'Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd', u'Zr', u'Hf',
-                   u'Sm', u'Eu', u'Ti', u'Tb', u'Dy', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('27 Trace Elements Standardlized Pattern Diagram')
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            print("DataFrame recieved to Trace")
-
-        self.Element = ['Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd', u'Zr',
-                        u'Hf',
-                        u'Sm', u'Eu', u'Ti', u'Tb', u'Dy', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
-        self.WholeData = []
-        self.X0 = 1
-        self.X1 = 27
-        self.X_Gap = 27
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 100
-        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton("&Save")
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton("&Reset")
-        self.draw_button.clicked.connect(self.Trace2)
-
-        self.legend_cb = QCheckBox("&Legend")
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Trace2)  # int
-
-        slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Trace2)  # int
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button,
-                  self.legend_cb, slider_label, self.slider]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def Trace2(self, Left=0, Right=16, X0=1, X1=27, X_Gap=27, Base=-1,
-               Top=6, Y0=-1,
-               Y1=3, Y_Gap=5, FontSize=12,
-               xLabel=r'$REE-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
-
-        self.axes.clear()
-
-        self.axes = self.fig.add_subplot(111)
-
-        self.WholeData = []
-
-        raw = self._df
-
-        self.width = width
-        self.height = height
-        self.dpi = dpi
-
-        self.X0 = 1
-        self.X1 = len(self.Element) + 1
-
-        self.X_Gap = X1
-
-        self.Y0 = Y0
-        self.Y1 = Y1
-        self.Y_Gap = Y_Gap
-
-        self.FontSize = FontSize
-
-        PointLabels = []
-        k = 0
-        for l in range(len(raw)):
-            if (raw.at[l, 'DataType'] == 'Standard' or raw.at[l, 'DataType'] == 'standard' or raw.at[
-                l, 'DataType'] == 'STANDARD'):
-                k = l
-
-        for i in range(len(raw)):
-            if (raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[
-                i, 'DataType'] == 'USER'):
-
-                TmpLabel = ''
-
-                LinesX = []
-                LinesY = []
-                for j in range(len(self.Element)):
-                    tmp = raw.at[i, self.Element[j]] / raw.at[k, self.Element[j]]
-                    LinesX.append(j + 1)
-                    LinesY.append(math.log(tmp, 10))
-                    self.WholeData.append(math.log(tmp, 10))
-
-                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                        TmpLabel = ''
-                    else:
-                        PointLabels.append(raw.at[i, 'Label'])
-                        TmpLabel = raw.at[i, 'Label']
-
-                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
-
-                self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
-                               linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
-        Tale = 0
-        Head = 0
-
-        if (len(self.WholeData) > 0):
-            Tale = min(self.WholeData)
-            Head = max(self.WholeData)
-
-        Location = round(Tale - (Head - Tale) / 5)
-
-        count = round((Head - Tale) / 5 * 7)
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, fontsize=9)
-
-        self.DrawLine([(0, Location), (self.X1, Location)], color='black', linewidth=0.8, alpha=0.8)
-
-        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
-
-        for i in range(count):
-            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
-                          linewidth=0.8, alpha=0.8)
-            print(Location + i)
-            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
-                               xycoords='data', xytext=(-15, 0),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8, rotation=90)
-
-        for i in range(min(len(self.xticks), len(self.xticklabels))):
-            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
-                          linewidth=0.8, alpha=0.8)
-            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8)
-
-        self.canvas.draw()
-
 
 class Trace(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -2749,7 +2163,6 @@ class Trace(AppForm):
                                fontsize=8, color='black', alpha=0.8)
 
         self.canvas.draw()
-
 
 class Stereo(AppForm):
     _df = pd.DataFrame()
@@ -3081,7 +2494,6 @@ class Stereo(AppForm):
             self.points()
 
         self.canvas.draw()
-
 
 class Rose(AppForm):
     _df = pd.DataFrame()
@@ -3642,7 +3054,6 @@ class Rose(AppForm):
 
         self.canvas.draw()
 
-
 class MudStone(AppForm, Tool):
     _df = pd.DataFrame()
     _changed = False
@@ -3956,7 +3367,6 @@ class MudStone(AppForm, Tool):
 
         self.canvas.draw()
 
-
 class QFL(AppForm, Tool):
     _df = pd.DataFrame()
     _changed = False
@@ -4196,7 +3606,6 @@ class QFL(AppForm, Tool):
             self.axes.legend(loc=4, fontsize=9, bbox_to_anchor=(1.1, 0.5))
 
         self.canvas.draw()
-
 
 class QmFLt(AppForm, Tool):
     _df = pd.DataFrame()
@@ -4514,7 +3923,6 @@ class QmFLt(AppForm, Tool):
 
         self.canvas.draw()
 
-
 class CIPW(AppForm):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
 
@@ -4698,12 +4106,35 @@ class CIPW(AppForm):
         self.b = self.raw.columns
         self.WeightCorrectionFactor = []
         self.BaseMass = {}
-        self.Elements = []
+        self.Elements = ['SiO2',
+                         'TiO2',
+                         'Al2O3',
+                         'Fe2O3',
+                         'FeO',
+                         'MnO',
+                         'MgO',
+                         'CaO',
+                         'Na2O',
+                         'K2O',
+                         'P2O5',
+                         'CO2',
+                         'SO3',
+                         'S',
+                         'F',
+                         'Cl',
+                         'Sr',
+                         'Ba',
+                         'Ni',
+                         'Cr',
+                         'Zr']
         self.DataMole = []
         self.DataCalculating = {}
         self.DataResult = {}
 
-        for i in self.b:
+
+
+
+        for i in self.Elements:
             if i in self.addon.split():
                 pass
             else:
@@ -4727,13 +4158,14 @@ class CIPW(AppForm):
                 """
                 Get the Mole Mass of each Element
                 """
-
-                self.Elements.append(i)
                 self.BaseMass.update({i: m})
 
         for i in range(len(self.raw)):
             TmpWhole = 0
             TmpMole = {}
+
+
+
             for j in self.Elements:
                 """
                 Get the Whole Mole of the dataset
@@ -4752,10 +4184,18 @@ class CIPW(AppForm):
                     TMP = T_TMP / ((2 * Tool().Mass("Zr")) / Tool().Mass("ZrO2") * 10000)
 
                 else:
-                    TMP = self.raw.at[i, j]
+                    try:
+                        TMP = self.raw.at[i, j]
+                    except(KeyError):
+                        TMP = 0
 
                 V = TMP
-                TmpWhole += V
+
+
+                try:
+                    TmpWhole += float(V)
+                except ValueError:
+                    pass
 
             self.WeightCorrectionFactor.append(100 / TmpWhole)
 
@@ -4763,7 +4203,13 @@ class CIPW(AppForm):
                 """
                 Get the Mole percentage of each element
                 """
-                T_TMP = self.raw.at[i, j]
+
+                try:
+                    T_TMP = self.raw.at[i, j]
+                except(KeyError):
+                    T_TMP = 0
+
+
                 if j in ['Sr', 'Ba', 'Ni']:
                     TMP = T_TMP / (Tool().Mass(j) / Tool().Mass(j + 'O') * 10000)
 
@@ -4776,9 +4222,18 @@ class CIPW(AppForm):
 
 
                 else:
-                    TMP = self.raw.at[i, j]
+                    try:
+                        TMP = self.raw.at[i, j]
+                    except(KeyError):
+                        TMP=0
 
-                M = TMP / self.BaseMass[j] * self.WeightCorrectionFactor[i]
+
+
+                try:
+                    M = TMP / self.BaseMass[j] * self.WeightCorrectionFactor[i]
+                except TypeError:
+                    pass
+
                 # M= TMP/NewMass(j) * WeightCorrectionFactor[i]
 
                 TmpMole.update({j: M})
@@ -4803,10 +4258,26 @@ class CIPW(AppForm):
             Ca = self.DataCalculating['CaO'][i]
             Na = self.DataCalculating['Na2O'][i]
 
-            self.DataCalced[k].update({'Fe3+/(Total Fe) in rock': 100 * Fe3 * 2 / (Fe3 * 2 + Fe2)})
-            self.DataCalced[k].update({'Mg/(Mg+Total Fe) in rock': 100 * Mg / (Mg + Fe3 * 2 + Fe2)})
-            self.DataCalced[k].update({'Mg/(Mg+Fe2+) in rock': 100 * Mg / (Mg + Fe2)})
-            self.DataCalced[k].update({'Ca/(Ca+Na) in rock': 100 * Ca / (Ca + Na * 2)})
+            try:
+                self.DataCalced[k].update({'Fe3+/(Total Fe) in rock': 100 * Fe3 * 2 / (Fe3 * 2 + Fe2)})
+            except(ZeroDivisionError):
+                pass
+
+            try:
+                self.DataCalced[k].update({'Mg/(Mg+Total Fe) in rock': 100 * Mg / (Mg + Fe3 * 2 + Fe2)})
+            except(ZeroDivisionError):
+                pass
+
+
+            try:
+                self.DataCalced[k].update({'Mg/(Mg+Fe2+) in rock': 100 * Mg / (Mg + Fe2)})
+            except(ZeroDivisionError):
+                pass
+
+            try:
+                self.DataCalced[k].update({'Ca/(Ca+Na) in rock': 100 * Ca / (Ca + Na * 2)})
+            except(ZeroDivisionError):
+                pass
 
             self.DataCalculating['CaO'][i] += self.DataCalculating['Sr'][i]
             self.DataCalculating['Sr'][i] = 0
@@ -4814,16 +4285,26 @@ class CIPW(AppForm):
             self.DataCalculating['K2O'][i] += 2 * self.DataCalculating['Ba'][i]
             self.DataCalculating['Ba'][i] = 0
 
-            if self.DataCalculating['CaO'][i] >= 10 / 3 * self.DataCalculating['P2O5'][i]:
-                self.DataCalculating['CaO'][i] -= 10 / 3 * self.DataCalculating['P2O5'][i]
-            else:
-                self.DataCalculating['CaO'][i] = 0
+            try:
+                if self.DataCalculating['CaO'][i] >= 10 / 3 * self.DataCalculating['P2O5'][i]:
+                    self.DataCalculating['CaO'][i] -= 10 / 3 * self.DataCalculating['P2O5'][i]
+                else:
+                   self.DataCalculating['CaO'][i] = 0
+            except(ZeroDivisionError):
+                pass
+
 
             self.DataCalculating['P2O5'][i] = self.DataCalculating['P2O5'][i] / 1.5
 
             Apatite = self.DataCalculating['P2O5'][i]
 
             # IF(S19>=T15,S19-T15,0)
+
+            if self.DataCalculating['F'][i] >= self.DataCalculating['P2O5'][i]:
+                self.DataCalculating['F'][i] -= self.DataCalculating['P2O5'][i]
+            else:
+                self.DataCalculating['F'][i] = 0
+
 
             if self.DataCalculating['F'][i] >= self.DataCalculating['P2O5'][i]:
                 self.DataCalculating['F'][i] -= self.DataCalculating['P2O5'][i]
@@ -5675,7 +5156,10 @@ class CIPW(AppForm):
             TMP_DataToWrite = [k]
             for j in self.Calced:
                 command = 'TMP_DataToWrite.append(str(self.' + target + '[k][j]))'
-                exec(command)
+                try:
+                    exec(command)
+                except(KeyError):
+                    pass
             DataToWrite.append(TMP_DataToWrite)
         return (DataToWrite)
 
@@ -5707,7 +5191,6 @@ class CIPW(AppForm):
 
             elif ("xls" in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
-
 
 class QAPF(AppForm, Tool):
     _df = pd.DataFrame()
@@ -6408,7 +5891,6 @@ class QAPF(AppForm, Tool):
 
         self.canvas.draw()
 
-
 class Pearce(AppForm):
     Lines = []
     Tags = []
@@ -6608,5 +6090,235 @@ class Pearce(AppForm):
                 self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
                                    textcoords='offset points',
                                    fontsize=8, color='grey', alpha=0.8)
+
+        self.canvas.draw()
+
+
+class Harker(AppForm):
+    Lines = []
+    Tags = []
+    description = "Harker diagram"
+    usefulelements =  ['SiO2',
+     'TiO2',
+     'Al2O3',
+     'TFe2O3',
+     'Fe2O3',
+     'FeO',
+     'TFe',
+     'MnO',
+     'MgO',
+     'CaO',
+     'Na2O',
+     'K2O',
+     'P2O5',
+     'Loi',
+     'DI',
+     'Mg#',
+     'Li',
+     'Be',
+     'Sc',
+     'V',
+     'Cr',
+     'Co',
+     'Ni',
+     'Cu',
+     'Zn',
+     'Ga',
+     'Ge',
+     'Rb',
+     'Sr',
+     'Y',
+     'Zr',
+     'Nb',
+     'Cs',
+     'Ba',
+     'La',
+     'Ce',
+     'Pr',
+     'Nd',
+     'Sm',
+     'Eu',
+     'Gd',
+     'Tb',
+     'Dy',
+     'Ho',
+     'Er',
+     'Tm',
+     'Yb',
+     'Lu',
+     'III',
+     'Ta',
+     'Pb',
+     'Th',
+     'U']
+    unuseful = ['Name',
+                'Author',
+                'DataType',
+                'Label',
+                'Marker',
+                'Color',
+                'Size',
+                'Alpha',
+                'Style',
+                'Width',
+                'Tag']
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle("Harker diagram")
+
+        self.items=[]
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            print("DataFrame recieved to Harker")
+
+        self.raw = df
+        self.rawitems = self.raw.columns.values.tolist()
+
+        for i in self.rawitems:
+            if i not in self.unuseful:
+                self.items.append(i)
+            else:pass
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # self.axes.hold(False)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton("&Reset")
+        self.draw_button.clicked.connect(self.Harker)
+
+        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Harker)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Harker)  # int
+
+        self.log_cb = QCheckBox("&Log")
+        self.log_cb.setChecked(False)
+        self.log_cb.stateChanged.connect(self.Harker)  # int
+
+        self.x_element = QSlider(Qt.Horizontal)
+        self.x_element.setRange(0, len(self.items)-1)
+        self.x_element.setValue(0)
+        self.x_element.setTracking(True)
+        self.x_element.setTickPosition(QSlider.TicksBothSides)
+        self.x_element.valueChanged.connect(self.Harker)  # int
+
+        self.x_element_label = QLabel('X')
+
+        self.y_element = QSlider(Qt.Horizontal)
+        self.y_element.setRange(0, len(self.items)-1)
+        self.y_element.setValue(0)
+        self.y_element.setTracking(True)
+        self.y_element.setTickPosition(QSlider.TicksBothSides)
+        self.y_element.valueChanged.connect(self.Harker)  # int
+
+        self.y_element_label = QLabel('Y')
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox1 = QHBoxLayout()
+        self.hbox2 = QHBoxLayout()
+        self.hbox3 = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button, self.log_cb,
+                  self.legend_cb, self.slider_label, self.slider]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.x_element_label, self.x_element]:
+            self.hbox2.addWidget(w)
+            self.hbox2.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.y_element_label, self.y_element]:
+            self.hbox3.addWidget(w)
+            self.hbox3.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Harker(self):
+
+        self.WholeData = []
+
+        raw = self._df
+
+        a = int(self.x_element.value())
+
+        b = int(self.y_element.value())
+
+        self.axes.clear()
+
+        self.axes.set_xlabel(self.items[a])
+        self.x_element_label.setText(self.items[a])
+
+        self.axes.set_ylabel(self.items[b])
+        self.y_element_label.setText(self.items[b])
+
+        PointLabels = []
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+
+            x, y = 0, 0
+
+            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+
+            try:
+                if (self.log_cb.isChecked()):
+                    self.axes.scatter(math.log(x, 10), math.log(y, 10), marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel, edgecolors='black')
+                else:
+                    self.axes.scatter(x, y, marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel, edgecolors='black')
+            except(ValueError):
+                pass
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a, fontsize=9)
 
         self.canvas.draw()

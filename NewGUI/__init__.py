@@ -8,7 +8,7 @@
 created on Sat Dec 17 22:28:24 2016
 @author: cycleuser
 # Create Date: 2015-07-13
-# Modify Date: 2017-07-23
+# Modify Date: 2017-08-31
 a tool set for daily geology related task.
 # prerequisite:
 #   based on Python 3.x
@@ -23,21 +23,24 @@ from CustomClass import CustomQTableView
 
 from CustomClass import PlotModel
 from CustomClass import AppForm
-from CustomClass import Zircon
+
+from CustomClass import CIPW
 from CustomClass import TAS
-from CustomClass import REE
 from CustomClass import Trace
-from CustomClass import Trace2
+from CustomClass import REE
+from CustomClass import Pearce
+from CustomClass import Harker
+
 from CustomClass import Stereo
 from CustomClass import Rose
+
 from CustomClass import QFL
 from CustomClass import QmFLt
-from CustomClass import MudStone
-from CustomClass import CIPW
 from CustomClass import QAPF
-from CustomClass import Pearce
 
+from CustomClass import MudStone
 
+from CustomClass import Zircon
 
 from CustomClass import MyPopup
 
@@ -103,42 +106,60 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
 
 
-        self.pushButtonTAS = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonTAS.setGeometry(QtCore.QRect(150, 404, 110, 32))
-        self.pushButtonTAS.setObjectName("pushButtonTAS")
 
 
-        self.pushButtonZircon = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonZircon.setGeometry(QtCore.QRect(150, 444, 110, 32))
-        self.pushButtonZircon.setObjectName("pushButtonZircon")
 
 
         self.pushButtonCIPW = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonCIPW.setGeometry(QtCore.QRect(150, 484, 110, 32))
+        self.pushButtonCIPW.setGeometry(QtCore.QRect(150, 404, 110, 32))
         self.pushButtonCIPW.setObjectName("pushButtonCIPW")
+
+        self.pushButtonTAS = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonTAS.setGeometry(QtCore.QRect(150, 444, 110, 32))
+        self.pushButtonTAS.setObjectName("pushButtonTAS")
+
+        self.pushButtonTrace = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonTrace.setGeometry(QtCore.QRect(150, 484, 110, 32))
+        self.pushButtonTrace.setObjectName("pushButtonTrace")
+
+        self.pushButtonREE = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonREE.setGeometry(QtCore.QRect(150, 524, 110, 32))
+        self.pushButtonREE.setObjectName("pushButtonREE")
+
+        self.pushButtonPearce = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonPearce.setGeometry(QtCore.QRect(150, 564, 110, 32))
+        self.pushButtonPearce.setObjectName("pushButtonPearce")
+
+
+        self.pushButtonHarker = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonHarker.setGeometry(QtCore.QRect(150, 604, 110, 32))
+        self.pushButtonHarker.setObjectName("pushButtonHarker")
+
 
 
         self.pushButtonStereo = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonStereo.setGeometry(QtCore.QRect(410, 404, 110, 32))
+        self.pushButtonStereo.setGeometry(QtCore.QRect(280, 404, 110, 32))
         self.pushButtonStereo.setObjectName("pushButtonStereo")
 
-
-        self.pushButtonTrace = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonTrace.setGeometry(QtCore.QRect(280, 444, 110, 32))
-        self.pushButtonTrace.setObjectName("pushButtonTrace")
-
-        #self.pushButtonTrace2 = QtWidgets.QPushButton(self.centralwidget)
-        #self.pushButtonTrace2.setGeometry(QtCore.QRect(280, 484, 110, 32))
-        #self.pushButtonTrace2.setObjectName("pushButtonTrace2")
-
-        self.pushButtonREE = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonREE.setGeometry(QtCore.QRect(280, 404, 110, 32))
-        self.pushButtonREE.setObjectName("pushButtonREE")
-
-
         self.pushButtonRose = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonRose.setGeometry(QtCore.QRect(410, 444, 110, 32))
+        self.pushButtonRose.setGeometry(QtCore.QRect(280, 444, 110, 32))
         self.pushButtonRose.setObjectName("pushButtonRose")
+
+
+        self.pushButtonQFL= QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonQFL.setGeometry(QtCore.QRect(410, 404, 110, 32))
+        self.pushButtonQFL.setObjectName("pushButtonQFL")
+
+
+        self.pushButtonQmFLt= QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonQmFLt.setGeometry(QtCore.QRect(410, 444, 110, 32))
+        self.pushButtonQmFLt.setObjectName("pushButtonQmFLt")
+
+
+        self.pushButtonQAPF= QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonQAPF.setGeometry(QtCore.QRect(410, 484, 110, 32))
+        self.pushButtonQAPF.setObjectName("pushButtonQAPF")
+
 
 
         self.pushButtonMudStone = QtWidgets.QPushButton(self.centralwidget)
@@ -147,25 +168,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
 
 
-        self.pushButtonQFL= QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonQFL.setGeometry(QtCore.QRect(540, 444, 110, 32))
-        self.pushButtonQFL.setObjectName("pushButtonQFL")
-
-
-        self.pushButtonQmFLt= QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonQmFLt.setGeometry(QtCore.QRect(540, 484, 110, 32))
-        self.pushButtonQmFLt.setObjectName("pushButtonQmFLt")
-
-
-        self.pushButtonQAPF= QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonQAPF.setGeometry(QtCore.QRect(540, 524, 110, 32))
-        self.pushButtonQAPF.setObjectName("pushButtonQAPF")
 
 
 
-        self.pushButtonPearce = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonPearce.setGeometry(QtCore.QRect(670, 404, 110, 32))
-        self.pushButtonPearce.setObjectName("pushButtonPearce")
+
+        self.pushButtonZircon = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonZircon.setGeometry(QtCore.QRect(670, 404, 110, 32))
+        self.pushButtonZircon.setObjectName("pushButtonZircon")
+
 
 
 
@@ -219,51 +229,51 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonSave.clicked.connect(self.saveDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
 
-        self.pushButtonZircon.clicked.connect(self.Zircon)
-
+        self.pushButtonCIPW.clicked.connect(self.CIPW)
         self.pushButtonTAS.clicked.connect(self.TAS)
-
-        self.pushButtonREE.clicked.connect(self.REE)
-
         self.pushButtonTrace.clicked.connect(self.Trace)
+        self.pushButtonREE.clicked.connect(self.REE)
+        self.pushButtonPearce.clicked.connect(self.Pearce)
+        self.pushButtonHarker.clicked.connect(self.Harker)
+
 
         self.pushButtonStereo.clicked.connect(self.Stereo)
-
         self.pushButtonRose.clicked.connect(self.Rose)
+
+
+        self.pushButtonQFL.clicked.connect(self.QFL)
+        self.pushButtonQmFLt.clicked.connect(self.QmFLt)
+        self.pushButtonQAPF.clicked.connect(self.QAPF)
+
 
         self.pushButtonMudStone.clicked.connect(self.Mud)
 
-        self.pushButtonQFL.clicked.connect(self.QFL)
+        self.pushButtonZircon.clicked.connect(self.Zircon)
 
-        self.pushButtonQmFLt.clicked.connect(self.QmFLt)
-
-        self.pushButtonCIPW.clicked.connect(self.CIPW)
-
-        self.pushButtonQAPF.clicked.connect(self.QAPF)
-
-        self.pushButtonPearce.clicked.connect(self.Pearce)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "GeoPython"))
         self.pushButtonOpen.setText(_translate("MainWindow", "Open"))
         self.pushButtonSave.setText(_translate("MainWindow", "Save"))
-        self.pushButtonTAS.setText(_translate("MainWindow", "TAS"))
-        self.pushButtonZircon.setText(_translate("MainWindow", "Zircon Ce"))
+
         self.pushButtonCIPW.setText(_translate("MainWindow", "CIPW"))
-        self.pushButtonStereo.setText(_translate("MainWindow", "Stereo"))
-        self.pushButtonRose.setText(_translate("MainWindow", "Rose"))
+        self.pushButtonTAS.setText(_translate("MainWindow", "TAS"))
         self.pushButtonTrace.setText(_translate("MainWindow", "Trace"))
-
         self.pushButtonREE.setText(_translate("MainWindow", "REE"))
+        self.pushButtonPearce.setText(_translate("MainWindow", "Pearce"))
+        self.pushButtonHarker.setText(_translate("MainWindow", "Harker"))
 
-        self.pushButtonMudStone.setText(_translate("MainWindow", "Sand-Silt-Mud"))
         self.pushButtonQFL.setText(_translate("MainWindow", "QFL"))
         self.pushButtonQmFLt.setText(_translate("MainWindow", "QmFLt"))
-
         self.pushButtonQAPF.setText(_translate("MainWindow", "QAPF"))
 
-        self.pushButtonPearce.setText(_translate("MainWindow", "Pearce"))
+        self.pushButtonStereo.setText(_translate("MainWindow", "Stereo"))
+        self.pushButtonRose.setText(_translate("MainWindow", "Rose"))
+
+        self.pushButtonMudStone.setText(_translate("MainWindow", "Sand-Silt-Mud"))
+
+        self.pushButtonZircon.setText(_translate("MainWindow", "Zircon Ce"))
 
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
@@ -329,36 +339,37 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.w.MyCanvas.print_figure(ImgFileOutput, dpi= 300 )
             #self.statusBar().showMessage('Saved to %s' % ImgFileOutput, 2000)
 
+    def CIPW(self):
+        self.cipwpop = CIPW(df=self.model._df)
+        self.cipwpop.CIPW()
+        self.cipwpop.show()
     def TAS(self):
 
         self.pop = TAS(df=self.model._df)
         self.pop.TAS()
         self.pop.show()
-
     def REE(self):
         self.reepop = REE(df=self.model._df)
         self.reepop.REE()
         self.reepop.show()
-
     def Trace(self):
         self.tracepop = Trace(df=self.model._df)
         self.tracepop.Trace()
         self.tracepop.show()
+    def Pearce(self):
+        self.pearcepop = Pearce(df=self.model._df)
+        self.pearcepop.Pearce()
+        self.pearcepop.show()
+    def Harker(self):
+        self.harkerpop = Harker(df=self.model._df)
+        self.harkerpop.Harker()
+        self.harkerpop.show()
 
-    def Zircon(self):
-        print("Opening a new popup window...")
-        #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
-        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
-
-        self.zirconpop = Zircon(df=self.model._df)
-        self.zirconpop.MultiBallard()
-        self.zirconpop.show()
 
     def Stereo(self):
         self.stereopop = Stereo(df=self.model._df)
         self.stereopop.Stereo()
         self.stereopop.show()
-
     def Rose(self):
         self.rosepop = Rose(df=self.model._df)
         self.rosepop.Rose()
@@ -368,32 +379,29 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.tripop = QFL(df=self.model._df)
         self.tripop.Tri()
         self.tripop.show()
-
     def QmFLt(self):
         self.tripop = QmFLt(df=self.model._df)
         self.tripop.Tri()
         self.tripop.show()
-
-    def Mud(self):
-        self.mudpop = MudStone(df=self.model._df)
-        self.mudpop.Tri()
-        self.mudpop.show()
-
-    def CIPW(self):
-        self.cipwpop = CIPW(df=self.model._df)
-        self.cipwpop.CIPW()
-        self.cipwpop.show()
-
-
     def QAPF(self):
         self.qapfpop = QAPF(df=self.model._df)
         self.qapfpop.QAPF()
         self.qapfpop.show()
 
-    def Pearce(self):
-        self.pearcepop = Pearce(df=self.model._df)
-        self.pearcepop.Pearce()
-        self.pearcepop.show()
+    def Mud(self):
+        self.mudpop = MudStone(df=self.model._df)
+        self.mudpop.Tri()
+        self.mudpop.show()
+    def Zircon(self):
+        print("Opening a new popup window...")
+        #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
+        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+
+        self.zirconpop = Zircon(df=self.model._df)
+        self.zirconpop.MultiBallard()
+        self.zirconpop.show()
+
+
 
 
 
