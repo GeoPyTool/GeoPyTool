@@ -120,7 +120,7 @@ http://matplotlib.org/api/colors_api.html
 
 Here is a picture of Line Styles and Point Markers form [nrougier](http://www.labri.fr/perso/nrougier/teaching/matplotlib/):
 
-![](img/LIneStylesMarkers.png)
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/LIneStylesMarkers.png)
 
 
 ## New GUI！
