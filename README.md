@@ -110,6 +110,19 @@ You would see the GUI of **GeoPython**, which is under development for now. So i
 pip install --upgrade geopython
 ```
 
+## Marker/Color/Style
+
+Markers of Points can be reffered from here:
+http://matplotlib.org/api/markers_api.html
+
+Colors can be reffered from here:
+http://matplotlib.org/api/colors_api.html
+
+Here is a picture of Line Styles and Point Markers form [nrougier](http://www.labri.fr/perso/nrougier/teaching/matplotlib/):
+
+![](img/LIneStylesMarkers.png)
+
+
 ## New GUI！
 
 
