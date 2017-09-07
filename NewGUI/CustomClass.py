@@ -4,6 +4,8 @@ import csv
 import random
 import matplotlib
 
+from bs4 import BeautifulSoup
+
 matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
 
@@ -28,6 +30,8 @@ from PyQt5.QtWidgets import (QWidget, QLabel, QHBoxLayout, QVBoxLayout,
                              QFileDialog, QAction)
 
 from chempy import Substance
+from xml.dom import minidom
+
 
 
 class Tool():
@@ -6093,64 +6097,63 @@ class Pearce(AppForm):
 
         self.canvas.draw()
 
-
 class Harker(AppForm):
     Lines = []
     Tags = []
     description = "Harker diagram"
-    usefulelements =  ['SiO2',
-     'TiO2',
-     'Al2O3',
-     'TFe2O3',
-     'Fe2O3',
-     'FeO',
-     'TFe',
-     'MnO',
-     'MgO',
-     'CaO',
-     'Na2O',
-     'K2O',
-     'P2O5',
-     'Loi',
-     'DI',
-     'Mg#',
-     'Li',
-     'Be',
-     'Sc',
-     'V',
-     'Cr',
-     'Co',
-     'Ni',
-     'Cu',
-     'Zn',
-     'Ga',
-     'Ge',
-     'Rb',
-     'Sr',
-     'Y',
-     'Zr',
-     'Nb',
-     'Cs',
-     'Ba',
-     'La',
-     'Ce',
-     'Pr',
-     'Nd',
-     'Sm',
-     'Eu',
-     'Gd',
-     'Tb',
-     'Dy',
-     'Ho',
-     'Er',
-     'Tm',
-     'Yb',
-     'Lu',
-     'III',
-     'Ta',
-     'Pb',
-     'Th',
-     'U']
+    usefulelements = ['SiO2',
+                      'TiO2',
+                      'Al2O3',
+                      'TFe2O3',
+                      'Fe2O3',
+                      'FeO',
+                      'TFe',
+                      'MnO',
+                      'MgO',
+                      'CaO',
+                      'Na2O',
+                      'K2O',
+                      'P2O5',
+                      'Loi',
+                      'DI',
+                      'Mg#',
+                      'Li',
+                      'Be',
+                      'Sc',
+                      'V',
+                      'Cr',
+                      'Co',
+                      'Ni',
+                      'Cu',
+                      'Zn',
+                      'Ga',
+                      'Ge',
+                      'Rb',
+                      'Sr',
+                      'Y',
+                      'Zr',
+                      'Nb',
+                      'Cs',
+                      'Ba',
+                      'La',
+                      'Ce',
+                      'Pr',
+                      'Nd',
+                      'Sm',
+                      'Eu',
+                      'Gd',
+                      'Tb',
+                      'Dy',
+                      'Ho',
+                      'Er',
+                      'Tm',
+                      'Yb',
+                      'Lu',
+                      'III',
+                      'Ta',
+                      'Pb',
+                      'Th',
+                      'U']
     unuseful = ['Name',
                 'Author',
                 'DataType',
@@ -6167,7 +6170,7 @@ class Harker(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle("Harker diagram")
 
-        self.items=[]
+        self.items = []
 
         self._df = df
         if (len(df) > 0):
@@ -6180,7 +6183,8 @@ class Harker(AppForm):
         for i in self.rawitems:
             if i not in self.unuseful:
                 self.items.append(i)
-            else:pass
+            else:
+                pass
 
         self.create_main_frame()
         self.create_status_bar()
@@ -6216,12 +6220,8 @@ class Harker(AppForm):
         self.slider.setTickPosition(QSlider.TicksBothSides)
         self.slider.valueChanged.connect(self.Harker)  # int
 
-        self.log_cb = QCheckBox("&Log")
-        self.log_cb.setChecked(False)
-        self.log_cb.stateChanged.connect(self.Harker)  # int
-
         self.x_element = QSlider(Qt.Horizontal)
-        self.x_element.setRange(0, len(self.items)-1)
+        self.x_element.setRange(0, len(self.items) - 1)
         self.x_element.setValue(0)
         self.x_element.setTracking(True)
         self.x_element.setTickPosition(QSlider.TicksBothSides)
@@ -6229,14 +6229,22 @@ class Harker(AppForm):
 
         self.x_element_label = QLabel('X')
 
+        self.logx_cb = QCheckBox("&Log")
+        self.logx_cb.setChecked(False)
+        self.logx_cb.stateChanged.connect(self.Harker)  # int
+
         self.y_element = QSlider(Qt.Horizontal)
-        self.y_element.setRange(0, len(self.items)-1)
+        self.y_element.setRange(0, len(self.items) - 1)
         self.y_element.setValue(0)
         self.y_element.setTracking(True)
         self.y_element.setTickPosition(QSlider.TicksBothSides)
         self.y_element.valueChanged.connect(self.Harker)  # int
 
         self.y_element_label = QLabel('Y')
+
+        self.logy_cb = QCheckBox("&Log")
+        self.logy_cb.setChecked(False)
+        self.logy_cb.stateChanged.connect(self.Harker)  # int
 
         #
         # Layout with box sizers
@@ -6245,16 +6253,16 @@ class Harker(AppForm):
         self.hbox2 = QHBoxLayout()
         self.hbox3 = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.log_cb,
+        for w in [self.save_button, self.draw_button,
                   self.legend_cb, self.slider_label, self.slider]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.x_element_label, self.x_element]:
+        for w in [self.logx_cb, self.x_element_label, self.x_element]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.y_element_label, self.y_element]:
+        for w in [self.logy_cb, self.y_element_label, self.y_element]:
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
@@ -6302,23 +6310,584 @@ class Harker(AppForm):
                 TmpLabel = raw.at[i, 'Label']
 
             x, y = 0, 0
+            xuse, yuse = 0, 0
 
             x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
 
             try:
-                if (self.log_cb.isChecked()):
-                    self.axes.scatter(math.log(x, 10), math.log(y, 10), marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
-                else:
-                    self.axes.scatter(x, y, marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
+                xuse = x
+                yuse = y
+
+                if (self.logx_cb.isChecked()):
+                    xuse = math.log(x, 10)
+
+                    self.axes.set_xlabel('$log10$ ' + self.items[a])
+
+                if (self.logy_cb.isChecked()):
+                    yuse = math.log(y, 10)
+
+                    self.axes.set_ylabel('$log10$ ' + self.items[b])
+
+
+                self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                  label=TmpLabel, edgecolors='black')
             except(ValueError):
                 pass
 
         if (self.legend_cb.isChecked()):
             a = int(self.slider.value())
             self.axes.legend(loc=a, fontsize=9)
+
+        self.canvas.draw()
+
+
+class oldMagic(AppForm):
+    Lines = []
+    Tags = []
+    description = "Magic diagram"
+    unuseful = ['Name',
+                'Author',
+                'DataType',
+                'Label',
+                'Marker',
+                'Color',
+                'Size',
+                'Alpha',
+                'Style',
+                'Width',
+                'Tag']
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle("Magic diagram")
+
+        self.items = []
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            print("DataFrame recieved to Magic")
+
+        self.raw = df
+        self.rawitems = self.raw.columns.values.tolist()
+
+        for i in self.rawitems:
+            if i not in self.unuseful:
+                self.items.append(i)
+            else:
+                pass
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # self.axes.hold(False)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton("&Reset")
+        self.draw_button.clicked.connect(self.Magic)
+
+        self.load_button = QPushButton("&Load")
+        self.load_button.clicked.connect(self.Load)
+
+        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Magic)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Magic)  # int
+
+        self.x_element = QSlider(Qt.Horizontal)
+        self.x_element.setRange(0, len(self.items) - 1)
+        self.x_element.setValue(0)
+        self.x_element.setTracking(True)
+        self.x_element.setTickPosition(QSlider.TicksBothSides)
+        self.x_element.valueChanged.connect(self.Magic)  # int
+
+        self.x_element_label = QLabel('X')
+
+        self.logx_cb = QCheckBox("&Log")
+        self.logx_cb.setChecked(False)
+        self.logx_cb.stateChanged.connect(self.Magic)  # int
+
+        self.y_element = QSlider(Qt.Horizontal)
+        self.y_element.setRange(0, len(self.items) - 1)
+        self.y_element.setValue(0)
+        self.y_element.setTracking(True)
+        self.y_element.setTickPosition(QSlider.TicksBothSides)
+        self.y_element.valueChanged.connect(self.Magic)  # int
+
+        self.y_element_label = QLabel('Y')
+
+        self.logy_cb = QCheckBox("&Log")
+        self.logy_cb.setChecked(False)
+        self.logy_cb.stateChanged.connect(self.Magic)  # int
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox1 = QHBoxLayout()
+        self.hbox2 = QHBoxLayout()
+        self.hbox3 = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button, self.load_button,
+                  self.legend_cb, self.slider_label, self.slider]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logx_cb, self.x_element_label, self.x_element]:
+            self.hbox2.addWidget(w)
+            self.hbox2.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logy_cb, self.y_element_label, self.y_element]:
+            self.hbox3.addWidget(w)
+            self.hbox3.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Load(self):
+        fileName, filetype = QFileDialog.getOpenFileName(self,
+                                                         "选取文件",
+                                                         "~/",
+                                                         "SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
+
+        # print(fileName)
+
+        doc = minidom.parse(fileName)  # parseString also exists
+        polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
+        polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
+        svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
+        svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
+        # text_location= [path.getAttribute('transform') for path in doc.getElementsByTagName('text')]
+
+
+    def Magic(self):
+        self.WholeData = []
+
+        raw = self._df
+
+        a = int(self.x_element.value())
+
+        b = int(self.y_element.value())
+
+        self.axes.clear()
+
+        self.axes.set_xlabel(self.items[a])
+        self.x_element_label.setText(self.items[a])
+
+        self.axes.set_ylabel(self.items[b])
+        self.y_element_label.setText(self.items[b])
+
+        PointLabels = []
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+
+            x, y = 0, 0
+            xuse, yuse = 0, 0
+
+            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+
+            try:
+                xuse = x
+                yuse = y
+
+                if (self.logx_cb.isChecked()):
+                    xuse = math.log(x, 10)
+
+                    self.axes.set_xlabel('$log10$ ' + self.items[a])
+
+                if (self.logy_cb.isChecked()):
+                    yuse = math.log(y, 10)
+
+                    self.axes.set_ylabel('$log10$ ' + self.items[b])
+
+                self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                  label=TmpLabel, edgecolors='black')
+            except(ValueError):
+                pass
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a, fontsize=9)
+
+        self.canvas.draw()
+
+
+class Magic(AppForm):
+    Lines = []
+    Tags = []
+    description = "Magic diagram"
+    unuseful = ['Name',
+                'Author',
+                'DataType',
+                'Label',
+                'Marker',
+                'Color',
+                'Size',
+                'Alpha',
+                'Style',
+                'Width',
+                'Tag']
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle("Magic diagram")
+
+        self.items = []
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            print("DataFrame recieved to Magic")
+
+        self.raw = df
+        self.rawitems = self.raw.columns.values.tolist()
+
+        for i in self.rawitems:
+            if i not in self.unuseful:
+                self.items.append(i)
+            else:
+                pass
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+
+
+        self.polygon = 0
+        self.polyline = 0
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # self.axes.hold(False)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton("&Reset")
+        self.draw_button.clicked.connect(self.Magic)
+
+        self.load_button = QPushButton("&Load")
+        self.load_button.clicked.connect(self.Load)
+
+        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Magic)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Magic)  # int
+
+        self.x_element = QSlider(Qt.Horizontal)
+        self.x_element.setRange(0, len(self.items) - 1)
+        self.x_element.setValue(0)
+        self.x_element.setTracking(True)
+        self.x_element.setTickPosition(QSlider.TicksBothSides)
+        self.x_element.valueChanged.connect(self.Magic)  # int
+
+        self.x_element_label = QLabel('X')
+
+        self.logx_cb = QCheckBox("&Log")
+        self.logx_cb.setChecked(False)
+        self.logx_cb.stateChanged.connect(self.Magic)  # int
+
+        self.y_element = QSlider(Qt.Horizontal)
+        self.y_element.setRange(0, len(self.items) - 1)
+        self.y_element.setValue(0)
+        self.y_element.setTracking(True)
+        self.y_element.setTickPosition(QSlider.TicksBothSides)
+        self.y_element.valueChanged.connect(self.Magic)  # int
+
+        self.y_element_label = QLabel('Y')
+
+        self.logy_cb = QCheckBox("&Log")
+        self.logy_cb.setChecked(False)
+        self.logy_cb.stateChanged.connect(self.Magic)  # int
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox1 = QHBoxLayout()
+        self.hbox2 = QHBoxLayout()
+        self.hbox3 = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button, self.load_button,
+                  self.legend_cb, self.slider_label, self.slider]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logx_cb, self.x_element_label, self.x_element]:
+            self.hbox2.addWidget(w)
+            self.hbox2.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logy_cb, self.y_element_label, self.y_element]:
+            self.hbox3.addWidget(w)
+            self.hbox3.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Read(self,inpoints):
+        points=[]
+        for i in inpoints:
+            points.append(i.split())
+
+        result=[]
+        for i in points:
+            for l in range(len(i)):
+                a=float((i[l].split(','))[0])
+                a= a*self.x_scale
+
+                b=float((i[l].split(','))[1])
+                b= (self.height-b)*self.y_scale
+
+                result.append((a,b))
+        return(result)
+
+    def Load(self):
+        fileName, filetype = QFileDialog.getOpenFileName(self,
+                                                         "选取文件",
+                                                         "~/",
+                                                         "SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
+
+        # print(fileName)
+
+        doc = minidom.parse(fileName)  # parseString also exists
+        polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
+        polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
+
+        svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
+        svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
+
+        print(svg_width)
+        print(svg_height)
+
+        digit = '01234567890.-'
+        width = svg_width[0].replace('px', '')
+        height = svg_height[0].replace('px', '')
+
+        '''
+        width=''
+        for letter in svg_width[0]:
+            if letter in digit:
+                width = width + letter
+
+        print(width)
+
+
+
+        height=''
+        for letter in svg_height[0]:
+            if letter in digit:
+                height = height + letter
+
+        print(height)
+        '''
+
+
+        self.width=float(width)
+        self.height=float(height)
+
+        self.x_scale = 100.0 / float(width)
+        self.y_scale = 50.0 * math.sqrt(3) / float(height)
+
+        print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
+
+        soup = BeautifulSoup(open(fileName), "lxml")
+
+        tmpgon=soup.find_all('polygon')
+        tmpline=soup.find_all('polyline')
+        tmptext=soup.find_all('text')
+
+        strgons = []
+        for i in tmpgon:
+            a = (str(i)).replace('\n', '').replace('\t', '')
+            m = BeautifulSoup(a, "lxml")
+            k = m.polygon.attrs
+            strgons.append(k['points'].split())
+        gons=[]
+        for i in strgons:
+            m =  self.Read(i)
+            m.append(m[0])
+            gons.append(m)
+
+
+        strlines = []
+        for i in tmpline:
+            a = (str(i)).replace('\n', '').replace('\t', '')
+            m = BeautifulSoup(a, "lxml")
+            k = m.polyline.attrs
+            strlines.append(k['points'].split())
+        lines=[]
+        for i in strlines:
+            m =  self.Read(i)
+            print('i: ',i,'\n m:',m)
+            lines.append(m)
+
+
+
+
+        self.polygon = gons
+        self.polyline = lines
+
+        print(self.polygon,'\n',self.polyline)
+
+
+        self.Magic()
+
+
+
+    # text_location= [path.getAttribute('transform') for path in doc.getElementsByTagName('text')]
+    '''
+    tmppolygon_points=[]
+    for i in polygon_points:
+        tmppolygon_points.append(i.split())
+
+    polygon=[]
+    for i in tmppolygon_points:
+        for l in range(len(i)):
+            a=float((i[l].split(','))[0])
+            b=float((i[l].split(','))[1])
+
+            polygon.append([a,b])
+    '''
+
+
+
+    def Magic(self):
+
+        self.WholeData = []
+
+        raw = self._df
+
+        a = int(self.x_element.value())
+
+        b = int(self.y_element.value())
+
+        self.axes.clear()
+
+        self.axes.set_xlabel(self.items[a])
+        self.x_element_label.setText(self.items[a])
+
+        self.axes.set_ylabel(self.items[b])
+        self.y_element_label.setText(self.items[b])
+
+        PointLabels = []
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+
+            x, y = 0, 0
+            xuse, yuse = 0, 0
+
+            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+
+            try:
+                xuse = x
+                yuse = y
+
+                if (self.logx_cb.isChecked()):
+                    xuse = math.log(x, 10)
+
+                    self.axes.set_xlabel('$log10$ ' + self.items[a])
+
+                if (self.logy_cb.isChecked()):
+                    yuse = math.log(y, 10)
+
+                    self.axes.set_ylabel('$log10$ ' + self.items[b])
+
+                self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                  label=TmpLabel, edgecolors='black')
+            except(ValueError):
+                pass
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a, fontsize=9)
+
+
+        if self.polygon !=0 and  self.polyline !=0 :
+
+            print('gon: ',self.polygon,' \n line:',self.polyline)
+
+            for i in self.polygon:
+                self.DrawLine(i)
+
+            for i in self.polyline:
+                self.DrawLine(i)
+
+
+
+                    #self.DrawLine(self.polygon)
+            #self.DrawLine(self.polyline)
 
         self.canvas.draw()

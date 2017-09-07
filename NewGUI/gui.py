@@ -41,6 +41,7 @@ from CustomClass import QAPF
 from CustomClass import MudStone
 
 from CustomClass import Zircon
+from CustomClass import Magic
 
 from CustomClass import MyPopup
 
@@ -100,13 +101,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonOpen = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonOpen.setGeometry(QtCore.QRect(20, 404, 110, 32))
         self.pushButtonOpen.setObjectName("pushButtonOpen")
+
         self.pushButtonSave = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonSave.setGeometry(QtCore.QRect(20, 444, 110, 32))
         self.pushButtonSave.setObjectName("pushButtonSave")
-
-
-
-
 
 
 
@@ -177,7 +175,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonZircon.setObjectName("pushButtonZircon")
 
 
-
+        self.pushButtonMagic = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonMagic.setGeometry(QtCore.QRect(670, 604, 110, 32))
+        self.pushButtonMagic.setObjectName("pushButtonMagic")
 
 
 
@@ -251,6 +251,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonZircon.clicked.connect(self.Zircon)
 
 
+        self.pushButtonMagic.clicked.connect(self.Magic)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "GeoPython"))
@@ -275,6 +277,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.pushButtonZircon.setText(_translate("MainWindow", "Zircon Ce"))
 
+        self.pushButtonMagic.setText(_translate("MainWindow", "Magic"))
+
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
 
@@ -285,7 +289,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
 
     def getfile(self):
-        fileName1, filetype = QFileDialog.getOpenFileName(self,
+        fileName, filetype = QFileDialog.getOpenFileName(self,
                                                               "选取文件",
                                                               "~/",
                                                               "All Files (*);;Text Files (*.txt)")  # 设置文件扩展名过滤,注意用双分号间隔
@@ -297,8 +301,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                                               "Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)")  # 设置文件扩展名过滤,注意用双分号间隔
 
         #print(DataFileInput,filetype)
-
-
 
         if ("csv" in DataFileInput):
             self.raw = pd.read_csv(DataFileInput)
@@ -403,7 +405,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
 
 
+    def Magic(self):
+        print("Opening a new popup window...")
+        #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
+        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
+        self.magicpop = Magic(df=self.model._df)
+        self.magicpop.Magic()
+        self.magicpop.show()
 
 
 
