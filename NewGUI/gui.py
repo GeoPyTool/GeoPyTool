@@ -43,6 +43,12 @@ from CustomClass import MudStone
 from CustomClass import Zircon
 from CustomClass import Magic
 
+from CustomClass import XY
+from CustomClass import XYZ
+
+
+
+
 from CustomClass import MyPopup
 
 import re
@@ -180,6 +186,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonMagic.setObjectName("pushButtonMagic")
 
 
+        self.pushButtonXY = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonXY.setGeometry(QtCore.QRect(670, 484, 110, 32))
+        self.pushButtonXY.setObjectName("pushButtonXY")
+
+        self.pushButtonXYZ = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonXYZ.setGeometry(QtCore.QRect(670, 524, 110, 32))
+        self.pushButtonXYZ.setObjectName("pushButtonXYZ")
+
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -253,6 +267,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.pushButtonMagic.clicked.connect(self.Magic)
 
+        self.pushButtonXY.clicked.connect(self.XY)
+
+        self.pushButtonXYZ.clicked.connect(self.XYZ)
+
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "GeoPython"))
@@ -276,6 +295,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonMudStone.setText(_translate("MainWindow", "Sand-Silt-Mud"))
 
         self.pushButtonZircon.setText(_translate("MainWindow", "Zircon Ce"))
+
+
+
+        self.pushButtonXY.setText(_translate("MainWindow", "XY"))
+        self.pushButtonXYZ.setText(_translate("MainWindow", "XYZ"))
 
         self.pushButtonMagic.setText(_translate("MainWindow", "Magic"))
 
@@ -405,6 +429,24 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
 
 
+    def XY(self):
+        print("Opening a new popup window...")
+        #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
+        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+
+        self.xypop = XY(df=self.model._df)
+        self.xypop.Magic()
+        self.xypop.show()
+
+    def XYZ(self):
+        print("Opening a new popup window...")
+        #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
+        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+
+        self.xyzpop = XYZ(df=self.model._df)
+        self.xyzpop.Magic()
+        self.xyzpop.show()
+
     def Magic(self):
         print("Opening a new popup window...")
         #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
@@ -413,7 +455,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.magicpop = Magic(df=self.model._df)
         self.magicpop.Magic()
         self.magicpop.show()
-
 
 
     def Tri(self):
