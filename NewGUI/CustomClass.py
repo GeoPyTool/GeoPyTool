@@ -29,15 +29,13 @@ from PyQt5.QtWidgets import (QWidget, QLabel, QHBoxLayout, QVBoxLayout,
                              QApplication, QPushButton, QSlider,
                              QFileDialog, QAction)
 
-from chempy import Substance
 from xml.dom import minidom
 
 
 
+
 class Tool():
-    def Mass(self, name='O'):
-        # Mole Mass Calculated by chempy
-        return Substance.from_formula(name).mass
+
 
     def TriToBin(self, x, y, z):
 
@@ -2100,12 +2098,12 @@ class Trace(AppForm):
 
                 elif self.Element[j] == 'K' and 'K2O' in raw.columns:
                     tmp = raw.at[i, 'K2O'] * (
-                    2 * Substance.from_formula('K').mass / Substance.from_formula('K2O').mass) * 10000 / standardchosen[
+                    2 * 39.0983 / 94.1956) * 10000 / standardchosen[
                               self.Element[j]]
 
                 elif self.Element[j] == 'Ti' and 'TiO2' in raw.columns:
                     tmp = raw.at[i, 'TiO2'] * (
-                    Substance.from_formula('Ti').mass / Substance.from_formula('TiO2').mass) * 10000 / standardchosen[
+                        47.867 / 79.865) * 10000 / standardchosen[
                               self.Element[j]]
 
                 else:
@@ -3962,7 +3960,11 @@ class CIPW(AppForm):
                 "Corundum",
                 "Rutile",
                 "Magnetite",
-                "Hematite", ]
+                "Hematite",
+                "Q",
+                "A",
+                "P",
+                "F",]
 
     Calced = ['Fe3+/(Total Fe) in rock',
               'Mg/(Mg+Total Fe) in rock',
@@ -3997,6 +3999,9 @@ class CIPW(AppForm):
         self.save_button = QPushButton("&Save Result")
         self.save_button.clicked.connect(self.saveResult)
 
+        self.qapf_button = QPushButton("&QAPF")
+        self.qapf_button.clicked.connect(self.QAPF)
+
         self.tableView = CustomQTableView(self.main_frame)
         self.tableView.setObjectName("tableView")
         self.tableView.setSortingEnabled(True)
@@ -4017,7 +4022,7 @@ class CIPW(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.chooser_label, self.chooser]:
+        for w in [self.save_button,self.qapf_button, self.chooser_label, self.chooser]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -4040,20 +4045,6 @@ class CIPW(AppForm):
                 target.addSeparator()
             else:
                 target.addAction(action)
-
-    def saveResult(self):
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          "文件保存",
-                                                          "C:/",
-                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ("csv" in DataFileOutput):
-                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-
-            elif ("xls" in DataFileOutput):
-                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
     def create_action(self, text, slot=None, shortcut=None,
                       icon=None, tip=None, checkable=False,
@@ -4136,33 +4127,51 @@ class CIPW(AppForm):
         self.DataResult = {}
 
 
+        self.ElementsMass=[('SiO2', 60.083),
+                         ('TiO2', 79.865),
+                         ('Al2O3', 101.960077),
+                         ('Fe2O3', 159.687),
+                         ('FeO', 71.844),
+                         ('MnO', 70.937044),
+                         ('MgO', 40.304),
+                         ('CaO', 56.077000000000005),
+                         ('Na2O', 61.978538560000004),
+                         ('K2O', 94.1956),
+                         ('P2O5', 141.942523996),
+                         ('CO2', 44.009),
+                         ('SO3', 80.057),
+                         ('S', 32.06),
+                         ('F', 18.998403163),
+                         ('Cl', 35.45),
+                         ('Sr', 87.62),
+                         ('Ba', 137.327),
+                         ('Ni', 58.6934),
+                         ('Cr', 51.9961),
+                         ('Zr', 91.224)]
+
+        self.BaseMass={'SiO2':60.083,
+                         'TiO2':79.865,
+                         'Al2O3':101.960077,
+                         'Fe2O3':159.687,
+                         'FeO':71.844,
+                         'MnO':70.937044,
+                         'MgO':40.304,
+                         'CaO':56.077000000000005,
+                         'Na2O':61.978538560000004,
+                         'K2O':94.1956,
+                         'P2O5':141.942523996,
+                         'CO2':44.009,
+                         'SO3':80.057,
+                         'S':32.06,
+                         'F':18.998403163,
+                         'Cl':35.45,
+                         'Sr':87.62,
+                         'Ba':137.327,
+                         'Ni':58.6934,
+                         'Cr':51.9961,
+                         'Zr':91.224}
 
 
-        for i in self.Elements:
-            if i in self.addon.split():
-                pass
-            else:
-                """
-                Get the list of Elements
-                """
-                if i in ['Sr', 'Ba', 'Ni']:
-                    k = i + "O"
-                elif i == 'Cr':
-                    k = i + "2O3"
-                elif i == 'Zr':
-                    k = i + "O2"
-                else:
-                    k = i
-
-                m = 0
-                try:
-                    m = Tool().Mass(k)
-                except:  # catch *all* exceptions
-                    e = sys.exc_info()[0]
-                """
-                Get the Mole Mass of each Element
-                """
-                self.BaseMass.update({i: m})
 
         for i in range(len(self.raw)):
             TmpWhole = 0
@@ -4174,24 +4183,32 @@ class CIPW(AppForm):
                 """
                 Get the Whole Mole of the dataset
                 """
-                if j in ['Sr', 'Ba', 'Ni']:
 
+                try:
                     T_TMP = self.raw.at[i, j]
-                    TMP = T_TMP / (Tool().Mass(j) / Tool().Mass(j + 'O') * 10000)
+                except(KeyError):
+                    T_TMP = 0
+
+
+                if j =='Sr':
+                    TMP = T_TMP / (87.62/ 103.619 * 10000)
+
+                elif j =='Ba':
+                    TMP = T_TMP / (137.327 / 153.326 * 10000)
+
+
+                elif j =='Ni':
+                    TMP = T_TMP / (58.6934 / 74.69239999999999 * 10000)
 
                 elif j == 'Cr':
-                    T_TMP = self.raw.at[i, j]
-                    TMP = T_TMP / ((2 * Tool().Mass("Cr")) / Tool().Mass("Cr2O3") * 10000)
+                    TMP = T_TMP / ((2 * 51.9961) / 151.98919999999998 * 10000)
 
                 elif j == 'Zr':
-                    T_TMP = self.raw.at[i, j]
-                    TMP = T_TMP / ((2 * Tool().Mass("Zr")) / Tool().Mass("ZrO2") * 10000)
+                    # Zr Multi 2 here
+                    TMP = T_TMP / ((2 * 91.224) / 123.22200000000001 * 10000)
 
                 else:
-                    try:
-                        TMP = self.raw.at[i, j]
-                    except(KeyError):
-                        TMP = 0
+                    TMP =  T_TMP
 
                 V = TMP
 
@@ -4214,24 +4231,24 @@ class CIPW(AppForm):
                     T_TMP = 0
 
 
-                if j in ['Sr', 'Ba', 'Ni']:
-                    TMP = T_TMP / (Tool().Mass(j) / Tool().Mass(j + 'O') * 10000)
+                if j =='Sr':
+                    TMP = T_TMP / (87.62/ 103.619 * 10000)
+
+                elif j =='Ba':
+                    TMP = T_TMP / (137.327 / 153.326 * 10000)
+
+                elif j =='Ni':
+                    TMP = T_TMP / (58.6934 / 74.69239999999999 * 10000)
 
                 elif j == 'Cr':
-                    TMP = T_TMP / ((2 * Tool().Mass("Cr")) / Tool().Mass("Cr2O3") * 10000)
-
+                    TMP = T_TMP / ((2 * 51.9961) / 151.98919999999998 * 10000)
 
                 elif j == 'Zr':
-                    TMP = T_TMP / ((Tool().Mass("Zr")) / Tool().Mass("ZrO2") * 10000)
-
+                    #Zr not Multiple by 2 Here
+                    TMP = T_TMP / (( 91.224) / 123.22200000000001 * 10000)
 
                 else:
-                    try:
-                        TMP = self.raw.at[i, j]
-                    except(KeyError):
-                        TMP=0
-
-
+                    TMP = T_TMP
 
                 try:
                     M = TMP / self.BaseMass[j] * self.WeightCorrectionFactor[i]
@@ -4265,22 +4282,26 @@ class CIPW(AppForm):
             try:
                 self.DataCalced[k].update({'Fe3+/(Total Fe) in rock': 100 * Fe3 * 2 / (Fe3 * 2 + Fe2)})
             except(ZeroDivisionError):
+                self.DataCalced[k].update({'Fe3+/(Total Fe) in rock': 0})
                 pass
 
             try:
                 self.DataCalced[k].update({'Mg/(Mg+Total Fe) in rock': 100 * Mg / (Mg + Fe3 * 2 + Fe2)})
             except(ZeroDivisionError):
+                self.DataCalced[k].update({'Mg/(Mg+Total Fe) in rock': 0})
                 pass
 
 
             try:
                 self.DataCalced[k].update({'Mg/(Mg+Fe2+) in rock': 100 * Mg / (Mg + Fe2)})
             except(ZeroDivisionError):
+                self.DataCalced[k].update({'Mg/(Mg+Fe2+) in rock': 0})
                 pass
 
             try:
                 self.DataCalced[k].update({'Ca/(Ca+Na) in rock': 100 * Ca / (Ca + Na * 2)})
             except(ZeroDivisionError):
+                self.DataCalced[k].update({'Ca/(Ca+Na) in rock': 0})
                 pass
 
             self.DataCalculating['CaO'][i] += self.DataCalculating['Sr'][i]
@@ -5120,52 +5141,132 @@ class CIPW(AppForm):
             # =AS5+(AQ20*4)-(AT20*4)-(AT22*2)
             Quartz += Old_Leucite * 4 - Leucite * 4 - Kalsilite * 2
 
+            Q = Quartz
+            A = Orthoclase
+            P = Anorthite + Albite
+            F = Nepheline + Leucite + Kalsilite
+
             for i in self.Minerals:
                 exec('self.DataResult[k].update({\"' + i + '\":' + i + '}) ')
-                exec('self.DataWeight[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + i + '\"][0]}) ')
-                exec(
-                    'self.DataVolume[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + i + '\"][0]/self.DataBase[\"' + i + '\"][1]}) ')
+
+                if i =='Q':
+                    m = "Quartz"
+
+                    exec('self.DataWeight[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + m + '\"][0]}) ')
+
+                    exec('self.DataVolume[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + m + '\"][0]/self.DataBase[\"' + m + '\"][1]}) ')
+
+
+
+                elif i =='A':
+                    m= "Orthoclase"
+
+                    exec('self.DataWeight[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + m + '\"][0]}) ')
+                    exec(
+                        'self.DataVolume[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + m + '\"][0]/self.DataBase[\"' + m + '\"][1]}) ')
+
+
+                elif i =='P':
+                    a= "Anorthite"
+                    b= "Albite"
+
+                    exec('self.DataWeight[k].update({\"' + i + '\":' + a + '*self.DataBase[\"' + a + '\"][0]+'+b + '*self.DataBase[\"' + b + '\"][0]}) ')
+                    exec(
+                        'self.DataVolume[k].update({\"' + i + '\":' + a + '*self.DataBase[\"' + a + '\"][0]/self.DataBase[\"' + a + '\"][1]+'+ b + '*self.DataBase[\"' + b + '\"][0]/self.DataBase[\"' + b + '\"][1]}) ')
+
+
+                elif i =='F':
+                    a = "Nepheline"
+                    b = "Leucite"
+                    c = "Kalsilite"
+
+                    exec('self.DataWeight[k].update({\"' + i + '\":' + a + '*self.DataBase[\"' + a + '\"][0]+'+b + '*self.DataBase[\"' + b + '\"][0]+'+c + '*self.DataBase[\"' + c + '\"][0]}) ')
+                    exec(
+                        'self.DataVolume[k].update({\"' + i + '\":' + a + '*self.DataBase[\"' + a + '\"][0]/self.DataBase[\"' + a + '\"][1]+'+ b + '*self.DataBase[\"' + b + '\"][0]/self.DataBase[\"' + b + '\"][1]+'+ c + '*self.DataBase[\"' + c + '\"][0]/self.DataBase[\"' + c + '\"][1]}) ')
+
+
+
+
+
+
+
+
+                if i not in ["Q","A","P","F",]:
+                    exec('self.DataWeight[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + i + '\"][0]}) ')
+                    exec('self.DataVolume[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + i + '\"][0]/self.DataBase[\"' + i + '\"][1]}) ')
 
             self.DI = 0
-            for i in ['Quartz', 'Anorthite', 'Albite', 'Orthoclase', 'Nepheline', 'Leucite', 'Kalsilite']:
-                exec('self.DI+=' + i + '*self.DataBase[\"' + i + '\"][0]')
+            #for i in ['Quartz', 'Anorthite', 'Albite', 'Orthoclase', 'Nepheline', 'Leucite', 'Kalsilite']:
+            #exec('self.DI+=' + i + '*self.DataBase[\"' + i + '\"][0]')
 
-            self.DataCalced[k].update({'Differentiation Index': self.DI})
+            exec('self.DI= Quartz +  Anorthite +  Albite +  Orthoclase +  Nepheline +  Leucite +  Kalsilite ')
+            DI = Quartz + Anorthite + Albite + Orthoclase + Nepheline + Leucite + Kalsilite
+
+
+
+            print('\n\n DI is\n',DI,'\n\n')
+            self.DataCalced[k].update({'Differentiation Index': DI})
+
 
     def WriteData(self, target='DataResult'):
         DataToWrite = []
-        TMP_DataToWrite = ['Samples']
+        TMP_DataToWrite = ['Label']
+
+        TMP_DataToWrite = ["Label" ,"Marker" ,"Color" ,"Size" ,"Alpha" ,"Style" ,"Width"]
+
+
         for j in self.Minerals:
             TMP_DataToWrite.append(str(j))
         DataToWrite.append(TMP_DataToWrite)
         for i in range(len(self.DataMole)):
             TMP_DataToWrite = []
             k = self.raw.at[i, 'Label']
-            TMP_DataToWrite = [k]
+            TMP_DataToWrite = [self.raw.at[i, 'Label'], self.raw.at[i, 'Marker'], self.raw.at[i, 'Color'],
+                               self.raw.at[i, 'Size'], self.raw.at[i, 'Alpha'], self.raw.at[i, 'Style'],
+                               self.raw.at[i, 'Width']]
             for j in self.Minerals:
-                command = 'TMP_DataToWrite.append(str(self.' + target + '[k][j]))'
-                exec(command)
-            DataToWrite.append(TMP_DataToWrite)
-        return (DataToWrite)
-
-    def WriteCalced(self, target='DataCalced'):
-        DataToWrite = []
-        TMP_DataToWrite = ['Samples']
-        for j in self.Calced:
-            TMP_DataToWrite.append(str(j))
-        DataToWrite.append(TMP_DataToWrite)
-        for i in range(len(self.DataMole)):
-            TMP_DataToWrite = []
-            k = self.raw.at[i, 'Label']
-            TMP_DataToWrite = [k]
-            for j in self.Calced:
-                command = 'TMP_DataToWrite.append(str(self.' + target + '[k][j]))'
+                command = 'TMP_DataToWrite.append((self.' + target + '[k][j]))'
                 try:
                     exec(command)
                 except(KeyError):
                     pass
             DataToWrite.append(TMP_DataToWrite)
         return (DataToWrite)
+
+    def WriteCalced(self, target='DataCalced'):
+        DataToWrite = []
+        TMP_DataToWrite = ['Label']
+
+        TMP_DataToWrite = ["Label", "Marker", "Color", "Size", "Alpha", "Style", "Width"]
+        for j in self.Calced:
+            TMP_DataToWrite.append(str(j))
+        DataToWrite.append(TMP_DataToWrite)
+        for i in range(len(self.DataMole)):
+            TMP_DataToWrite = []
+            k = self.raw.at[i, 'Label']
+            TMP_DataToWrite = [self.raw.at[i, 'Label'], self.raw.at[i, 'Marker'], self.raw.at[i, 'Color'],
+                               self.raw.at[i, 'Size'], self.raw.at[i, 'Alpha'], self.raw.at[i, 'Style'],
+                               self.raw.at[i, 'Width']]
+
+            for j in self.Calced:
+                command = 'TMP_DataToWrite.append((self.' + target + '[k][j]))'
+                try:
+
+                    exec('print((self.' + target + '[k][j]))')
+
+                    exec(command)
+                except(KeyError):
+                    pass
+
+
+            DataToWrite.append(TMP_DataToWrite)
+
+        print('\n',DataToWrite,'\n')
+        return (DataToWrite)
+
+
+
+
 
     def CIPW(self):
 
@@ -5177,7 +5278,22 @@ class CIPW(AppForm):
         a.append(self.WriteData(target='DataVolume'))
         a.append(self.WriteCalced(target='DataCalced'))
 
-        self.newdf = pd.DataFrame(a[self.chooser.value() - 1])
+        tmp=a[self.chooser.value() - 1]
+
+        labels = tmp[0]
+        newtmp=[]
+
+        for s in range(len(tmp)):
+            if s!= 0:
+                newtmp.append(tmp[s])
+
+        self.newdf = pd.DataFrame.from_records(newtmp, columns=labels)
+
+        #print('\n',tmp,"\n")
+
+        #self.newdf = pd.DataFrame(tmp)
+
+
 
         self.model = PandasModel(self.newdf)
         self.tableView.setModel(self.model)
@@ -5195,6 +5311,16 @@ class CIPW(AppForm):
 
             elif ("xls" in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+
+    def QAPF(self):
+        self.qapfpop = QAPF(df = self.newdf)
+        try:
+            self.qapfpop.QAPF()
+        except(TypeError):
+            pass
+        self.qapfpop.show()
+
+
 
 class QAPF(AppForm, Tool):
     _df = pd.DataFrame()
@@ -5876,11 +6002,11 @@ class QAPF(AppForm, Tool):
                 TmpLabel = raw.at[i, 'Label']
 
             if (q != 0 and q != ''):
-                TPoints.append(TriPoint((raw.at[i, 'A'], raw.at[i, 'P'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
+                TPoints.append(TriPoint((a, p, q), Size=raw.at[i, 'Size'],
                                         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                         Label=TmpLabel))
             else:
-                TPoints.append(TriPoint((raw.at[i, 'A'], raw.at[i, 'P'], -raw.at[i, 'F']), Size=raw.at[i, 'Size'],
+                TPoints.append(TriPoint((a, p, 0-f), Size=raw.at[i, 'Size'],
                                         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                         Label=TmpLabel))
 
@@ -6886,6 +7012,9 @@ class XY(AppForm):
 
         # print(fileName)
 
+
+
+
         doc = minidom.parse(fileName)  # parseString also exists
         polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
         polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
@@ -6913,8 +7042,10 @@ class XY(AppForm):
         tmpgon=soup.find_all('polygon')
         tmppolyline=soup.find_all('polyline')
         tmptext=soup.find_all('text')
-
         tmpline = soup.find_all('line')
+
+
+        tmppath = soup.find_all('path')
 
         self.strgons = []
         for i in tmpgon:
@@ -6944,6 +7075,19 @@ class XY(AppForm):
             self.strlines.append(a.split())
 
 
+
+        self.strpath = []
+        for i in tmppath:
+            a = (str(i)).replace('\n', '').replace('\t', '')
+            m = BeautifulSoup(a, "lxml")
+            k = m.path.attrs
+            self.strpath.append(k['d'].split())
+
+
+        print(self.strpath)
+
+
+
         self.polygon=[]
         for i in self.strgons:
             m =  self.Read(i)
@@ -6961,6 +7105,8 @@ class XY(AppForm):
             m =  self.Read(i)
             print('i: ',i,'\n m:',m)
             self.line.append(m)
+
+
 
 
 
