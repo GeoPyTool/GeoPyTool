@@ -17,7 +17,6 @@ a tool set for daily geology related task.
     or leave a message to my blog: http://blog.cycleuser.org
 """
 
-
 from CustomClass import PandasModel
 from CustomClass import CustomQTableView
 
@@ -48,7 +47,6 @@ from CustomClass import XYZ
 
 import webbrowser
 
-
 from CustomClass import MyPopup
 
 import re
@@ -67,25 +65,21 @@ import numpy as np
 from numpy import arange, sin, pi
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QIcon,QKeySequence
-from PyQt5.QtWidgets import (QWidget, QMessageBox,qApp,QShortcut, QLabel,QMainWindow, QMenu, QHBoxLayout, QVBoxLayout,
+from PyQt5.QtGui import QPixmap, QIcon, QKeySequence
+from PyQt5.QtWidgets import (QWidget, QMessageBox, qApp, QShortcut, QLabel, QMainWindow, QMenu, QHBoxLayout,
+                             QVBoxLayout,
                              QApplication, QPushButton, QSlider,
                              QFileDialog, QAction)
 
 
-
-
 class Ui_MainWindow(QtWidgets.QWidget):
-
-    #raw=0
+    # raw=0
     raw = pd.DataFrame(index=[], columns=[])  # raw is initialized as a blank dataframe
 
-
-    def setupUi(self, MainWindow,):
+    def setupUi(self, MainWindow, ):
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 500)
-
 
         self.model = PandasModel(self.raw)
 
@@ -99,9 +93,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.tableView.setGeometry(QtCore.QRect(10, 10, 780, 384))
         self.tableView.setObjectName("tableView")
         self.tableView.setSortingEnabled(True)
-
-
-
 
         self.pushButtonOpen = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonOpen.setGeometry(QtCore.QRect(20, 404, 110, 32))
@@ -124,7 +115,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menubar.setNativeMenuBar(False)
         self.menubar.setObjectName("menubar")
 
-
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
 
@@ -134,78 +124,54 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuStructure = QtWidgets.QMenu(self.menubar)
         self.menuStructure.setObjectName("menuStructure")
 
-
-
-
         self.menuCalc = QtWidgets.QMenu(self.menubar)
         self.menuCalc.setObjectName("menuCalc")
 
-
         self.menuMore = QtWidgets.QMenu(self.menubar)
         self.menuMore.setObjectName("menuMore")
-        
-        
-
-
 
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
-
 
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-
         self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
         self.actionOpen.setShortcut('Ctrl+O')
-
-
 
         self.actionSave = QtWidgets.QAction(MainWindow)
         self.actionSave.setObjectName("actionSave")
         self.actionSave.setShortcut('Ctrl+S')
 
-
-
-
         self.actionInstruction = QtWidgets.QAction(MainWindow)
         self.actionInstruction.setObjectName("actionInstruction")
-
 
         self.actionWebsite = QtWidgets.QAction(MainWindow)
         self.actionWebsite.setObjectName("actionWebsite")
 
-
         self.actionTAS = QtWidgets.QAction(MainWindow)
         self.actionTAS.setObjectName("actionTAS")
 
-
-        self.actionTrace= QtWidgets.QAction(MainWindow)
+        self.actionTrace = QtWidgets.QAction(MainWindow)
         self.actionTrace.setObjectName("actionTrace")
-
 
         self.actionRee = QtWidgets.QAction(MainWindow)
         self.actionRee.setObjectName("actionRee")
 
-
-        self.actionPearce= QtWidgets.QAction(MainWindow)
+        self.actionPearce = QtWidgets.QAction(MainWindow)
         self.actionPearce.setObjectName("actionPearce")
 
         self.actionHarker = QtWidgets.QAction(MainWindow)
         self.actionHarker.setObjectName("actionHarker")
 
-
-
         self.actionStereo = QtWidgets.QAction(MainWindow)
         self.actionStereo.setObjectName("actionStereo")
 
-
         self.actionRose = QtWidgets.QAction(MainWindow)
         self.actionRose.setObjectName("actionRose")
-
 
         self.actionQFL = QtWidgets.QAction(MainWindow)
         self.actionQFL.setObjectName("actionQFL")
@@ -216,10 +182,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionCIPW = QtWidgets.QAction(MainWindow)
         self.actionCIPW.setObjectName("actionCIPW")
 
-
         self.actionZirconCe = QtWidgets.QAction(MainWindow)
         self.actionZirconCe.setObjectName("actionZirconCe")
-
 
         self.actionQAPF = QtWidgets.QAction(MainWindow)
         self.actionQAPF.setObjectName("actionQAPF")
@@ -230,14 +194,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionXY = QtWidgets.QAction(MainWindow)
         self.actionXY.setObjectName("actionXY")
 
-
         self.actionXYZ = QtWidgets.QAction(MainWindow)
         self.actionXYZ.setObjectName("actionXYZ")
 
-
         self.actionMagic = QtWidgets.QAction(MainWindow)
         self.actionMagic.setObjectName("actionMagic")
-
 
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -248,9 +209,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuGeoChem.addAction(self.actionPearce)
         self.menuGeoChem.addAction(self.actionHarker)
 
-
-
-
         self.menuStructure.addAction(self.actionStereo)
         self.menuStructure.addAction(self.actionRose)
         self.menuStructure.addAction(self.actionQFL)
@@ -258,7 +216,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.menuCalc.addAction(self.actionCIPW)
         self.menuCalc.addAction(self.actionZirconCe)
-
 
         self.menuMore.addAction(self.actionMudStone)
         self.menuMore.addAction(self.actionQAPF)
@@ -268,9 +225,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.menuHelp.addAction(self.actionInstruction)
         self.menuHelp.addAction(self.actionWebsite)
-
-
-
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addSeparator()
@@ -290,11 +244,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menubar.addSeparator()
 
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-
 
         self.actionTAS.triggered.connect(self.TAS)
         self.actionTrace.triggered.connect(self.Trace)
@@ -303,46 +254,33 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionHarker.triggered.connect(self.Harker)
         self.actionQAPF.triggered.connect(self.QAPF)
 
-
         self.actionStereo.triggered.connect(self.Stereo)
         self.actionRose.triggered.connect(self.Rose)
         self.actionQFL.triggered.connect(self.QFL)
         self.actionQmFLt.triggered.connect(self.QmFLt)
 
-
         self.actionCIPW.triggered.connect(self.CIPW)
         self.actionZirconCe.triggered.connect(self.Zircon)
-
 
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
 
         self.actionWebsite.triggered.connect(self.gowebsite)
 
-
-
-
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
         self.actionMagic.triggered.connect(self.Magic)
         self.actionMudStone.triggered.connect(self.Mud)
-
-
-
-
 
         self.pushButtonOpen.clicked.connect(self.getDataFile)
         self.pushButtonSave.clicked.connect(self.saveDataFile)
         self.pushButtonSort.clicked.connect(self.SetUpDataFile)
         self.pushButtonQuit.clicked.connect(qApp.quit)
 
-
-
         self.actionQuit = QtWidgets.QAction('Quit', self)
         self.actionQuit.setShortcut('Ctrl+Q')
         self.actionQuit.setObjectName("actionQuit")
         self.actionQuit.triggered.connect(qApp.quit)
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -376,8 +314,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.actionQAPF.setText(_translate("MainWindow", "QAPF"))
 
-
-
         self.actionStereo.setText(_translate("MainWindow", "Stereo"))
         self.actionRose.setText(_translate("MainWindow", "Rose"))
         self.actionQFL.setText(_translate("MainWindow", "QFL"))
@@ -397,12 +333,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionInstruction.setText(_translate("MainWindow", "Instruction"))
         self.actionWebsite.setText(_translate("MainWindow", "Website"))
 
-
     def getfile(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
-                                                              "选取文件",
-                                                              "~/",
-                                                              "All Files (*);;Text Files (*.txt)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         "选取文件",
+                                                         "~/",
+                                                         "All Files (*);;Text Files (*.txt)")  # 设置文件扩展名过滤,注意用双分号间隔
 
     def gowebsite(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/README.md')
@@ -413,41 +348,36 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                                               "~/",
                                                               "Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-        #print(DataFileInput,filetype)
+        # print(DataFileInput,filetype)
 
         if ("csv" in DataFileInput):
             self.raw = pd.read_csv(DataFileInput)
         elif ("xls" in DataFileInput):
             self.raw = pd.read_excel(DataFileInput)
-        #print(self.raw)
+        # print(self.raw)
 
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
 
-
-
-
-        flag =0
+        flag = 0
         ItemsAvalibale = self.model._df.columns.values.tolist()
         ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
 
-        ItemsToAdd=[]
+        ItemsToAdd = []
 
-        Sentecne='You need to add '
+        Sentecne = 'You need to add '
 
-        print(ItemsAvalibale,'\n',ItemsToTest)
+        print(ItemsAvalibale, '\n', ItemsToTest)
 
         for i in ItemsToTest:
             if i not in ItemsAvalibale:
                 ItemsToAdd.append(i)
-                Sentecne=Sentecne+i+', '
-                flag= flag+1
+                Sentecne = Sentecne + i + ', '
+                flag = flag + 1
 
-        Sentecne= Sentecne+" to your data, set up now?"
+        Sentecne = Sentecne + " to your data, set up now?"
 
-        if flag!=0:
-
-
+        if flag != 0:
 
             buttonReply = QMessageBox.question(self, 'Message', Sentecne, QMessageBox.Yes | QMessageBox.No,
                                                QMessageBox.No)
@@ -459,25 +389,22 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
     def saveDataFile(self):
 
-
         if self.model._changed == True:
             print("changed")
             print(self.model._df)
 
-
-
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                    "文件保存",
-                                    "C:/",
-                                    "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+                                                          "文件保存",
+                                                          "C:/",
+                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
 
-        if(DataFileOutput !=''):
+        if (DataFileOutput != ''):
 
-            if ("csv" in DataFileOutput):self.model._df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+            if ("csv" in DataFileOutput):
+                self.model._df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
-            elif ("xls" in DataFileOutput):self.model._df.to_excel(DataFileOutput, encoding='utf-8')
-
-
+            elif ("xls" in DataFileOutput):
+                self.model._df.to_excel(DataFileOutput, encoding='utf-8')
 
     def CIPW(self):
         self.cipwpop = CIPW(df=self.model._df)
@@ -486,8 +413,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.cipwpop.show()
         except(KeyError):
             self.ErrorEvent()
-
-
 
     def TAS(self):
 
@@ -506,7 +431,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
     def Trace(self):
         self.tracepop = Trace(df=self.model._df)
         try:
@@ -514,7 +438,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.tracepop.show()
         except(KeyError):
             self.ErrorEvent()
-
 
     def Pearce(self):
         self.pearcepop = Pearce(df=self.model._df)
@@ -524,8 +447,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
-
     def Harker(self):
         self.harkerpop = Harker(df=self.model._df)
         try:
@@ -533,7 +454,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.harkerpop.show()
         except(KeyError):
             self.ErrorEvent()
-
 
     def Stereo(self):
         self.stereopop = Stereo(df=self.model._df)
@@ -543,7 +463,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
     def Rose(self):
         self.rosepop = Rose(df=self.model._df)
         try:
@@ -551,7 +470,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.rosepop.show()
         except(KeyError):
             self.ErrorEvent()
-
 
     def QFL(self):
         self.tripop = QFL(df=self.model._df)
@@ -569,8 +487,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
-
     def QAPF(self):
         self.qapfpop = QAPF(df=self.model._df)
         try:
@@ -587,7 +503,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
     def Zircon(self):
         print("Opening a new popup window...")
         self.zirconpop = Zircon(df=self.model._df)
@@ -597,11 +512,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
     def XY(self):
         print("Opening a new popup window...")
-        #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
-        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+        # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
+        # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
         self.xypop = XY(df=self.model._df)
         try:
@@ -610,11 +524,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
     def XYZ(self):
         print("Opening a new popup window...")
-        #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
-        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+        # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
+        # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
         self.xyzpop = XYZ(df=self.model._df)
         try:
@@ -625,8 +538,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
     def Magic(self):
         print("Opening a new popup window...")
-        #self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
-        #self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
+        # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
+        # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
         self.magicpop = Magic(df=self.model._df)
         try:
@@ -635,10 +548,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
     def Tri(self):
         pass
-
 
     def Auto(self):
         pass
@@ -646,13 +557,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
     def ErrorEvent(self):
 
         reply = QMessageBox.warning(self, 'Warning',
-                                     "Your Data mismatch this Plot.")
-
-
-
-
-
-
+                                    "Your Data mismatch this Plot.")
 
     def SetUpDataFile(self):
 
@@ -660,80 +565,65 @@ class Ui_MainWindow(QtWidgets.QWidget):
             print("changed")
             print(self.model._df)
 
-
-        flag =0
+        flag = 0
         ItemsAvalibale = self.model._df.columns.values.tolist()
 
-        Len=self.model._df.index.values.tolist()
+        Len = self.model._df.index.values.tolist()
 
         ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
 
-
-
-
-
         olddata = {'Label': ['group1', 'group2', 'group3', 'group4', 'group5'],
-                'Marker': ['o', 's', 'd', '*', '^'],
-                'Color': ['red', 'blue', 'black', 'green', 'yellow'],
-                'Size': ['10', '10', '10', '10', '10'],
-                'Alpha': ['0.6', '0.6', '0.6', '0.6', '0.6'],
-                'Style': ['-', '--', ':', '--', '-'],
-                'Width': ['1', '1', '1', '1', '1']
-                }
+                   'Marker': ['o', 's', 'd', '*', '^'],
+                   'Color': ['red', 'blue', 'black', 'green', 'yellow'],
+                   'Size': [10, 10, 10, 10, 10],
+                   'Alpha': [0.6, 0.6, 0.6, 0.6, 0.6],
+                   'Style': ['-', '--', ':', '--', '-'],
+                   'Width': [1, 1, 1, 1, 1 ]
+                   }
 
-
-
-
-        LabelList=[]
-        MarkerList=[]
-        ColorList=[]
-        SizeList=[]
-        AlphaList=[]
-        StyleList=[]
-        WidthList=[]
+        LabelList = []
+        MarkerList = []
+        ColorList = []
+        SizeList = []
+        AlphaList = []
+        StyleList = []
+        WidthList = []
         for i in range(len(self.model._df)):
             LabelList.append('Group1')
             MarkerList.append('o')
             ColorList.append('red')
-            SizeList.append('10')
-            AlphaList.append('0.6')
+            SizeList.append(10)
+            AlphaList.append(0.6)
             StyleList.append('-')
-            WidthList.append('1')
-
-
+            WidthList.append(1)
 
         data = {'Label': LabelList,
-                   'Marker': MarkerList,
-                   'Color': ColorList,
-                   'Size': SizeList,
-                   'Alpha': AlphaList,
-                   'Style': StyleList,
-                   'Width': WidthList}
+                'Marker': MarkerList,
+                'Color': ColorList,
+                'Size': SizeList,
+                'Alpha': AlphaList,
+                'Style': StyleList,
+                'Width': WidthList}
 
-        print('\n',data,'\n')
-
+        print('\n', data, '\n')
 
         for i in ItemsToTest:
             if i not in ItemsAvalibale:
                 print(i)
-                flag= flag+1
-                tmpdata={i:data[i]}
+                flag = flag + 1
+                tmpdata = {i: data[i]}
                 tmpdftoadd = pd.DataFrame(tmpdata)
 
-
-                print('\n',tmpdftoadd,'\n')
+                print('\n', tmpdftoadd, '\n')
                 self.model._df = pd.concat([tmpdftoadd, self.model._df], axis=1)
 
-
-        if flag==0:
+        if flag == 0:
             reply = QMessageBox.warning(self, 'Ready',
                                         "Everything fine and no need to set up.")
 
         else:
             reply = QMessageBox.warning(self, 'Ready',
                                         "Items added, Modify in the Table to set up details.")
-
-
 
 
 def main():
@@ -745,6 +635,7 @@ def main():
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
 
 def begin():
     import sys

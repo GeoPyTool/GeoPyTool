@@ -575,10 +575,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         olddata = {'Label': ['group1', 'group2', 'group3', 'group4', 'group5'],
                    'Marker': ['o', 's', 'd', '*', '^'],
                    'Color': ['red', 'blue', 'black', 'green', 'yellow'],
-                   'Size': ['10', '10', '10', '10', '10'],
-                   'Alpha': ['0.6', '0.6', '0.6', '0.6', '0.6'],
+                   'Size': [10, 10, 10, 10, 10],
+                   'Alpha': [0.6, 0.6, 0.6, 0.6, 0.6],
                    'Style': ['-', '--', ':', '--', '-'],
-                   'Width': ['1', '1', '1', '1', '1']
+                   'Width': [1, 1, 1, 1, 1 ]
                    }
 
         LabelList = []
@@ -592,10 +592,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
             LabelList.append('Group1')
             MarkerList.append('o')
             ColorList.append('red')
-            SizeList.append('10')
-            AlphaList.append('0.6')
+            SizeList.append(10)
+            AlphaList.append(0.6)
             StyleList.append('-')
-            WidthList.append('1')
+            WidthList.append(1)
 
         data = {'Label': LabelList,
                 'Marker': MarkerList,

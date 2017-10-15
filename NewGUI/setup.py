@@ -4,7 +4,7 @@ from distutils.core import setup
 import CustomClass
 
 setup(name='geopython',
-      version='0.4.0',
+      version='0.4.3',
       description='a tool set for daily geology related task.',
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',
@@ -16,5 +16,6 @@ setup(name='geopython',
                          "pandas",
                          "xlrd",
                          "matplotlib",
+                         "BeautifulSoup4",
                          ],
      )

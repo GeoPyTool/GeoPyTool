@@ -1,5 +1,5 @@
 Title: GeoPython,a project of using Python for geology related daily work
-Date: 2016-12-18 16:20
+Date: 2017-10-15 16:20
 Category: Python
 
 
@@ -68,9 +68,7 @@ Git is also needed to be used in installation of Python-Quantities.
 After installation of Python, you can use the following commands in your terminal to install GeoPython:
 
 ```Bash
-pip install --upgrade git+git://github.com/python-quantities/python-quantities.git@master
-
-pip install cython numpy matplotlib pandas xlrd chempy
+pip install cython numpy matplotlib pandas xlrd BeautifulSoup4
 
 pip install --upgrade geopython --no-cache-dir
 ```
