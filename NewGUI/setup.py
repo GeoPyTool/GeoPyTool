@@ -4,7 +4,7 @@ from distutils.core import setup
 import CustomClass
 
 setup(name='geopython',
-      version='0.4.3',
+      version='0.4.4',
       description='a tool set for daily geology related task.',
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',

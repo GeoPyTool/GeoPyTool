@@ -4,17 +4,22 @@
 # Created by: PyQt5 UI code generator 5.8.1#
 # WARNING! All changes made in this file will be lost!
 
-"""
+version='0.4.4'
+
+date='2017-10-15'
+
+sign="""
 created on Sat Dec 17 22:28:24 2016
 @author: cycleuser
 # Create Date: 2015-07-13
-# Modify Date: 2017-08-31
+# Modify Date: 2017-10-15
 a tool set for daily geology related task.
 # prerequisite:
 #   based on Python 3.x
-#   need math,numpy,pandas,matplotlib,xlrd,pyqt5
+#   need math,numpy,pandas,matplotlib,xlrd,pyqt5,BeautifulSoup4
     Any issues or improvements please contact cycleuser@cycleuser.org
-    or leave a message to my blog: http://blog.cycleuser.org
+    or Open An Issue at GitHub:https://github.com/chinageology/GeoPython/issues     
+    Website For Chinese Users：https://zhuanlan.zhihu.com/p/28908475
 """
 
 from CustomClass import PandasModel
@@ -138,19 +143,23 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        self.actionOpen = QtWidgets.QAction(MainWindow)
+        self.actionOpen = QtWidgets.QAction(QIcon('Open.png'),'Open',MainWindow)
         self.actionOpen.setObjectName("actionOpen")
         self.actionOpen.setShortcut('Ctrl+O')
 
-        self.actionSave = QtWidgets.QAction(MainWindow)
+        self.actionSave = QtWidgets.QAction(QIcon('Save.png'),'Save',MainWindow)
         self.actionSave.setObjectName("actionSave")
         self.actionSave.setShortcut('Ctrl+S')
 
-        self.actionInstruction = QtWidgets.QAction(MainWindow)
-        self.actionInstruction.setObjectName("actionInstruction")
+        self.actionCnWeb = QtWidgets.QAction(QIcon('ZhiHu.png'),'Zhihu',MainWindow)
+        self.actionCnWeb.setObjectName("actionCnWeb")
 
-        self.actionWebsite = QtWidgets.QAction(MainWindow)
-        self.actionWebsite.setObjectName("actionWebsite")
+        self.actionGoGithub = QtWidgets.QAction(QIcon('Website.png'),'GitHub',MainWindow)
+        self.actionGoGithub.setObjectName("actionGoGithub")
+
+
+        self.actionVersionCheck = QtWidgets.QAction(QIcon('Version.png'),'Version',MainWindow)
+        self.actionVersionCheck.setObjectName("actionVersionCheck")
 
         self.actionTAS = QtWidgets.QAction(MainWindow)
         self.actionTAS.setObjectName("actionTAS")
@@ -223,8 +232,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuMore.addAction(self.actionXYZ)
         self.menuMore.addAction(self.actionMagic)
 
-        self.menuHelp.addAction(self.actionInstruction)
-        self.menuHelp.addAction(self.actionWebsite)
+        self.menuHelp.addAction(self.actionCnWeb)
+        self.menuHelp.addAction(self.actionGoGithub)
+        self.menuHelp.addAction(self.actionVersionCheck)
+
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addSeparator()
@@ -265,7 +276,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
 
-        self.actionWebsite.triggered.connect(self.gowebsite)
+        self.actionCnWeb.triggered.connect(self.goZhiHu)
+        self.actionGoGithub.triggered.connect(self.goGitHub)
+        self.actionVersionCheck.triggered.connect(self.checkVersion)
 
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
@@ -290,6 +303,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonSave.setText(_translate("MainWindow", "Save"))
         self.pushButtonSort.setText(_translate("MainWindow", "Set"))
         self.pushButtonQuit.setText(_translate("MainWindow", "Quit"))
+
+
+        self.pushButtonOpen.setIcon(QtGui.QIcon('Open.png'))
+        self.pushButtonSave.setIcon(QtGui.QIcon('Save.png'))
+        self.pushButtonSort.setIcon(QtGui.QIcon('Set.png'))
+        self.pushButtonQuit.setIcon(QtGui.QIcon('Quit.png'))
 
         self.menuFile.setTitle(_translate("MainWindow", "Data File"))
 
@@ -330,8 +349,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.actionMudStone.setText(_translate("MainWindow", "Sand-Silt-Mud"))
 
-        self.actionInstruction.setText(_translate("MainWindow", "Instruction"))
-        self.actionWebsite.setText(_translate("MainWindow", "Website"))
+        self.actionCnWeb.setText(_translate("MainWindow", "CN Help"))
+        self.actionGoGithub.setText(_translate("MainWindow", "Github"))
+        self.actionVersionCheck.setText(_translate("MainWindow", "About"))
 
     def getfile(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
@@ -339,8 +359,16 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                                          "~/",
                                                          "All Files (*);;Text Files (*.txt)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-    def gowebsite(self):
+    def goGitHub(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/README.md')
+
+
+    def goZhiHu(self):
+        webbrowser.open('https://zhuanlan.zhihu.com/p/28908475?refer=python-kivy')
+
+    def checkVersion(self):
+        t= 'You are using GeoPython '+version +', released on'+ date+'\n'+sign
+        reply = QMessageBox.warning(self, 'Version',t)
 
     def getDataFile(self):
         DataFileInput, filetype = QFileDialog.getOpenFileName(self,
