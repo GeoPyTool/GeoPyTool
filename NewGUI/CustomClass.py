@@ -627,7 +627,6 @@ class CustomQTableView(QtWidgets.QTableView):
         return
 
 class PlotModel(FigureCanvas):
-    """这是一个窗口部件，即QWidget（当然也是FigureCanvasAgg）"""
 
     _df = pd.DataFrame()
     _changed = False
@@ -6809,7 +6808,6 @@ class Magic(AppForm):
         self.canvas.draw()
 
 
-
 class XY(AppForm):
     Lines = []
     Tags = []
@@ -7662,3 +7660,268 @@ class XYZ(AppForm):
             #self.DrawLine(self.polyline)
 
         self.canvas.draw()
+
+
+class ZirconTiTemp(AppForm):
+    Calced = ['Temperature']
+
+    DataCalced = {}
+    raw = pd.DataFrame()
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Zircon Ti Temperature Calculator)')
+
+        self._df = df
+        self.raw = df
+        if (len(df) > 0):
+            self._changed = True
+            print("DataFrame recieved")
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+
+        self.save_button = QPushButton("&Save Result")
+        self.save_button.clicked.connect(self.saveResult)
+
+        self.tableView = CustomQTableView(self.main_frame)
+        self.tableView.setObjectName("tableView")
+        self.tableView.setSortingEnabled(True)
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, ]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+
+        self.vbox.addWidget(self.tableView)
+
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def create_status_bar(self):
+        self.status_text = QLabel("Click Save button to save your Result.")
+        self.statusBar().addWidget(self.status_text, 1)
+
+    def add_actions(self, target, actions):
+        for action in actions:
+            if action is None:
+                target.addSeparator()
+            else:
+                target.addAction(action)
+
+    def create_action(self, text, slot=None, shortcut=None,
+                      icon=None, tip=None, checkable=False,
+                      signal="triggered()"):
+        action = QAction(text, self)
+        if icon is not None:
+            action.setIcon(QIcon(":/%s.png" % icon))
+        if shortcut is not None:
+            action.setShortcut(shortcut)
+        if tip is not None:
+            action.setToolTip(tip)
+            action.setStatusTip(tip)
+        if slot is not None:
+            action.triggered.connect(slot)
+        if checkable:
+            action.setCheckable(True)
+        return action
+
+
+    def ZirconTiTemp(self):
+
+        MaxTemps=[]
+        MinTemps=[]
+        MidTemps=[]
+
+        for i in range(len(self.raw)):
+            Ti = self.raw.at[i, 'Ti']
+
+            try:
+                ASiO2 = self.raw.at[i, 'ASiO2']
+            except(KeyError):
+                ASiO2 =1
+
+
+            try:
+                ATiO2 = self.raw.at[i, 'ATiO2']
+            except(KeyError):
+                ATiO2 =1
+
+            TiTemp1=(4800+86)/((5.711+0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+
+            TiTemp2=(4800-86)/((5.711+0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+
+            TiTemp3=(4800+86)/((5.711-0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+
+            TiTemp4=(4800-86)/((5.711-0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+
+            TiTempBig,TiTempSmall=max([TiTemp1,TiTemp2,TiTemp3,TiTemp4]),min(([TiTemp1,TiTemp2,TiTemp3,TiTemp4]))
+
+            MaxTemps.append(TiTempBig)
+            MinTemps.append(TiTempSmall)
+            MidTemps.append((TiTempSmall+TiTempBig)/2)
+
+        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps,'Temp Mid': MidTemps, }
+
+        tmpdftoadd = pd.DataFrame(tmpdata)
+
+        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
+        self.model = PandasModel(self.newdf )
+        self.tableView.setModel(self.model)
+
+    def saveResult(self):
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          "文件保存",
+                                                          "C:/",
+                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ("csv" in DataFileOutput):
+                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ("xls" in DataFileOutput):
+                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+
+class RutileZrTemp(AppForm):
+    Calced = ['Temperature']
+
+    DataCalced = {}
+    raw = pd.DataFrame()
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Rutile Zr Temperature Calculator)')
+
+        self._df = df
+        self.raw = df
+        if (len(df) > 0):
+            self._changed = True
+            print("DataFrame recieved")
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+
+        self.save_button = QPushButton("&Save Result")
+        self.save_button.clicked.connect(self.saveResult)
+
+        self.tableView = CustomQTableView(self.main_frame)
+        self.tableView.setObjectName("tableView")
+        self.tableView.setSortingEnabled(True)
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, ]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+
+        self.vbox.addWidget(self.tableView)
+
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def create_status_bar(self):
+        self.status_text = QLabel("Click Save button to save your Result.")
+        self.statusBar().addWidget(self.status_text, 1)
+
+    def add_acZrons(self, target, acZrons):
+        for acZron in acZrons:
+            if acZron is None:
+                target.addSeparator()
+            else:
+                target.addAcZron(acZron)
+
+    def create_acZron(self, text, slot=None, shortcut=None,
+                      icon=None, Zrp=None, checkable=False,
+                      signal="triggered()"):
+        acZron = QAcZron(text, self)
+        if icon is not None:
+            acZron.seZrcon(QIcon(":/%s.png" % icon))
+        if shortcut is not None:
+            acZron.setShortcut(shortcut)
+        if Zrp is not None:
+            acZron.setToolZrp(Zrp)
+            acZron.setStatusZrp(Zrp)
+        if slot is not None:
+            acZron.triggered.connect(slot)
+        if checkable:
+            acZron.setCheckable(True)
+        return acZron
+
+
+    def RutileZrTemp(self):
+
+        MaxTemps=[]
+        MinTemps=[]
+        MidTemps=[]
+
+        for i in range(len(self.raw)):
+            Zr = self.raw.at[i, 'Zr']
+
+            try:
+                ASiO2 = self.raw.at[i, 'ASiO2']
+            except(KeyError):
+                ASiO2 =1
+
+
+            ZrTemp1=(4530+111)/((7.42+0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+
+            ZrTemp2=(4530-111)/((7.42+0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+
+            ZrTemp3=(4530+111)/((7.42-0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+
+            ZrTemp4=(4530-111)/((7.42-0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+
+            ZrTempBig,ZrTempSmall=max([ZrTemp1,ZrTemp2,ZrTemp3,ZrTemp4]),min(([ZrTemp1,ZrTemp2,ZrTemp3,ZrTemp4]))
+
+            MaxTemps.append(ZrTempBig)
+            MinTemps.append(ZrTempSmall)
+            MidTemps.append((ZrTempSmall+ZrTempBig)/2)
+
+        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps,'Temp Mid': MidTemps, }
+
+        tmpdftoadd = pd.DataFrame(tmpdata)
+
+        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
+        self.model = PandasModel(self.newdf )
+        self.tableView.setModel(self.model)
+
+    def saveResult(self):
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          "文件保存",
+                                                          "C:/",
+                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ("csv" in DataFileOutput):
+                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ("xls" in DataFileOutput):
+                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+
+
+

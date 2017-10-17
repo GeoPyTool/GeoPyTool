@@ -25,6 +25,7 @@ Category: Python
 |Multiple Samples CIPW Norm|2017-04-3 12:30|MultiCIPW|
 |NewGUI|2017-07-23 12:30|GUI Powered By PyQt5|
 |All Rebuild|2017-08-31 23:30|Harker Back|
+|Temp Calc|2017-10-17 20:48:21|Zircon/Rutile|
 
 ## Introduction
 

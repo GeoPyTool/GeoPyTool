@@ -45,6 +45,10 @@ from CustomClass import QAPF
 from CustomClass import MudStone
 
 from CustomClass import Zircon
+from CustomClass import ZirconTiTemp
+from CustomClass import RutileZrTemp
+
+
 from CustomClass import Magic
 
 from CustomClass import XY
@@ -194,6 +198,13 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionZirconCe = QtWidgets.QAction(MainWindow)
         self.actionZirconCe.setObjectName("actionZirconCe")
 
+        self.actionZirconTiTemp = QtWidgets.QAction(MainWindow)
+        self.actionZirconTiTemp.setObjectName("actionZirconTiTemp")
+
+        self.actionRutileZrTemp = QtWidgets.QAction(MainWindow)
+        self.actionRutileZrTemp.setObjectName("actionRutileZrTemp")
+
+
         self.actionQAPF = QtWidgets.QAction(MainWindow)
         self.actionQAPF.setObjectName("actionQAPF")
 
@@ -208,6 +219,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.actionMagic = QtWidgets.QAction(MainWindow)
         self.actionMagic.setObjectName("actionMagic")
+
+
+
 
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -225,6 +239,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.menuCalc.addAction(self.actionCIPW)
         self.menuCalc.addAction(self.actionZirconCe)
+        self.menuCalc.addAction(self.actionZirconTiTemp)
+        self.menuCalc.addAction(self.actionRutileZrTemp)
+
 
         self.menuMore.addAction(self.actionMudStone)
         self.menuMore.addAction(self.actionQAPF)
@@ -272,9 +289,13 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.actionCIPW.triggered.connect(self.CIPW)
         self.actionZirconCe.triggered.connect(self.Zircon)
+        self.actionZirconTiTemp.triggered.connect(self.ZirconTiTemp)
+        self.actionRutileZrTemp.triggered.connect(self.RutileZrTemp)
 
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
+
+
 
         self.actionCnWeb.triggered.connect(self.goZhiHu)
         self.actionGoGithub.triggered.connect(self.goGitHub)
@@ -341,6 +362,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionCIPW.setText(_translate("MainWindow", "CIPW"))
 
         self.actionZirconCe.setText(_translate("MainWindow", "ZirconCe"))
+        self.actionZirconTiTemp.setText(_translate("MainWindow", "ZirconTiTemp"))
+        self.actionRutileZrTemp.setText(_translate("MainWindow", "RutileZrTemp"))
 
         self.actionXY.setText(_translate("MainWindow", "X-Y plot"))
         self.actionXYZ.setText(_translate("MainWindow", "X-Y-Z plot"))
@@ -439,6 +462,24 @@ class Ui_MainWindow(QtWidgets.QWidget):
         try:
             self.cipwpop.CIPW()
             self.cipwpop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
+
+    def ZirconTiTemp(self):
+        self.ztpop = ZirconTiTemp(df=self.model._df)
+        try:
+            self.ztpop.ZirconTiTemp()
+            self.ztpop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
+
+    def RutileZrTemp(self):
+        self.rzpop = RutileZrTemp(df=self.model._df)
+        try:
+            self.rzpop.RutileZrTemp()
+            self.rzpop.show()
         except(KeyError):
             self.ErrorEvent()
 
