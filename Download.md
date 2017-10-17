@@ -29,14 +29,15 @@ Category: Python
 
 
 ##### OS X:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqR05xVHJic0JaZ1E)
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqUGF3a1F3UGtKT2c)
 
-[Baidu Download](http://pan.baidu.com/s/1casX8U)
+[Baidu Download](http://pan.baidu.com/s/1o76RmPW)
 
 ##### Windows:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqei0wdGJEOS1ORHM)
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqUWxSZWQzX2RHRGc)
 
-[Baidu Download](http://pan.baidu.com/s/1hsw1KeK)
+[Baidu Download](http://pan.baidu.com/s/1jIos8CY)
+
 
 ##### OS X:
 [Google Download](https://drive.google.com/open?id=0B299gyAIgmpqam13cmU2cnl0LWs)
