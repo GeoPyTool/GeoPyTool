@@ -69,7 +69,7 @@ Git is also needed to be used in installation of Python-Quantities.
 After installation of Python, you can use the following commands in your terminal to install GeoPython:
 
 ```Bash
-pip install cython numpy matplotlib pandas xlrd BeautifulSoup4
+pip install cython numpy matplotlib pandas xlrd BeautifulSoup4 scipy scikit-learn sympy pyqt5
 
 pip install --upgrade geopython --no-cache-dir
 ```
