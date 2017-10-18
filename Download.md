@@ -12,14 +12,12 @@ Category: Python
 ##### Copyright 2017 cycleuser
 
 
-
-## 当前版本（Latest Version） :
-
-##### Windows:
+# GeoPython exe for Windows:
 [Baidu Download](http://pan.baidu.com/s/1qYA1mY4)
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqUUhWdm9GcUtQOXM)
 
 
-
-##### OS X:
+# GeoPython app for macOS:
 [Baidu Download](http://pan.baidu.com/s/1c2bDORI)
 
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqbkYzdzJtcnNpQVE)
