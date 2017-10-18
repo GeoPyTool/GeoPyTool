@@ -4,7 +4,7 @@
 # Created by: PyQt5 UI code generator 5.8.1#
 # WARNING! All changes made in this file will be lost!
 
-version='0.4.7'
+version='0.4.8'
 
 date='2017-10-18'
 
@@ -406,13 +406,13 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                                               "~/",
                                                               "Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-        # print(DataFileInput,filetype)
+        # #print(DataFileInput,filetype)
 
         if ("csv" in DataFileInput):
             self.raw = pd.read_csv(DataFileInput)
         elif ("xls" in DataFileInput):
             self.raw = pd.read_excel(DataFileInput)
-        # print(self.raw)
+        # #print(self.raw)
 
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
@@ -425,7 +425,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         Sentecne = 'You need to add '
 
-        print(ItemsAvalibale, '\n', ItemsToTest)
+        #print(ItemsAvalibale, '\n', ItemsToTest)
 
         for i in ItemsToTest:
             if i not in ItemsAvalibale:
@@ -447,9 +447,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
     def saveDataFile(self):
 
-        if self.model._changed == True:
-            print("changed")
-            print(self.model._df)
+        #if self.model._changed == True:
+            #print("changed")
+            #print(self.model._df)
 
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           "文件保存",
@@ -593,7 +593,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def Zircon(self):
-        print("Opening a new popup window...")
+        #print("Opening a new popup window...")
         self.zirconpop = Zircon(df=self.model._df)
         try:
             self.zirconpop.MultiBallard()
@@ -602,7 +602,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def XY(self):
-        print("Opening a new popup window...")
+        #print("Opening a new popup window...")
         # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
@@ -614,7 +614,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def XYZ(self):
-        print("Opening a new popup window...")
+        #print("Opening a new popup window...")
         # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
@@ -626,7 +626,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def Magic(self):
-        print("Opening a new popup window...")
+        #print("Opening a new popup window...")
         # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
@@ -680,7 +680,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
                 'Style': StyleList,
                 'Width': WidthList}
 
-        print('\n', data, '\n')
+        #print('\n', data, '\n')
 
 
 
@@ -688,13 +688,13 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         for i in ItemsToTest:
             if i not in ItemsAvalibale:
-                print(i)
+                #print(i)
                 flag = flag + 1
                 tmpdftoadd = pd.DataFrame({i: data[i]})
 
                 self.model._df = pd.concat([tmpdftoadd, self.model._df], axis=1)
 
-        #print(self.model._df)
+        ##print(self.model._df)
 
         self.model = PandasModel(self.model._df)
 

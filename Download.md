@@ -3,44 +3,23 @@ Date: 2016-12-18 16:20
 Category: Python
 
 
-# [GeoPython, a Python tool set for geology related daily work](https://github.com/chinageology/GeoPython)
+# [GeoPython, a Python tool set for geology related daily work](https://zhuanlan.zhihu.com/p/28908475?refer=python-kivy)
 
 
 
 ##### author: cycleuser
-##### email: cycleuser@cycleuser.org
+##### email: cycleuser at cycleuser.org
 ##### Copyright 2017 cycleuser
 
 
 
-## 当前版本（New Version） :
+## 当前版本（Latest Version） :
 
 ##### Windows:
+[Baidu Download](http://pan.baidu.com/s/1qYA1mY4)
 
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqUWxSZWQzX2RHRGc)
-
-[Baidu Download](http://pan.baidu.com/s/1jIos8CY)
-
-
-
-
-
-## 旧版本（Legacy Version）:
 
 
 ##### OS X:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqUGF3a1F3UGtKT2c)
-
-[Baidu Download](http://pan.baidu.com/s/1o76RmPW)
-
-##### Windows:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqUWxSZWQzX2RHRGc)
-
-[Baidu Download](http://pan.baidu.com/s/1jIos8CY)
-
-
-##### OS X:
-[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqam13cmU2cnl0LWs)
-
-[Baidu Download](https://pan.baidu.com/s/1qY2QmDm)
+[Baidu Download](http://pan.baidu.com/s/1c2bDORI)
 

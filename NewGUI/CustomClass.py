@@ -14,7 +14,7 @@ plt.rcParams['pdf.fonttype'] = 'truetype'
 
 import pandas as pd
 import numpy as np
-
+from scipy.cluster import hierarchy as hc
 from scipy.cluster.hierarchy import dendrogram, linkage
 
 
@@ -376,7 +376,9 @@ class Line():
             self.Points = Points
 
         else:
-            print("Cannot draw line with one point")
+
+            #print("Cannot draw line with one point")
+            pass
 
     def sequence(self):
         """
@@ -503,7 +505,8 @@ class TriLine(Line, Tool):
                 self.z.append(i[2])
 
         else:
-            print("Cannot draw line with one point")
+            #print("Cannot draw line with one point")
+            pass
 
         self.sequence()
         self.tritrans()
@@ -706,7 +709,7 @@ class PlotModel(FigureCanvas):
                 Size = df.at[i, 'Size']
                 Color = df.at[i, 'Color']
 
-                print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
+                #print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
 
                 Alpha = df.at[i, 'Alpha']
                 Marker = df.at[i, 'Marker']
@@ -791,7 +794,7 @@ class PlotModel(FigureCanvas):
                 Size = df.at[i, 'Size']
                 Color = df.at[i, 'Color']
 
-                print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
+                #print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
 
                 Alpha = df.at[i, 'Alpha']
                 Marker = df.at[i, 'Marker']
@@ -864,7 +867,7 @@ class Zircon(QMainWindow):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved")
+            #print("DataFrame recieved")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -1295,7 +1298,7 @@ class Zircon(QMainWindow):
         xlimleft3 = 0
         xlimleft4 = -0.005
 
-        print("\n the value is ", min(min(self.y3)))
+        #print("\n the value is ", min(min(self.y3)))
 
         ylimleft3 = min(min(min(self.y3)), min(min(self.y3_Plot_Only)))
 
@@ -1344,8 +1347,8 @@ class Zircon(QMainWindow):
                 [TMP, ZirconTmp, MeltTmp, self.DCe4test[i], self.DCe3test[i], self.ZirconCe[i] / self.RockCe])
 
         self.newdf = pd.DataFrame(self.DataToWrite)
-        print("\n")
-        print(self.newdf)
+        #print("\n")
+        #print(self.newdf)
 
 class AppForm(QMainWindow):
     _df = pd.DataFrame()
@@ -1361,7 +1364,7 @@ class AppForm(QMainWindow):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to AppForm")
+            #print("DataFrame recieved to AppForm")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -1508,7 +1511,7 @@ class TAS(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to TAS")
+            #print("DataFrame recieved to TAS")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -1677,7 +1680,7 @@ class TAS(AppForm):
                 Size = df.at[i, 'Size']
                 Color = df.at[i, 'Color']
 
-                print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
+                #print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
 
                 Alpha = df.at[i, 'Alpha']
                 Marker = df.at[i, 'Marker']
@@ -1744,7 +1747,7 @@ class REE(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to REE")
+            #print("DataFrame recieved to REE")
 
         self.Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
         self.WholeData = []
@@ -1940,7 +1943,7 @@ class Trace(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Trace")
+            #print("DataFrame recieved to Trace")
 
         self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr',
                         u'Mo',
@@ -2171,7 +2174,7 @@ class Stereo(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Stereo")
+            #print("DataFrame recieved to Stereo")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -2508,7 +2511,7 @@ class Rose(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Rose")
+            #print("DataFrame recieved to Rose")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3145,7 +3148,7 @@ class MudStone(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Tri")
+            #print("DataFrame recieved to Tri")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3403,7 +3406,7 @@ class QFL(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Tri")
+            #print("DataFrame recieved to Tri")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3659,7 +3662,7 @@ class QmFLt(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Tri")
+            #print("DataFrame recieved to Tri")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3978,7 +3981,7 @@ class CIPW(AppForm):
         self.raw = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved")
+            #print("DataFrame recieved")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -5195,7 +5198,7 @@ class CIPW(AppForm):
 
 
 
-            print('\n\n DI is\n',DI,'\n\n')
+            #print('\n\n DI is\n',DI,'\n\n')
             self.DataCalced[k].update({'Differentiation Index': DI})
 
 
@@ -5243,7 +5246,7 @@ class CIPW(AppForm):
                 command = 'TMP_DataToWrite.append((self.' + target + '[k][j]))'
                 try:
 
-                    exec('print((self.' + target + '[k][j]))')
+                    exec('#print((self.' + target + '[k][j]))')
 
                     exec(command)
                 except(KeyError):
@@ -5252,7 +5255,7 @@ class CIPW(AppForm):
 
             DataToWrite.append(TMP_DataToWrite)
 
-        print('\n',DataToWrite,'\n')
+        #print('\n',DataToWrite,'\n')
         return (DataToWrite)
 
 
@@ -5280,7 +5283,7 @@ class CIPW(AppForm):
 
         self.newdf = pd.DataFrame.from_records(newtmp, columns=labels)
 
-        #print('\n',tmp,"\n")
+        ##print('\n',tmp,"\n")
 
         #self.newdf = pd.DataFrame(tmp)
 
@@ -5310,8 +5313,6 @@ class CIPW(AppForm):
         except(TypeError):
             pass
         self.qapfpop.show()
-
-
 
 class QAPF(AppForm, Tool):
     _df = pd.DataFrame()
@@ -5442,7 +5443,7 @@ class QAPF(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to DualTri")
+            #print("DataFrame recieved to DualTri")
 
         self.raw = self._df
         self.create_main_frame()
@@ -6072,7 +6073,7 @@ class Pearce(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Pearce")
+            #print("DataFrame recieved to Pearce")
 
         self.create_main_frame()
         self.create_status_bar()
@@ -6292,7 +6293,7 @@ class Harker(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Harker")
+            #print("DataFrame recieved to Harker")
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -6458,6 +6459,272 @@ class Harker(AppForm):
 
         self.canvas.draw()
 
+
+class ZirconTiTemp(AppForm):
+    Calced = ['Temperature']
+
+    DataCalced = {}
+    raw = pd.DataFrame()
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Zircon Ti Temperature Calculator')
+
+        self._df = df
+        self.raw = df
+        if (len(df) > 0):
+            self._changed = True
+            #print("DataFrame recieved")
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+
+        self.save_button = QPushButton("&Save Result")
+        self.save_button.clicked.connect(self.saveResult)
+
+        self.tableView = CustomQTableView(self.main_frame)
+        self.tableView.setObjectName("tableView")
+        self.tableView.setSortingEnabled(True)
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, ]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+
+        self.vbox.addWidget(self.tableView)
+
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def create_status_bar(self):
+        self.status_text = QLabel("Click Save button to save your Result.")
+        self.statusBar().addWidget(self.status_text, 1)
+
+    def add_actions(self, target, actions):
+        for action in actions:
+            if action is None:
+                target.addSeparator()
+            else:
+                target.addAction(action)
+
+    def create_action(self, text, slot=None, shortcut=None,
+                      icon=None, tip=None, checkable=False,
+                      signal="triggered()"):
+        action = QAction(text, self)
+        if icon is not None:
+            action.setIcon(QIcon(":/%s.png" % icon))
+        if shortcut is not None:
+            action.setShortcut(shortcut)
+        if tip is not None:
+            action.setToolTip(tip)
+            action.setStatusTip(tip)
+        if slot is not None:
+            action.triggered.connect(slot)
+        if checkable:
+            action.setCheckable(True)
+        return action
+
+
+    def ZirconTiTemp(self):
+
+        MaxTemps=[]
+        MinTemps=[]
+        MidTemps=[]
+
+        for i in range(len(self.raw)):
+            Ti = self.raw.at[i, 'Ti']
+
+            try:
+                ASiO2 = self.raw.at[i, 'ASiO2']
+            except(KeyError):
+                ASiO2 =1
+
+
+            try:
+                ATiO2 = self.raw.at[i, 'ATiO2']
+            except(KeyError):
+                ATiO2 =1
+
+            TiTemp1=(4800+86)/((5.711+0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+
+            TiTemp2=(4800-86)/((5.711+0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+
+            TiTemp3=(4800+86)/((5.711-0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+
+            TiTemp4=(4800-86)/((5.711-0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+
+            TiTempBig,TiTempSmall=max([TiTemp1,TiTemp2,TiTemp3,TiTemp4]),min(([TiTemp1,TiTemp2,TiTemp3,TiTemp4]))
+
+            MaxTemps.append(TiTempBig)
+            MinTemps.append(TiTempSmall)
+            MidTemps.append((TiTempSmall+TiTempBig)/2)
+
+        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps,'Temp Mid': MidTemps, }
+
+        tmpdftoadd = pd.DataFrame(tmpdata)
+
+        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
+        self.model = PandasModel(self.newdf )
+        self.tableView.setModel(self.model)
+
+    def saveResult(self):
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          "文件保存",
+                                                          "C:/",
+                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ("csv" in DataFileOutput):
+                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ("xls" in DataFileOutput):
+                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+
+class RutileZrTemp(AppForm):
+    Calced = ['Temperature']
+
+    DataCalced = {}
+    raw = pd.DataFrame()
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Rutile Zr Temperature Calculator')
+
+        self._df = df
+        self.raw = df
+        if (len(df) > 0):
+            self._changed = True
+            #print("DataFrame recieved")
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+
+        self.save_button = QPushButton("&Save Result")
+        self.save_button.clicked.connect(self.saveResult)
+
+        self.tableView = CustomQTableView(self.main_frame)
+        self.tableView.setObjectName("tableView")
+        self.tableView.setSortingEnabled(True)
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, ]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+
+        self.vbox.addWidget(self.tableView)
+
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def create_status_bar(self):
+        self.status_text = QLabel("Click Save button to save your Result.")
+        self.statusBar().addWidget(self.status_text, 1)
+
+    def add_acZrons(self, target, acZrons):
+        for acZron in acZrons:
+            if acZron is None:
+                target.addSeparator()
+            else:
+                target.addAcZron(acZron)
+
+    def create_acZron(self, text, slot=None, shortcut=None,
+                      icon=None, Zrp=None, checkable=False,
+                      signal="triggered()"):
+        acZron = QAcZron(text, self)
+        if icon is not None:
+            acZron.seZrcon(QIcon(":/%s.png" % icon))
+        if shortcut is not None:
+            acZron.setShortcut(shortcut)
+        if Zrp is not None:
+            acZron.setToolZrp(Zrp)
+            acZron.setStatusZrp(Zrp)
+        if slot is not None:
+            acZron.triggered.connect(slot)
+        if checkable:
+            acZron.setCheckable(True)
+        return acZron
+
+
+    def RutileZrTemp(self):
+
+        MaxTemps=[]
+        MinTemps=[]
+        MidTemps=[]
+
+        for i in range(len(self.raw)):
+            Zr = self.raw.at[i, 'Zr']
+
+            try:
+                ASiO2 = self.raw.at[i, 'ASiO2']
+            except(KeyError):
+                ASiO2 =1
+
+
+            ZrTemp1=(4530+111)/((7.42+0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+
+            ZrTemp2=(4530-111)/((7.42+0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+
+            ZrTemp3=(4530+111)/((7.42-0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+
+            ZrTemp4=(4530-111)/((7.42-0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+
+            ZrTempBig,ZrTempSmall=max([ZrTemp1,ZrTemp2,ZrTemp3,ZrTemp4]),min(([ZrTemp1,ZrTemp2,ZrTemp3,ZrTemp4]))
+
+            MaxTemps.append(ZrTempBig)
+            MinTemps.append(ZrTempSmall)
+            MidTemps.append((ZrTempSmall+ZrTempBig)/2)
+
+        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps,'Temp Mid': MidTemps, }
+
+        tmpdftoadd = pd.DataFrame(tmpdata)
+
+        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
+        self.model = PandasModel(self.newdf )
+        self.tableView.setModel(self.model)
+
+    def saveResult(self):
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          "文件保存",
+                                                          "C:/",
+                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ("csv" in DataFileOutput):
+                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ("xls" in DataFileOutput):
+                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+
+
+
+
+
 class Magic(AppForm):
     Lines = []
     Tags = []
@@ -6483,7 +6750,7 @@ class Magic(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Magic")
+            #print("DataFrame recieved to Magic")
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -6615,7 +6882,7 @@ class Magic(AppForm):
                                                          "~/",
                                                          "SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-        # print(fileName)
+        # #print(fileName)
 
         doc = minidom.parse(fileName)  # parseString also exists
         polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
@@ -6624,8 +6891,8 @@ class Magic(AppForm):
         svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
         svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
 
-        print(svg_width)
-        print(svg_height)
+        #print(svg_width)
+        #print(svg_height)
 
         digit = '01234567890.-'
         width = svg_width[0].replace('px', '').replace('pt', '')
@@ -6637,7 +6904,7 @@ class Magic(AppForm):
             if letter in digit:
                 width = width + letter
 
-        print(width)
+        #print(width)
 
 
 
@@ -6646,7 +6913,7 @@ class Magic(AppForm):
             if letter in digit:
                 height = height + letter
 
-        print(height)
+        #print(height)
         '''
 
 
@@ -6656,7 +6923,7 @@ class Magic(AppForm):
         self.x_scale = 100.0 / float(width)
         self.y_scale = 50.0 * math.sqrt(3) / float(height)
 
-        print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
+        #print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
 
         soup = BeautifulSoup(open(fileName), "lxml")
 
@@ -6686,7 +6953,7 @@ class Magic(AppForm):
         lines=[]
         for i in strlines:
             m =  self.Read(i)
-            print('i: ',i,'\n m:',m)
+            #print('i: ',i,'\n m:',m)
             lines.append(m)
 
 
@@ -6695,7 +6962,7 @@ class Magic(AppForm):
         self.polygon = gons
         self.polyline = lines
 
-        print(self.polygon,'\n',self.polyline)
+        #print(self.polygon,'\n',self.polyline)
 
 
         self.Magic()
@@ -6784,7 +7051,7 @@ class Magic(AppForm):
 
         if self.polygon !=0 and  self.polyline !=0 :
 
-            print('gon: ',self.polygon,' \n line:',self.polyline)
+            #print('gon: ',self.polygon,' \n line:',self.polyline)
 
             for i in self.polygon:
                 self.DrawLine(i)
@@ -6798,7 +7065,6 @@ class Magic(AppForm):
             #self.DrawLine(self.polyline)
 
         self.canvas.draw()
-
 
 class XY(AppForm):
     Lines = []
@@ -6842,7 +7108,7 @@ class XY(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Magic")
+            #print("DataFrame recieved to Magic")
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -7000,7 +7266,7 @@ class XY(AppForm):
                                                          "~/",
                                                          "SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-        # print(fileName)
+        # #print(fileName)
 
 
 
@@ -7012,8 +7278,8 @@ class XY(AppForm):
         svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
         svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
 
-        print(svg_width)
-        print(svg_height)
+        #print(svg_width)
+        #print(svg_height)
 
         digit = '01234567890.-'
         width = svg_width[0].replace('px', '').replace('pt', '')
@@ -7074,7 +7340,7 @@ class XY(AppForm):
             self.strpath.append(k['d'].split())
 
 
-        print(self.strpath)
+        #print(self.strpath)
 
 
 
@@ -7087,13 +7353,13 @@ class XY(AppForm):
         self.polyline=[]
         for i in self.strpolylines:
             m =  self.Read(i)
-            print('i: ',i,'\n m:',m)
+            #print('i: ',i,'\n m:',m)
             self.polyline.append(m)
 
         self.line=[]
         for i in self.strlines:
             m =  self.Read(i)
-            print('i: ',i,'\n m:',m)
+            #print('i: ',i,'\n m:',m)
             self.line.append(m)
 
 
@@ -7125,13 +7391,13 @@ class XY(AppForm):
         self.polyline=[]
         for i in self.strpolylines:
             m =  self.Read(i)
-            print('i: ',i,'\n m:',m)
+            #print('i: ',i,'\n m:',m)
             self.polyline.append(m)
 
         self.line=[]
         for i in self.strlines:
             m =  self.Read(i)
-            print('i: ',i,'\n m:',m)
+            #print('i: ',i,'\n m:',m)
             self.line.append(m)
 
 
@@ -7161,13 +7427,13 @@ class XY(AppForm):
         self.polyline=[]
         for i in self.strpolylines:
             m =  self.Read(i)
-            print('i: ',i,'\n m:',m)
+            #print('i: ',i,'\n m:',m)
             self.polyline.append(m)
 
         self.line=[]
         for i in self.strlines:
             m =  self.Read(i)
-            print('i: ',i,'\n m:',m)
+            #print('i: ',i,'\n m:',m)
             self.line.append(m)
 
 
@@ -7199,7 +7465,7 @@ class XY(AppForm):
         self.y_scale = self.height_plot / self.height_load
 
 
-        print(self.x_scale,' and ',self.x_scale)
+        #print(self.x_scale,' and ',self.x_scale)
 
         raw = self._df
 
@@ -7262,7 +7528,7 @@ class XY(AppForm):
 
         if self.polygon !=0 and  self.polyline !=0 and self.line !=0:
 
-            print('gon: ',self.polygon,' \n line:',self.polyline)
+            #print('gon: ',self.polygon,' \n line:',self.polyline)
 
             for i in self.polygon:
                 self.DrawLine(i)
@@ -7279,7 +7545,6 @@ class XY(AppForm):
             #self.DrawLine(self.polyline)
 
         self.canvas.draw()
-
 
 class XYZ(AppForm):
     Lines = []
@@ -7321,7 +7586,7 @@ class XYZ(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Magic")
+            #print("DataFrame recieved to Magic")
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -7465,7 +7730,7 @@ class XYZ(AppForm):
                                                          "~/",
                                                          "SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-        # print(fileName)
+        # #print(fileName)
 
         doc = minidom.parse(fileName)  # parseString also exists
         polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
@@ -7474,8 +7739,8 @@ class XYZ(AppForm):
         svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
         svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
 
-        print(svg_width)
-        print(svg_height)
+        #print(svg_width)
+        #print(svg_height)
 
         digit = '01234567890.-'
         width = svg_width[0].replace('px', '').replace('pt', '')
@@ -7487,7 +7752,7 @@ class XYZ(AppForm):
             if letter in digit:
                 width = width + letter
 
-        print(width)
+        #print(width)
 
 
 
@@ -7496,7 +7761,7 @@ class XYZ(AppForm):
             if letter in digit:
                 height = height + letter
 
-        print(height)
+        #print(height)
         '''
 
 
@@ -7506,7 +7771,7 @@ class XYZ(AppForm):
         self.x_scale = 100.0 / float(width)
         self.y_scale = 50.0 * math.sqrt(3) / float(height)
 
-        print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
+        #print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
 
         soup = BeautifulSoup(open(fileName), "lxml")
 
@@ -7536,7 +7801,7 @@ class XYZ(AppForm):
         lines=[]
         for i in strlines:
             m =  self.Read(i)
-            print('i: ',i,'\n m:',m)
+            #print('i: ',i,'\n m:',m)
             lines.append(m)
 
 
@@ -7545,7 +7810,7 @@ class XYZ(AppForm):
         self.polygon = gons
         self.polyline = lines
 
-        print(self.polygon,'\n',self.polyline)
+        #print(self.polygon,'\n',self.polyline)
 
 
         self.Magic()
@@ -7610,7 +7875,7 @@ class XYZ(AppForm):
 
             x, y , z= raw.at[i, self.items[a]], raw.at[i, self.items[b]],raw.at[i, self.items[c]]
 
-            print(a,x,'\n',b,y,'\n',c,z,'\n')
+            #print(a,x,'\n',b,y,'\n',c,z,'\n')
 
             try:
                 xuse = float(x)
@@ -7638,7 +7903,7 @@ class XYZ(AppForm):
 
         if self.polygon !=0 and  self.polyline !=0 :
 
-            print('gon: ',self.polygon,' \n line:',self.polyline)
+            #print('gon: ',self.polygon,' \n line:',self.polyline)
 
             for i in self.polygon:
                 self.DrawLine(i)
@@ -7652,270 +7917,6 @@ class XYZ(AppForm):
             #self.DrawLine(self.polyline)
 
         self.canvas.draw()
-
-
-class ZirconTiTemp(AppForm):
-    Calced = ['Temperature']
-
-    DataCalced = {}
-    raw = pd.DataFrame()
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Zircon Ti Temperature Calculator')
-
-        self._df = df
-        self.raw = df
-        if (len(df) > 0):
-            self._changed = True
-            print("DataFrame recieved")
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 100
-
-        self.save_button = QPushButton("&Save Result")
-        self.save_button.clicked.connect(self.saveResult)
-
-        self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName("tableView")
-        self.tableView.setSortingEnabled(True)
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, ]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-
-        self.vbox.addWidget(self.tableView)
-
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your Result.")
-        self.statusBar().addWidget(self.status_text, 1)
-
-    def add_actions(self, target, actions):
-        for action in actions:
-            if action is None:
-                target.addSeparator()
-            else:
-                target.addAction(action)
-
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
-
-
-    def ZirconTiTemp(self):
-
-        MaxTemps=[]
-        MinTemps=[]
-        MidTemps=[]
-
-        for i in range(len(self.raw)):
-            Ti = self.raw.at[i, 'Ti']
-
-            try:
-                ASiO2 = self.raw.at[i, 'ASiO2']
-            except(KeyError):
-                ASiO2 =1
-
-
-            try:
-                ATiO2 = self.raw.at[i, 'ATiO2']
-            except(KeyError):
-                ATiO2 =1
-
-            TiTemp1=(4800+86)/((5.711+0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
-
-            TiTemp2=(4800-86)/((5.711+0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
-
-            TiTemp3=(4800+86)/((5.711-0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
-
-            TiTemp4=(4800-86)/((5.711-0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
-
-            TiTempBig,TiTempSmall=max([TiTemp1,TiTemp2,TiTemp3,TiTemp4]),min(([TiTemp1,TiTemp2,TiTemp3,TiTemp4]))
-
-            MaxTemps.append(TiTempBig)
-            MinTemps.append(TiTempSmall)
-            MidTemps.append((TiTempSmall+TiTempBig)/2)
-
-        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps,'Temp Mid': MidTemps, }
-
-        tmpdftoadd = pd.DataFrame(tmpdata)
-
-        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
-        self.model = PandasModel(self.newdf )
-        self.tableView.setModel(self.model)
-
-    def saveResult(self):
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          "文件保存",
-                                                          "C:/",
-                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ("csv" in DataFileOutput):
-                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-
-            elif ("xls" in DataFileOutput):
-                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
-
-class RutileZrTemp(AppForm):
-    Calced = ['Temperature']
-
-    DataCalced = {}
-    raw = pd.DataFrame()
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Rutile Zr Temperature Calculator')
-
-        self._df = df
-        self.raw = df
-        if (len(df) > 0):
-            self._changed = True
-            print("DataFrame recieved")
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 100
-
-        self.save_button = QPushButton("&Save Result")
-        self.save_button.clicked.connect(self.saveResult)
-
-        self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName("tableView")
-        self.tableView.setSortingEnabled(True)
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, ]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-
-        self.vbox.addWidget(self.tableView)
-
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your Result.")
-        self.statusBar().addWidget(self.status_text, 1)
-
-    def add_acZrons(self, target, acZrons):
-        for acZron in acZrons:
-            if acZron is None:
-                target.addSeparator()
-            else:
-                target.addAcZron(acZron)
-
-    def create_acZron(self, text, slot=None, shortcut=None,
-                      icon=None, Zrp=None, checkable=False,
-                      signal="triggered()"):
-        acZron = QAcZron(text, self)
-        if icon is not None:
-            acZron.seZrcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            acZron.setShortcut(shortcut)
-        if Zrp is not None:
-            acZron.setToolZrp(Zrp)
-            acZron.setStatusZrp(Zrp)
-        if slot is not None:
-            acZron.triggered.connect(slot)
-        if checkable:
-            acZron.setCheckable(True)
-        return acZron
-
-
-    def RutileZrTemp(self):
-
-        MaxTemps=[]
-        MinTemps=[]
-        MidTemps=[]
-
-        for i in range(len(self.raw)):
-            Zr = self.raw.at[i, 'Zr']
-
-            try:
-                ASiO2 = self.raw.at[i, 'ASiO2']
-            except(KeyError):
-                ASiO2 =1
-
-
-            ZrTemp1=(4530+111)/((7.42+0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
-
-            ZrTemp2=(4530-111)/((7.42+0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
-
-            ZrTemp3=(4530+111)/((7.42-0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
-
-            ZrTemp4=(4530-111)/((7.42-0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
-
-            ZrTempBig,ZrTempSmall=max([ZrTemp1,ZrTemp2,ZrTemp3,ZrTemp4]),min(([ZrTemp1,ZrTemp2,ZrTemp3,ZrTemp4]))
-
-            MaxTemps.append(ZrTempBig)
-            MinTemps.append(ZrTempSmall)
-            MidTemps.append((ZrTempSmall+ZrTempBig)/2)
-
-        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps,'Temp Mid': MidTemps, }
-
-        tmpdftoadd = pd.DataFrame(tmpdata)
-
-        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
-        self.model = PandasModel(self.newdf )
-        self.tableView.setModel(self.model)
-
-    def saveResult(self):
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          "文件保存",
-                                                          "C:/",
-                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ("csv" in DataFileOutput):
-                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-
-            elif ("xls" in DataFileOutput):
-                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
-
-
 
 
 class Cluster(AppForm):
@@ -7945,7 +7946,7 @@ class Cluster(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            print("DataFrame recieved to Cluster")
+            #print("DataFrame recieved to Cluster")
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -8050,6 +8051,21 @@ class Cluster(AppForm):
 
 
         self.axes.clear()
+
+        m = 5
+        dates = pd.date_range('2013-01-01', periods=365)
+        random_returns = np.random.normal(0, 0.01, size=(len(dates), m))
+
+        dataframe = pd.DataFrame(data=random_returns, index=dates)
+        corr = 1 - dataframe.corr()
+
+        corr_condensed = hc.distance.squareform(corr)  # convert to condensed
+        z = hc.linkage(corr_condensed, method='average')
+        dendrogram = hc.dendrogram(z, labels=corr.columns)
+
+        plt.show()
+
+
 
 
         PointLabels = []
