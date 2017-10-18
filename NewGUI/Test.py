@@ -4,9 +4,9 @@
 # Created by: PyQt5 UI code generator 5.8.1#
 # WARNING! All changes made in this file will be lost!
 
-version='0.4.4'
+version='0.4.7'
 
-date='2017-10-15'
+date='2017-10-18'
 
 sign="""
 created on Sat Dec 17 22:28:24 2016
@@ -47,6 +47,8 @@ from CustomClass import MudStone
 from CustomClass import Zircon
 from CustomClass import ZirconTiTemp
 from CustomClass import RutileZrTemp
+
+from CustomClass import Cluster
 
 
 from CustomClass import Magic
@@ -204,6 +206,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionRutileZrTemp = QtWidgets.QAction(MainWindow)
         self.actionRutileZrTemp.setObjectName("actionRutileZrTemp")
 
+        self.actionCluster = QtWidgets.QAction(MainWindow)
+        self.actionCluster.setObjectName("actionCluster")
 
         self.actionQAPF = QtWidgets.QAction(MainWindow)
         self.actionQAPF.setObjectName("actionQAPF")
@@ -241,6 +245,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuCalc.addAction(self.actionZirconCe)
         self.menuCalc.addAction(self.actionZirconTiTemp)
         self.menuCalc.addAction(self.actionRutileZrTemp)
+        self.menuCalc.addAction(self.actionCluster)
 
 
         self.menuMore.addAction(self.actionMudStone)
@@ -291,6 +296,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionZirconCe.triggered.connect(self.Zircon)
         self.actionZirconTiTemp.triggered.connect(self.ZirconTiTemp)
         self.actionRutileZrTemp.triggered.connect(self.RutileZrTemp)
+        self.actionCluster.triggered.connect(self.Cluster)
 
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
@@ -364,6 +370,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionZirconCe.setText(_translate("MainWindow", "ZirconCe"))
         self.actionZirconTiTemp.setText(_translate("MainWindow", "ZirconTiTemp"))
         self.actionRutileZrTemp.setText(_translate("MainWindow", "RutileZrTemp"))
+        self.actionCluster.setText(_translate("MainWindow", "Cluster"))
 
         self.actionXY.setText(_translate("MainWindow", "X-Y plot"))
         self.actionXYZ.setText(_translate("MainWindow", "X-Y-Z plot"))
@@ -482,6 +489,19 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.rzpop.show()
         except(KeyError):
             self.ErrorEvent()
+
+
+
+    def Cluster(self):
+
+        self.clusterpop = Cluster(df=self.model._df)
+        try:
+            self.clusterpop.Cluster()
+            self.clusterpop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
+
 
     def TAS(self):
 
@@ -630,25 +650,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
     def SetUpDataFile(self):
 
-        if self.model._changed == True:
-            print("changed")
-            print(self.model._df)
-
         flag = 0
         ItemsAvalibale = self.model._df.columns.values.tolist()
 
-        Len = self.model._df.index.values.tolist()
-
         ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
-
-        olddata = {'Label': ['group1', 'group2', 'group3', 'group4', 'group5'],
-                   'Marker': ['o', 's', 'd', '*', '^'],
-                   'Color': ['red', 'blue', 'black', 'green', 'yellow'],
-                   'Size': [10, 10, 10, 10, 10],
-                   'Alpha': [0.6, 0.6, 0.6, 0.6, 0.6],
-                   'Style': ['-', '--', ':', '--', '-'],
-                   'Width': [1, 1, 1, 1, 1 ]
-                   }
 
         LabelList = []
         MarkerList = []
@@ -657,6 +662,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         AlphaList = []
         StyleList = []
         WidthList = []
+
         for i in range(len(self.model._df)):
             LabelList.append('Group1')
             MarkerList.append('o')
@@ -676,15 +682,24 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         print('\n', data, '\n')
 
+
+
+
+
         for i in ItemsToTest:
             if i not in ItemsAvalibale:
                 print(i)
                 flag = flag + 1
-                tmpdata = {i: data[i]}
-                tmpdftoadd = pd.DataFrame(tmpdata)
+                tmpdftoadd = pd.DataFrame({i: data[i]})
 
-                print('\n', tmpdftoadd, '\n')
                 self.model._df = pd.concat([tmpdftoadd, self.model._df], axis=1)
+
+        #print(self.model._df)
+
+        self.model = PandasModel(self.model._df)
+
+        self.tableView.setModel(self.model)
+
 
         if flag == 0:
             reply = QMessageBox.warning(self, 'Ready',

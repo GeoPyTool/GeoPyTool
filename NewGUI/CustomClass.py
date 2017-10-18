@@ -14,6 +14,10 @@ plt.rcParams['pdf.fonttype'] = 'truetype'
 
 import pandas as pd
 import numpy as np
+
+from scipy.cluster.hierarchy import dendrogram, linkage
+
+
 from numpy import arange, sin, pi
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -548,18 +552,6 @@ class PandasModel(QtCore.QAbstractTableModel):
             except (IndexError,):
                 return QtCore.QVariant()
 
-    """
-    def data(self, index, role=QtCore.Qt.DisplayRole):
-        if role != QtCore.Qt.DisplayRole:
-            return QtCore.QVariant()
-
-        if not index.isValid():
-            return QtCore.QVariant()
-
-        return QtCore.QVariant(str(self._df.ix[index.row(), index.column()]))
-
-
-    """
 
     def data(self, index, role):
         if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
@@ -7670,7 +7662,7 @@ class ZirconTiTemp(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Zircon Ti Temperature Calculator)')
+        self.setWindowTitle('Zircon Ti Temperature Calculator')
 
         self._df = df
         self.raw = df
@@ -7803,7 +7795,7 @@ class RutileZrTemp(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Rutile Zr Temperature Calculator)')
+        self.setWindowTitle('Rutile Zr Temperature Calculator')
 
         self._df = df
         self.raw = df
@@ -7924,4 +7916,157 @@ class RutileZrTemp(AppForm):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
 
+
+
+class Cluster(AppForm):
+    Lines = []
+    Tags = []
+    description = "Cluster diagram"
+    unuseful = ['Name',
+                'Author',
+                'DataType',
+                'Label',
+                'Marker',
+                'Color',
+                'Size',
+                'Alpha',
+                'Style',
+                'Width',
+                'Tag']
+
+
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle("Cluster diagram")
+
+        self.items = []
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            print("DataFrame recieved to Cluster")
+
+        self.raw = df
+        self.rawitems = self.raw.columns.values.tolist()
+
+        for i in self.rawitems:
+            if i not in self.unuseful:
+                self.items.append(i)
+            else:
+                pass
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+
+
+        self.polygon = 0
+        self.polyline = 0
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # self.axes.hold(False)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton("&Reset")
+        self.draw_button.clicked.connect(self.Cluster)
+
+        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Cluster)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Cluster)  # int
+
+
+
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox1 = QHBoxLayout()
+        self.hbox2 = QHBoxLayout()
+        self.hbox3 = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button,
+                  self.legend_cb, self.slider_label, self.slider]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
+
+
+
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox1)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Read(self,inpoints):
+        points=[]
+        for i in inpoints:
+            points.append(i.split())
+
+        result=[]
+        for i in points:
+            for l in range(len(i)):
+                a=float((i[l].split(','))[0])
+                a= a*self.x_scale
+
+                b=float((i[l].split(','))[1])
+                b= (self.height_load-b)*self.y_scale
+
+                result.append((a,b))
+        return(result)
+
+
+
+    def Cluster(self):
+
+        self.WholeData = []
+
+
+        raw = self._df
+
+
+        self.axes.clear()
+
+
+        PointLabels = []
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            pass
+
+        self.canvas.draw()
 
