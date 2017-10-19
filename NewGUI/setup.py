@@ -3,8 +3,12 @@
 from distutils.core import setup
 import CustomClass
 
+import gpversion as gv
+
+version= gv.version
+
 setup(name='geopython',
-      version='0.4.9',
+      version=version,
       description='a tool set for daily geology related task.',
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',
@@ -17,5 +21,6 @@ setup(name='geopython',
                          "xlrd",
                          "matplotlib",
                          "BeautifulSoup4",
+                         "PyQt5",
                          ],
      )

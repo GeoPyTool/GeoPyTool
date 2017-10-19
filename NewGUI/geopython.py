@@ -4,24 +4,17 @@
 # Created by: PyQt5 UI code generator 5.8.1#
 # WARNING! All changes made in this file will be lost!
 
-import gpversion as gv
-
-version= gv.version
-
-date='2017-10-18'
-
-sign="""
+"""
 created on Sat Dec 17 22:28:24 2016
 @author: cycleuser
 # Create Date: 2015-07-13
-# Modify Date: 2017-10-15
+# Modify Date: 2017-08-31
 a tool set for daily geology related task.
 # prerequisite:
 #   based on Python 3.x
-#   need math,numpy,pandas,matplotlib,xlrd,pyqt5,BeautifulSoup4
+#   need math,numpy,pandas,matplotlib,xlrd,pyqt5
     Any issues or improvements please contact cycleuser@cycleuser.org
-    or Open An Issue at GitHub:https://github.com/chinageology/GeoPython/issues     
-    Website For Chinese Users：https://zhuanlan.zhihu.com/p/28908475
+    or leave a message to my blog: http://blog.cycleuser.org
 """
 
 from CustomClass import PandasModel
@@ -47,12 +40,6 @@ from CustomClass import QAPF
 from CustomClass import MudStone
 
 from CustomClass import Zircon
-from CustomClass import ZirconTiTemp
-from CustomClass import RutileZrTemp
-
-from CustomClass import Cluster
-
-
 from CustomClass import Magic
 
 from CustomClass import XY
@@ -88,7 +75,6 @@ from PyQt5.QtWidgets import (QWidget, QMessageBox, qApp, QShortcut, QLabel, QMai
 class Ui_MainWindow(QtWidgets.QWidget):
     # raw=0
     raw = pd.DataFrame(index=[], columns=[])  # raw is initialized as a blank dataframe
-
 
     def setupUi(self, MainWindow, ):
 
@@ -141,9 +127,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuCalc = QtWidgets.QMenu(self.menubar)
         self.menuCalc.setObjectName("menuCalc")
 
-        self.menuStat = QtWidgets.QMenu(self.menubar)
-        self.menuStat.setObjectName("menuStat")
-
         self.menuMore = QtWidgets.QMenu(self.menubar)
         self.menuMore.setObjectName("menuMore")
 
@@ -155,23 +138,19 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        self.actionOpen = QtWidgets.QAction(QIcon('Open.png'),'Open',MainWindow)
+        self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
         self.actionOpen.setShortcut('Ctrl+O')
 
-        self.actionSave = QtWidgets.QAction(QIcon('Save.png'),'Save',MainWindow)
+        self.actionSave = QtWidgets.QAction(MainWindow)
         self.actionSave.setObjectName("actionSave")
         self.actionSave.setShortcut('Ctrl+S')
 
-        self.actionCnWeb = QtWidgets.QAction(QIcon('ZhiHu.png'),'Zhihu',MainWindow)
-        self.actionCnWeb.setObjectName("actionCnWeb")
+        self.actionInstruction = QtWidgets.QAction(MainWindow)
+        self.actionInstruction.setObjectName("actionInstruction")
 
-        self.actionGoGithub = QtWidgets.QAction(QIcon('Website.png'),'GitHub',MainWindow)
-        self.actionGoGithub.setObjectName("actionGoGithub")
-
-
-        self.actionVersionCheck = QtWidgets.QAction(QIcon('Version.png'),'Version',MainWindow)
-        self.actionVersionCheck.setObjectName("actionVersionCheck")
+        self.actionWebsite = QtWidgets.QAction(MainWindow)
+        self.actionWebsite.setObjectName("actionWebsite")
 
         self.actionTAS = QtWidgets.QAction(MainWindow)
         self.actionTAS.setObjectName("actionTAS")
@@ -206,15 +185,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionZirconCe = QtWidgets.QAction(MainWindow)
         self.actionZirconCe.setObjectName("actionZirconCe")
 
-        self.actionZirconTiTemp = QtWidgets.QAction(MainWindow)
-        self.actionZirconTiTemp.setObjectName("actionZirconTiTemp")
-
-        self.actionRutileZrTemp = QtWidgets.QAction(MainWindow)
-        self.actionRutileZrTemp.setObjectName("actionRutileZrTemp")
-
-        self.actionCluster = QtWidgets.QAction(MainWindow)
-        self.actionCluster.setObjectName("actionCluster")
-
         self.actionQAPF = QtWidgets.QAction(MainWindow)
         self.actionQAPF.setObjectName("actionQAPF")
 
@@ -229,9 +199,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.actionMagic = QtWidgets.QAction(MainWindow)
         self.actionMagic.setObjectName("actionMagic")
-
-
-
 
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -249,15 +216,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.menuCalc.addAction(self.actionCIPW)
         self.menuCalc.addAction(self.actionZirconCe)
-        self.menuCalc.addAction(self.actionZirconTiTemp)
-        self.menuCalc.addAction(self.actionRutileZrTemp)
-
-
-
-
-
-        self.menuStat.addAction(self.actionCluster)
-
 
         self.menuMore.addAction(self.actionMudStone)
         self.menuMore.addAction(self.actionQAPF)
@@ -265,10 +223,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuMore.addAction(self.actionXYZ)
         self.menuMore.addAction(self.actionMagic)
 
-        self.menuHelp.addAction(self.actionCnWeb)
-        self.menuHelp.addAction(self.actionGoGithub)
-        self.menuHelp.addAction(self.actionVersionCheck)
-
+        self.menuHelp.addAction(self.actionInstruction)
+        self.menuHelp.addAction(self.actionWebsite)
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addSeparator()
@@ -280,9 +236,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menubar.addSeparator()
 
         self.menubar.addAction(self.menuCalc.menuAction())
-        self.menubar.addSeparator()
-
-        self.menubar.addAction(self.menuStat.menuAction())
         self.menubar.addSeparator()
 
         self.menubar.addAction(self.menuMore.menuAction())
@@ -308,18 +261,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.actionCIPW.triggered.connect(self.CIPW)
         self.actionZirconCe.triggered.connect(self.Zircon)
-        self.actionZirconTiTemp.triggered.connect(self.ZirconTiTemp)
-        self.actionRutileZrTemp.triggered.connect(self.RutileZrTemp)
-        self.actionCluster.triggered.connect(self.Cluster)
 
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
 
-
-
-        self.actionCnWeb.triggered.connect(self.goZhiHu)
-        self.actionGoGithub.triggered.connect(self.goGitHub)
-        self.actionVersionCheck.triggered.connect(self.checkVersion)
+        self.actionWebsite.triggered.connect(self.gowebsite)
 
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
@@ -345,12 +291,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonSort.setText(_translate("MainWindow", "Set"))
         self.pushButtonQuit.setText(_translate("MainWindow", "Quit"))
 
-
-        self.pushButtonOpen.setIcon(QtGui.QIcon('Open.png'))
-        self.pushButtonSave.setIcon(QtGui.QIcon('Save.png'))
-        self.pushButtonSort.setIcon(QtGui.QIcon('Set.png'))
-        self.pushButtonQuit.setIcon(QtGui.QIcon('Quit.png'))
-
         self.menuFile.setTitle(_translate("MainWindow", "Data File"))
 
         self.menuGeoChem.setTitle(_translate("MainWindow", "Geochemistry"))
@@ -358,8 +298,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuStructure.setTitle(_translate("MainWindow", "Structure"))
 
         self.menuCalc.setTitle(_translate("MainWindow", "Calculation"))
-
-        self.menuStat.setTitle(_translate("MainWindow", "Statistics"))
 
         self.menuMore.setTitle(_translate("MainWindow", "More Functions"))
 
@@ -384,9 +322,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionCIPW.setText(_translate("MainWindow", "CIPW"))
 
         self.actionZirconCe.setText(_translate("MainWindow", "ZirconCe"))
-        self.actionZirconTiTemp.setText(_translate("MainWindow", "ZirconTiTemp"))
-        self.actionRutileZrTemp.setText(_translate("MainWindow", "RutileZrTemp"))
-        self.actionCluster.setText(_translate("MainWindow", "Cluster"))
 
         self.actionXY.setText(_translate("MainWindow", "X-Y plot"))
         self.actionXYZ.setText(_translate("MainWindow", "X-Y-Z plot"))
@@ -395,9 +330,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.actionMudStone.setText(_translate("MainWindow", "Sand-Silt-Mud"))
 
-        self.actionCnWeb.setText(_translate("MainWindow", "CN Help"))
-        self.actionGoGithub.setText(_translate("MainWindow", "Github"))
-        self.actionVersionCheck.setText(_translate("MainWindow", "About"))
+        self.actionInstruction.setText(_translate("MainWindow", "Instruction"))
+        self.actionWebsite.setText(_translate("MainWindow", "Website"))
 
     def getfile(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
@@ -405,16 +339,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                                          "~/",
                                                          "All Files (*);;Text Files (*.txt)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-    def goGitHub(self):
+    def gowebsite(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/README.md')
-
-
-    def goZhiHu(self):
-        webbrowser.open('https://zhuanlan.zhihu.com/p/28908475?refer=python-kivy')
-
-    def checkVersion(self):
-        t= 'You are using GeoPython '+version +', released on'+ date+'\n'+sign
-        reply = QMessageBox.warning(self, 'Version',t)
 
     def getDataFile(self):
         DataFileInput, filetype = QFileDialog.getOpenFileName(self,
@@ -422,23 +348,50 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                                               "~/",
                                                               "Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-        # #print(DataFileInput,filetype)
+        # print(DataFileInput,filetype)
 
         if ("csv" in DataFileInput):
             self.raw = pd.read_csv(DataFileInput)
         elif ("xls" in DataFileInput):
             self.raw = pd.read_excel(DataFileInput)
-        # #print(self.raw)
+        # print(self.raw)
 
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
 
+        flag = 0
+        ItemsAvalibale = self.model._df.columns.values.tolist()
+        ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
+
+        ItemsToAdd = []
+
+        Sentecne = 'You need to add '
+
+        print(ItemsAvalibale, '\n', ItemsToTest)
+
+        for i in ItemsToTest:
+            if i not in ItemsAvalibale:
+                ItemsToAdd.append(i)
+                Sentecne = Sentecne + i + ', '
+                flag = flag + 1
+
+        Sentecne = Sentecne + " to your data, set up now?"
+
+        if flag != 0:
+
+            buttonReply = QMessageBox.question(self, 'Message', Sentecne, QMessageBox.Yes | QMessageBox.No,
+                                               QMessageBox.No)
+            if buttonReply == QMessageBox.Yes:
+                self.SetUpDataFile()
+            else:
+                reply = QMessageBox.warning(self, 'Warning',
+                                            "Data can't be used without setting up Label,Color,Size and so on.")
 
     def saveDataFile(self):
 
-        #if self.model._changed == True:
-            #print("changed")
-            #print(self.model._df)
+        if self.model._changed == True:
+            print("changed")
+            print(self.model._df)
 
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           "文件保存",
@@ -460,43 +413,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.cipwpop.show()
         except(KeyError):
             self.ErrorEvent()
-
-
-    def ZirconTiTemp(self):
-        self.ztpop = ZirconTiTemp(df=self.model._df)
-        try:
-            self.ztpop.ZirconTiTemp()
-            self.ztpop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
-
-    def RutileZrTemp(self):
-        self.rzpop = RutileZrTemp(df=self.model._df)
-        try:
-            self.rzpop.RutileZrTemp()
-            self.rzpop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
-
-
-    def Cluster(self):
-
-        self.clusterpop = Cluster(df=self.model._df)
-        self.clusterpop.Cluster()
-        self.clusterpop.show()
-
-
-
-        try:
-            self.clusterpop.Cluster()
-            self.clusterpop.show()
-        except(KeyError):
-            pass
-            #self.ErrorEvent()
-
-
 
     def TAS(self):
 
@@ -588,7 +504,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def Zircon(self):
-        #print("Opening a new popup window...")
+        print("Opening a new popup window...")
         self.zirconpop = Zircon(df=self.model._df)
         try:
             self.zirconpop.MultiBallard()
@@ -597,7 +513,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def XY(self):
-        #print("Opening a new popup window...")
+        print("Opening a new popup window...")
         # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
@@ -609,7 +525,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def XYZ(self):
-        #print("Opening a new popup window...")
+        print("Opening a new popup window...")
         # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
@@ -621,7 +537,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def Magic(self):
-        #print("Opening a new popup window...")
+        print("Opening a new popup window...")
         # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
@@ -640,47 +556,30 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
     def ErrorEvent(self):
 
-        reply = QMessageBox.warning(self, 'Warning', "Your Data mismatch this Plot.")
-
-
-        """
-        flag = 0
-        ItemsAvalibale = self.model._df.columns.values.tolist()
-        ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
-
-        ItemsToAdd = []
-
-        Sentecne = 'You need to add '
-
-        # print(ItemsAvalibale, '\n', ItemsToTest)
-
-        for i in ItemsToTest:
-            if i not in ItemsAvalibale:
-                ItemsToAdd.append(i)
-                Sentecne = Sentecne + i + ', '
-                flag = flag + 1
-
-        Sentecne = Sentecne + " to your data, set up now?"
-
-        if flag != 0:
-
-            buttonReply = QMessageBox.question(self, 'Message', Sentecne, QMessageBox.Yes | QMessageBox.No,
-                                               QMessageBox.No)
-            if buttonReply == QMessageBox.Yes:
-                self.SetUpDataFile()
-            else:
-                reply = QMessageBox.warning(self, 'Warning',
-                                            "Data can't be used without setting up Label,Color,Size and so on.")
-
-        """
-
+        reply = QMessageBox.warning(self, 'Warning',
+                                    "Your Data mismatch this Plot.")
 
     def SetUpDataFile(self):
 
+        if self.model._changed == True:
+            print("changed")
+            print(self.model._df)
+
         flag = 0
         ItemsAvalibale = self.model._df.columns.values.tolist()
 
+        Len = self.model._df.index.values.tolist()
+
         ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
+
+        olddata = {'Label': ['group1', 'group2', 'group3', 'group4', 'group5'],
+                   'Marker': ['o', 's', 'd', '*', '^'],
+                   'Color': ['red', 'blue', 'black', 'green', 'yellow'],
+                   'Size': ['10', '10', '10', '10', '10'],
+                   'Alpha': ['0.6', '0.6', '0.6', '0.6', '0.6'],
+                   'Style': ['-', '--', ':', '--', '-'],
+                   'Width': ['1', '1', '1', '1', '1']
+                   }
 
         LabelList = []
         MarkerList = []
@@ -689,15 +588,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
         AlphaList = []
         StyleList = []
         WidthList = []
-
         for i in range(len(self.model._df)):
             LabelList.append('Group1')
             MarkerList.append('o')
             ColorList.append('red')
-            SizeList.append(10)
-            AlphaList.append(0.6)
+            SizeList.append('10')
+            AlphaList.append('0.6')
             StyleList.append('-')
-            WidthList.append(1)
+            WidthList.append('1')
 
         data = {'Label': LabelList,
                 'Marker': MarkerList,
@@ -707,26 +605,17 @@ class Ui_MainWindow(QtWidgets.QWidget):
                 'Style': StyleList,
                 'Width': WidthList}
 
-        #print('\n', data, '\n')
-
-
-
-
+        print('\n', data, '\n')
 
         for i in ItemsToTest:
             if i not in ItemsAvalibale:
-                #print(i)
+                print(i)
                 flag = flag + 1
-                tmpdftoadd = pd.DataFrame({i: data[i]})
+                tmpdata = {i: data[i]}
+                tmpdftoadd = pd.DataFrame(tmpdata)
 
+                print('\n', tmpdftoadd, '\n')
                 self.model._df = pd.concat([tmpdftoadd, self.model._df], axis=1)
-
-        ##print(self.model._df)
-
-        self.model = PandasModel(self.model._df)
-
-        self.tableView.setModel(self.model)
-
 
         if flag == 0:
             reply = QMessageBox.warning(self, 'Ready',

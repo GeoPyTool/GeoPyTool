@@ -1480,6 +1480,28 @@ class AppForm(QMainWindow):
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
 
+
+    def saveDataFile(self):
+
+        #if self.model._changed == True:
+            #print("changed")
+            #print(self.model._df)
+
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          "文件保存",
+                                                          "C:/",
+                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ("csv" in DataFileOutput):
+                self.model._df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ("xls" in DataFileOutput):
+                self.model._df.to_excel(DataFileOutput, encoding='utf-8')
+
+
+
     def create_action(self, text, slot=None, shortcut=None,
                       icon=None, tip=None, checkable=False,
                       signal="triggered()"):
@@ -3991,7 +4013,7 @@ class CIPW(AppForm):
         self.dpi = 100
 
         self.save_button = QPushButton("&Save Result")
-        self.save_button.clicked.connect(self.saveResult)
+        self.save_button.clicked.connect(self.saveImgFile)
 
         self.qapf_button = QPushButton("&QAPF")
         self.qapf_button.clicked.connect(self.QAPF)
@@ -6645,30 +6667,29 @@ class RutileZrTemp(AppForm):
         self.status_text = QLabel("Click Save button to save your Result.")
         self.statusBar().addWidget(self.status_text, 1)
 
-    def add_acZrons(self, target, acZrons):
-        for acZron in acZrons:
-            if acZron is None:
+    def add_actions(self, target, actions):
+        for action in actions:
+            if action is None:
                 target.addSeparator()
             else:
-                target.addAcZron(acZron)
+                target.addAction(action)
 
-    def create_acZron(self, text, slot=None, shortcut=None,
-                      icon=None, Zrp=None, checkable=False,
+    def create_action(self, text, slot=None, shortcut=None,
+                      icon=None, tip=None, checkable=False,
                       signal="triggered()"):
-        acZron = QAcZron(text, self)
+        action = QAction(text, self)
         if icon is not None:
-            acZron.seZrcon(QIcon(":/%s.png" % icon))
+            action.setIcon(QIcon(":/%s.png" % icon))
         if shortcut is not None:
-            acZron.setShortcut(shortcut)
-        if Zrp is not None:
-            acZron.setToolZrp(Zrp)
-            acZron.setStatusZrp(Zrp)
+            action.setShortcut(shortcut)
+        if tip is not None:
+            action.setToolTip(tip)
+            action.setStatusTip(tip)
         if slot is not None:
-            acZron.triggered.connect(slot)
+            action.triggered.connect(slot)
         if checkable:
-            acZron.setCheckable(True)
-        return acZron
-
+            action.setCheckable(True)
+        return action
 
     def RutileZrTemp(self):
 
@@ -7939,7 +7960,7 @@ class Cluster(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle("Cluster diagram")
+        self.setWindowTitle("Cluster Data")
 
         self.items = []
 
@@ -7962,29 +7983,37 @@ class Cluster(AppForm):
 
 
 
-        self.polygon = 0
-        self.polyline = 0
 
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 100
         self.fig = Figure((5.0, 5.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
+        #self.canvas = FigureCanvas(self.fig)
+        #self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
         # self.axes.hold(False)
 
         # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        self.tableView = CustomQTableView(self.main_frame)
+        self.tableView.setObjectName("tableView")
+        self.tableView.setSortingEnabled(True)
+
+
+        #self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
         self.save_button = QPushButton("&Save")
-        self.save_button.clicked.connect(self.saveImgFile)
+        self.save_button.clicked.connect(self.saveDataFile)
 
-        self.draw_button = QPushButton("&Reset")
-        self.draw_button.clicked.connect(self.Cluster)
 
-        self.legend_cb = QCheckBox("&Legend")
+        #self.save_button.clicked.connect(self.saveImgFile)
+
+
+        self.draw_button = QPushButton("&Show")
+        self.draw_button.clicked.connect(self.Show)
+
+        self.legend_cb = QCheckBox("&Horizontal")
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Cluster)  # int
 
@@ -8002,23 +8031,23 @@ class Cluster(AppForm):
         #
         # Layout with box sizers
         #
-        self.hbox1 = QHBoxLayout()
-        self.hbox2 = QHBoxLayout()
-        self.hbox3 = QHBoxLayout()
+        self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button,
-                  self.legend_cb, self.slider_label, self.slider]:
-            self.hbox1.addWidget(w)
-            self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
+
+        for w in [self.save_button,self.draw_button]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
 
 
 
 
 
         self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox1)
+
+        self.vbox.addWidget(self.tableView)
+
+        self.vbox.addLayout(self.hbox)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -8044,45 +8073,59 @@ class Cluster(AppForm):
 
     def Cluster(self):
 
+
+
+
+        if (self.legend_cb.isChecked()):
+            self.legend_cb.setText("&Horizontal")
+        else:
+            self.legend_cb.setText("&Vertical")
+
         self.WholeData = []
-
-
-        raw = self._df
-
 
         self.axes.clear()
 
-        m = 5
-        dates = pd.date_range('2013-01-01', periods=365)
-        random_returns = np.random.normal(0, 0.01, size=(len(dates), m))
-
-        dataframe = pd.DataFrame(data=random_returns, index=dates)
-        corr = 1 - dataframe.corr()
-
-        corr_condensed = hc.distance.squareform(corr)  # convert to condensed
-        z = hc.linkage(corr_condensed, method='average')
-        dendrogram = hc.dendrogram(z, labels=corr.columns)
-
-        plt.show()
 
 
 
+        dataframe= self._df
+
+        ItemsAvalibale = self._df.columns.values.tolist()
+
+        ItemsToTest = ['Number','Tag','Name','Author','DataType','Label','Marker','Color','Size','Alpha','Style','Width']
+
+        for i in ItemsToTest:
+            if i in ItemsAvalibale:
+                dataframe = dataframe.drop(i, 1)
+
+
+        self._df= dataframe
+
+        self.model = PandasModel(self._df)
+        self.tableView.setModel(self.model)
 
         PointLabels = []
 
-        for i in range(len(raw)):
-            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
 
-            TmpLabel = ''
+        #self.canvas.draw()
 
-            #   self.WholeData.append(math.log(tmp, 10))
+    def Show(self):
+        dataframe= self._df
+        corr = 1 - dataframe.corr()
 
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                TmpLabel = ''
-            else:
-                PointLabels.append(raw.at[i, 'Label'])
-                TmpLabel = raw.at[i, 'Label']
+        try:
+            corr_condensed = hc.distance.squareform(corr)  # convert to condensed
+
+            z = hc.linkage(corr_condensed, method='average')
+
+            dendrogram = hc.dendrogram(abs(z), labels=corr.columns)
+
+            plt.title('Cluster Diagram')
+            plt.show()
+
+        except(ValueError):
+            reply = QMessageBox.warning(self, 'Value Error',"Check Your Data and make sure it contains only numerical values.")
             pass
 
-        self.canvas.draw()
+
 

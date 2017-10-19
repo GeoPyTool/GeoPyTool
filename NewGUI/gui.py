@@ -4,7 +4,9 @@
 # Created by: PyQt5 UI code generator 5.8.1#
 # WARNING! All changes made in this file will be lost!
 
-version='0.4.8'
+import gpversion as gv
+
+version= gv.version
 
 date='2017-10-18'
 
@@ -87,6 +89,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
     # raw=0
     raw = pd.DataFrame(index=[], columns=[])  # raw is initialized as a blank dataframe
 
+
     def setupUi(self, MainWindow, ):
 
         MainWindow.setObjectName("MainWindow")
@@ -137,6 +140,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.menuCalc = QtWidgets.QMenu(self.menubar)
         self.menuCalc.setObjectName("menuCalc")
+
+        self.menuStat = QtWidgets.QMenu(self.menubar)
+        self.menuStat.setObjectName("menuStat")
 
         self.menuMore = QtWidgets.QMenu(self.menubar)
         self.menuMore.setObjectName("menuMore")
@@ -245,7 +251,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuCalc.addAction(self.actionZirconCe)
         self.menuCalc.addAction(self.actionZirconTiTemp)
         self.menuCalc.addAction(self.actionRutileZrTemp)
-        self.menuCalc.addAction(self.actionCluster)
+
+
+
+
+
+        self.menuStat.addAction(self.actionCluster)
 
 
         self.menuMore.addAction(self.actionMudStone)
@@ -269,6 +280,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menubar.addSeparator()
 
         self.menubar.addAction(self.menuCalc.menuAction())
+        self.menubar.addSeparator()
+
+        self.menubar.addAction(self.menuStat.menuAction())
         self.menubar.addSeparator()
 
         self.menubar.addAction(self.menuMore.menuAction())
@@ -345,6 +359,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.menuCalc.setTitle(_translate("MainWindow", "Calculation"))
 
+        self.menuStat.setTitle(_translate("MainWindow", "Statistics"))
+
         self.menuMore.setTitle(_translate("MainWindow", "More Functions"))
 
         self.menuHelp.setTitle(_translate("MainWindow", "Get Help"))
@@ -417,33 +433,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
 
-        flag = 0
-        ItemsAvalibale = self.model._df.columns.values.tolist()
-        ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
-
-        ItemsToAdd = []
-
-        Sentecne = 'You need to add '
-
-        #print(ItemsAvalibale, '\n', ItemsToTest)
-
-        for i in ItemsToTest:
-            if i not in ItemsAvalibale:
-                ItemsToAdd.append(i)
-                Sentecne = Sentecne + i + ', '
-                flag = flag + 1
-
-        Sentecne = Sentecne + " to your data, set up now?"
-
-        if flag != 0:
-
-            buttonReply = QMessageBox.question(self, 'Message', Sentecne, QMessageBox.Yes | QMessageBox.No,
-                                               QMessageBox.No)
-            if buttonReply == QMessageBox.Yes:
-                self.SetUpDataFile()
-            else:
-                reply = QMessageBox.warning(self, 'Warning',
-                                            "Data can't be used without setting up Label,Color,Size and so on.")
 
     def saveDataFile(self):
 
@@ -495,11 +484,17 @@ class Ui_MainWindow(QtWidgets.QWidget):
     def Cluster(self):
 
         self.clusterpop = Cluster(df=self.model._df)
+        self.clusterpop.Cluster()
+        self.clusterpop.show()
+
+
+
         try:
             self.clusterpop.Cluster()
             self.clusterpop.show()
         except(KeyError):
-            self.ErrorEvent()
+            pass
+            #self.ErrorEvent()
 
 
 
@@ -645,8 +640,40 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
     def ErrorEvent(self):
 
-        reply = QMessageBox.warning(self, 'Warning',
-                                    "Your Data mismatch this Plot.")
+        reply = QMessageBox.warning(self, 'Warning', "Your Data mismatch this Plot.")
+
+
+        """
+        flag = 0
+        ItemsAvalibale = self.model._df.columns.values.tolist()
+        ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
+
+        ItemsToAdd = []
+
+        Sentecne = 'You need to add '
+
+        # print(ItemsAvalibale, '\n', ItemsToTest)
+
+        for i in ItemsToTest:
+            if i not in ItemsAvalibale:
+                ItemsToAdd.append(i)
+                Sentecne = Sentecne + i + ', '
+                flag = flag + 1
+
+        Sentecne = Sentecne + " to your data, set up now?"
+
+        if flag != 0:
+
+            buttonReply = QMessageBox.question(self, 'Message', Sentecne, QMessageBox.Yes | QMessageBox.No,
+                                               QMessageBox.No)
+            if buttonReply == QMessageBox.Yes:
+                self.SetUpDataFile()
+            else:
+                reply = QMessageBox.warning(self, 'Warning',
+                                            "Data can't be used without setting up Label,Color,Size and so on.")
+
+        """
+
 
     def SetUpDataFile(self):
 
