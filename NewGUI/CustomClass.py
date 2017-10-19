@@ -9,11 +9,17 @@ from bs4 import BeautifulSoup
 matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
 
+import matplotlib.image as mpimg
+
 plt.rcParams['svg.fonttype'] = 'none'
 plt.rcParams['pdf.fonttype'] = 'truetype'
 
 import pandas as pd
 import numpy as np
+
+
+
+
 from scipy.cluster import hierarchy as hc
 from scipy.cluster.hierarchy import dendrogram, linkage
 
@@ -6743,7 +6749,192 @@ class RutileZrTemp(AppForm):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
 
+class Cluster(AppForm):
+    Lines = []
+    Tags = []
+    description = "Cluster diagram"
+    unuseful = ['Name',
+                'Author',
+                'DataType',
+                'Label',
+                'Marker',
+                'Color',
+                'Size',
+                'Alpha',
+                'Style',
+                'Width',
+                'Tag']
 
+
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle("Cluster Data")
+
+        self.items = []
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            #print("DataFrame recieved to Cluster")
+
+        self.raw = df
+        self.rawitems = self.raw.columns.values.tolist()
+
+        for i in self.rawitems:
+            if i not in self.unuseful:
+                self.items.append(i)
+            else:
+                pass
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+
+
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 100
+        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
+        #self.canvas = FigureCanvas(self.fig)
+        #self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # self.axes.hold(False)
+
+        # Create the navigation toolbar, tied to the canvas
+
+        self.tableView = CustomQTableView(self.main_frame)
+        self.tableView.setObjectName("tableView")
+        self.tableView.setSortingEnabled(True)
+
+
+        #self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton("&Save")
+        self.save_button.clicked.connect(self.saveDataFile)
+
+
+        #self.save_button.clicked.connect(self.saveImgFile)
+
+
+        self.draw_button = QPushButton("&Show")
+        self.draw_button.clicked.connect(self.Show)
+
+        self.legend_cb = QCheckBox("&Horizontal")
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Cluster)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Cluster)  # int
+
+
+
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+
+
+        for w in [self.save_button,self.draw_button]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+
+
+
+
+        self.vbox = QVBoxLayout()
+
+        self.vbox.addWidget(self.tableView)
+
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Read(self,inpoints):
+        points=[]
+        for i in inpoints:
+            points.append(i.split())
+
+        result=[]
+        for i in points:
+            for l in range(len(i)):
+                a=float((i[l].split(','))[0])
+                a= a*self.x_scale
+
+                b=float((i[l].split(','))[1])
+                b= (self.height_load-b)*self.y_scale
+
+                result.append((a,b))
+        return(result)
+
+
+
+    def Cluster(self):
+
+
+
+
+        if (self.legend_cb.isChecked()):
+            self.legend_cb.setText("&Horizontal")
+        else:
+            self.legend_cb.setText("&Vertical")
+
+        self.WholeData = []
+
+        self.axes.clear()
+
+
+
+
+        dataframe= self._df
+
+        ItemsAvalibale = self._df.columns.values.tolist()
+
+        ItemsToTest = ['Number','Tag','Name','Author','DataType','Label','Marker','Color','Size','Alpha','Style','Width']
+
+        for i in ItemsToTest:
+            if i in ItemsAvalibale:
+                dataframe = dataframe.drop(i, 1)
+
+
+        self._df= dataframe
+
+        self.model = PandasModel(self._df)
+        self.tableView.setModel(self.model)
+
+        PointLabels = []
+
+
+        #self.canvas.draw()
+
+    def Show(self):
+        dataframe= self._df
+        corr = 1 - dataframe.corr()
+
+        try:
+            corr_condensed = hc.distance.squareform(corr)  # convert to condensed
+
+            z = hc.linkage(corr_condensed, method='average')
+
+            dendrogram = hc.dendrogram(abs(z), labels=corr.columns)
+
+            plt.title('Cluster Diagram')
+            plt.show()
+
+        except(ValueError):
+            reply = QMessageBox.warning(self, 'Value Error',"Check Your Data and make sure it contains only numerical values.")
+            pass
 
 
 class Magic(AppForm):
@@ -7148,6 +7339,8 @@ class XY(AppForm):
         self.polygon = 0
         self.polyline = 0
 
+        self.flag=0
+
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 100
@@ -7285,106 +7478,96 @@ class XY(AppForm):
         fileName, filetype = QFileDialog.getOpenFileName(self,
                                                          "选取文件",
                                                          "~/",
-                                                         "SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         "PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-        # #print(fileName)
-
-
-
-
-        doc = minidom.parse(fileName)  # parseString also exists
-        polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
-        polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
-
-        svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
-        svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
-
-        #print(svg_width)
-        #print(svg_height)
-
-        digit = '01234567890.-'
-        width = svg_width[0].replace('px', '').replace('pt', '')
-        height = svg_height[0].replace('px', '').replace('pt', '')
+        print(fileName,'\t',filetype)
 
 
 
 
-        self.width_load=float(width)
-        self.height_load=float(height)
+        if ("svg" in fileName):
+            doc = minidom.parse(fileName)  # parseString also exists
+            polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
+            polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
+
+            svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
+            svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
+
+            # print(svg_width)
+            # print(svg_height)
+
+            digit = '01234567890.-'
+            width = svg_width[0].replace('px', '').replace('pt', '')
+            height = svg_height[0].replace('px', '').replace('pt', '')
+
+            self.width_load = float(width)
+            self.height_load = float(height)
+
+            soup = BeautifulSoup(open(fileName), "lxml")
+
+            tmpgon = soup.find_all('polygon')
+            tmppolyline = soup.find_all('polyline')
+            tmptext = soup.find_all('text')
+            tmpline = soup.find_all('line')
+
+            tmppath = soup.find_all('path')
+
+            self.strgons = []
+            for i in tmpgon:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, "lxml")
+                k = m.polygon.attrs
+                self.strgons.append(k['points'].split())
+
+            self.strpolylines = []
+            for i in tmppolyline:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, "lxml")
+                k = m.polyline.attrs
+                self.strpolylines.append(k['points'].split())
+
+            self.strlines = []
+            for i in tmpline:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, "lxml")
+                k = m.line.attrs
+                a = str(k['x1']) + ',' + str(k['y1']) + ' ' + str(k['x2']) + ',' + str(k['y2'])
+                self.strlines.append(a.split())
+
+            self.strpath = []
+            for i in tmppath:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, "lxml")
+                k = m.path.attrs
+                self.strpath.append(k['d'].split())
+
+            # print(self.strpath)
 
 
 
-        soup = BeautifulSoup(open(fileName), "lxml")
+            self.polygon = []
+            for i in self.strgons:
+                m = self.Read(i)
+                m.append(m[0])
+                self.polygon.append(m)
 
-        tmpgon=soup.find_all('polygon')
-        tmppolyline=soup.find_all('polyline')
-        tmptext=soup.find_all('text')
-        tmpline = soup.find_all('line')
+            self.polyline = []
+            for i in self.strpolylines:
+                m = self.Read(i)
+                # print('i: ',i,'\n m:',m)
+                self.polyline.append(m)
 
-
-        tmppath = soup.find_all('path')
-
-        self.strgons = []
-        for i in tmpgon:
-            a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, "lxml")
-            k = m.polygon.attrs
-            self.strgons.append(k['points'].split())
-
-
-
-        self.strpolylines = []
-        for i in tmppolyline:
-            a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, "lxml")
-            k = m.polyline.attrs
-            self.strpolylines.append(k['points'].split())
+            self.line = []
+            for i in self.strlines:
+                m = self.Read(i)
+                # print('i: ',i,'\n m:',m)
+                self.line.append(m)
 
 
+        elif ("png" in fileName or "jpg" in fileName):
 
-
-        self.strlines = []
-        for i in tmpline:
-            a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, "lxml")
-            k = m.line.attrs
-            a=str(k['x1'])+','+str(k['y1'])+' '+str(k['x2'])+','+str(k['y2'])
-            self.strlines.append(a.split())
-
-
-
-        self.strpath = []
-        for i in tmppath:
-            a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, "lxml")
-            k = m.path.attrs
-            self.strpath.append(k['d'].split())
-
-
-        #print(self.strpath)
-
-
-
-        self.polygon=[]
-        for i in self.strgons:
-            m =  self.Read(i)
-            m.append(m[0])
-            self.polygon.append(m)
-
-        self.polyline=[]
-        for i in self.strpolylines:
-            m =  self.Read(i)
-            #print('i: ',i,'\n m:',m)
-            self.polyline.append(m)
-
-        self.line=[]
-        for i in self.strlines:
-            m =  self.Read(i)
-            #print('i: ',i,'\n m:',m)
-            self.line.append(m)
-
-
-
+            self.img = mpimg.imread(fileName)
+            self.flag=1
 
 
 
@@ -7496,6 +7679,9 @@ class XY(AppForm):
 
         self.axes.clear()
 
+        if self.flag!=0:
+            self.axes.imshow(self.img)
+
         self.axes.set_xlabel(self.items[a])
         self.x_element_label.setText(self.items[a])
 
@@ -7586,7 +7772,7 @@ class XYZ(AppForm):
     polygon = []
     polyline = []
     line=[]
-
+    flag=0
 
     strgons = []
     strlines = []
@@ -7749,109 +7935,99 @@ class XYZ(AppForm):
         fileName, filetype = QFileDialog.getOpenFileName(self,
                                                          "选取文件",
                                                          "~/",
-                                                         "SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         "PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
 
-        # #print(fileName)
-
-        doc = minidom.parse(fileName)  # parseString also exists
-        polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
-        polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
-
-        svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
-        svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
-
-        #print(svg_width)
-        #print(svg_height)
-
-        digit = '01234567890.-'
-        width = svg_width[0].replace('px', '').replace('pt', '')
-        height = svg_height[0].replace('px', '').replace('pt', '')
-
-        '''
-        width=''
-        for letter in svg_width[0]:
-            if letter in digit:
-                width = width + letter
-
-        #print(width)
-
-
-
-        height=''
-        for letter in svg_height[0]:
-            if letter in digit:
-                height = height + letter
-
-        #print(height)
-        '''
-
-
-        self.width_load=float(width)
-        self.height_load=float(height)
-
-        self.x_scale = 100.0 / float(width)
-        self.y_scale = 50.0 * math.sqrt(3) / float(height)
-
-        #print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
-
-        soup = BeautifulSoup(open(fileName), "lxml")
-
-        tmpgon=soup.find_all('polygon')
-        tmpline=soup.find_all('polyline')
-        tmptext=soup.find_all('text')
-
-        strgons = []
-        for i in tmpgon:
-            a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, "lxml")
-            k = m.polygon.attrs
-            strgons.append(k['points'].split())
-        gons=[]
-        for i in strgons:
-            m =  self.Read(i)
-            m.append(m[0])
-            gons.append(m)
-
-
-        strlines = []
-        for i in tmpline:
-            a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, "lxml")
-            k = m.polyline.attrs
-            strlines.append(k['points'].split())
-        lines=[]
-        for i in strlines:
-            m =  self.Read(i)
-            #print('i: ',i,'\n m:',m)
-            lines.append(m)
+        print(fileName,'\t',filetype)
 
 
 
 
-        self.polygon = gons
-        self.polyline = lines
+        if ("svg" in fileName):
+            doc = minidom.parse(fileName)  # parseString also exists
+            polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
+            polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
 
-        #print(self.polygon,'\n',self.polyline)
+            svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
+            svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
+
+            # print(svg_width)
+            # print(svg_height)
+
+            digit = '01234567890.-'
+            width = svg_width[0].replace('px', '').replace('pt', '')
+            height = svg_height[0].replace('px', '').replace('pt', '')
+
+            '''
+            width=''
+            for letter in svg_width[0]:
+                if letter in digit:
+                    width = width + letter
+
+            #print(width)
+
+
+
+            height=''
+            for letter in svg_height[0]:
+                if letter in digit:
+                    height = height + letter
+
+            #print(height)
+            '''
+
+            self.width_load = float(width)
+            self.height_load = float(height)
+
+            self.x_scale = 100.0 / float(width)
+            self.y_scale = 50.0 * math.sqrt(3) / float(height)
+
+            # print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
+
+            soup = BeautifulSoup(open(fileName), "lxml")
+
+            tmpgon = soup.find_all('polygon')
+            tmpline = soup.find_all('polyline')
+            tmptext = soup.find_all('text')
+
+            strgons = []
+            for i in tmpgon:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, "lxml")
+                k = m.polygon.attrs
+                strgons.append(k['points'].split())
+            gons = []
+            for i in strgons:
+                m = self.Read(i)
+                m.append(m[0])
+                gons.append(m)
+
+            strlines = []
+            for i in tmpline:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, "lxml")
+                k = m.polyline.attrs
+                strlines.append(k['points'].split())
+            lines = []
+            for i in strlines:
+                m = self.Read(i)
+                # print('i: ',i,'\n m:',m)
+                lines.append(m)
+
+            self.polygon = gons
+            self.polyline = lines
+
+            # print(self.polygon,'\n',self.polyline)
+
+
+        elif ("png" in fileName or "jpg" in fileName):
+
+            self.img = mpimg.imread(fileName)
+            self.flag=1
+
+
 
 
         self.Magic()
-
-
-
-    # text_location= [path.getAttribute('transform') for path in doc.getElementsByTagName('text')]
-    '''
-    tmppolygon_points=[]
-    for i in polygon_points:
-        tmppolygon_points.append(i.split())
-
-    polygon=[]
-    for i in tmppolygon_points:
-        for l in range(len(i)):
-            a=float((i[l].split(','))[0])
-            b=float((i[l].split(','))[1])
-
-            polygon.append([a,b])
-    '''
 
 
 
@@ -7869,7 +8045,8 @@ class XYZ(AppForm):
 
         self.axes.clear()
 
-
+        if self.flag!=0:
+            self.axes.imshow(self.img)
         self.x_element_label.setText(self.items[a])
         self.y_element_label.setText(self.items[b])
         self.z_element_label.setText(self.items[c])
@@ -7938,194 +8115,5 @@ class XYZ(AppForm):
             #self.DrawLine(self.polyline)
 
         self.canvas.draw()
-
-
-class Cluster(AppForm):
-    Lines = []
-    Tags = []
-    description = "Cluster diagram"
-    unuseful = ['Name',
-                'Author',
-                'DataType',
-                'Label',
-                'Marker',
-                'Color',
-                'Size',
-                'Alpha',
-                'Style',
-                'Width',
-                'Tag']
-
-
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle("Cluster Data")
-
-        self.items = []
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            #print("DataFrame recieved to Cluster")
-
-        self.raw = df
-        self.rawitems = self.raw.columns.values.tolist()
-
-        for i in self.rawitems:
-            if i not in self.unuseful:
-                self.items.append(i)
-            else:
-                pass
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-
-
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 100
-        self.fig = Figure((5.0, 5.0), dpi=self.dpi)
-        #self.canvas = FigureCanvas(self.fig)
-        #self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        # self.axes.hold(False)
-
-        # Create the navigation toolbar, tied to the canvas
-
-        self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName("tableView")
-        self.tableView.setSortingEnabled(True)
-
-
-        #self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton("&Save")
-        self.save_button.clicked.connect(self.saveDataFile)
-
-
-        #self.save_button.clicked.connect(self.saveImgFile)
-
-
-        self.draw_button = QPushButton("&Show")
-        self.draw_button.clicked.connect(self.Show)
-
-        self.legend_cb = QCheckBox("&Horizontal")
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Cluster)  # int
-
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Cluster)  # int
-
-
-
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-
-
-        for w in [self.save_button,self.draw_button]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-
-
-
-
-        self.vbox = QVBoxLayout()
-
-        self.vbox.addWidget(self.tableView)
-
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def Read(self,inpoints):
-        points=[]
-        for i in inpoints:
-            points.append(i.split())
-
-        result=[]
-        for i in points:
-            for l in range(len(i)):
-                a=float((i[l].split(','))[0])
-                a= a*self.x_scale
-
-                b=float((i[l].split(','))[1])
-                b= (self.height_load-b)*self.y_scale
-
-                result.append((a,b))
-        return(result)
-
-
-
-    def Cluster(self):
-
-
-
-
-        if (self.legend_cb.isChecked()):
-            self.legend_cb.setText("&Horizontal")
-        else:
-            self.legend_cb.setText("&Vertical")
-
-        self.WholeData = []
-
-        self.axes.clear()
-
-
-
-
-        dataframe= self._df
-
-        ItemsAvalibale = self._df.columns.values.tolist()
-
-        ItemsToTest = ['Number','Tag','Name','Author','DataType','Label','Marker','Color','Size','Alpha','Style','Width']
-
-        for i in ItemsToTest:
-            if i in ItemsAvalibale:
-                dataframe = dataframe.drop(i, 1)
-
-
-        self._df= dataframe
-
-        self.model = PandasModel(self._df)
-        self.tableView.setModel(self.model)
-
-        PointLabels = []
-
-
-        #self.canvas.draw()
-
-    def Show(self):
-        dataframe= self._df
-        corr = 1 - dataframe.corr()
-
-        try:
-            corr_condensed = hc.distance.squareform(corr)  # convert to condensed
-
-            z = hc.linkage(corr_condensed, method='average')
-
-            dendrogram = hc.dendrogram(abs(z), labels=corr.columns)
-
-            plt.title('Cluster Diagram')
-            plt.show()
-
-        except(ValueError):
-            reply = QMessageBox.warning(self, 'Value Error',"Check Your Data and make sure it contains only numerical values.")
-            pass
-
 
 

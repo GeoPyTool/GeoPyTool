@@ -147,6 +147,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuMore = QtWidgets.QMenu(self.menubar)
         self.menuMore.setObjectName("menuMore")
 
+
+        self.menuTest = QtWidgets.QMenu(self.menubar)
+        self.menuTest.setObjectName("menuTest")
+
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
 
@@ -261,9 +265,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.menuMore.addAction(self.actionMudStone)
         self.menuMore.addAction(self.actionQAPF)
-        self.menuMore.addAction(self.actionXY)
-        self.menuMore.addAction(self.actionXYZ)
-        self.menuMore.addAction(self.actionMagic)
+
+
+
+        self.menuTest.addAction(self.actionXY)
+        self.menuTest.addAction(self.actionXYZ)
+        self.menuTest.addAction(self.actionMagic)
 
         self.menuHelp.addAction(self.actionCnWeb)
         self.menuHelp.addAction(self.actionGoGithub)
@@ -286,6 +293,9 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menubar.addSeparator()
 
         self.menubar.addAction(self.menuMore.menuAction())
+        self.menubar.addSeparator()
+
+        self.menubar.addAction(self.menuTest.menuAction())
         self.menubar.addSeparator()
 
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -361,9 +371,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.menuStat.setTitle(_translate("MainWindow", "Statistics"))
 
-        self.menuMore.setTitle(_translate("MainWindow", "More Functions"))
+        self.menuMore.setTitle(_translate("MainWindow", "Others"))
 
-        self.menuHelp.setTitle(_translate("MainWindow", "Get Help"))
+        self.menuTest.setTitle(_translate("MainWindow", "Testing"))
+
+        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
 
         self.actionOpen.setText(_translate("MainWindow", "Open Data"))
         self.actionSave.setText(_translate("MainWindow", "Save Data"))
@@ -391,13 +403,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionXY.setText(_translate("MainWindow", "X-Y plot"))
         self.actionXYZ.setText(_translate("MainWindow", "X-Y-Z plot"))
 
-        self.actionMagic.setText(_translate("MainWindow", "Testing Functions"))
+        self.actionMagic.setText(_translate("MainWindow", "Magic"))
 
         self.actionMudStone.setText(_translate("MainWindow", "Sand-Silt-Mud"))
 
+        self.actionVersionCheck.setText(_translate("MainWindow", "About"))
         self.actionCnWeb.setText(_translate("MainWindow", "CN Help"))
         self.actionGoGithub.setText(_translate("MainWindow", "Github"))
-        self.actionVersionCheck.setText(_translate("MainWindow", "About"))
+
 
     def getfile(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
