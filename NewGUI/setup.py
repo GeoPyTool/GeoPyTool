@@ -3,9 +3,7 @@
 from distutils.core import setup
 import CustomClass
 
-import gpversion as gv
-
-version= gv.version
+version='0.5.2'
 
 setup(name='geopython',
       version=version,

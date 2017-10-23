@@ -4,9 +4,7 @@
 # Created by: PyQt5 UI code generator 5.8.1#
 # WARNING! All changes made in this file will be lost!
 
-import gpversion as gv
-
-version= gv.version
+version='0.5.2'
 
 date='2017-10-18'
 
