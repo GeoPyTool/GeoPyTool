@@ -4,9 +4,10 @@
 # Created by: PyQt5 UI code generator 5.8.1#
 # WARNING! All changes made in this file will be lost!
 
-version='0.5.2'
+import CustomClass
+version=CustomClass.version
 
-date='2017-10-18'
+date=CustomClass.date
 
 sign="""
 created on Sat Dec 17 22:28:24 2016

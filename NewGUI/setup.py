@@ -2,8 +2,9 @@
 
 from distutils.core import setup
 import CustomClass
+version=CustomClass.version
 
-version='0.5.2'
+date=CustomClass.date
 
 setup(name='geopython',
       version=version,

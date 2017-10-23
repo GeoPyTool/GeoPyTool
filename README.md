@@ -26,6 +26,7 @@ Category: Python
 |NewGUI|2017-07-23 12:30|GUI Powered By PyQt5|
 |All Rebuild|2017-08-31 23:30|Harker Back|
 |Temp Calc|2017-10-17 20:48:21|Zircon/Rutile|
+|Load PNG/JPG/SVG|2017-10-23  17:38:21|Load Base Maps|
 
 ## Introduction
 
@@ -69,9 +70,10 @@ Git is also needed to be used in installation of Python-Quantities.
 After installation of Python, you can use the following commands in your terminal to install GeoPython:
 
 ```Bash
-pip install cython numpy matplotlib pandas xlrd BeautifulSoup4 scipy scikit-learn sympy pyqt5
+pip install matplotlib==2.0.0
+pip install cython numpy pandas xlrd BeautifulSoup4 scipy scikit-learn sympy pyqt5
 
-pip install --upgrade geopython --no-cache-dir
+pip install geopython --no-cache-dir
 ```
 
 If there comes no error message, everything should have been done successfully.
@@ -155,7 +157,7 @@ The New StereoNet Projection and the RoseMap function need Data template file na
 
 ![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/Rose.png)
 
-
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/LoadPNG.png)
 
 ## Legacy Usage Under Windows
 

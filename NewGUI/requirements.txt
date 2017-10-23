@@ -5,5 +5,5 @@ cython==0.25.2
 numpy==1.13.3
 pandas==0.20.3
 xlrd==1.0.0
-matplotlib==2.0.1
+matplotlib==2.0.0
 BeautifulSoup4==4.5.1
