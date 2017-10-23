@@ -15,9 +15,13 @@ Category: Python
 # GeoPython exe for Windows:
 [Baidu Download](http://pan.baidu.com/s/1hsenKUC)
 
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqZXZqRENESUtoRVU)
+
 
 
 
 # GeoPython app for macOS:
 [Baidu Download](http://pan.baidu.com/s/1nvKGRQp)
+
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqTXZvQWpUWG9XR0U)
 
