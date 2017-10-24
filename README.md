@@ -50,9 +50,7 @@ Git is also needed to be used in installation of Python-Quantities.
 ##### Useful links for Windows users to install GeoPython with PIP:
 
 ###### 32bit Python 3.4 for XP user:
-Windows XP seems to be only supported by the version of 3.4, so please download  [File in this link](https://www.python.org/ftp/python/3.4.4/python-3.4.4.msi) to install Python 3.4 on your operating system.
-
-To install Cython and other modules on XP, you also need to download and install [C compiler form this link](http://landinghub.visualstudio.com/visual-cpp-build-tools). To install this compiler, you may also be required to install [.net framework](.net framework). So just upgrade to a new version of operating system please. Your life time is precious and there is no need to waste them on XP.
+Windows XP seems to be only supported by the version of 3.4, so please download  [File in this link](https://www.python.org/ftp/python/3.4.4/python-3.4.4.msi) to install Python 3.4 on your operating system. Then to install Cython and other modules on XP, you also need to download and install [C compiler form this link](http://landinghub.visualstudio.com/visual-cpp-build-tools). Yet, according to [steps shared by other guys](https://stackoverflow.com/questions/26473854/python-pip-has-issues-with-path-for-ms-visual-studio-2010-express-for-64-bit-ins), this is just a begainning of a nightmare, and to install this compiler you are also required to install [.net framework](.net framework). So just upgrade to a new version of operating system please. Your life time is precious and there is no need to waste them on XP.
 
 ###### 32bit：
 
