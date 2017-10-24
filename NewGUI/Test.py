@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+#coding:utf-8
 # -*- coding: utf-8 -*-
 # Form implementation generated from reading ui file 'interface.ui'#
 # Created by: PyQt5 UI code generator 5.8.1#
@@ -349,10 +350,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "GeoPython"))
 
-        self.pushButtonOpen.setText(_translate("MainWindow", "Open"))
-        self.pushButtonSave.setText(_translate("MainWindow", "Save"))
-        self.pushButtonSort.setText(_translate("MainWindow", "Set"))
-        self.pushButtonQuit.setText(_translate("MainWindow", "Quit"))
+        self.pushButtonOpen.setText(_translate("MainWindow", u"Open"))
+        self.pushButtonSave.setText(_translate("MainWindow", u"Save"))
+        self.pushButtonSort.setText(_translate("MainWindow", u"Set"))
+        self.pushButtonQuit.setText(_translate("MainWindow", u"Quit"))
 
 
         self.pushButtonOpen.setIcon(QtGui.QIcon('Open.png'))

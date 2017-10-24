@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+#coding:utf-8
 # -*- coding: utf-8 -*-
 # Form implementation generated from reading ui file 'interface.ui'#
 # Created by: PyQt5 UI code generator 5.8.1#
