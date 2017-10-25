@@ -1,5 +1,5 @@
 Title: GeoPython,a project of using Python for geology related daily work
-Date: 2016-12-18 16:20
+Date:2017-10-25 22:38:13
 Category: Python
 
 
@@ -15,7 +15,7 @@ Category: Python
 # GeoPython exe for Windows:
 [Baidu Download](http://pan.baidu.com/s/1eRZ8l7G)
 
-[Google Download]()
+[Google Download](https://drive.google.com/open?id=0B299gyAIgmpqX3RlLWRTa3gtcEk)
 
 
 
