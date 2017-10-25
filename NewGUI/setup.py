@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+#coding:utf-8
 from distutils.core import setup
 import CustomClass
 version=CustomClass.version
@@ -13,6 +13,11 @@ setup(name='geopython',
       author_email='cycleuser@cycleuser.org',
       url='http://blog.cycleuser.org',
       packages=['geopython'],
+      package_data={
+          'geopython': ['*.png','*.qm'],
+      },
+      include_package_data=True,
+
       py_modules=['CustomClass'],
       install_requires=[ "cython",
                          "numpy",

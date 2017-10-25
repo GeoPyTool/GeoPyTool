@@ -1,16 +1,17 @@
 #!/usr/bin/python3
-#coding:utf-8
+# coding:utf-8
 # -*- coding: utf-8 -*-
 # Form implementation generated from reading ui file 'interface.ui'#
 # Created by: PyQt5 UI code generator 5.8.1#
 # WARNING! All changes made in this file will be lost!
 
 import CustomClass
-version=CustomClass.version
 
-date=CustomClass.date
+version = CustomClass.version
 
-sign="""
+date = CustomClass.date
+
+sign = """
 created on Sat Dec 17 22:28:24 2016
 @author: cycleuser
 # Create Date: 2015-07-13
@@ -23,6 +24,8 @@ a tool set for daily geology related task.
     or Open An Issue at GitHub:https://github.com/chinageology/GeoPython/issues     
     Website For Chinese Users：https://zhuanlan.zhihu.com/p/28908475
 """
+
+t = 'You are using GeoPython ' + version + ', released on' + date + '\n' + sign
 
 from CustomClass import PandasModel
 from CustomClass import CustomQTableView
@@ -51,7 +54,6 @@ from CustomClass import ZirconTiTemp
 from CustomClass import RutileZrTemp
 
 from CustomClass import Cluster
-
 
 from CustomClass import Magic
 
@@ -85,26 +87,30 @@ from PyQt5.QtWidgets import (QWidget, QMessageBox, qApp, QShortcut, QLabel, QMai
                              QFileDialog, QAction)
 
 
-class Ui_MainWindow(QtWidgets.QWidget):
+class Ui_MainWindow(QtWidgets.QMainWindow):
     # raw=0
     raw = pd.DataFrame(index=[], columns=[])  # raw is initialized as a blank dataframe
 
+    lang = True
 
-    def setupUi(self, MainWindow, ):
+    app = QtWidgets.QApplication(sys.argv)
+    trans = QtCore.QTranslator()
 
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 500)
+    def __init__(self):
+        super(Ui_MainWindow, self).__init__()
+        self.setObjectName("MainWindow")
+        self.resize(1000, 500)
 
         self.model = PandasModel(self.raw)
 
         self.main_widget = QWidget(self)
 
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget = QtWidgets.QWidget()
         self.centralwidget.setObjectName("centralwidget")
-        MainWindow.setCentralWidget(self.centralwidget)
+        self.setCentralWidget(self.centralwidget)
 
         self.tableView = CustomQTableView(self.centralwidget)
-        self.tableView.setGeometry(QtCore.QRect(10, 10, 780, 384))
+        self.tableView.setGeometry(QtCore.QRect(10, 10, 980, 384))
         self.tableView.setObjectName("tableView")
         self.tableView.setSortingEnabled(True)
 
@@ -124,9 +130,13 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonQuit.setGeometry(QtCore.QRect(410, 404, 110, 32))
         self.pushButtonQuit.setObjectName("pushButtonQuit")
 
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
-        self.menubar.setNativeMenuBar(False)
+        self.pushButtonLang = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonLang.setGeometry(QtCore.QRect(540, 404, 110, 32))
+        self.pushButtonLang.setObjectName("pushButtonLang")
+
+        self.menubar = QtWidgets.QMenuBar(self)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 22))
+        self.menubar.setNativeMenuBar(True)
         self.menubar.setObjectName("menubar")
 
         self.menuFile = QtWidgets.QMenu(self.menubar)
@@ -147,95 +157,87 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuMore = QtWidgets.QMenu(self.menubar)
         self.menuMore.setObjectName("menuMore")
 
-
-        self.menuTest = QtWidgets.QMenu(self.menubar)
-        self.menuTest.setObjectName("menuTest")
-
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName("menuHelp")
 
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        self.setStatusBar(self.statusbar)
 
-        self.actionOpen = QtWidgets.QAction(QIcon('Open.png'),'Open',MainWindow)
+        self.actionOpen = QtWidgets.QAction(QIcon('Open.png'), 'Open')
         self.actionOpen.setObjectName("actionOpen")
         self.actionOpen.setShortcut('Ctrl+O')
 
-        self.actionSave = QtWidgets.QAction(QIcon('Save.png'),'Save',MainWindow)
+        self.actionSave = QtWidgets.QAction(QIcon('Save.png'), 'Save')
         self.actionSave.setObjectName("actionSave")
         self.actionSave.setShortcut('Ctrl+S')
 
-        self.actionCnWeb = QtWidgets.QAction(QIcon('ZhiHu.png'),'Zhihu',MainWindow)
+        self.actionCnWeb = QtWidgets.QAction(QIcon('ZhiHu.png'), 'Zhihu')
         self.actionCnWeb.setObjectName("actionCnWeb")
 
-        self.actionGoGithub = QtWidgets.QAction(QIcon('Website.png'),'GitHub',MainWindow)
+        self.actionGoGithub = QtWidgets.QAction(QIcon('Website.png'), 'GitHub')
         self.actionGoGithub.setObjectName("actionGoGithub")
 
-
-        self.actionVersionCheck = QtWidgets.QAction(QIcon('Version.png'),'Version',MainWindow)
+        self.actionVersionCheck = QtWidgets.QAction(QIcon('Version.png'), 'Version')
         self.actionVersionCheck.setObjectName("actionVersionCheck")
 
-        self.actionTAS = QtWidgets.QAction(MainWindow)
+        self.actionTAS = QtWidgets.QAction()
         self.actionTAS.setObjectName("actionTAS")
 
-        self.actionTrace = QtWidgets.QAction(MainWindow)
+        self.actionTrace = QtWidgets.QAction()
         self.actionTrace.setObjectName("actionTrace")
 
-        self.actionRee = QtWidgets.QAction(MainWindow)
+        self.actionRee = QtWidgets.QAction()
         self.actionRee.setObjectName("actionRee")
 
-        self.actionPearce = QtWidgets.QAction(MainWindow)
+        self.actionPearce = QtWidgets.QAction()
         self.actionPearce.setObjectName("actionPearce")
 
-        self.actionHarker = QtWidgets.QAction(MainWindow)
+        self.actionHarker = QtWidgets.QAction()
         self.actionHarker.setObjectName("actionHarker")
 
-        self.actionStereo = QtWidgets.QAction(MainWindow)
+        self.actionStereo = QtWidgets.QAction()
         self.actionStereo.setObjectName("actionStereo")
 
-        self.actionRose = QtWidgets.QAction(MainWindow)
+        self.actionRose = QtWidgets.QAction()
         self.actionRose.setObjectName("actionRose")
 
-        self.actionQFL = QtWidgets.QAction(MainWindow)
+        self.actionQFL = QtWidgets.QAction()
         self.actionQFL.setObjectName("actionQFL")
 
-        self.actionQmFLt = QtWidgets.QAction(MainWindow)
+        self.actionQmFLt = QtWidgets.QAction()
         self.actionQmFLt.setObjectName("actionQmFLt")
 
-        self.actionCIPW = QtWidgets.QAction(MainWindow)
+        self.actionCIPW = QtWidgets.QAction()
         self.actionCIPW.setObjectName("actionCIPW")
 
-        self.actionZirconCe = QtWidgets.QAction(MainWindow)
+        self.actionZirconCe = QtWidgets.QAction()
         self.actionZirconCe.setObjectName("actionZirconCe")
 
-        self.actionZirconTiTemp = QtWidgets.QAction(MainWindow)
+        self.actionZirconTiTemp = QtWidgets.QAction()
         self.actionZirconTiTemp.setObjectName("actionZirconTiTemp")
 
-        self.actionRutileZrTemp = QtWidgets.QAction(MainWindow)
+        self.actionRutileZrTemp = QtWidgets.QAction()
         self.actionRutileZrTemp.setObjectName("actionRutileZrTemp")
 
-        self.actionCluster = QtWidgets.QAction(MainWindow)
+        self.actionCluster = QtWidgets.QAction()
         self.actionCluster.setObjectName("actionCluster")
 
-        self.actionQAPF = QtWidgets.QAction(MainWindow)
+        self.actionQAPF = QtWidgets.QAction()
         self.actionQAPF.setObjectName("actionQAPF")
 
-        self.actionMudStone = QtWidgets.QAction(MainWindow)
+        self.actionMudStone = QtWidgets.QAction()
         self.actionMudStone.setObjectName("actionMudStone")
 
-        self.actionXY = QtWidgets.QAction(MainWindow)
+        self.actionXY = QtWidgets.QAction()
         self.actionXY.setObjectName("actionXY")
 
-        self.actionXYZ = QtWidgets.QAction(MainWindow)
+        self.actionXYZ = QtWidgets.QAction()
         self.actionXYZ.setObjectName("actionXYZ")
 
-        self.actionMagic = QtWidgets.QAction(MainWindow)
+        self.actionMagic = QtWidgets.QAction()
         self.actionMagic.setObjectName("actionMagic")
-
-
-
 
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -256,26 +258,18 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuCalc.addAction(self.actionZirconTiTemp)
         self.menuCalc.addAction(self.actionRutileZrTemp)
 
-
-
-
-
         self.menuStat.addAction(self.actionCluster)
-
 
         self.menuMore.addAction(self.actionMudStone)
         self.menuMore.addAction(self.actionQAPF)
 
-
-
-        self.menuTest.addAction(self.actionXY)
-        self.menuTest.addAction(self.actionXYZ)
-        self.menuTest.addAction(self.actionMagic)
+        self.menuMore.addAction(self.actionXY)
+        self.menuMore.addAction(self.actionXYZ)
+        self.menuMore.addAction(self.actionMagic)
 
         self.menuHelp.addAction(self.actionCnWeb)
         self.menuHelp.addAction(self.actionGoGithub)
         self.menuHelp.addAction(self.actionVersionCheck)
-
 
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addSeparator()
@@ -295,14 +289,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menubar.addAction(self.menuMore.menuAction())
         self.menubar.addSeparator()
 
-        self.menubar.addAction(self.menuTest.menuAction())
-        self.menubar.addSeparator()
-
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menubar.addSeparator()
-
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.actionTAS.triggered.connect(self.TAS)
         self.actionTrace.triggered.connect(self.Trace)
@@ -325,7 +313,306 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
 
+        self.actionCnWeb.triggered.connect(self.goZhiHu)
+        self.actionGoGithub.triggered.connect(self.goGitHub)
+        self.actionVersionCheck.triggered.connect(self.checkVersion)
 
+        self.actionXY.triggered.connect(self.XY)
+        self.actionXYZ.triggered.connect(self.XYZ)
+        self.actionMagic.triggered.connect(self.Magic)
+        self.actionMudStone.triggered.connect(self.Mud)
+
+        self.pushButtonOpen.clicked.connect(self.getDataFile)
+        self.pushButtonSave.clicked.connect(self.saveDataFile)
+        self.pushButtonSort.clicked.connect(self.SetUpDataFile)
+        self.pushButtonQuit.clicked.connect(qApp.quit)
+        self.pushButtonLang.clicked.connect(self.switch)
+
+        self.actionQuit = QtWidgets.QAction('Quit', self)
+        self.actionQuit.setShortcut('Ctrl+Q')
+        self.actionQuit.setObjectName("actionQuit")
+        self.actionQuit.triggered.connect(qApp.quit)
+
+        self.setWindowTitle(self.tr(u"GeoPython"))
+
+        self.pushButtonOpen.setText(self.tr(u"Open"))
+        self.pushButtonSave.setText(self.tr(u"Save"))
+        self.pushButtonSort.setText(self.tr(u"Set"))
+        self.pushButtonQuit.setText(self.tr(u"Quit"))
+        self.pushButtonLang.setText(self.tr(u"English"))
+
+        self.pushButtonOpen.setIcon(QtGui.QIcon('Open.png'))
+        self.pushButtonSave.setIcon(QtGui.QIcon('Save.png'))
+        self.pushButtonSort.setIcon(QtGui.QIcon('Set.png'))
+        self.pushButtonQuit.setIcon(QtGui.QIcon('Quit.png'))
+
+        self.menuFile.setTitle(self.tr(u"Data File"))
+
+        self.menuGeoChem.setTitle(self.tr(u"Geochemistry"))
+
+        self.menuStructure.setTitle(self.tr(u"Structure"))
+
+        self.menuCalc.setTitle(self.tr(u"Calculation"))
+
+        self.menuStat.setTitle(self.tr(u"Statistics"))
+
+        self.menuMore.setTitle(self.tr(u"Others"))
+
+        self.menuHelp.setTitle(self.tr(u"Help"))
+
+        self.actionOpen.setText(self.tr(u"Open Data"))
+        self.actionSave.setText(self.tr(u"Save Data"))
+
+        self.actionTAS.setText(self.tr(u"TAS"))
+        self.actionTrace.setText(self.tr(u"Trace"))
+        self.actionRee.setText(self.tr(u"REE"))
+        self.actionPearce.setText(self.tr(u"Pearce"))
+        self.actionHarker.setText(self.tr(u"Harker"))
+
+        self.actionQAPF.setText(self.tr(u"QAPF"))
+
+        self.actionStereo.setText(self.tr(u"Stereo"))
+        self.actionRose.setText(self.tr(u"Rose"))
+        self.actionQFL.setText(self.tr(u"QFL"))
+        self.actionQmFLt.setText(self.tr(u"QmFLt"))
+
+        self.actionCIPW.setText(self.tr(u"CIPW"))
+
+        self.actionZirconCe.setText(self.tr(u"ZirconCe"))
+        self.actionZirconTiTemp.setText(self.tr(u"ZirconTiTemp"))
+        self.actionRutileZrTemp.setText(self.tr(u"RutileZrTemp"))
+        self.actionCluster.setText(self.tr(u"Cluster"))
+
+        self.actionXY.setText(self.tr(u"X-Y plot"))
+        self.actionXYZ.setText(self.tr(u"X-Y-Z plot"))
+
+        self.actionMagic.setText(self.tr(u"Magic"))
+
+        self.actionMudStone.setText(self.tr(u"Sand-Silt-Mud"))
+
+        self.actionVersionCheck.setText(self.tr(u"About"))
+        self.actionCnWeb.setText(self.tr(u"CN Help"))
+        self.actionGoGithub.setText(self.tr(u"Github"))
+
+    def setupUi(self):
+
+        self.setObjectName("MainWindow")
+        self.resize(800, 500)
+
+        self.model = PandasModel(self.raw)
+
+        self.main_widget = QWidget(self)
+
+        self.centralwidget = QtWidgets.QWidget()
+        self.centralwidget.setObjectName("centralwidget")
+        self.setCentralWidget(self.centralwidget)
+
+        self.tableView = CustomQTableView(self.centralwidget)
+        self.tableView.setGeometry(QtCore.QRect(10, 10, 780, 384))
+        self.tableView.setObjectName("tableView")
+        self.tableView.setSortingEnabled(True)
+
+        self.pushButtonOpen = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonOpen.setGeometry(QtCore.QRect(20, 404, 110, 32))
+        self.pushButtonOpen.setObjectName("pushButtonOpen")
+
+        self.pushButtonSave = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonSave.setGeometry(QtCore.QRect(150, 404, 110, 32))
+        self.pushButtonSave.setObjectName("pushButtonSave")
+
+        self.pushButtonSort = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonSort.setGeometry(QtCore.QRect(280, 404, 110, 32))
+        self.pushButtonSort.setObjectName("pushButtonSort")
+
+        self.pushButtonQuit = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonQuit.setGeometry(QtCore.QRect(410, 404, 110, 32))
+        self.pushButtonQuit.setObjectName("pushButtonQuit")
+
+        self.pushButtonLang = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonLang.setGeometry(QtCore.QRect(540, 404, 110, 32))
+        self.pushButtonLang.setObjectName("pushButtonLang")
+
+        self.menubar = QtWidgets.QMenuBar(self)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
+        self.menubar.setNativeMenuBar(True)
+        self.menubar.setObjectName("menubar")
+
+        self.menuFile = QtWidgets.QMenu(self.menubar)
+        self.menuFile.setObjectName("menuFile")
+
+        self.menuGeoChem = QtWidgets.QMenu(self.menubar)
+        self.menuGeoChem.setObjectName("menuGeoChem")
+
+        self.menuStructure = QtWidgets.QMenu(self.menubar)
+        self.menuStructure.setObjectName("menuStructure")
+
+        self.menuCalc = QtWidgets.QMenu(self.menubar)
+        self.menuCalc.setObjectName("menuCalc")
+
+        self.menuStat = QtWidgets.QMenu(self.menubar)
+        self.menuStat.setObjectName("menuStat")
+
+        self.menuMore = QtWidgets.QMenu(self.menubar)
+        self.menuMore.setObjectName("menuMore")
+
+        self.menuHelp = QtWidgets.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
+
+        self.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(self)
+        self.statusbar.setObjectName("statusbar")
+        self.setStatusBar(self.statusbar)
+
+        self.actionOpen = QtWidgets.QAction(QIcon('Open.png'), 'Open')
+        self.actionOpen.setObjectName("actionOpen")
+        self.actionOpen.setShortcut('Ctrl+O')
+
+        self.actionSave = QtWidgets.QAction(QIcon('Save.png'), 'Save')
+        self.actionSave.setObjectName("actionSave")
+        self.actionSave.setShortcut('Ctrl+S')
+
+        self.actionCnWeb = QtWidgets.QAction(QIcon('ZhiHu.png'), 'Zhihu')
+        self.actionCnWeb.setObjectName("actionCnWeb")
+
+        self.actionGoGithub = QtWidgets.QAction(QIcon('Website.png'), 'GitHub')
+        self.actionGoGithub.setObjectName("actionGoGithub")
+
+        self.actionVersionCheck = QtWidgets.QAction(QIcon('Version.png'), 'Version')
+        self.actionVersionCheck.setObjectName("actionVersionCheck")
+
+        self.actionTAS = QtWidgets.QAction()
+        self.actionTAS.setObjectName("actionTAS")
+
+        self.actionTrace = QtWidgets.QAction()
+        self.actionTrace.setObjectName("actionTrace")
+
+        self.actionRee = QtWidgets.QAction()
+        self.actionRee.setObjectName("actionRee")
+
+        self.actionPearce = QtWidgets.QAction()
+        self.actionPearce.setObjectName("actionPearce")
+
+        self.actionHarker = QtWidgets.QAction()
+        self.actionHarker.setObjectName("actionHarker")
+
+        self.actionStereo = QtWidgets.QAction()
+        self.actionStereo.setObjectName("actionStereo")
+
+        self.actionRose = QtWidgets.QAction()
+        self.actionRose.setObjectName("actionRose")
+
+        self.actionQFL = QtWidgets.QAction()
+        self.actionQFL.setObjectName("actionQFL")
+
+        self.actionQmFLt = QtWidgets.QAction()
+        self.actionQmFLt.setObjectName("actionQmFLt")
+
+        self.actionCIPW = QtWidgets.QAction()
+        self.actionCIPW.setObjectName("actionCIPW")
+
+        self.actionZirconCe = QtWidgets.QAction()
+        self.actionZirconCe.setObjectName("actionZirconCe")
+
+        self.actionZirconTiTemp = QtWidgets.QAction()
+        self.actionZirconTiTemp.setObjectName("actionZirconTiTemp")
+
+        self.actionRutileZrTemp = QtWidgets.QAction()
+        self.actionRutileZrTemp.setObjectName("actionRutileZrTemp")
+
+        self.actionCluster = QtWidgets.QAction()
+        self.actionCluster.setObjectName("actionCluster")
+
+        self.actionQAPF = QtWidgets.QAction()
+        self.actionQAPF.setObjectName("actionQAPF")
+
+        self.actionMudStone = QtWidgets.QAction()
+        self.actionMudStone.setObjectName("actionMudStone")
+
+        self.actionXY = QtWidgets.QAction()
+        self.actionXY.setObjectName("actionXY")
+
+        self.actionXYZ = QtWidgets.QAction()
+        self.actionXYZ.setObjectName("actionXYZ")
+
+        self.actionMagic = QtWidgets.QAction()
+        self.actionMagic.setObjectName("actionMagic")
+
+        self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.actionSave)
+
+        self.menuGeoChem.addAction(self.actionTAS)
+        self.menuGeoChem.addAction(self.actionTrace)
+        self.menuGeoChem.addAction(self.actionRee)
+        self.menuGeoChem.addAction(self.actionPearce)
+        self.menuGeoChem.addAction(self.actionHarker)
+
+        self.menuStructure.addAction(self.actionStereo)
+        self.menuStructure.addAction(self.actionRose)
+        self.menuStructure.addAction(self.actionQFL)
+        self.menuStructure.addAction(self.actionQmFLt)
+
+        self.menuCalc.addAction(self.actionCIPW)
+        self.menuCalc.addAction(self.actionZirconCe)
+        self.menuCalc.addAction(self.actionZirconTiTemp)
+        self.menuCalc.addAction(self.actionRutileZrTemp)
+
+        self.menuStat.addAction(self.actionCluster)
+
+        self.menuMore.addAction(self.actionMudStone)
+        self.menuMore.addAction(self.actionQAPF)
+
+        self.menuMore.addAction(self.actionXY)
+        self.menuMore.addAction(self.actionXYZ)
+        self.menuMore.addAction(self.actionMagic)
+
+        self.menuHelp.addAction(self.actionCnWeb)
+        self.menuHelp.addAction(self.actionGoGithub)
+        self.menuHelp.addAction(self.actionVersionCheck)
+
+        self.menubar.addAction(self.menuFile.menuAction())
+        self.menubar.addSeparator()
+
+        self.menubar.addAction(self.menuGeoChem.menuAction())
+        self.menubar.addSeparator()
+
+        self.menubar.addAction(self.menuStructure.menuAction())
+        self.menubar.addSeparator()
+
+        self.menubar.addAction(self.menuCalc.menuAction())
+        self.menubar.addSeparator()
+
+        self.menubar.addAction(self.menuStat.menuAction())
+        self.menubar.addSeparator()
+
+        self.menubar.addAction(self.menuMore.menuAction())
+        self.menubar.addSeparator()
+
+        self.menubar.addAction(self.menuHelp.menuAction())
+        self.menubar.addSeparator()
+
+        self.retranslateUi()
+        # QtCore.QMetaObject.connectSlotsByName()
+
+        self.actionTAS.triggered.connect(self.TAS)
+        self.actionTrace.triggered.connect(self.Trace)
+        self.actionRee.triggered.connect(self.REE)
+        self.actionPearce.triggered.connect(self.Pearce)
+        self.actionHarker.triggered.connect(self.Harker)
+        self.actionQAPF.triggered.connect(self.QAPF)
+
+        self.actionStereo.triggered.connect(self.Stereo)
+        self.actionRose.triggered.connect(self.Rose)
+        self.actionQFL.triggered.connect(self.QFL)
+        self.actionQmFLt.triggered.connect(self.QmFLt)
+
+        self.actionCIPW.triggered.connect(self.CIPW)
+        self.actionZirconCe.triggered.connect(self.Zircon)
+        self.actionZirconTiTemp.triggered.connect(self.ZirconTiTemp)
+        self.actionRutileZrTemp.triggered.connect(self.RutileZrTemp)
+        self.actionCluster.triggered.connect(self.Cluster)
+
+        self.actionOpen.triggered.connect(self.getDataFile)
+        self.actionSave.triggered.connect(self.saveDataFile)
 
         self.actionCnWeb.triggered.connect(self.goZhiHu)
         self.actionGoGithub.triggered.connect(self.goGitHub)
@@ -341,20 +628,26 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.pushButtonSort.clicked.connect(self.SetUpDataFile)
         self.pushButtonQuit.clicked.connect(qApp.quit)
 
+        self.pushButtonOpen.clicked.connect(self.getDataFile)
+        self.pushButtonSave.clicked.connect(self.saveDataFile)
+        self.pushButtonSort.clicked.connect(self.SetUpDataFile)
+        self.pushButtonQuit.clicked.connect(qApp.quit)
+        self.pushButtonLang.clicked.connect(self.switch)
+
         self.actionQuit = QtWidgets.QAction('Quit', self)
         self.actionQuit.setShortcut('Ctrl+Q')
         self.actionQuit.setObjectName("actionQuit")
         self.actionQuit.triggered.connect(qApp.quit)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "GeoPython"))
+        self.setWindowTitle(_translate("MainWindow", "GeoPython"))
 
         self.pushButtonOpen.setText(_translate("MainWindow", "Open"))
         self.pushButtonSave.setText(_translate("MainWindow", "Save"))
         self.pushButtonSort.setText(_translate("MainWindow", "Set"))
         self.pushButtonQuit.setText(_translate("MainWindow", "Quit"))
-
+        self.pushButtonLang.setText(_translate("MainWindow", "English"))
 
         self.pushButtonOpen.setIcon(QtGui.QIcon('Open.png'))
         self.pushButtonSave.setIcon(QtGui.QIcon('Save.png'))
@@ -372,8 +665,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.menuStat.setTitle(_translate("MainWindow", "Statistics"))
 
         self.menuMore.setTitle(_translate("MainWindow", "Others"))
-
-        self.menuTest.setTitle(_translate("MainWindow", "Testing"))
 
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
 
@@ -411,7 +702,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.actionCnWeb.setText(_translate("MainWindow", "CN Help"))
         self.actionGoGithub.setText(_translate("MainWindow", "Github"))
 
-
     def getfile(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
                                                          "选取文件",
@@ -421,13 +711,12 @@ class Ui_MainWindow(QtWidgets.QWidget):
     def goGitHub(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/README.md')
 
-
     def goZhiHu(self):
         webbrowser.open('https://zhuanlan.zhihu.com/p/28908475?refer=python-kivy')
 
     def checkVersion(self):
-        t= 'You are using GeoPython '+version +', released on'+ date+'\n'+sign
-        reply = QMessageBox.warning(self, 'Version',t)
+
+        reply = QMessageBox.warning(self, 'Version', t)
 
     def getDataFile(self):
         DataFileInput, filetype = QFileDialog.getOpenFileName(self,
@@ -446,12 +735,11 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
 
-
     def saveDataFile(self):
 
-        #if self.model._changed == True:
-            #print("changed")
-            #print(self.model._df)
+        # if self.model._changed == True:
+        # print("changed")
+        # print(self.model._df)
 
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           "文件保存",
@@ -474,7 +762,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
     def ZirconTiTemp(self):
         self.ztpop = ZirconTiTemp(df=self.model._df)
         try:
@@ -482,7 +769,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ztpop.show()
         except(KeyError):
             self.ErrorEvent()
-
 
     def RutileZrTemp(self):
         self.rzpop = RutileZrTemp(df=self.model._df)
@@ -492,24 +778,18 @@ class Ui_MainWindow(QtWidgets.QWidget):
         except(KeyError):
             self.ErrorEvent()
 
-
-
     def Cluster(self):
 
         self.clusterpop = Cluster(df=self.model._df)
         self.clusterpop.Cluster()
         self.clusterpop.show()
 
-
-
         try:
             self.clusterpop.Cluster()
             self.clusterpop.show()
         except(KeyError):
             pass
-            #self.ErrorEvent()
-
-
+            # self.ErrorEvent()
 
     def TAS(self):
 
@@ -601,7 +881,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def Zircon(self):
-        #print("Opening a new popup window...")
+        # print("Opening a new popup window...")
         self.zirconpop = Zircon(df=self.model._df)
         try:
             self.zirconpop.MultiBallard()
@@ -610,7 +890,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def XY(self):
-        #print("Opening a new popup window...")
+        # print("Opening a new popup window...")
         # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
@@ -622,7 +902,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def XYZ(self):
-        #print("Opening a new popup window...")
+        # print("Opening a new popup window...")
         # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
@@ -634,7 +914,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.ErrorEvent()
 
     def Magic(self):
-        #print("Opening a new popup window...")
+        # print("Opening a new popup window...")
         # self.w = MyPopup(xlabel = r'$SiO_2 wt\%$', ylabel = r'$Na_2O + K_2O wt\%$', xlim = (30,90), ylim = (0, 20))
         # self.w.setGeometry(QtCore.QRect(100, 100, 532, 600))
 
@@ -654,7 +934,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
     def ErrorEvent(self):
 
         reply = QMessageBox.warning(self, 'Warning', "Your Data mismatch this Plot.")
-
 
         """
         flag = 0
@@ -686,7 +965,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                             "Data can't be used without setting up Label,Color,Size and so on.")
 
         """
-
 
     def SetUpDataFile(self):
 
@@ -720,7 +998,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
                 'Style': StyleList,
                 'Width': WidthList}
 
-        #print('\n', data, '\n')
+        # print('\n', data, '\n')
 
 
 
@@ -728,7 +1006,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         for i in ItemsToTest:
             if i not in ItemsAvalibale:
-                #print(i)
+                # print(i)
                 flag = flag + 1
                 tmpdftoadd = pd.DataFrame({i: data[i]})
 
@@ -740,7 +1018,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.tableView.setModel(self.model)
 
-
         if flag == 0:
             reply = QMessageBox.warning(self, 'Ready',
                                         "Everything fine and no need to set up.")
@@ -749,28 +1026,106 @@ class Ui_MainWindow(QtWidgets.QWidget):
             reply = QMessageBox.warning(self, 'Ready',
                                         "Items added, Modify in the Table to set up details.")
 
+    def to_English(self):
+
+        sign = """
+        @author: cycleuser
+        a one-stop cross-platform APP for daily geology research.
+        # Contact US：
+        #   Email：cycleuser@cycleuser.org
+        #   GitHub：https://github.com/chinageology/GeoPython/issues
+        """
+
+        t = 'You are using GeoPython ' + version + ', released on' + date + '\n' + sign
+
+        self.trans.load("en")
+        self.app.installTranslator(self.trans)
+        self.retranslateUi()
+
+    def to_Chinese(self):
+
+        sign = """
+        @author: cycleuser
+        用于地质学日常工作的一站式跨平台应用
+        # 联系作者：
+        #   QQ群号：560675626
+        #   作者邮箱：cycleuser@cycleuser.org
+        #   GitHub：https://github.com/chinageology/GeoPython/issues     
+        #   知乎专栏：https://zhuanlan.zhihu.com/python-kivy
+        """
+
+        t = '你正在使用 GeoPython ' + version + ', 发布于' + date + '\n' + sign
+
+        self.trans.load("cn")
+        self.app.installTranslator(self.trans)
+        self.retranslateUi()
+
+    def switch(self):
+        self.lang = not (self.lang)
+        if self.lang:
+            self.to_English()
+
+
+        else:
+            self.to_Chinese()
+
 
 def main():
     import sys
+    import sys
 
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    trans = QtCore.QTranslator()
+    # trans.load("cn")  # 没有后缀.qm
+    app.installTranslator(trans)
+    mainWin = Ui_MainWindow()
+    mainWin.show()
     sys.exit(app.exec_())
 
 
-def begin():
+
+if __name__ == '__main__':
     import sys
+
+    app = QtWidgets.QApplication(sys.argv)
+    trans = QtCore.QTranslator()
+    # trans.load("cn")  # 没有后缀.qm
+    app.installTranslator(trans)
+    mainWin = Ui_MainWindow()
+    mainWin.show()
+    sys.exit(app.exec_())
+
+'''
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
+
+
+if __name__ == '__main__':
+
+
+    trans = QtCore.QTranslator()
+    trans.load("./zh_CN")
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    app.installTranslator(trans)
     MainWindow.show()
     sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
-    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
-    sys.exit(main())
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    trans = QtCore.QTranslator()
+    trans.load("zh_CN")
+
+    app.installTranslator(trans)
+
+    ui = Ui_MainWindow()
+    ui.show()
+    sys.exit(app.exec_())
+'''
