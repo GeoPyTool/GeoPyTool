@@ -73,9 +73,16 @@ Windows XP seems to be only supported by the version of 3.4, so please download 
 After installation of Python, you can use the following commands in your terminal to install GeoPython:
 
 ```Bash
-pip install matplotlib==2.0.0
-pip install cython numpy pandas xlrd BeautifulSoup4 scipy scikit-learn sympy pyqt5
-
+pip install cython
+pip install numpy
+pip install pandas
+pip install xlrd
+pip install matplotlib
+pip install BeautifulSoup4
+pip install pyqt5
+pip install scipy
+pip install scikit-learn
+pip install sympy
 pip install geopython --no-cache-dir
 ```
 
