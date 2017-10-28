@@ -98,18 +98,8 @@ pip install ipython
 ```
 
 Then you can simply use **GeoPython** by type the following commands in your Python interpreter:
-```Python
-import sys
-import geopython as gp
-sys.exit(gp.begin())
-```
-
-
-OR
-
 
 ```Python
-import sys
 import geopython as gp
 gp.main()
 ```
