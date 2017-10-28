@@ -5,6 +5,12 @@
 # Created by: PyQt5 UI code generator 5.8.1#
 # WARNING! All changes made in this file will be lost!
 
+import os
+
+LocationOfMySelf=os.path.dirname(__file__)
+
+print(LocationOfMySelf)
+
 import CustomClass
 
 version = CustomClass.version
@@ -182,21 +188,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.statusbar.setObjectName("statusbar")
         self.setStatusBar(self.statusbar)
 
-        self.actionOpen = QtWidgets.QAction(QIcon('Open.png'), 'Open',self)
+        self.actionOpen = QtWidgets.QAction(QIcon(LocationOfMySelf+'/open.png'), 'Open',self)
         self.actionOpen.setObjectName("actionOpen")
         self.actionOpen.setShortcut('Ctrl+O')
 
-        self.actionSave = QtWidgets.QAction(QIcon('Save.png'), 'Save',self)
+        self.actionSave = QtWidgets.QAction(QIcon(LocationOfMySelf+'/save.png'), 'Save',self)
         self.actionSave.setObjectName("actionSave")
         self.actionSave.setShortcut('Ctrl+S')
 
-        self.actionCnWeb = QtWidgets.QAction(QIcon('ZhiHu.png'), 'Zhihu',self)
+        self.actionCnWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/zhihu.png'), 'Zhihu',self)
         self.actionCnWeb.setObjectName("actionCnWeb")
 
-        self.actionGoGithub = QtWidgets.QAction(QIcon('Website.png'), 'GitHub',self)
+        self.actionGoGithub = QtWidgets.QAction(QIcon(LocationOfMySelf+'/website.png'), 'GitHub',self)
         self.actionGoGithub.setObjectName("actionGoGithub")
 
-        self.actionVersionCheck = QtWidgets.QAction(QIcon('Version.png'), 'Version',self)
+        self.actionVersionCheck = QtWidgets.QAction(QIcon(LocationOfMySelf+'/version.png'), 'Version',self)
         self.actionVersionCheck.setObjectName("actionVersionCheck")
 
         self.actionTAS = QtWidgets.QAction(self)
@@ -358,10 +364,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButtonQuit.setText(self.tr(u"Quit"))
         self.pushButtonLang.setText(self.tr(u"English"))
 
-        self.pushButtonOpen.setIcon(QtGui.QIcon('Open.png'))
-        self.pushButtonSave.setIcon(QtGui.QIcon('Save.png'))
-        self.pushButtonSort.setIcon(QtGui.QIcon('Set.png'))
-        self.pushButtonQuit.setIcon(QtGui.QIcon('Quit.png'))
+        self.pushButtonOpen.setIcon(QtGui.QIcon(LocationOfMySelf+'/open.png'))
+        self.pushButtonSave.setIcon(QtGui.QIcon(LocationOfMySelf+'/save.png'))
+        self.pushButtonSort.setIcon(QtGui.QIcon(LocationOfMySelf+'/set.png'))
+        self.pushButtonQuit.setIcon(QtGui.QIcon(LocationOfMySelf+'/quit.png'))
 
         self.menuFile.setTitle(self.tr(u"Data File"))
 
@@ -480,21 +486,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.statusbar.setObjectName("statusbar")
         self.setStatusBar(self.statusbar)
 
-        self.actionOpen = QtWidgets.QAction(QIcon('Open.png'), 'Open')
+        self.actionOpen = QtWidgets.QAction(QIcon(LocationOfMySelf+'/open.png'), 'Open')
         self.actionOpen.setObjectName("actionOpen")
         self.actionOpen.setShortcut('Ctrl+O')
 
-        self.actionSave = QtWidgets.QAction(QIcon('Save.png'), 'Save')
+        self.actionSave = QtWidgets.QAction(QIcon(LocationOfMySelf+'/save.png'), 'Save')
         self.actionSave.setObjectName("actionSave")
         self.actionSave.setShortcut('Ctrl+S')
 
-        self.actionCnWeb = QtWidgets.QAction(QIcon('ZhiHu.png'), 'Zhihu')
+        self.actionCnWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/zhihu.png'), 'Zhihu')
         self.actionCnWeb.setObjectName("actionCnWeb")
 
-        self.actionGoGithub = QtWidgets.QAction(QIcon('Website.png'), 'GitHub')
+        self.actionGoGithub = QtWidgets.QAction(QIcon(LocationOfMySelf+'/website.png'), 'GitHub')
         self.actionGoGithub.setObjectName("actionGoGithub")
 
-        self.actionVersionCheck = QtWidgets.QAction(QIcon('Version.png'), 'Version')
+        self.actionVersionCheck = QtWidgets.QAction(QIcon(LocationOfMySelf+'/version.png'), 'Version')
         self.actionVersionCheck.setObjectName("actionVersionCheck")
 
         self.actionTAS = QtWidgets.QAction(self)
@@ -666,10 +672,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButtonQuit.setText(_translate("MainWindow", "Quit"))
         self.pushButtonLang.setText(_translate("MainWindow", "English"))
 
-        self.pushButtonOpen.setIcon(QtGui.QIcon('Open.png'))
-        self.pushButtonSave.setIcon(QtGui.QIcon('Save.png'))
-        self.pushButtonSort.setIcon(QtGui.QIcon('Set.png'))
-        self.pushButtonQuit.setIcon(QtGui.QIcon('Quit.png'))
+        self.pushButtonOpen.setIcon(QtGui.QIcon(LocationOfMySelf+'/open.png'))
+        self.pushButtonSave.setIcon(QtGui.QIcon(LocationOfMySelf+'/save.png'))
+        self.pushButtonSort.setIcon(QtGui.QIcon(LocationOfMySelf+'/set.png'))
+        self.pushButtonQuit.setIcon(QtGui.QIcon(LocationOfMySelf+'/quit.png'))
 
         self.menuFile.setTitle(_translate("MainWindow", "Data File"))
 
@@ -1058,7 +1064,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         t = 'You are using GeoPython ' + version + ', released on' + date + '\n' + sign
 
         self.talk=t
-        self.trans.load("en")
+        self.trans.load(LocationOfMySelf+"/en")
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
@@ -1076,7 +1082,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         t = '你正在使用 GeoPython ' + version + ', 发布于' + date + '\n' + sign
         self.talk = t
-        self.trans.load("cn")
+        self.trans.load(LocationOfMySelf+"/cn")
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
@@ -1092,7 +1098,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 def main():
     import sys
-    import sys
 
     app = QtWidgets.QApplication(sys.argv)
     trans = QtCore.QTranslator()
@@ -1104,17 +1109,19 @@ def main():
 
 
 
-
-
-
 if __name__ == '__main__':
     sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
     sys.exit(main())
 
 '''
+
+
+
+
 if __name__ == '__main__':
-    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
-    sys.exit(main())
+    print(sign)
+
+
 
 if __name__ == '__main__':
     import sys
