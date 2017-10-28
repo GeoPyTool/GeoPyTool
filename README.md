@@ -37,7 +37,7 @@ GeoPython is a project of using Python for geology related daily work. It is a s
 ## Installation
 
 
-The standalone application file is temporarily only provided on Windows platform. Users of other Operating Systems please try to use GeoPython in Python. And this is also recommended because the latest version can be installed with pip easily.
+The standalone application file is temporarily only provided on Windows and MacOS platform. Users of other Operating Systems please try to use GeoPython in Python. And this is also recommended because the latest version can be installed with pip easily.
 
 ### Install Python First
 
