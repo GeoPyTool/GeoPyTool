@@ -4,52 +4,52 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="Test.py" line="433"/>
+        <location filename="Test.py" line="434"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="Test.py" line="434"/>
+        <location filename="Test.py" line="435"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="Test.py" line="435"/>
+        <location filename="Test.py" line="436"/>
         <source>Set</source>
         <translation>设定</translation>
     </message>
     <message>
-        <location filename="Test.py" line="436"/>
+        <location filename="Test.py" line="437"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="Test.py" line="444"/>
+        <location filename="Test.py" line="445"/>
         <source>Data File</source>
         <translation>数据</translation>
     </message>
     <message>
-        <location filename="Test.py" line="446"/>
+        <location filename="Test.py" line="447"/>
         <source>Geochemistry</source>
         <translation>地化</translation>
     </message>
     <message>
-        <location filename="Test.py" line="448"/>
+        <location filename="Test.py" line="449"/>
         <source>Structure</source>
         <translation>构造</translation>
     </message>
     <message>
-        <location filename="Test.py" line="450"/>
+        <location filename="Test.py" line="451"/>
         <source>Calculation</source>
         <translation>计算</translation>
     </message>
     <message>
-        <location filename="Test.py" line="452"/>
+        <location filename="Test.py" line="453"/>
         <source>Statistics</source>
         <translation>统计</translation>
     </message>
     <message>
-        <location filename="Test.py" line="454"/>
+        <location filename="Test.py" line="455"/>
         <source>Others</source>
         <translation>附加</translation>
     </message>
@@ -59,119 +59,119 @@
         <translation type="obsolete">测试</translation>
     </message>
     <message>
-        <location filename="Test.py" line="456"/>
+        <location filename="Test.py" line="457"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="Test.py" line="458"/>
+        <location filename="Test.py" line="459"/>
         <source>Open Data</source>
         <translation>导入</translation>
     </message>
     <message>
-        <location filename="Test.py" line="459"/>
+        <location filename="Test.py" line="460"/>
         <source>Save Data</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="Test.py" line="461"/>
+        <location filename="Test.py" line="462"/>
         <source>TAS</source>
         <translation>TAS 图解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="462"/>
+        <location filename="Test.py" line="463"/>
         <source>Trace</source>
         <translation>微量蛛网图</translation>
     </message>
     <message>
-        <location filename="Test.py" line="463"/>
+        <location filename="Test.py" line="464"/>
         <source>REE</source>
         <translation>稀土模式图</translation>
     </message>
     <message>
-        <location filename="Test.py" line="464"/>
+        <location filename="Test.py" line="465"/>
         <source>Pearce</source>
         <translation>Pearce 图解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="465"/>
+        <location filename="Test.py" line="466"/>
         <source>Harker</source>
         <translation>Harker 图解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="467"/>
+        <location filename="Test.py" line="468"/>
         <source>QAPF</source>
         <translation>QAPF 图解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="469"/>
+        <location filename="Test.py" line="470"/>
         <source>Stereo</source>
         <translation>赤平投影</translation>
     </message>
     <message>
-        <location filename="Test.py" line="470"/>
+        <location filename="Test.py" line="471"/>
         <source>Rose</source>
         <translation>玫瑰花图</translation>
     </message>
     <message>
-        <location filename="Test.py" line="471"/>
+        <location filename="Test.py" line="472"/>
         <source>QFL</source>
         <translation>QFL 图解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="472"/>
+        <location filename="Test.py" line="473"/>
         <source>QmFLt</source>
         <translation>QmFLt 图解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="474"/>
+        <location filename="Test.py" line="475"/>
         <source>CIPW</source>
         <translation>CIPW</translation>
     </message>
     <message>
-        <location filename="Test.py" line="476"/>
+        <location filename="Test.py" line="477"/>
         <source>ZirconCe</source>
         <translation>锆石Ce 氧逸度</translation>
     </message>
     <message>
-        <location filename="Test.py" line="477"/>
+        <location filename="Test.py" line="478"/>
         <source>ZirconTiTemp</source>
         <translation>锆石温度</translation>
     </message>
     <message>
-        <location filename="Test.py" line="478"/>
+        <location filename="Test.py" line="479"/>
         <source>RutileZrTemp</source>
         <translation>金红石温度</translation>
     </message>
     <message>
-        <location filename="Test.py" line="479"/>
+        <location filename="Test.py" line="480"/>
         <source>Cluster</source>
         <translation>聚类分析</translation>
     </message>
     <message>
-        <location filename="Test.py" line="481"/>
+        <location filename="Test.py" line="482"/>
         <source>X-Y plot</source>
         <translation>平面图解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="482"/>
+        <location filename="Test.py" line="483"/>
         <source>X-Y-Z plot</source>
         <translation>三角图解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="484"/>
+        <location filename="Test.py" line="485"/>
         <source>Magic</source>
         <translation>程序测试</translation>
     </message>
     <message>
-        <location filename="Test.py" line="486"/>
+        <location filename="Test.py" line="487"/>
         <source>Sand-Silt-Mud</source>
         <translation>砂岩分类</translation>
     </message>
     <message>
-        <location filename="Test.py" line="488"/>
+        <location filename="Test.py" line="489"/>
         <source>About</source>
-        <translation>查看版本</translation>
+        <translation>检查更新</translation>
     </message>
     <message>
         <location filename="Test.py" line="484"/>
@@ -179,32 +179,32 @@
         <translation type="obsolete">中文专栏</translation>
     </message>
     <message>
-        <location filename="Test.py" line="491"/>
+        <location filename="Test.py" line="492"/>
         <source>Github</source>
         <translation>Github</translation>
     </message>
     <message>
-        <location filename="Test.py" line="437"/>
+        <location filename="Test.py" line="438"/>
         <source>English</source>
         <translation>中文</translation>
     </message>
     <message>
-        <location filename="Test.py" line="431"/>
+        <location filename="Test.py" line="432"/>
         <source>You are using GeoPython </source>
         <translation>你正在使用的是 GeoPython</translation>
     </message>
     <message>
-        <location filename="Test.py" line="431"/>
+        <location filename="Test.py" line="432"/>
         <source>released on </source>
         <translation>发布日期为 </translation>
     </message>
     <message>
-        <location filename="Test.py" line="607"/>
+        <location filename="Test.py" line="625"/>
         <source>Choose Data File</source>
         <translation>选择数据文件</translation>
     </message>
     <message>
-        <location filename="Test.py" line="628"/>
+        <location filename="Test.py" line="646"/>
         <source>Save Data File</source>
         <translation>存储数据文件</translation>
     </message>
@@ -214,7 +214,7 @@
         <translation type="obsolete">GeoPython，一站式跨平台的地质学日常工作解决方案。</translation>
     </message>
     <message>
-        <location filename="Test.py" line="120"/>
+        <location filename="Test.py" line="121"/>
         <source>GeoPython</source>
         <translation>GeoPython</translation>
     </message>
@@ -224,19 +224,35 @@
         <translation type="obsolete">数据表格</translation>
     </message>
     <message>
-        <location filename="Test.py" line="489"/>
+        <location filename="Test.py" line="490"/>
         <source>Chinese Forum</source>
         <translation>中文论坛</translation>
     </message>
     <message>
-        <location filename="Test.py" line="490"/>
+        <location filename="Test.py" line="491"/>
         <source>English Forum</source>
         <translation>英文论坛</translation>
     </message>
     <message>
         <location filename="Test.py" line="431"/>
         <source>Visit the latest download link and check for update?</source>
-        <translation>是否访问下载链接检查更新？</translation>
+        <translation type="obsolete">是否访问下载链接检查更新？</translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="535"/>
+        <source>Version</source>
+        <translation>检查更新</translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="527"/>
+        <source>New version available.
+ Download and update?</source>
+        <translation>发现新版本，是否前往下载？</translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="535"/>
+        <source>This is the latest version.</source>
+        <translation>已经是最新版本。</translation>
     </message>
 </context>
 <context>

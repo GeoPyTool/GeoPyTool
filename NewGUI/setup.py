@@ -25,6 +25,7 @@ setup(name='geopython',
                          "xlrd",
                          "matplotlib",
                          "BeautifulSoup4",
+                         "requests",
                          "PyQt5",
                          ],
      )
