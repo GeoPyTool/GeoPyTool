@@ -86,7 +86,7 @@ import pandas as pd
 import numpy as np
 from numpy import arange, sin, pi
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt,pyqtSignal
 from PyQt5.QtGui import QPixmap, QIcon, QKeySequence
 from PyQt5.QtWidgets import (QWidget, QMessageBox, qApp, QShortcut, QLabel, QMainWindow, QMenu, QHBoxLayout,
                              QVBoxLayout,
@@ -129,29 +129,42 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(self.centralwidget)
 
         self.tableView = CustomQTableView(self.centralwidget)
-        self.tableView.setGeometry(QtCore.QRect(10, 10, 980, 384))
+
         self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
 
         self.pushButtonOpen = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonOpen.setGeometry(QtCore.QRect(20, 404, 110, 32))
         self.pushButtonOpen.setObjectName('pushButtonOpen')
 
         self.pushButtonSave = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonSave.setGeometry(QtCore.QRect(150, 404, 110, 32))
         self.pushButtonSave.setObjectName('pushButtonSave')
 
         self.pushButtonSort = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonSort.setGeometry(QtCore.QRect(280, 404, 110, 32))
         self.pushButtonSort.setObjectName('pushButtonSort')
 
         self.pushButtonQuit = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonQuit.setGeometry(QtCore.QRect(410, 404, 110, 32))
         self.pushButtonQuit.setObjectName('pushButtonQuit')
 
-        self.pushButtonLang = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonLang.setGeometry(QtCore.QRect(540, 404, 110, 32))
-        self.pushButtonLang.setObjectName('pushButtonLang')
+        self.pushButtonUpdate = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonUpdate.setObjectName('pushButtonUpdate')
+
+        w=self.width()
+        h=self.height()
+        step=(w-20)/5-10
+
+        self.tableView.setGeometry(QtCore.QRect(10, 10, w-20, h-80))
+
+        self.pushButtonOpen.setGeometry(QtCore.QRect(10, h-60, step, 32))
+
+        self.pushButtonSave.setGeometry(QtCore.QRect(15+step, h-60, step, 32))
+
+        self.pushButtonSort.setGeometry(QtCore.QRect(20+step*2, h-60, step, 32))
+
+        self.pushButtonQuit.setGeometry(QtCore.QRect(25+step*3, h-60, step, 32))
+
+        self.pushButtonUpdate.setGeometry(QtCore.QRect(30+step*4, h-60, step, 32))
+
+
 
         self.menubar = QtWidgets.QMenuBar(self)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 22))
@@ -179,6 +192,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName('menuHelp')
 
+        self.menuLanguage = QtWidgets.QMenu(self.menubar)
+        self.menuLanguage.setObjectName('menuLanguage')
+
         self.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(self)
         self.statusbar.setObjectName('statusbar')
@@ -198,12 +214,24 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionEnWeb = QtWidgets.QAction(QIcon('en.png'), 'English Forum',self)
         self.actionEnWeb.setObjectName('actionEnWeb')
 
-
         self.actionGoGithub = QtWidgets.QAction(QIcon('github.png'), 'GitHub',self)
         self.actionGoGithub.setObjectName('actionGoGithub')
 
         self.actionVersionCheck = QtWidgets.QAction(QIcon('version.png'), 'Version',self)
         self.actionVersionCheck.setObjectName('actionVersionCheck')
+
+
+        self.actionCnS = QtWidgets.QAction(QIcon('cn.png'), u'Simplified Chinese',self)
+        self.actionCnS.setObjectName('actionCnS')
+
+        self.actionCnT = QtWidgets.QAction(QIcon('cn.png'), u'Traditional Chinese',self)
+        self.actionCnT.setObjectName('actionCnT')
+
+        self.actionEn = QtWidgets.QAction(QIcon('en.png'), u'English',self)
+        self.actionEn.setObjectName('actionEn')
+
+        self.actionLoadLanguage = QtWidgets.QAction(QIcon('en.png'), u'Load Language',self)
+        self.actionLoadLanguage.setObjectName('actionLoadLanguage')
 
         self.actionTAS = QtWidgets.QAction(self)
         self.actionTAS.setObjectName('actionTAS')
@@ -297,6 +325,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuHelp.addAction(self.actionGoGithub)
         self.menuHelp.addAction(self.actionVersionCheck)
 
+
+        self.menuLanguage.addAction(self.actionCnS)
+        self.menuLanguage.addAction(self.actionCnT)
+        self.menuLanguage.addAction(self.actionEn)
+        self.menuLanguage.addAction(self.actionLoadLanguage)
+
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addSeparator()
 
@@ -317,6 +351,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menubar.addSeparator()
+
+        self.menubar.addAction(self.menuLanguage.menuAction())
+        self.menubar.addSeparator()
+
 
         self.actionTAS.triggered.connect(self.TAS)
         self.actionTrace.triggered.connect(self.Trace)
@@ -344,6 +382,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionGoGithub.triggered.connect(self.goGitHub)
         self.actionVersionCheck.triggered.connect(self.checkVersion)
 
+        self.actionCnS.triggered.connect(self.to_ChineseS)
+        self.actionCnT.triggered.connect(self.to_ChineseT)
+        self.actionEn.triggered.connect(self.to_English)
+        self.actionLoadLanguage.triggered.connect(self.to_LoadLanguage)
+
+
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
         self.actionMagic.triggered.connect(self.Magic)
@@ -353,7 +397,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButtonSave.clicked.connect(self.saveDataFile)
         self.pushButtonSort.clicked.connect(self.SetUpDataFile)
         self.pushButtonQuit.clicked.connect(qApp.quit)
-        self.pushButtonLang.clicked.connect(self.switch)
+        self.pushButtonUpdate.clicked.connect(self.checkVersion)
+
 
         self.actionQuit = QtWidgets.QAction('Quit', self)
         self.actionQuit.setShortcut('Ctrl+Q')
@@ -361,19 +406,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQuit.triggered.connect(qApp.quit)
 
 
-        self.pushButtonOpen.setText(_translate('MainWindow',u'Open'))
+        self.pushButtonOpen.setText(_translate('MainWindow',u'Open Data'))
+        self.pushButtonSave.setText(_translate('MainWindow',u'Save Data'))
+        self.pushButtonSort.setText(_translate('MainWindow',u'Set Format'))
+        self.pushButtonQuit.setText(_translate('MainWindow',u'Quit App'))
+        self.pushButtonUpdate.setText(_translate('MainWindow', u'Check Update'))
 
 
-
-        self.pushButtonSave.setText(_translate('MainWindow',u'Save'))
-        self.pushButtonSort.setText(_translate('MainWindow',u'Set'))
-        self.pushButtonQuit.setText(_translate('MainWindow',u'Quit'))
-        self.pushButtonLang.setText(_translate('MainWindow',u'English'))
 
         self.pushButtonOpen.setIcon(QtGui.QIcon('open.png'))
         self.pushButtonSave.setIcon(QtGui.QIcon('save.png'))
         self.pushButtonSort.setIcon(QtGui.QIcon('set.png'))
         self.pushButtonQuit.setIcon(QtGui.QIcon('quit.png'))
+        self.pushButtonUpdate.setIcon(QtGui.QIcon('version.png'))
+
+
 
         self.menuFile.setTitle(_translate('MainWindow',u'Data File'))
 
@@ -388,6 +435,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuMore.setTitle(_translate('MainWindow',u'Others'))
 
         self.menuHelp.setTitle(_translate('MainWindow',u'Help'))
+
+        self.menuLanguage.setTitle(_translate('MainWindow', u'Language'))
+
+
 
         self.actionOpen.setText(_translate('MainWindow',u'Open Data'))
         self.actionSave.setText(_translate('MainWindow',u'Save Data'))
@@ -424,22 +475,34 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionEnWeb.setText(_translate('MainWindow',u'English Forum'))
         self.actionGoGithub.setText(_translate('MainWindow',u'Github'))
 
+        self.actionCnS.setText(_translate('MainWindow',u'Simplified Chinese'))
+        self.actionCnT.setText(_translate('MainWindow', u'Traditional Chinese'))
+        self.actionEn.setText(_translate('MainWindow',u'English'))
+        self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
+
 
     def retranslateUi(self):
+
+
+
+
         _translate = QtCore.QCoreApplication.translate
 
         self.talk=  _translate('MainWindow','You are using GeoPython ') + version +'\n'+ _translate('MainWindow','released on ') + date + '\n'
 
-        self.pushButtonOpen.setText(_translate('MainWindow', u'Open'))
-        self.pushButtonSave.setText(_translate('MainWindow', u'Save'))
-        self.pushButtonSort.setText(_translate('MainWindow', u'Set'))
-        self.pushButtonQuit.setText(_translate('MainWindow', u'Quit'))
-        self.pushButtonLang.setText(_translate('MainWindow', u'English'))
+
+
+        self.pushButtonOpen.setText(_translate('MainWindow',u'Open Data'))
+        self.pushButtonSave.setText(_translate('MainWindow',u'Save Data'))
+        self.pushButtonSort.setText(_translate('MainWindow',u'Set Format'))
+        self.pushButtonQuit.setText(_translate('MainWindow',u'Quit App'))
+        self.pushButtonUpdate.setText(_translate('MainWindow', u'Check Update'))
 
         self.pushButtonOpen.setIcon(QtGui.QIcon('open.png'))
         self.pushButtonSave.setIcon(QtGui.QIcon('save.png'))
         self.pushButtonSort.setIcon(QtGui.QIcon('set.png'))
         self.pushButtonQuit.setIcon(QtGui.QIcon('quit.png'))
+        self.pushButtonUpdate.setIcon(QtGui.QIcon('version.png'))
 
         self.menuFile.setTitle(_translate('MainWindow', u'Data File'))
 
@@ -454,6 +517,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuMore.setTitle(_translate('MainWindow', u'Others'))
 
         self.menuHelp.setTitle(_translate('MainWindow', u'Help'))
+        self.menuLanguage.setTitle(_translate('MainWindow', u'Language'))
 
         self.actionOpen.setText(_translate('MainWindow', u'Open Data'))
         self.actionSave.setText(_translate('MainWindow', u'Save Data'))
@@ -485,10 +549,39 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionMudStone.setText(_translate('MainWindow', u'Sand-Silt-Mud'))
 
-        self.actionVersionCheck.setText(_translate('MainWindow', u'About'))
+        self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionCnWeb.setText(_translate('MainWindow', u'Chinese Forum'))
         self.actionEnWeb.setText(_translate('MainWindow', u'English Forum'))
         self.actionGoGithub.setText(_translate('MainWindow', u'Github'))
+
+
+
+        self.actionCnS.setText(_translate('MainWindow',u'Simplified Chinese'))
+        self.actionCnT.setText(_translate('MainWindow', u'Traditional Chinese'))
+        self.actionEn.setText(_translate('MainWindow',u'English'))
+        self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
+
+    def resizeEvent(self, evt=None):
+
+        w=self.width()
+        h=self.height()
+        step=(w-20)/5-10
+
+        self.tableView.setGeometry(QtCore.QRect(10, 10, w-20, h-80))
+
+        self.pushButtonOpen.setGeometry(QtCore.QRect(10, h-60, step, 32))
+
+        self.pushButtonSave.setGeometry(QtCore.QRect(15+step, h-60, step, 32))
+
+        self.pushButtonSort.setGeometry(QtCore.QRect(20+step*2, h-60, step, 32))
+
+        self.pushButtonQuit.setGeometry(QtCore.QRect(25+step*3, h-60, step, 32))
+
+        self.pushButtonUpdate.setGeometry(QtCore.QRect(30+step*4, h-60, step, 32))
+
+
+
+
 
     def getfile(self):
         _translate = QtCore.QCoreApplication.translate
@@ -538,26 +631,41 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def Update(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/Download.md')
 
+
+    def to_ChineseS(self):
+
+        self.trans.load('cns')
+        self.app.installTranslator(self.trans)
+        self.retranslateUi()
+
+    def to_ChineseT(self):
+
+        self.trans.load('cnt')
+        self.app.installTranslator(self.trans)
+        self.retranslateUi()
+
+
     def to_English(self):
 
         self.trans.load('en')
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
-    def to_Chinese(self):
 
-        self.trans.load('cn')
+
+    def to_LoadLanguage(self):
+
+
+        _translate = QtCore.QCoreApplication.translate
+        fileName, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Language File'),
+                                                         '~/',
+                                                         'Language Files (*.qm)')  # 设置文件扩展名过滤,注意用双分号间隔
+
+        print(fileName)
+
+        self.trans.load(fileName)
         self.app.installTranslator(self.trans)
         self.retranslateUi()
-
-    def switch(self):
-        self.lang = not (self.lang)
-        if self.lang:
-            self.to_English()
-
-
-        else:
-            self.to_Chinese()
 
 
     def ErrorEvent(self):

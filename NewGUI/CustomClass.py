@@ -1,6 +1,6 @@
-version='0.5.71'
+version='0.5.72'
 
-date='2017-10-29'
+date='2017-10-30'
 
 dpi=128
 
@@ -14,7 +14,7 @@ import matplotlib
 
 from bs4 import BeautifulSoup
 
-matplotlib.use("Qt5Agg")
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 
 import matplotlib.image as mpimg
@@ -43,7 +43,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import (QWidget, QLabel, QHBoxLayout, QVBoxLayout,
+from PyQt5.QtWidgets import (QWidget, QLineEdit, QLabel, QHBoxLayout, QVBoxLayout,
                              QApplication, QPushButton, QSlider,
                              QFileDialog, QAction)
 
@@ -57,14 +57,14 @@ class Tool():
 
     def TriToBin(self, x, y, z):
 
-        """
+        '''
         Turn an x-y-z triangular coord to an a-b coord.
         if z is negative, calc with its abs then return (a, -b).
         :param x,y,z: the three numbers of the triangular coord
         :type x,y,z: float or double are both OK, just numbers
         :return:  the corresponding a-b coord
         :rtype:   a tuple consist of a and b
-        """
+        '''
 
         if (z >= 0):
             if (x + y + z == 0):
@@ -98,14 +98,14 @@ class Tool():
 
     def BinToTri(self, a, b):
 
-        """
+        '''
         Turn an a-b coord to an x-y-z triangular coord .
         if z is negative, calc with its abs then return (a, -b).
         :param a,b: the numbers of the a-b coord
         :type a,b: float or double are both OK, just numbers
         :return:  the corresponding x-y-z triangular coord
         :rtype:   a tuple consist of x,y,z
-        """
+        '''
 
         if (b >= 0):
             y = a - b / np.sqrt(3)
@@ -120,7 +120,7 @@ class Tool():
 
     def Cross(self, A=[(0, 0), (10, 10)], B=[(0, 10), (100, 0)]):
 
-        """
+        '''
         Return the crosspoint of two line A and B.
         :param A: first line
         :type A: a list consist of two tuples, beginning and end point of the line
@@ -128,7 +128,7 @@ class Tool():
         :type B: a list consist of two tuples, beginning and end point of the line
         :return: the crosspoint of A and B
         :rtype: a list consist of two numbers, the x-y of the crosspoint
-        """
+        '''
 
         x0, y0 = A[0]
         x1, y1 = A[1]
@@ -147,7 +147,7 @@ class Tool():
 
     def TriCross(self, A=[(100, 0, 0), (0, 50, 60)], B=[(50, 50, 0), (0, 0, 100)]):
 
-        """
+        '''
         Return the crosspoint of two line A and B in triangular coord.
         :param A: first line
         :type A: a list consist of two tuples, beginning and end point of the line
@@ -155,7 +155,7 @@ class Tool():
         :type B: a list consist of two tuples, beginning and end point of the line
         :return:  the crosspoint of A and B
         :rtype:   a list consist of three numbers, the x-y-z of the triangular coord
-        """
+        '''
 
         x0, y0 = self.TriToBin(A[0][0], A[0][1], A[0][2])
         x1, y1 = self.TriToBin(A[1][0], A[1][1], A[1][2])
@@ -175,7 +175,7 @@ class Tool():
 
     def Fill(self, P=[(100, 0), (85, 15), (0, 3)], Color='blue', Alpha=0.3):
 
-        """
+        '''
         Fill a region in planimetric rectangular coord.
         :param P: the peak points of the region in planimetric rectangular coord
         :type P: a list consist of at least three tuples, which are the points in planimetric rectangular coord
@@ -183,7 +183,7 @@ class Tool():
         :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
         :param Alpha: the transparency used to fill the region
         :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
-        """
+        '''
         a = []
         b = []
 
@@ -195,7 +195,7 @@ class Tool():
 
     def TriFill(self, P=[(100, 0, 0), (85, 15, 0), (0, 3, 97)], Color='blue', Alpha=0.3):
 
-        """
+        '''
          Fill a region in triangular coord.
         :param P: the peak points of the region in triangular coord
         :type P: a list consist of at least three tuples, which are the points in triangular coord
@@ -203,7 +203,7 @@ class Tool():
         :type Color: a string; b: blue, g: green, r: red, c: cyan, m: magenta, y: yellow, k: black, w: white
         :param Alpha: the transparency used to fill the region
         :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
-        """
+        '''
 
         a = []
         b = []
@@ -216,7 +216,7 @@ class Tool():
         # plt.fill(a, b, Color=Color, Alpha=Alpha, )
 
 class Point():
-    """
+    '''
     a Point class
     :param X,Y: the values of its x-y coord
     :type X,Y: two float numbers
@@ -231,8 +231,8 @@ class Point():
     :param Marker: the marker used for the Point
     :type Marker: a string; o, d, *, ^ , maybe there would be some other types , from matplotlib
     :param Label: label of the Point, telling what it is and distinguish it from other points
-    :type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
-    """
+    :type Label: a string , if leave as '' or '' such kind of blank string, the label will not show on canvas
+    '''
 
     X = 0
     Y = 0
@@ -244,9 +244,9 @@ class Point():
     Label = ''
 
     def __init__(self, X=0, Y=0, Size=12, Color='red', Alpha=0.3, Marker='o', Label=''):
-        """
+        '''
         just set up the values
-        """
+        '''
         super().__init__()
         self.X = X
         self.Y = Y
@@ -258,7 +258,7 @@ class Point():
         self.Label = Label
 
 class Points():
-    """
+    '''
     a class for multiple Points
     :param X,Y: the values of its x-y coords
     :type X,Y: two lists consist of float numbers
@@ -271,8 +271,8 @@ class Points():
     :param Marker: the marker used for the Points
     :type Marker: a string; o, d, *, ^ , maybe there would be some other types , from matplotlib
     :param Label: label of the Points, telling what they are and distinguish them from other points
-    :type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
-    """
+    :type Label: a string , if leave as '' or '' such kind of blank string, the label will not show on canvas
+    '''
 
     X = []
     Y = []
@@ -285,9 +285,9 @@ class Points():
     FontSize = 8
 
     def __init__(self, points=[(0, 0), (0, 1)], Size=12, Color='red', Alpha=0.3, Marker='o', Label='', FontSize=8):
-        """
+        '''
         just set up the values
-        """
+        '''
         super().__init__()
         self.X = []
         self.Y = []
@@ -303,17 +303,17 @@ class Points():
         self.FontSize = FontSize
 
 class Tag():
-    """
+    '''
     a class for Tag put on canvas
     :param Label: label of the Tag, telling what it is and distinguish them from other tags
-    :type Label: a strings , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    :type Label: a strings , if leave as '' or '' such kind of blank string, the label will not show on canvas
     :param Location: the location of the Tag
     :type Location: a tuple consist of x-y values of its coords
     :param X_offset,Y_offset: the values of its x-y offsets on coords
     :type X_offset,Y_offset: two float numbers
     :param FontSize: the size of font of the Tag
     :type FontSize: a number , int or maybe float also OK , better around 8 to 12, not too large or too small
-    """
+    '''
 
     Label = u'Label'
     Location = (0, 0)
@@ -322,9 +322,9 @@ class Tag():
     FontSize = 12
 
     def __init__(self, Label=u'Label', Location=(0, 0), X_offset=-6, Y_offset=3, FontSize=12):
-        """
+        '''
         set up the values
-        """
+        '''
 
         self.Label = Label
         self.Location = Location
@@ -333,7 +333,7 @@ class Tag():
         self.FontSize = FontSize
 
 class Line():
-    """
+    '''
     a line class
     :param Begin: the Beginning point of the line
     :type Begin: a Point Instance
@@ -352,10 +352,10 @@ class Line():
     :param Alpha: the transparency of the Point
     :type Alpha: a float number from 0 to 1, higher darker, lower more transparent
     :param Label: label of the Line, telling what it is and distinguish it from other lines
-    :type Label: a string , if leave as "" or '' such kind of blank string, the label will not show on canvas
+    :type Label: a string , if leave as '' or '' such kind of blank string, the label will not show on canvas
     :param Sort: the sequence used for sorting the points consisting the line
     :type Sort: a string, x means sort the points with their x values, y means use y instead of x, other means use the sequence of points as these points are put to the line
-    """
+    '''
 
     Begin = Point(0, 0)
     End = Point(1, 1)
@@ -364,15 +364,15 @@ class Line():
     Y = [Begin.Y, End.Y]
     Width = 1
     Color = 'blue'
-    Style = "-"
+    Style = '-'
     Alpha = 0.3
     Label = ''
     Sort = ''
 
-    def __init__(self, Points=[(0, 0), (1, 1)], Sort='', Width=1, Color='blue', Style="-", Alpha=0.3, Label=''):
-        """
+    def __init__(self, Points=[(0, 0), (1, 1)], Sort='', Width=1, Color='blue', Style='-', Alpha=0.3, Label=''):
+        '''
         setup the datas
-        """
+        '''
         super().__init__()
         self.Sort = Sort
         self.Width = Width
@@ -391,13 +391,13 @@ class Line():
 
         else:
 
-            #print("Cannot draw line with one point")
+            #print('Cannot draw line with one point')
             pass
 
     def sequence(self):
-        """
+        '''
         sort the points in the line with given option
-        """
+        '''
         if (len(self.Points[0]) == 2):
             if (self.Sort == 'X' or self.Sort == 'x'):
                 self.Points.sort(key=lambda x: x[0])
@@ -433,14 +433,14 @@ class Line():
         self.Y = Y_TMP
 
 class TriTag(Tag, Tool):
-    """
+    '''
     inherit Tag and Tool,a Tag for triangular coord
-    """
+    '''
 
     def __init__(self, Label=u'Label', Location=(0, 1, 2), X_offset=-6, Y_offset=3, FontSize=12):
-        """
+        '''
         set up the values, transfer x,y,z coords to x-y coords
-        """
+        '''
 
         self.Label = Label
         self.Location = self.TriToBin(Location[0], Location[1], Location[2])
@@ -449,13 +449,13 @@ class TriTag(Tag, Tool):
         self.FontSize = FontSize
 
 class TriPoint(Point, Tool):
-    """
+    '''
     inherit Point and Tool, a Point class for triangular coord
     :param x,y,z: the list for gathering the x,y,z values of points consisting the line
     :type x,y,z: three lists
     :param sum: a value used in calc of coord transfer
     :type sum: just a number, both int or float are OK
-    """
+    '''
     x = 0
     y = 0
     z = 0
@@ -479,11 +479,11 @@ class TriPoint(Point, Tool):
         self.X, self.Y = self.TriToBin(self.x, self.y, self.z)
 
 class TriLine(Line, Tool):
-    """
+    '''
     inherit Line and Tool, line class for triangular coord
     :param x,y,z: the list for gathering the x,y,z values of points consisting the line
     :type x,y,z: three lists
-    """
+    '''
     x = []
     y = []
     z = []
@@ -491,7 +491,7 @@ class TriLine(Line, Tool):
     X = []
     Y = []
 
-    def __init__(self, Points=[(0, 0, 0), (1, 1, 1)], Sort='', Width=1, Color='blue', Style="-", Alpha=0.3, Label=''):
+    def __init__(self, Points=[(0, 0, 0), (1, 1, 1)], Sort='', Width=1, Color='blue', Style='-', Alpha=0.3, Label=''):
         super().__init__()
         self.Sort = Sort
         self.Width = Width
@@ -519,7 +519,7 @@ class TriLine(Line, Tool):
                 self.z.append(i[2])
 
         else:
-            #print("Cannot draw line with one point")
+            #print('Cannot draw line with one point')
             pass
 
         self.sequence()
@@ -587,7 +587,7 @@ class PandasModel(QtCore.QAbstractTableModel):
     def flags(self, index):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
 
-    """
+    '''
     def setData(self, index, value, role=QtCore.Qt.EditRole):
         row = index.row()
         col = index.column()
@@ -595,7 +595,7 @@ class PandasModel(QtCore.QAbstractTableModel):
         self._data[row][name] = value
         self.emit(QtCore.SIGNAL('dataChanged()'))
         return True
-    """
+    '''
 
     def setData(self, index, value, role=QtCore.Qt.EditRole):
         row = self._df.index[index.row()]
@@ -640,8 +640,8 @@ class PlotModel(FigureCanvas):
     _df = pd.DataFrame()
     _changed = False
 
-    def __init__(self, parent=None, width=100, height=100, dpi=100, description=""
-                 , tag="", xlabel=r'$X$', ylabel=r'$Y$', xlim=(30, 90), ylim=(0, 20)):
+    def __init__(self, parent=None, width=100, height=100, dpi=100, description=''
+                 , tag='', xlabel=r'$X$', ylabel=r'$Y$', xlim=(30, 90), ylim=(0, 20)):
 
         self.fig = Figure(figsize=(width, height), dpi=dpi)
 
@@ -705,8 +705,8 @@ class PlotModel(FigureCanvas):
                      (53, 12),
                      (60, 4),
                      (57, 8.5), (57, 14), (67, 5), (65, 12), (67, 9), (75, 9), (85, 1), (55, 18.5)]
-        description = "TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF Foidite, Ph Phonolite, Pc Pocrobasalt,\nU1 Tephrite (ol < 10%) Basanite(ol > 10%), U2 Phonotephrite, U3 Tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt, S1 Trachybasalt, S2 Basaltic Trachyandesite, S3 Trachyandesite,\nO1 Basaltic Andesite, O2 Andesite, O3 Dacite,  \nT Trachyte , Td Trachydacite , R Rhyolite, Q Silexite \n S/N/L Sodalitite/Nephelinolith/Leucitolith"
-        tag = "tas-Wilson1989-volcano"
+        description = 'TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF Foidite, Ph Phonolite, Pc Pocrobasalt,\nU1 Tephrite (ol < 10%) Basanite(ol > 10%), U2 Phonotephrite, U3 Tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt, S1 Trachybasalt, S2 Basaltic Trachyandesite, S3 Trachyandesite,\nO1 Basaltic Andesite, O2 Andesite, O3 Dacite,  \nT Trachyte , Td Trachydacite , R Rhyolite, Q Silexite \n S/N/L Sodalitite/Nephelinolith/Leucitolith'
+        tag = 'tas-Wilson1989-volcano'
 
         if (len(df) > 0):
 
@@ -790,8 +790,8 @@ class PlotModel(FigureCanvas):
                      (53, 12),
                      (60, 4),
                      (57, 8.5), (57, 14), (67, 5), (65, 12), (67, 9), (75, 9), (85, 1), (55, 18.5)]
-        description = "TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF Foidite, Ph Phonolite, Pc Pocrobasalt,\nU1 Tephrite (ol < 10%) Basanite(ol > 10%), U2 Phonotephrite, U3 Tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt, S1 Trachybasalt, S2 Basaltic Trachyandesite, S3 Trachyandesite,\nO1 Basaltic Andesite, O2 Andesite, O3 Dacite,  \nT Trachyte , Td Trachydacite , R Rhyolite, Q Silexite \n S/N/L Sodalitite/Nephelinolith/Leucitolith"
-        tag = "tas-Wilson1989-volcano"
+        description = 'TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF Foidite, Ph Phonolite, Pc Pocrobasalt,\nU1 Tephrite (ol < 10%) Basanite(ol > 10%), U2 Phonotephrite, U3 Tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt, S1 Trachybasalt, S2 Basaltic Trachyandesite, S3 Trachyandesite,\nO1 Basaltic Andesite, O2 Andesite, O3 Dacite,  \nT Trachyte , Td Trachydacite , R Rhyolite, Q Silexite \n S/N/L Sodalitite/Nephelinolith/Leucitolith'
+        tag = 'tas-Wilson1989-volcano'
 
         if (len(df) > 0):
 
@@ -829,8 +829,8 @@ class MyPopup(QWidget):
     _changed = False
 
     def __init__(self, width=100, height=100, dpi=100,
-                 description="TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF Foidite, Ph Phonolite, Pc Pocrobasalt,\nU1 Tephrite (ol < 10%) Basanite(ol > 10%), U2 Phonotephrite, U3 Tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt, S1 Trachybasalt, S2 Basaltic Trachyandesite, S3 Trachyandesite,\nO1 Basaltic Andesite, O2 Andesite, O3 Dacite,  \nT Trachyte , Td Trachydacite , R Rhyolite, Q Silexite \n S/N/L Sodalitite/Nephelinolith/Leucitolith"
-                 , tag="tas-Wilson1989-volcano", xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', xlim=(30,
+                 description='TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF Foidite, Ph Phonolite, Pc Pocrobasalt,\nU1 Tephrite (ol < 10%) Basanite(ol > 10%), U2 Phonotephrite, U3 Tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt, S1 Trachybasalt, S2 Basaltic Trachyandesite, S3 Trachyandesite,\nO1 Basaltic Andesite, O2 Andesite, O3 Dacite,  \nT Trachyte , Td Trachydacite , R Rhyolite, Q Silexite \n S/N/L Sodalitite/Nephelinolith/Leucitolith'
+                 , tag='tas-Wilson1989-volcano', xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', xlim=(30,
                                                                                                               90),
                  ylim=(
                          0, 20)):
@@ -843,13 +843,13 @@ class MyPopup(QWidget):
 
         self.MyCanvas.setGeometry(QtCore.QRect(10, 10, 512, 512))
 
-        self.MyCanvas.setObjectName("MyCanvas")
+        self.MyCanvas.setObjectName('MyCanvas')
 
     def saveImgFile(self):
         ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                         "文件保存",
-                                                         "C:/",
-                                                         "pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         '文件保存',
+                                                         'C:/',
+                                                         'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
 
         if (ImgFileOutput != ''):
             self.MyCanvas.print_figure(ImgFileOutput, dpi=300)
@@ -873,6 +873,7 @@ class Zircon(QMainWindow):
     _changed = False
 
     ylabel = r'Ln D $Zircon/Rock%$'
+    reference = 'Ballard, J. R., Palin, M. J., and Campbell, I. H., 2002, Relative oxidation states of magmas inferred from Ce(IV)/Ce(III) in zircon: application to porphyry copper deposits of northern Chile: Contributions to Mineralogy and Petrology, v. 144, no. 3, p. 347-364.'
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -881,7 +882,7 @@ class Zircon(QMainWindow):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved")
+            #print('DataFrame recieved')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -921,10 +922,10 @@ class Zircon(QMainWindow):
 
         self.ZirconCe = []
 
-        self.DataToWrite = [["First", "Second", "Third"]]
+        self.DataToWrite = [['First', 'Second', 'Third']]
 
     def save_plot(self):
-        file_choices = "pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)"
+        file_choices = 'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)'
 
         path = QFileDialog.getSaveFileName(self,
                                            'Save file', '',
@@ -950,16 +951,16 @@ class Zircon(QMainWindow):
         self.mpl_toolbar2 = NavigationToolbar(self.canvas2, self.main_frame)
 
         # Other GUI controls
-        self.save_button1 = QPushButton("&Save Ce3 Figure")
+        self.save_button1 = QPushButton('&Save Ce3 Figure')
         self.save_button1.clicked.connect(self.saveImgFile1)
 
-        self.save_button2 = QPushButton("&Save Ce4 Figure")
+        self.save_button2 = QPushButton('&Save Ce4 Figure')
         self.save_button2.clicked.connect(self.saveImgFile2)
 
-        self.save_button3 = QPushButton("&Save Result")
+        self.save_button3 = QPushButton('&Save Result')
         self.save_button3.clicked.connect(self.saveResult)
 
-        self.detail_cb = QCheckBox("&Detail")
+        self.detail_cb = QCheckBox('&Detail')
         self.detail_cb.setChecked(True)
         self.detail_cb.stateChanged.connect(self.MultiBallard)  # int
 
@@ -986,9 +987,11 @@ class Zircon(QMainWindow):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
+
     def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
-        self.statusBar().addWidget(self.status_text, 1)
+        self.textbox = QLineEdit(self)
+        self.textbox.setText('Reference：'+'\n'+self.reference)
+        self.statusBar().addWidget(self.textbox , 1)
 
     def add_actions(self, target, actions):
         for action in actions:
@@ -999,42 +1002,42 @@ class Zircon(QMainWindow):
 
     def saveImgFile1(self):
         ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                         "文件保存",
-                                                         "C:/",
-                                                         "pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         '文件保存',
+                                                         'C:/',
+                                                         'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
 
         if (ImgFileOutput != ''):
             self.canvas1.print_figure(ImgFileOutput, dpi=300)
 
     def saveImgFile2(self):
         ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                         "文件保存",
-                                                         "C:/",
-                                                         "pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         '文件保存',
+                                                         'C:/',
+                                                         'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
 
         if (ImgFileOutput != ''):
             self.canvas2.print_figure(ImgFileOutput, dpi=300)
 
     def saveResult(self):
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          "文件保存",
-                                                          "C:/",
-                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
         if (DataFileOutput != ''):
 
-            if ("csv" in DataFileOutput):
+            if ('csv' in DataFileOutput):
                 self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
-            elif ("xls" in DataFileOutput):
+            elif ('xls' in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
     def create_action(self, text, slot=None, shortcut=None,
                       icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
+                      signal='triggered()'):
         action = QAction(text, self)
         if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
+            action.setIcon(QIcon(':/%s.png' % icon))
         if shortcut is not None:
             action.setShortcut(shortcut)
         if tip is not None:
@@ -1089,9 +1092,9 @@ class Zircon(QMainWindow):
         self.ZirconCe = []
 
         for i in range(len(self.raw)):
-            if (self.raw.at[i, "DataType"] == "Base"):
+            if (self.raw.at[i, 'DataType'] == 'Base'):
                 self.Base = i
-            elif (self.raw.at[i, "DataType"] == "Zircon"):
+            elif (self.raw.at[i, 'DataType'] == 'Zircon'):
                 self.Zircon.append(i)
 
         for j in self.b:
@@ -1296,10 +1299,10 @@ class Zircon(QMainWindow):
                                     arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
 
         DataToWrite = [
-            ["Zircon Sample Label", "Zircon Ce4_3 Ratio", "Melt Ce4_3 Ratio", "DCe4", "DCe3", "DCe Zircon/Melt"], ]
+            ['Zircon Sample Label', 'Zircon Ce4_3 Ratio', 'Melt Ce4_3 Ratio', 'DCe4', 'DCe3', 'DCe Zircon/Melt'], ]
 
         for i in range(len(self.ZirconCe)):
-            TMP = self.raw.at[self.Zircon[i], "Label"]
+            TMP = self.raw.at[self.Zircon[i], 'Label']
             ZirconTmp = (self.RockCe - self.ZirconCe[i] / self.DCe3test[i]) / (
                 self.ZirconCe[i] / self.DCe4test[i] - self.RockCe)
             MeltTmp = (self.ZirconCe[i] - self.Ce3test[i]) / self.Ce3test[i] * self.DCe3test[i] / self.DCe4test[i]
@@ -1312,7 +1315,7 @@ class Zircon(QMainWindow):
         xlimleft3 = 0
         xlimleft4 = -0.005
 
-        #print("\n the value is ", min(min(self.y3)))
+        #print('\n the value is ', min(min(self.y3)))
 
         ylimleft3 = min(min(min(self.y3)), min(min(self.y3_Plot_Only)))
 
@@ -1349,10 +1352,10 @@ class Zircon(QMainWindow):
         self.canvas2.draw()
 
         self.DataToWrite = [
-            ["Zircon Sample Label", "Zircon Ce4_3 Ratio", "Melt Ce4_3 Ratio", "DCe4", "DCe3", "DCe Zircon/Melt"], ]
+            ['Zircon Sample Label', 'Zircon Ce4_3 Ratio', 'Melt Ce4_3 Ratio', 'DCe4', 'DCe3', 'DCe Zircon/Melt'], ]
 
         for i in range(len(self.ZirconCe)):
-            TMP = self.raw.at[self.Zircon[i], "Label"]
+            TMP = self.raw.at[self.Zircon[i], 'Label']
             ZirconTmp = (self.RockCe - self.ZirconCe[i] / self.DCe3test[i]) / (
                 self.ZirconCe[i] / self.DCe4test[i] - self.RockCe)
             MeltTmp = (self.ZirconCe[i] - self.Ce3test[i]) / self.Ce3test[i] * self.DCe3test[i] / self.DCe4test[i]
@@ -1361,8 +1364,11 @@ class Zircon(QMainWindow):
                 [TMP, ZirconTmp, MeltTmp, self.DCe4test[i], self.DCe3test[i], self.ZirconCe[i] / self.RockCe])
 
         self.newdf = pd.DataFrame(self.DataToWrite)
-        #print("\n")
+        #print('\n')
         #print(self.newdf)
+
+
+
 
 class AppForm(QMainWindow):
     _df = pd.DataFrame()
@@ -1370,6 +1376,7 @@ class AppForm(QMainWindow):
 
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
+    reference='Print the reference here.'
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -1378,7 +1385,7 @@ class AppForm(QMainWindow):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to AppForm")
+            #print('DataFrame recieved to AppForm')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -1406,7 +1413,7 @@ class AppForm(QMainWindow):
         return (x, y)
 
     def save_plot(self):
-        file_choices = "pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)"
+        file_choices = 'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)'
 
         path = QFileDialog.getSaveFileName(self,
                                            'Save file', '',
@@ -1426,25 +1433,25 @@ class AppForm(QMainWindow):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.TAS)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.TAS)  # int
 
-        self.tag_cb = QCheckBox("&Tag")
+        self.tag_cb = QCheckBox('&Tag')
         self.tag_cb.setChecked(True)
         self.tag_cb.stateChanged.connect(self.TAS)  # int
 
-        self.more_cb = QCheckBox("&More")
+        self.more_cb = QCheckBox('&More')
         self.more_cb.setChecked(True)
         self.more_cb.stateChanged.connect(self.TAS)  # int
 
-        self.detail_cb = QCheckBox("&Detail")
+        self.detail_cb = QCheckBox('&Detail')
         self.detail_cb.setChecked(True)
         self.detail_cb.stateChanged.connect(self.TAS)  # int
 
@@ -1475,8 +1482,9 @@ class AppForm(QMainWindow):
         self.setCentralWidget(self.main_frame)
 
     def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
-        self.statusBar().addWidget(self.status_text, 1)
+        self.textbox = QLineEdit(self)
+        self.textbox.setText('Reference：'+'\n'+self.reference)
+        self.statusBar().addWidget(self.textbox , 1)
 
     def add_actions(self, target, actions):
         for action in actions:
@@ -1487,9 +1495,9 @@ class AppForm(QMainWindow):
 
     def saveImgFile(self):
         ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                         "文件保存",
-                                                         "C:/",
-                                                         "pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         '文件保存',
+                                                         'C:/',
+                                                         'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
 
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
@@ -1498,30 +1506,30 @@ class AppForm(QMainWindow):
     def saveDataFile(self):
 
         #if self.model._changed == True:
-            #print("changed")
+            #print('changed')
             #print(self.model._df)
 
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          "文件保存",
-                                                          "C:/",
-                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
         if (DataFileOutput != ''):
 
-            if ("csv" in DataFileOutput):
+            if ('csv' in DataFileOutput):
                 self.model._df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
-            elif ("xls" in DataFileOutput):
+            elif ('xls' in DataFileOutput):
                 self.model._df.to_excel(DataFileOutput, encoding='utf-8')
 
 
 
     def create_action(self, text, slot=None, shortcut=None,
                       icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
+                      signal='triggered()'):
         action = QAction(text, self)
         if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
+            action.setIcon(QIcon(':/%s.png' % icon))
         if shortcut is not None:
             action.setShortcut(shortcut)
         if tip is not None:
@@ -1540,6 +1548,8 @@ class TAS(AppForm):
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
 
+    reference='Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
+
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
@@ -1547,10 +1557,12 @@ class TAS(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to TAS")
+            #print('DataFrame recieved to TAS')
 
         self.create_main_frame()
         self.create_status_bar()
+
+
 
     def create_main_frame(self):
         self.main_frame = QWidget()
@@ -1563,25 +1575,25 @@ class TAS(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.TAS)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.TAS)  # int
 
-        self.tag_cb = QCheckBox("&Tag")
+        self.tag_cb = QCheckBox('&Tag')
         self.tag_cb.setChecked(True)
         self.tag_cb.stateChanged.connect(self.TAS)  # int
 
-        self.more_cb = QCheckBox("&More")
+        self.more_cb = QCheckBox('&More')
         self.more_cb.setChecked(True)
         self.more_cb.stateChanged.connect(self.TAS)  # int
 
-        self.detail_cb = QCheckBox("&Detail")
+        self.detail_cb = QCheckBox('&Detail')
         self.detail_cb.setChecked(True)
         self.detail_cb.stateChanged.connect(self.TAS)  # int
 
@@ -1611,26 +1623,6 @@ class TAS(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
-        self.statusBar().addWidget(self.status_text, 1)
-
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
     def TAS(self, Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
             Top=19, Y0=1, Y1=19, Y_Gap=19, FontSize=12, xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', width=12,
@@ -1655,22 +1647,22 @@ class TAS(AppForm):
             Labels = [u'F', u'Pc', u'U1', u'Ba', u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3',
                       u'T',
                       u'Td', u'R', u'Q', u'S/N/L']
-            detail = "TAS (total alkali–silica) diagram Volcanic (after Wilson et al. 1989)."
-            description = "\n" \
-                          "F: Foidite, Ph: Phonolite, Pc Pocrobasalt, U1: Tephrite (ol < 10%) Basanite(ol > 10%), U2: Phonotephrite, U3: Tephriphonolite,\n" \
-                          "Ba: alkalic basalt,Bs: subalkalic baslt, S1: Trachybasalt, S2: Basaltic Trachyandesite, S3: Trachyandesite,\n" \
-                          "O1: Basaltic Andesite, O2: Andesite, O3 Dacite, T: Trachyte , Td: Trachydacite , R: Rhyolite, Q: Silexite \n" \
-                          "S/N/L: Sodalitite/Nephelinolith/Leucitolith"
+            detail = 'TAS (total alkali–silica) diagram Volcanic (after Wilson et al. 1989).'
+            description = '\n' \
+                          'F: Foidite, Ph: Phonolite, Pc Pocrobasalt, U1: Tephrite (ol < 10%) Basanite(ol > 10%), U2: Phonotephrite, U3: Tephriphonolite,\n' \
+                          'Ba: alkalic basalt,Bs: subalkalic baslt, S1: Trachybasalt, S2: Basaltic Trachyandesite, S3: Trachyandesite,\n' \
+                          'O1: Basaltic Andesite, O2: Andesite, O3 Dacite, T: Trachyte , Td: Trachydacite , R: Rhyolite, Q: Silexite \n' \
+                          'S/N/L: Sodalitite/Nephelinolith/Leucitolith'
         else:
             Labels = [u'F', u'Pc', u'U1', u'Ba', u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3',
                       u'T',
                       u'Td', u'R', u'Q', u'T/U/I']
-            detail = "TAS (total alkali–silica) diagram Intrusive (after Wilson et al. 1989)."
-            description = "\n" \
-                          "F: Foidolite, Ph: Foid Syenite, Pc: Peridotgabbro, U1: Foid Gabbro, U2: Foid Monzodiorite, U3: Foid Monzosyenite,\n" \
-                          "Ba: alkalic gabbro,Bs: subalkalic gabbro, S1: Monzogabbro, S2: Monzodiorite, S3: Monzonite,\n" \
-                          "O1: Gabbroic Diorite, O2: Diorite, O3: Graodiorite, T: Syenite , Td: Quartz Monzonite , R: Granite, Q: Quartzolite \n" \
-                          "T/U/I: Tawite/Urtite/Italite"
+            detail = 'TAS (total alkali–silica) diagram Intrusive (after Wilson et al. 1989).'
+            description = '\n' \
+                          'F: Foidolite, Ph: Foid Syenite, Pc: Peridotgabbro, U1: Foid Gabbro, U2: Foid Monzodiorite, U3: Foid Monzosyenite,\n' \
+                          'Ba: alkalic gabbro,Bs: subalkalic gabbro, S1: Monzogabbro, S2: Monzodiorite, S3: Monzonite,\n' \
+                          'O1: Gabbroic Diorite, O2: Diorite, O3: Graodiorite, T: Syenite , Td: Quartz Monzonite , R: Granite, Q: Quartzolite \n' \
+                          'T/U/I: Tawite/Urtite/Italite'
 
         TagNumber = min(len(Labels), len(Locations))
         if (self.tag_cb.isChecked()):
@@ -1751,11 +1743,17 @@ class TAS(AppForm):
             self.canvas.draw()
 
 class REE(AppForm):
+
+
+    reference='Print the reference here.'
+
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
 
     StandardsName = ['C1 Chondrite Sun and McDonough,1989', 'Chondrite Taylor and McLennan,1985',
                      'Chondrite Haskin et al.,1966', 'Chondrite Nakamura,1977', 'MORB Sun and McDonough,1989']
+
+    #RefName=['Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.',]
 
     NameChosen = 'C1 Chondrite Sun and McDonough,1989'
     Standards = {
@@ -1783,7 +1781,7 @@ class REE(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to REE")
+            #print('DataFrame recieved to REE')
 
         self.Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
         self.WholeData = []
@@ -1806,13 +1804,13 @@ class REE(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.REE)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.REE)  # int
 
@@ -1832,6 +1830,7 @@ class REE(AppForm):
         self.standard.valueChanged.connect(self.REE)  # int
 
         self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
+        self.reference =  self.StandardsName[int(self.standard.value())]
 
         #
         # Layout with box sizers
@@ -1979,7 +1978,7 @@ class Trace(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Trace")
+            #print('DataFrame recieved to Trace')
 
         self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr',
                         u'Mo',
@@ -2007,17 +2006,17 @@ class Trace(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Trace)
 
-        self.Type_cb = QCheckBox("&CS-Lu (37 Elements)")
+        self.Type_cb = QCheckBox('&CS-Lu (37 Elements)')
         self.Type_cb.setChecked(True)
         self.Type_cb.stateChanged.connect(self.Trace)  # int
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Trace)  # int
 
@@ -2037,7 +2036,7 @@ class Trace(AppForm):
         self.standard.valueChanged.connect(self.Trace)  # int
 
         self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
-
+        self.reference =  self.StandardsName[int(self.standard.value())]
         #
         # Layout with box sizers
         #
@@ -2062,7 +2061,7 @@ class Trace(AppForm):
               xLabel=r'$Trace-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
 
         if (self.Type_cb.isChecked()):
-            self.Type_cb.setText("&CS-Lu (37 Elements)")
+            self.Type_cb.setText('&CS-Lu (37 Elements)')
             self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
                             u'Pr', u'Mo',
                             u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb',
@@ -2082,7 +2081,7 @@ class Trace(AppForm):
 
 
         else:
-            self.Type_cb.setText("&Rb-Lu (27 Elements)")
+            self.Type_cb.setText('&Rb-Lu (27 Elements)')
             self.Element = [u'Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd',
                             u'Zr', u'Hf',
                             u'Sm', u'Eu', u'Ti', u'Tb', u'Dy', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
@@ -2210,7 +2209,7 @@ class Stereo(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Stereo")
+            #print('DataFrame recieved to Stereo')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -2229,37 +2228,37 @@ class Stereo(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Stereo)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Stereo)  # int
 
-        self.tag_cb = QCheckBox("&Tag")
+        self.tag_cb = QCheckBox('&Tag')
         self.tag_cb.setChecked(True)
         self.tag_cb.stateChanged.connect(self.Stereo)  # int
 
-        self.LineOrPoint_cb = QCheckBox("&Line")
+        self.LineOrPoint_cb = QCheckBox('&Line')
         self.LineOrPoint_cb.setChecked(True)
         self.LineOrPoint_cb.stateChanged.connect(self.Stereo)  # int
 
         if (self.LineOrPoint_cb.isChecked()):
             self.LineOrPoint_cb.setText('Line')
         else:
-            self.LineOrPoint_cb.setText("Point")
+            self.LineOrPoint_cb.setText('Point')
 
-        self.Type_cb = QCheckBox("&Wulf")
+        self.Type_cb = QCheckBox('&Wulf')
         self.Type_cb.setChecked(True)
         self.Type_cb.stateChanged.connect(self.Stereo)  # int
 
         if (self.Type_cb.isChecked()):
             self.Type_cb.setText('Wulf')
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
 
         slider_label = QLabel('Step:')
         self.slider = QSlider(Qt.Horizontal)
@@ -2287,26 +2286,6 @@ class Stereo(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
-        self.statusBar().addWidget(self.status_text, 1)
-
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
     def eqar(self, A):
         return (2 ** .5) * 90 * np.sin(np.pi * (90. - A) / (2. * 180.))
@@ -2334,15 +2313,15 @@ class Stereo(AppForm):
         return (a, b)
 
     def lines(self, Width=1, Color='k'):
-        """
+        '''
         read the Excel, then draw the wulf net and Plot points, job done~
-        """
+        '''
         self.axes.clear()
 
         #self.axes.set_xlim(-90, 450)
         self.axes.set_ylim(0, 90)
 
-        titles = list("NWSE")
+        titles = list('NWSE')
 
         titles = ['N', '330', '300', 'W', '240', '210', 'S', '150', '120', 'E', '60', '30']
         self.n = len(titles)
@@ -2361,23 +2340,23 @@ class Stereo(AppForm):
             self.Type_cb.setText('Wulf')
             list1 = [self.eqan(x) for x in range(15, 90, 15)]
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
 
         list2 = [str(x) for x in range(15, 90, 15)]
         self.axes.set_rgrids(list1, list2)
 
         for i in range(len(raw)):
-            Data.append([raw.at[i, "Name"], raw.at[i, "Dip"], raw.at[i, "Dip-Angle"], raw.at[i, "Color"],
-                         raw.at[i, "Width"], raw.at[i, "Alpha"], raw.at[i, "Label"]])
-            Dip = raw.at[i, "Dip"]
-            Dip_Angle = raw.at[i, "Dip-Angle"]
+            Data.append([raw.at[i, 'Name'], raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
+                         raw.at[i, 'Width'], raw.at[i, 'Alpha'], raw.at[i, 'Label']])
+            Dip = raw.at[i, 'Dip']
+            Dip_Angle = raw.at[i, 'Dip-Angle']
 
-            Label = raw.at[i, "Label"]
+            Label = raw.at[i, 'Label']
             if (Label not in Labels):
                 Labels.append(Label)
             else:
-                Label = ""
+                Label = ''
 
             Width = 1
             Color = 'red'
@@ -2387,18 +2366,18 @@ class Stereo(AppForm):
 
             Setting = [Width, Color, Alpha, Marker, Size]
 
-            Width = raw.at[i, "Width"]
-            Color = raw.at[i, "Color"]
-            Alpha = raw.at[i, "Alpha"]
-            Marker = raw.at[i, "Marker"]
-            Size = raw.at[i, "Size"]
+            Width = raw.at[i, 'Width']
+            Color = raw.at[i, 'Color']
+            Alpha = raw.at[i, 'Alpha']
+            Marker = raw.at[i, 'Marker']
+            Size = raw.at[i, 'Size']
 
-            if (Color not in Setting or Color != ""):
-                Width = raw.at[i, "Width"]
-                Color = raw.at[i, "Color"]
-                Alpha = raw.at[i, "Alpha"]
-                Marker = raw.at[i, "Marker"]
-                Size = raw.at[i, "Size"]
+            if (Color not in Setting or Color != ''):
+                Width = raw.at[i, 'Width']
+                Color = raw.at[i, 'Color']
+                Alpha = raw.at[i, 'Alpha']
+                Marker = raw.at[i, 'Marker']
+                Size = raw.at[i, 'Size']
 
                 Setting = [Width, Color, Alpha, Marker, Size]
             r = np.arange(Dip - 90, Dip + 91, 1)
@@ -2408,7 +2387,7 @@ class Stereo(AppForm):
                 self.Type_cb.setText('Wulf')
                 Line = (self.eqan(self.getangular(Dip_Angle, Dip, r)))
             else:
-                self.Type_cb.setText("Schmidt")
+                self.Type_cb.setText('Schmidt')
                 Line = (self.eqar(self.getangular(Dip_Angle, Dip, r)))
 
             self.axes.plot(BearR, Line, color=Color, linewidth=Width, alpha=Alpha, label=Label)
@@ -2420,15 +2399,15 @@ class Stereo(AppForm):
             self.axes.legend(loc=2, fontsize=9, bbox_to_anchor=(0, 0))
 
     def points(self, Width=1, Color='k'):
-        """
+        '''
         read the Excel, then draw the schmidt net and Plot points, job done~
-        """
+        '''
         self.axes.clear()
 
         #self.axes.set_xlim(-90, 450)
         self.axes.set_ylim(0, 90)
 
-        titles = list("NWSE")
+        titles = list('NWSE')
 
         titles = ['N', '330', '300', 'W', '240', '210', 'S', '150', '120', 'E', '60', '30']
         self.n = len(titles)
@@ -2447,24 +2426,24 @@ class Stereo(AppForm):
             self.Type_cb.setText('Wulf')
             list1 = [self.eqan(x) for x in range(15, 90, 15)]
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
         list2 = [str(x) for x in range(15, 90, 15)]
         self.axes.set_rgrids(list1, list2)
 
         for i in range(len(raw)):
             Data.append(
-                [raw.at[i, "Name"], raw.at[i, "Dip"], raw.at[i, "Dip-Angle"], raw.at[i, "Color"],
-                 raw.at[i, "Width"], raw.at[i, "Alpha"], raw.at[i, "Marker"], raw.at[i, "Label"]])
-            Dip = raw.at[i, "Dip"]
-            Dip_Angle = raw.at[i, "Dip-Angle"]
+                [raw.at[i, 'Name'], raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
+                 raw.at[i, 'Width'], raw.at[i, 'Alpha'], raw.at[i, 'Marker'], raw.at[i, 'Label']])
+            Dip = raw.at[i, 'Dip']
+            Dip_Angle = raw.at[i, 'Dip-Angle']
 
-            Label = raw.at[i, "Label"]
+            Label = raw.at[i, 'Label']
 
             if (Label not in Labels):
                 Labels.append(Label)
             else:
-                Label = ""
+                Label = ''
 
             Width = 1
             Color = 'red'
@@ -2474,18 +2453,18 @@ class Stereo(AppForm):
 
             Setting = [Width, Color, Alpha, Marker, Size]
 
-            Width = raw.at[i, "Width"]
-            Color = raw.at[i, "Color"]
-            Alpha = raw.at[i, "Alpha"]
-            Marker = raw.at[i, "Marker"]
-            Size = raw.at[i, "Size"]
+            Width = raw.at[i, 'Width']
+            Color = raw.at[i, 'Color']
+            Alpha = raw.at[i, 'Alpha']
+            Marker = raw.at[i, 'Marker']
+            Size = raw.at[i, 'Size']
 
-            if (Color not in Setting or Color != ""):
-                Width = raw.at[i, "Width"]
-                Color = raw.at[i, "Color"]
-                Alpha = raw.at[i, "Alpha"]
-                Marker = raw.at[i, "Marker"]
-                Size = raw.at[i, "Size"]
+            if (Color not in Setting or Color != ''):
+                Width = raw.at[i, 'Width']
+                Color = raw.at[i, 'Color']
+                Alpha = raw.at[i, 'Alpha']
+                Marker = raw.at[i, 'Marker']
+                Size = raw.at[i, 'Size']
 
                 Setting = [Width, Color, Alpha, Marker, Size]
 
@@ -2495,7 +2474,7 @@ class Stereo(AppForm):
                                   alpha=Alpha,
                                   label=Label, edgecolors='black')
             else:
-                self.Type_cb.setText("Schmidt")
+                self.Type_cb.setText('Schmidt')
                 self.axes.scatter(np.radians(90 - Dip), self.eqar(Dip_Angle), marker=Marker, s=Size, color=Color,
                                   alpha=Alpha,
                                   label=Label, edgecolors='black')
@@ -2516,13 +2495,13 @@ class Stereo(AppForm):
         if (self.Type_cb.isChecked()):
             self.Type_cb.setText('Wulf')
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
 
         if (self.LineOrPoint_cb.isChecked()):
             self.LineOrPoint_cb.setText('Line')
             self.lines()
         else:
-            self.LineOrPoint_cb.setText("Point")
+            self.LineOrPoint_cb.setText('Point')
             self.points()
 
         self.canvas.draw()
@@ -2538,7 +2517,7 @@ class Rose(AppForm):
 
     MultipleRoseName = 'Dip'
 
-    SingleRoseName = ["Dip"]
+    SingleRoseName = ['Dip']
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -2547,7 +2526,7 @@ class Rose(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Rose")
+            #print('DataFrame recieved to Rose')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -2566,33 +2545,33 @@ class Rose(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Rose)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Rose)  # int
 
-        self.Type_cb = QCheckBox("&Wulf")
+        self.Type_cb = QCheckBox('&Wulf')
         self.Type_cb.setChecked(True)
         self.Type_cb.stateChanged.connect(self.Rose)  # int
 
         if (self.Type_cb.isChecked()):
             self.Type_cb.setText('Wulf')
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
 
-        self.Rose_cb = QCheckBox("&Single Rose")
+        self.Rose_cb = QCheckBox('&Single Rose')
         self.Rose_cb.setChecked(True)
         self.Rose_cb.stateChanged.connect(self.Rose)  # int
 
         if (self.Rose_cb.isChecked()):
             self.Rose_cb.setText('Single Rose')
         else:
-            self.Rose_cb.setText("Multiple Rose")
+            self.Rose_cb.setText('Multiple Rose')
 
         slider_label = QLabel('Step:')
         self.slider = QSlider(Qt.Horizontal)
@@ -2635,26 +2614,7 @@ class Rose(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
-        self.statusBar().addWidget(self.status_text, 1)
 
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
     def eqar(self, A):
         return (2 ** .5) * 90 * np.sin(np.pi * (90. - A) / (2. * 180.))
@@ -2682,21 +2642,21 @@ class Rose(AppForm):
                 self.Type_cb.setText('Wulf')
                 b.append(self.eqan(i))
             else:
-                self.Type_cb.setText("Schmidt")
+                self.Type_cb.setText('Schmidt')
                 b.append(self.eqar(i))
 
         return (a, b)
 
     def lines(self, Width=1, Color='k'):
-        """
+        '''
         read the Excel, then draw the wulf net and Plot points, job done~
-        """
+        '''
         self.axes.clear()
 
         #self.axes.set_xlim(-90, 450)
         self.axes.set_ylim(0, 90)
 
-        titles = list("NWSE")
+        titles = list('NWSE')
 
         titles = ['N', '330', '300', 'W', '240', '210', 'S', '150', '120', 'E', '60', '30']
         self.n = len(titles)
@@ -2715,23 +2675,23 @@ class Rose(AppForm):
             self.Type_cb.setText('Wulf')
             list1 = [self.eqan(x) for x in range(15, 90, 15)]
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
 
         list2 = [str(x) for x in range(15, 90, 15)]
         self.axes.set_rgrids(list1, list2)
 
         for i in range(len(raw)):
-            Data.append([raw.at[i, "Name"], raw.at[i, "Dip"], raw.at[i, "Dip-Angle"], raw.at[i, "Color"],
-                         raw.at[i, "Width"], raw.at[i, "Alpha"], raw.at[i, "Label"]])
-            Dip = raw.at[i, "Dip"]
-            Dip_Angle = raw.at[i, "Dip-Angle"]
+            Data.append([raw.at[i, 'Name'], raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
+                         raw.at[i, 'Width'], raw.at[i, 'Alpha'], raw.at[i, 'Label']])
+            Dip = raw.at[i, 'Dip']
+            Dip_Angle = raw.at[i, 'Dip-Angle']
 
-            Label = raw.at[i, "Label"]
+            Label = raw.at[i, 'Label']
             if (Label not in Labels):
                 Labels.append(Label)
             else:
-                Label = ""
+                Label = ''
 
             Width = 1
             Color = 'red'
@@ -2741,18 +2701,18 @@ class Rose(AppForm):
 
             Setting = [Width, Color, Alpha, Marker, Size]
 
-            Width = raw.at[i, "Width"]
-            Color = raw.at[i, "Color"]
-            Alpha = raw.at[i, "Alpha"]
-            Marker = raw.at[i, "Marker"]
-            Size = raw.at[i, "Size"]
+            Width = raw.at[i, 'Width']
+            Color = raw.at[i, 'Color']
+            Alpha = raw.at[i, 'Alpha']
+            Marker = raw.at[i, 'Marker']
+            Size = raw.at[i, 'Size']
 
-            if (Color not in Setting or Color != ""):
-                Width = raw.at[i, "Width"]
-                Color = raw.at[i, "Color"]
-                Alpha = raw.at[i, "Alpha"]
-                Marker = raw.at[i, "Marker"]
-                Size = raw.at[i, "Size"]
+            if (Color not in Setting or Color != ''):
+                Width = raw.at[i, 'Width']
+                Color = raw.at[i, 'Color']
+                Alpha = raw.at[i, 'Alpha']
+                Marker = raw.at[i, 'Marker']
+                Size = raw.at[i, 'Size']
 
                 Setting = [Width, Color, Alpha, Marker, Size]
             r = np.arange(Dip - 90, Dip + 91, 1)
@@ -2762,7 +2722,7 @@ class Rose(AppForm):
                 self.Type_cb.setText('Wulf')
                 Line = (self.eqan(self.getangular(Dip_Angle, Dip, r)))
             else:
-                self.Type_cb.setText("Schmidt")
+                self.Type_cb.setText('Schmidt')
                 Line = (self.eqar(self.getangular(Dip_Angle, Dip, r)))
 
             self.axes.plot(BearR, Line, color=Color, linewidth=Width, alpha=Alpha, label=Label)
@@ -2774,15 +2734,15 @@ class Rose(AppForm):
             self.axes.legend(loc=2, fontsize=9, bbox_to_anchor=(0, 0))
 
     def points(self, Width=1, Color='k'):
-        """
+        '''
         read the Excel, then draw the schmidt net and Plot points, job done~
-        """
+        '''
         self.axes.clear()
 
         #self.axes.set_xlim(-90, 450)
         self.axes.set_ylim(0, 90)
 
-        titles = list("NWSE")
+        titles = list('NWSE')
 
         titles = ['N', '330', '300', 'W', '240', '210', 'S', '150', '120', 'E', '60', '30']
         self.n = len(titles)
@@ -2801,24 +2761,24 @@ class Rose(AppForm):
             self.Type_cb.setText('Wulf')
             list1 = [self.eqan(x) for x in range(15, 90, 15)]
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
         list2 = [str(x) for x in range(15, 90, 15)]
         self.axes.set_rgrids(list1, list2)
 
         for i in range(len(raw)):
             Data.append(
-                [raw.at[i, "Name"], raw.at[i, "Dip"], raw.at[i, "Dip-Angle"], raw.at[i, "Color"],
-                 raw.at[i, "Width"], raw.at[i, "Alpha"], raw.at[i, "Marker"], raw.at[i, "Label"]])
-            Dip = raw.at[i, "Dip"]
-            Dip_Angle = raw.at[i, "Dip-Angle"]
+                [raw.at[i, 'Name'], raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
+                 raw.at[i, 'Width'], raw.at[i, 'Alpha'], raw.at[i, 'Marker'], raw.at[i, 'Label']])
+            Dip = raw.at[i, 'Dip']
+            Dip_Angle = raw.at[i, 'Dip-Angle']
 
-            Label = raw.at[i, "Label"]
+            Label = raw.at[i, 'Label']
 
             if (Label not in Labels):
                 Labels.append(Label)
             else:
-                Label = ""
+                Label = ''
 
             Width = 1
             Color = 'red'
@@ -2828,18 +2788,18 @@ class Rose(AppForm):
 
             Setting = [Width, Color, Alpha, Marker, Size]
 
-            Width = raw.at[i, "Width"]
-            Color = raw.at[i, "Color"]
-            Alpha = raw.at[i, "Alpha"]
-            Marker = raw.at[i, "Marker"]
-            Size = raw.at[i, "Size"]
+            Width = raw.at[i, 'Width']
+            Color = raw.at[i, 'Color']
+            Alpha = raw.at[i, 'Alpha']
+            Marker = raw.at[i, 'Marker']
+            Size = raw.at[i, 'Size']
 
-            if (Color not in Setting or Color != ""):
-                Width = raw.at[i, "Width"]
-                Color = raw.at[i, "Color"]
-                Alpha = raw.at[i, "Alpha"]
-                Marker = raw.at[i, "Marker"]
-                Size = raw.at[i, "Size"]
+            if (Color not in Setting or Color != ''):
+                Width = raw.at[i, 'Width']
+                Color = raw.at[i, 'Color']
+                Alpha = raw.at[i, 'Alpha']
+                Marker = raw.at[i, 'Marker']
+                Size = raw.at[i, 'Size']
 
                 Setting = [Width, Color, Alpha, Marker, Size]
 
@@ -2849,7 +2809,7 @@ class Rose(AppForm):
                                   alpha=Alpha,
                                   label=Label, edgecolors='black')
             else:
-                self.Type_cb.setText("Schmidt")
+                self.Type_cb.setText('Schmidt')
                 self.axes.scatter(np.radians(90 - Dip), self.eqar(Dip_Angle), marker=Marker, s=Size, color=Color,
                                   alpha=Alpha,
                                   label=Label, edgecolors='black')
@@ -2864,9 +2824,9 @@ class Rose(AppForm):
             self.axes.legend(loc=2, fontsize=9, bbox_to_anchor=(0, 0))
 
     def singlerose(self, Width=1, Color=['red']):
-        """
+        '''
         draw the rose map of single sample with different items~
-        """
+        '''
         self.chooser_label.setText(self.ChooseItems[self.chooser.value() - 1])
 
         self.MultipleRoseName = self.ChooseItems[self.chooser.value() - 1]
@@ -2879,7 +2839,7 @@ class Rose(AppForm):
         #self.axes.set_xlim(-90, 450)
         self.axes.set_ylim(0, 90)
 
-        titles = list("NWSE")
+        titles = list('NWSE')
 
         titles = ['N', '330', '300', 'W', '240', '210', 'S', '150', '120', 'E', '60', '30']
         self.n = len(titles)
@@ -2953,7 +2913,7 @@ class Rose(AppForm):
             self.Type_cb.setText('Wulf')
             list1 = [self.eqan(x) for x in range(15, 90, 15)]
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
 
         list2 = [str(x) for x in range(0, int(maxuse + 1), int((maxuse + 1) / 7))]
@@ -2968,9 +2928,9 @@ class Rose(AppForm):
             self.axes.legend(loc=2, fontsize=9, bbox_to_anchor=(0, 0))
 
     def multirose(self, Width=1, Name='Dip'):
-        """
+        '''
         draw the rose map of multiple samples~
-        """
+        '''
 
         Name = self.MultipleRoseName
 
@@ -2978,7 +2938,7 @@ class Rose(AppForm):
         #self.axes.set_xlim(-90, 450)
         self.axes.set_ylim(0, 90)
 
-        titles = list("NWSE")
+        titles = list('NWSE')
 
         titles = ['N', '330', '300', 'W', '240', '210', 'S', '150', '120', 'E', '60', '30']
         self.n = len(titles)
@@ -3047,7 +3007,7 @@ class Rose(AppForm):
             self.Type_cb.setText('Wulf')
             list1 = [self.eqan(x) for x in range(15, 90, 15)]
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
 
         list2 = [str(x) for x in range(0, int(maxuse + 1), int((maxuse + 1) / 7))]
@@ -3075,13 +3035,13 @@ class Rose(AppForm):
         if (self.Type_cb.isChecked()):
             self.Type_cb.setText('Wulf')
         else:
-            self.Type_cb.setText("Schmidt")
+            self.Type_cb.setText('Schmidt')
 
         if (self.Rose_cb.isChecked()):
             self.Rose_cb.setText('Single Rose')
             self.singlerose()
         else:
-            self.Rose_cb.setText("Multiple Rose")
+            self.Rose_cb.setText('Multiple Rose')
             self.multirose()
 
         self.canvas.draw()
@@ -3185,7 +3145,7 @@ class MudStone(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Tri")
+            #print('DataFrame recieved to Tri')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3208,17 +3168,17 @@ class MudStone(AppForm, Tool):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Tri)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Tri)  # int
 
-        self.Tag_cb = QCheckBox("&Tag")
+        self.Tag_cb = QCheckBox('&Tag')
         self.Tag_cb.setChecked(True)
         self.Tag_cb.stateChanged.connect(self.Tri)  # int
 
@@ -3239,26 +3199,7 @@ class MudStone(AppForm, Tool):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
-        self.statusBar().addWidget(self.status_text, 1)
 
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
     def Tri(self):
 
@@ -3267,7 +3208,7 @@ class MudStone(AppForm, Tool):
         self.axes.set_ylim(-10, 100)
 
         s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
-                     Style="-",
+                     Style='-',
                      Alpha=0.7, Label='')]
         for i in s:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
@@ -3326,7 +3267,7 @@ class MudStone(AppForm, Tool):
         tmp = []
         # 中心三角绘制
         tmp.append(
-            TriLine(Points=[Middle[0], Middle[1], Middle[2], Middle[0]], Sort='', Width=1, Color='black', Style="-",
+            TriLine(Points=[Middle[0], Middle[1], Middle[2], Middle[0]], Sort='', Width=1, Color='black', Style='-',
                     Alpha=0.7,
                     Label=''))
 
@@ -3335,26 +3276,26 @@ class MudStone(AppForm, Tool):
 
             if i % 2 == 0:
                 tmp.append(
-                    TriLine(Points=[Gap50[i], Gap50[i + 1]], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                    TriLine(Points=[Gap50[i], Gap50[i + 1]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                             Label=''))
                 tmp.append(
-                    TriLine(Points=[Gap25[i], Gap25[i + 1]], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                    TriLine(Points=[Gap25[i], Gap25[i + 1]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                             Label=''))
 
         # 中心外延线条绘制
         for i in range(len(Middle)):
-            tmp.append(TriLine(Points=[Middle[i], Other[i]], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+            tmp.append(TriLine(Points=[Middle[i], Other[i]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                                Label=''))
 
         # 20网格线条绘制
         for i in range(len(Gap20)):
             if i <= len(Gap20) - 5:
                 tmp.append(
-                    TriLine(Points=[Gap20[i], Gap20[i + 4]], Sort='', Width=0.5, Color='grey', Style="-", Alpha=0.5,
+                    TriLine(Points=[Gap20[i], Gap20[i + 4]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
                             Label=''))
             else:
                 tmp.append(
-                    TriLine(Points=[Gap20[i], Gap20[-1 - i]], Sort='', Width=0.5, Color='grey', Style="-", Alpha=0.5,
+                    TriLine(Points=[Gap20[i], Gap20[-1 - i]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
                             Label=''))
 
         for i in tmp:
@@ -3401,6 +3342,9 @@ class MudStone(AppForm, Tool):
         self.canvas.draw()
 
 class QFL(AppForm, Tool):
+
+
+    reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'
     _df = pd.DataFrame()
     _changed = False
 
@@ -3443,7 +3387,7 @@ class QFL(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Tri")
+            #print('DataFrame recieved to Tri')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3466,17 +3410,17 @@ class QFL(AppForm, Tool):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Tri)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Tri)  # int
 
-        self.Tag_cb = QCheckBox("&Tag")
+        self.Tag_cb = QCheckBox('&Tag')
         self.Tag_cb.setChecked(True)
         self.Tag_cb.stateChanged.connect(self.Tri)  # int
 
@@ -3497,26 +3441,6 @@ class QFL(AppForm, Tool):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
-        self.statusBar().addWidget(self.status_text, 1)
-
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
     def Tri(self):
 
@@ -3532,7 +3456,7 @@ class QFL(AppForm, Tool):
 
 
         s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
-                     Style="-",
+                     Style='-',
                      Alpha=0.7, Label='')]
         for i in s:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
@@ -3543,11 +3467,11 @@ class QFL(AppForm, Tool):
                                textcoords='offset points',
                                fontsize=16, )
 
-        a = [TriLine(Points=[(85, 15, 0), (0, 3, 97)], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+        a = [TriLine(Points=[(85, 15, 0), (0, 3, 97)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                      Label=''),
-             TriLine(Points=[(45, 0, 55), (0, 75, 25)], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+             TriLine(Points=[(45, 0, 55), (0, 75, 25)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                      Label=''),
-             TriLine(Points=[(50, 50, 0), (0, 75, 25)], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+             TriLine(Points=[(50, 50, 0), (0, 75, 25)], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                      Label='')]
 
         for i in a:
@@ -3567,9 +3491,9 @@ class QFL(AppForm, Tool):
 
         T7 = self.TriCross(A=[T2, T3], B=[T5, T6])
 
-        b = [TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+        b = [TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                      Label=''),
-             TriLine(Points=[T7, (0, 63, 37)], Sort='', Width=1, Color='black', Style=":", Alpha=0.7,
+             TriLine(Points=[T7, (0, 63, 37)], Sort='', Width=1, Color='black', Style=':', Alpha=0.7,
                      Label='')]
 
         for i in b:
@@ -3587,7 +3511,7 @@ class QFL(AppForm, Tool):
 
         p4 = self.TriCross(A=[p0, p1], B=[p2, p3])
 
-        c = [TriLine(Points=[(18, 0, 82), p4], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+        c = [TriLine(Points=[(18, 0, 82), p4], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                      Label='')]
 
         for i in c:
@@ -3641,6 +3565,7 @@ class QFL(AppForm, Tool):
         self.canvas.draw()
 
 class QmFLt(AppForm, Tool):
+    reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'
     _df = pd.DataFrame()
     _changed = False
 
@@ -3699,7 +3624,7 @@ class QmFLt(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Tri")
+            #print('DataFrame recieved to Tri')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3722,17 +3647,17 @@ class QmFLt(AppForm, Tool):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Tri)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Tri)  # int
 
-        self.Tag_cb = QCheckBox("&Tag")
+        self.Tag_cb = QCheckBox('&Tag')
         self.Tag_cb.setChecked(True)
         self.Tag_cb.stateChanged.connect(self.Tri)  # int
 
@@ -3753,26 +3678,7 @@ class QmFLt(AppForm, Tool):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
-        self.statusBar().addWidget(self.status_text, 1)
 
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
     def Tri(self):
 
@@ -3788,7 +3694,7 @@ class QmFLt(AppForm, Tool):
 
 
         s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
-                     Style="-",
+                     Style='-',
                      Alpha=0.7, Label='')]
         for i in s:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
@@ -3799,7 +3705,7 @@ class QmFLt(AppForm, Tool):
                                textcoords='offset points',
                                fontsize=16, )
 
-        a = [TriLine(Points=[(77, 23, 0), (0, 11, 89)], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+        a = [TriLine(Points=[(77, 23, 0), (0, 11, 89)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                      Label='')]
 
         for i in a:
@@ -3829,19 +3735,19 @@ class QmFLt(AppForm, Tool):
 
         T8 = self.TriCross(A=[T0, T1], B=[T5, T6])
 
-        b = [TriLine(Points=[T4, T2], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+        b = [TriLine(Points=[T4, T2], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                      Label=''),
 
-             TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+             TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                      Label=''),
 
-             TriLine(Points=[T7, T3], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+             TriLine(Points=[T7, T3], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                      Label=''),
 
-             TriLine(Points=[T8, T7], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+             TriLine(Points=[T8, T7], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                      Label=''),
 
-             TriLine(Points=[T7, (0, 68, 32)], Sort='', Width=1, Color='black', Style=":", Alpha=0.7,
+             TriLine(Points=[T7, (0, 68, 32)], Sort='', Width=1, Color='black', Style=':', Alpha=0.7,
                      Label=''), ]
 
         for i in b:
@@ -3857,7 +3763,7 @@ class QmFLt(AppForm, Tool):
 
         T12 = self.TriCross(A=[T10, T11], B=[T0, T1])
 
-        c = [TriLine(Points=[T9, T12], Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+        c = [TriLine(Points=[T9, T12], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                      Label=''), ]
 
         for i in c:
@@ -3879,10 +3785,10 @@ class QmFLt(AppForm, Tool):
 
         T15 = self.TriCross(A=[T10, T11], B=[T13, T14])
 
-        k = [TriLine(Points=[T15, T13], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+        k = [TriLine(Points=[T15, T13], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                      Label=''),
 
-             TriLine(Points=[T15, T14], Sort='', Width=1, Color='black', Style=":", Alpha=0.7,
+             TriLine(Points=[T15, T14], Sort='', Width=1, Color='black', Style=':', Alpha=0.7,
                      Label=''), ]
 
         for i in k:
@@ -3894,7 +3800,7 @@ class QmFLt(AppForm, Tool):
 
         T17 = self.TriCross(A=[T10, T16], B=[T0, T1])
 
-        k = [TriLine(Points=[T17, T10], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+        k = [TriLine(Points=[T17, T10], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                      Label=''), ]
 
         for i in k:
@@ -3908,7 +3814,7 @@ class QmFLt(AppForm, Tool):
 
         T20 = self.TriCross(A=[T10, T11], B=[T18, T19])
 
-        k = [TriLine(Points=[T18, T20], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+        k = [TriLine(Points=[T18, T20], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                      Label=''), ]
         for i in k:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
@@ -3919,7 +3825,7 @@ class QmFLt(AppForm, Tool):
 
         T23 = self.TriCross(A=[T10, T11], B=[T21, T22])
 
-        k = [TriLine(Points=[T23, T21], Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+        k = [TriLine(Points=[T23, T21], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                      Label=''), ]
         for i in k:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
@@ -3959,43 +3865,43 @@ class QmFLt(AppForm, Tool):
 class CIPW(AppForm):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
 
-    Minerals = ["Quartz",
-                "Zircon",
-                "K2SiO3",
-                "Anorthite",
-                "Na2SiO3",
-                "Acmite",
-                "Diopside",
-                "Sphene",
-                "Hypersthene",
-                "Albite",
-                "Orthoclase",
-                "Wollastonite",
-                "Olivine",
-                "Perovskite",
-                "Nepheline",
-                "Leucite",
-                "Larnite",
-                "Kalsilite",
-                "Apatite",
-                "Halite",
-                "Fluorite",
-                "Anhydrite",
-                "Thenardite",
-                "Pyrite",
-                "Magnesiochromite",
-                "Chromite",
-                "Ilmenite",
-                "Calcite",
-                "Na2CO3",
-                "Corundum",
-                "Rutile",
-                "Magnetite",
-                "Hematite",
-                "Q",
-                "A",
-                "P",
-                "F",]
+    Minerals = ['Quartz',
+                'Zircon',
+                'K2SiO3',
+                'Anorthite',
+                'Na2SiO3',
+                'Acmite',
+                'Diopside',
+                'Sphene',
+                'Hypersthene',
+                'Albite',
+                'Orthoclase',
+                'Wollastonite',
+                'Olivine',
+                'Perovskite',
+                'Nepheline',
+                'Leucite',
+                'Larnite',
+                'Kalsilite',
+                'Apatite',
+                'Halite',
+                'Fluorite',
+                'Anhydrite',
+                'Thenardite',
+                'Pyrite',
+                'Magnesiochromite',
+                'Chromite',
+                'Ilmenite',
+                'Calcite',
+                'Na2CO3',
+                'Corundum',
+                'Rutile',
+                'Magnetite',
+                'Hematite',
+                'Q',
+                'A',
+                'P',
+                'F',]
 
     Calced = ['Fe3+/(Total Fe) in rock',
               'Mg/(Mg+Total Fe) in rock',
@@ -4018,7 +3924,7 @@ class CIPW(AppForm):
         self.raw = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved")
+            #print('DataFrame recieved')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -4027,14 +3933,14 @@ class CIPW(AppForm):
         self.main_frame = QWidget()
         self.dpi = 128
 
-        self.save_button = QPushButton("&Save Result")
+        self.save_button = QPushButton('&Save Result')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.qapf_button = QPushButton("&QAPF")
+        self.qapf_button = QPushButton('&QAPF')
         self.qapf_button.clicked.connect(self.QAPF)
 
         self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName("tableView")
+        self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
 
         self.ChooseItems = ['Mass', 'Volume', 'Mole', 'Index']
@@ -4066,69 +3972,43 @@ class CIPW(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your Result.")
-        self.statusBar().addWidget(self.status_text, 1)
 
-    def add_actions(self, target, actions):
-        for action in actions:
-            if action is None:
-                target.addSeparator()
-            else:
-                target.addAction(action)
-
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
     def Calc(self):
 
-        self.DataBase.update({"Quartz": [60.0843, 2.65]})
-        self.DataBase.update({"Zircon": [183.3031, 4.56]})
-        self.DataBase.update({"K2SiO3": [154.2803, 2.5]})
-        self.DataBase.update({"Anorthite": [278.2093, 2.76]})
-        self.DataBase.update({"Na2SiO3": [122.0632, 2.4]})
-        self.DataBase.update({"Acmite": [462.0083, 3.6]})
-        self.DataBase.update({"Diopside": [229.0691997, 3.354922069]})
-        self.DataBase.update({"Sphene": [196.0625, 3.5]})
-        self.DataBase.update({"Hypersthene": [112.9054997, 3.507622212]})
-        self.DataBase.update({"Albite": [524.446, 2.62]})
-        self.DataBase.update({"Orthoclase": [556.6631, 2.56]})
-        self.DataBase.update({"Wollastonite": [116.1637, 2.86]})
-        self.DataBase.update({"Olivine": [165.7266995, 3.68429065]})
-        self.DataBase.update({"Perovskite": [135.9782, 4]})
-        self.DataBase.update({"Nepheline": [284.1088, 2.56]})
-        self.DataBase.update({"Leucite": [436.4945, 2.49]})
-        self.DataBase.update({"Larnite": [172.2431, 3.27]})
-        self.DataBase.update({"Kalsilite": [316.3259, 2.6]})
-        self.DataBase.update({"Apatite": [493.3138, 3.2]})
-        self.DataBase.update({"Halite": [66.44245, 2.17]})
-        self.DataBase.update({"Fluorite": [94.0762, 3.18]})
-        self.DataBase.update({"Anhydrite": [136.1376, 2.96]})
-        self.DataBase.update({"Thenardite": [142.0371, 2.68]})
-        self.DataBase.update({"Pyrite": [135.9664, 4.99]})
-        self.DataBase.update({"Magnesiochromite": [192.2946, 4.43]})
-        self.DataBase.update({"Chromite": [223.8366, 5.09]})
-        self.DataBase.update({"Ilmenite": [151.7452, 4.75]})
-        self.DataBase.update({"Calcite": [100.0892, 2.71]})
-        self.DataBase.update({"Na2CO3": [105.9887, 2.53]})
-        self.DataBase.update({"Corundum": [101.9613, 3.98]})
-        self.DataBase.update({"Rutile": [79.8988, 4.2]})
-        self.DataBase.update({"Magnetite": [231.5386, 5.2]})
-        self.DataBase.update({"Hematite": [159.6922, 5.25]})
+        self.DataBase.update({'Quartz': [60.0843, 2.65]})
+        self.DataBase.update({'Zircon': [183.3031, 4.56]})
+        self.DataBase.update({'K2SiO3': [154.2803, 2.5]})
+        self.DataBase.update({'Anorthite': [278.2093, 2.76]})
+        self.DataBase.update({'Na2SiO3': [122.0632, 2.4]})
+        self.DataBase.update({'Acmite': [462.0083, 3.6]})
+        self.DataBase.update({'Diopside': [229.0691997, 3.354922069]})
+        self.DataBase.update({'Sphene': [196.0625, 3.5]})
+        self.DataBase.update({'Hypersthene': [112.9054997, 3.507622212]})
+        self.DataBase.update({'Albite': [524.446, 2.62]})
+        self.DataBase.update({'Orthoclase': [556.6631, 2.56]})
+        self.DataBase.update({'Wollastonite': [116.1637, 2.86]})
+        self.DataBase.update({'Olivine': [165.7266995, 3.68429065]})
+        self.DataBase.update({'Perovskite': [135.9782, 4]})
+        self.DataBase.update({'Nepheline': [284.1088, 2.56]})
+        self.DataBase.update({'Leucite': [436.4945, 2.49]})
+        self.DataBase.update({'Larnite': [172.2431, 3.27]})
+        self.DataBase.update({'Kalsilite': [316.3259, 2.6]})
+        self.DataBase.update({'Apatite': [493.3138, 3.2]})
+        self.DataBase.update({'Halite': [66.44245, 2.17]})
+        self.DataBase.update({'Fluorite': [94.0762, 3.18]})
+        self.DataBase.update({'Anhydrite': [136.1376, 2.96]})
+        self.DataBase.update({'Thenardite': [142.0371, 2.68]})
+        self.DataBase.update({'Pyrite': [135.9664, 4.99]})
+        self.DataBase.update({'Magnesiochromite': [192.2946, 4.43]})
+        self.DataBase.update({'Chromite': [223.8366, 5.09]})
+        self.DataBase.update({'Ilmenite': [151.7452, 4.75]})
+        self.DataBase.update({'Calcite': [100.0892, 2.71]})
+        self.DataBase.update({'Na2CO3': [105.9887, 2.53]})
+        self.DataBase.update({'Corundum': [101.9613, 3.98]})
+        self.DataBase.update({'Rutile': [79.8988, 4.2]})
+        self.DataBase.update({'Magnetite': [231.5386, 5.2]})
+        self.DataBase.update({'Hematite': [159.6922, 5.25]})
         self.b = self.raw.columns
         self.WeightCorrectionFactor = []
         self.BaseMass = {}
@@ -4211,9 +4091,9 @@ class CIPW(AppForm):
 
 
             for j in self.Elements:
-                """
+                '''
                 Get the Whole Mole of the dataset
-                """
+                '''
 
                 try:
                     T_TMP = self.raw.at[i, j]
@@ -4252,9 +4132,9 @@ class CIPW(AppForm):
             self.WeightCorrectionFactor.append(100 / TmpWhole)
 
             for j in self.Elements:
-                """
+                '''
                 Get the Mole percentage of each element
-                """
+                '''
 
                 try:
                     T_TMP = self.raw.at[i, j]
@@ -4384,7 +4264,7 @@ class CIPW(AppForm):
 
             Fluorite = self.DataCalculating['F'][i]
 
-            # =IF(V17>0,IF(V13>=V17,"Thenardite",IF(V13>0,"Both","Anhydrite")),"None")
+            # =IF(V17>0,IF(V13>=V17,'Thenardite',IF(V13>0,'Both','Anhydrite')),'None')
             AorT = 0
             if self.DataCalculating['SO3'][i] <= 0:
                 AorT = 'None'
@@ -4397,8 +4277,8 @@ class CIPW(AppForm):
                     else:
                         AorT = 'Anhydrite'
 
-            # =IF(W26="Anhydrite",V17,IF(W26="Both",V12,0))
-            # =IF(W26="Thenardite",V17,IF(W26="Both",V17-W17,0))
+            # =IF(W26='Anhydrite',V17,IF(W26='Both',V12,0))
+            # =IF(W26='Thenardite',V17,IF(W26='Both',V17-W17,0))
 
             if AorT == 'Anhydrite':
                 self.DataCalculating['Sr'][i] = 0
@@ -4428,7 +4308,7 @@ class CIPW(AppForm):
             else:
                 self.DataCalculating['FeO'][i] = 0
 
-            # =IF(X24>0,IF(X9>=X24,"Chromite",IF(X9>0,"Both","Magnesiochromite")),"None")
+            # =IF(X24>0,IF(X9>=X24,'Chromite',IF(X9>0,'Both','Magnesiochromite')),'None')
 
             if self.DataCalculating['Cr'][i] > 0:
                 if self.DataCalculating['FeO'][i] >= self.DataCalculating['Cr'][i]:
@@ -4440,8 +4320,8 @@ class CIPW(AppForm):
             else:
                 CorM = 'None'
 
-            # =IF(Y26="Chromite",X24,IF(Y26="Both",X9,0))
-            # =IF(Y26="Magnesiochromite",X24,IF(Y26="Both",X24-Y24,0))
+            # =IF(Y26='Chromite',X24,IF(Y26='Both',X9,0))
+            # =IF(Y26='Magnesiochromite',X24,IF(Y26='Both',X24-Y24,0))
 
             if CorM == 'Chromite':
                 self.DataCalculating['Cr'][i] = self.DataCalculating['Cr'][i]
@@ -4471,7 +4351,7 @@ class CIPW(AppForm):
             else:
                 self.DataCalculating['FeO'][i] = 0
 
-            # =IF(Y6>0,IF(Y9>=Y6,"Ilmenite",IF(Y9>0,"Both","Sphene")),"None")
+            # =IF(Y6>0,IF(Y9>=Y6,'Ilmenite',IF(Y9>0,'Both','Sphene')),'None')
 
             if self.DataCalculating['TiO2'][i] < 0:
                 IorS = 'None'
@@ -4484,8 +4364,8 @@ class CIPW(AppForm):
                     else:
                         IorS = 'Sphene'
 
-            # =IF(Z26="Ilmenite",Y6,IF(Z26="Both",Y9,0))
-            # =IF(Z26="Sphene",Y6,IF(Z26="Both",Y6-Z6,0))
+            # =IF(Z26='Ilmenite',Y6,IF(Z26='Both',Y9,0))
+            # =IF(Z26='Sphene',Y6,IF(Z26='Both',Y6-Z6,0))
 
             if IorS == 'Ilmenite':
                 self.DataCalculating['TiO2'][i] = self.DataCalculating['TiO2'][i]
@@ -4508,7 +4388,7 @@ class CIPW(AppForm):
 
             Ilmenite = self.DataCalculating['TiO2'][i]
 
-            # =IF(Z16>0,IF(Z12>=Z16,"Calcite",IF(Z12>0,"Both","Na2CO3")),"None")
+            # =IF(Z16>0,IF(Z12>=Z16,'Calcite',IF(Z12>0,'Both','Na2CO3')),'None')
 
 
             if self.DataCalculating['CO2'][i] <= 0:
@@ -4522,10 +4402,10 @@ class CIPW(AppForm):
                     else:
                         CorN = 'Na2CO3'
 
-            # =IF(AA26="Calcite",Z16,IF(AA26="Both",Z12,0))
+            # =IF(AA26='Calcite',Z16,IF(AA26='Both',Z12,0))
 
 
-            # =IF(AA26="Na2CO3",Z16,IF(AA26="Both",Z16-AA16,0))
+            # =IF(AA26='Na2CO3',Z16,IF(AA26='Both',Z16-AA16,0))
 
             if CorN == 'None':
                 self.DataCalculating['CO2'][i] = 0
@@ -4558,7 +4438,7 @@ class CIPW(AppForm):
             self.DataCalculating['SiO2'][i] -= self.DataCalculating['Zr'][i]
             Zircon = self.DataCalculating['Zr'][i]
 
-            # =IF(AB14>0,IF(AB7>=AB14,"Orthoclase",IF(AB7>0,"Both","K2SiO3")),"None")
+            # =IF(AB14>0,IF(AB7>=AB14,'Orthoclase',IF(AB7>0,'Both','K2SiO3')),'None')
 
             if self.DataCalculating['K2O'][i] <= 0:
                 OorK = 'None'
@@ -4571,8 +4451,8 @@ class CIPW(AppForm):
                     else:
                         OorK = 'K2SiO3'
 
-            # =IF(AC26="Orthoclase",AB14,IF(AC26="Both",AB7,0))
-            # =IF(AC26="K2SiO3",AB14,IF(AC26="Both",AB14-AB7,0))
+            # =IF(AC26='Orthoclase',AB14,IF(AC26='Both',AB7,0))
+            # =IF(AC26='K2SiO3',AB14,IF(AC26='Both',AB14-AB7,0))
 
             if OorK == 'None':
                 self.DataCalculating['K2O'][i] = 0
@@ -4597,7 +4477,7 @@ class CIPW(AppForm):
 
             self.DataCalculating['Al2O3'][i] -= self.DataCalculating['K2O'][i]
 
-            # =IF(AC13>0,IF(AC7>=AC13,"Albite",IF(AC7>0,"Both","Na2SiO3")),"None")
+            # =IF(AC13>0,IF(AC7>=AC13,'Albite',IF(AC7>0,'Both','Na2SiO3')),'None')
 
             if self.DataCalculating['Na2O'][i] <= 0:
                 AorN = 'None'
@@ -4618,8 +4498,8 @@ class CIPW(AppForm):
             else:
                 self.DataCalculating['Al2O3'][i] = 0
 
-            # =IF(AD26="Albite",AC13,IF(AD26="Both",AC7,0))
-            # =IF(AD26="Na2SiO3",AC13,IF(AD26="Both",AC13-AD13,0))
+            # =IF(AD26='Albite',AC13,IF(AD26='Both',AC7,0))
+            # =IF(AD26='Na2SiO3',AC13,IF(AD26='Both',AC13-AD13,0))
 
 
             if AorN == 'Albite':
@@ -4637,10 +4517,10 @@ class CIPW(AppForm):
                 self.DataCalculating['Na2O'][i] = 0
                 self.DataCalculating['Cl'][i] = 0
 
-            # =IF(AD7>0,IF(AD12>0,"Anorthite","None"),"None")
+            # =IF(AD7>0,IF(AD12>0,'Anorthite','None'),'None')
 
-            """
-            Seem like should be =IF(AD7>0,IF(AD12>AD7,"Anorthite","Corundum"),"None")
+            '''
+            Seem like should be =IF(AD7>0,IF(AD12>AD7,'Anorthite','Corundum'),'None')
 
             If Al2O3 is left after alloting orthoclase and albite, then:
             Anorthite = Al2O3, CaO = CaO - Al2O3, SiO2 = SiO2 - 2 Al2O3, Al2O3 = 0
@@ -4657,7 +4537,7 @@ class CIPW(AppForm):
                     else:
                         Aorc='Corundum'
 
-            """
+            '''
 
             if self.DataCalculating['Al2O3'][i] <= 0:
                 AorC = 'None'
@@ -4667,11 +4547,11 @@ class CIPW(AppForm):
                 else:
                     Aorc = 'None'
 
-            # =IF(AE26="Anorthite",IF(AD12>AD7,0,AD7-AD12),AD7)
+            # =IF(AE26='Anorthite',IF(AD12>AD7,0,AD7-AD12),AD7)
 
-            # =IF(AE26="Anorthite",IF(AD7>AD12,0,AD12-AD7),AD12)
+            # =IF(AE26='Anorthite',IF(AD7>AD12,0,AD12-AD7),AD12)
 
-            # =IF(AE26="Anorthite",IF(AD7>AD12,AD12,AD7),0)
+            # =IF(AE26='Anorthite',IF(AD7>AD12,AD12,AD7),0)
 
             if AorC == 'Anorthite':
                 if self.DataCalculating['Al2O3'][i] >= self.DataCalculating['CaO'][i]:
@@ -4690,7 +4570,7 @@ class CIPW(AppForm):
             Corundum = self.DataCalculating['Al2O3'][i]
             Anorthite = self.DataCalculating['Sr'][i]
 
-            # =IF(AE10>0,IF(AE12>=AE10,"Sphene",IF(AE12>0,"Both","Rutile")),"None")
+            # =IF(AE10>0,IF(AE12>=AE10,'Sphene',IF(AE12>0,'Both','Rutile')),'None')
 
             if self.DataCalculating['MnO'][i] <= 0:
                 SorR = 'None'
@@ -4702,9 +4582,9 @@ class CIPW(AppForm):
                 else:
                     SorR = 'Rutile'
 
-            # =IF(AF26="Sphene",AE10,IF(AF26="Both",AE12,0))
+            # =IF(AF26='Sphene',AE10,IF(AF26='Both',AE12,0))
 
-            # =IF(AF26="Rutile",AE10,IF(AF26="Both",AE10-AE12,0))
+            # =IF(AF26='Rutile',AE10,IF(AF26='Both',AE10-AE12,0))
 
             if SorR == 'Sphene':
                 self.DataCalculating['MnO'][i] = self.DataCalculating['MnO'][i]
@@ -4727,7 +4607,7 @@ class CIPW(AppForm):
 
             Rutile = self.DataCalculating['S'][i]
 
-            # =IF(AND(AF20>0),IF(AF8>=AF20,"Acmite",IF(AF8>0,"Both","Na2SiO3")),"None")
+            # =IF(AND(AF20>0),IF(AF8>=AF20,'Acmite',IF(AF8>0,'Both','Na2SiO3')),'None')
 
             if self.DataCalculating['Cl'][i] <= 0:
                 ACorN = 'None'
@@ -4740,10 +4620,10 @@ class CIPW(AppForm):
                     else:
                         ACorN = 'Na2SiO3'
 
-            # =IF(AG26="Acmite",AF20,IF(AG26="Both",AF8,0))
+            # =IF(AG26='Acmite',AF20,IF(AG26='Both',AF8,0))
 
 
-            # =IF(AG26="Na2SiO3",AF20,IF(AG26="Both",AF20-AG19,0))
+            # =IF(AG26='Na2SiO3',AF20,IF(AG26='Both',AF20-AG19,0))
 
             if ACorN == 'Acmite':
                 self.DataCalculating['F'][i] = self.DataCalculating['Cl'][i]
@@ -4765,7 +4645,7 @@ class CIPW(AppForm):
 
             Acmite = self.DataCalculating['F'][i]
 
-            # =IF(AG8>0,IF(AG9>=AG8,"Magnetite",IF(AG9>0,"Both","Hematite")),"None")
+            # =IF(AG8>0,IF(AG9>=AG8,'Magnetite',IF(AG9>0,'Both','Hematite')),'None')
 
 
             if self.DataCalculating['Fe2O3'][i] <= 0:
@@ -4779,8 +4659,8 @@ class CIPW(AppForm):
                     else:
                         MorH = 'Hematite'
 
-            # =IF(AH26="Magnetite",AG8,IF(AH26="Both",AG9,0))
-            # =IF(AH26="Hematite",AG8,IF(AH26="Both",AG8-AG9,0))
+            # =IF(AH26='Magnetite',AG8,IF(AH26='Both',AG9,0))
+            # =IF(AH26='Hematite',AG8,IF(AH26='Both',AG8-AG9,0))
 
 
 
@@ -4821,7 +4701,7 @@ class CIPW(AppForm):
 
             self.DataCalculating['MgO'][i] = 0
 
-            # =IF(AI12>0,IF(AI9>=AI12,"Diopside",IF(AI9>0,"Both","Wollastonite")),"None")
+            # =IF(AI12>0,IF(AI9>=AI12,'Diopside',IF(AI9>0,'Both','Wollastonite')),'None')
 
 
             if self.DataCalculating['CaO'][i] <= 0:
@@ -4835,9 +4715,9 @@ class CIPW(AppForm):
                     else:
                         DorW = 'Wollastonite'
 
-            # =IF(AJ26="Diopside",AI12,IF(AJ26="Both",AI9,0))
+            # =IF(AJ26='Diopside',AI12,IF(AJ26='Both',AI9,0))
 
-            # =IF(AJ26="Wollastonite",AI12,IF(AJ26="Both",AI12-AI9,0))
+            # =IF(AJ26='Wollastonite',AI12,IF(AJ26='Both',AI12-AI9,0))
 
 
 
@@ -4899,7 +4779,7 @@ class CIPW(AppForm):
             else:
                 Quartz = 0
 
-            # =IF(AL13>0,IF(AL5>=0,"Hypersthene",IF(AL13+(2*AL5)>0,"Both","Olivine")),"None")
+            # =IF(AL13>0,IF(AL5>=0,'Hypersthene',IF(AL13+(2*AL5)>0,'Both','Olivine')),'None')
 
             if Hypersthene <= 0:
                 HorO = 'None'
@@ -4912,8 +4792,8 @@ class CIPW(AppForm):
                     else:
                         HorO = 'Olivine'
 
-            # =IF(AN26="Hypersthene",AL13,IF(AN26="Both",AL13+(2*AL5),0))
-            # =IF(AN26="Olivine",AL13*0.5,IF(AN26="Both",ABS(AL5),0))
+            # =IF(AN26='Hypersthene',AL13,IF(AN26='Both',AL13+(2*AL5),0))
+            # =IF(AN26='Olivine',AL13*0.5,IF(AN26='Both',ABS(AL5),0))
             Old_Hypersthene = Hypersthene
             if HorO == 'Hypersthene':
                 Hypersthene = Hypersthene
@@ -4934,7 +4814,7 @@ class CIPW(AppForm):
             # =AL5+AL13-(AN13+AN17)
             Quartz += Old_Hypersthene - (Hypersthene + Olivine)
 
-            # =IF(AL12>0,IF(AN5>=0,"Sphene",IF(AL12+AN5>0,"Both","Perovskite")),"None")
+            # =IF(AL12>0,IF(AN5>=0,'Sphene',IF(AL12+AN5>0,'Both','Perovskite')),'None')
 
             if Sphene <= 0:
                 SorP = 'None'
@@ -4947,8 +4827,8 @@ class CIPW(AppForm):
                     else:
                         SorP = 'Perovskite'
 
-            # =IF(AO26="Sphene",AL12,IF(AO26="Both",AL12+AN5,0))
-            # =IF(AO26="Perovskite",AL12,IF(AO26="Both",AL12-AO12,0))
+            # =IF(AO26='Sphene',AL12,IF(AO26='Both',AL12+AN5,0))
+            # =IF(AO26='Perovskite',AL12,IF(AO26='Both',AL12-AO12,0))
 
             Old_Sphene = Sphene
 
@@ -4970,7 +4850,7 @@ class CIPW(AppForm):
 
             Quartz += Old_Sphene - Sphene
 
-            # =IF(AL14>0,IF(AO5>=0,"Albite",IF(AL14+(AO5/4)>0,"Both","Nepheline")),"None")
+            # =IF(AL14>0,IF(AO5>=0,'Albite',IF(AL14+(AO5/4)>0,'Both','Nepheline')),'None')
 
 
             if Albite <= 0:
@@ -4987,8 +4867,8 @@ class CIPW(AppForm):
             # =AO5+(6*AL14)-(AP14*6)-(AP19*2)
 
 
-            # =IF(AP26="Albite",AL14,IF(AP26="Both",AL14+(AO5/4),0))
-            # =IF(AP26="Nepheline",AL14,IF(AP26="Both",AL14-AP14,0))
+            # =IF(AP26='Albite',AL14,IF(AP26='Both',AL14+(AO5/4),0))
+            # =IF(AP26='Nepheline',AL14,IF(AP26='Both',AL14-AP14,0))
 
 
             Old_Albite = Albite
@@ -5018,7 +4898,7 @@ class CIPW(AppForm):
             else:
                 self.DataCalced[k].update({'Plagioclase An content': 100 * Anorthite / (Anorthite + 2 * Albite)})
 
-            # =IF(AL15>0,IF(AP5>=0,"Orthoclase",IF(AL15+(AP5/2)>0,"Both","Leucite")),"None")
+            # =IF(AL15>0,IF(AP5>=0,'Orthoclase',IF(AL15+(AP5/2)>0,'Both','Leucite')),'None')
 
             if Orthoclase <= 0:
                 OorL = 'None'
@@ -5031,8 +4911,8 @@ class CIPW(AppForm):
                     else:
                         OorL = 'Leucite'
 
-            # =IF(AQ26="Orthoclase",AL15,IF(AQ26="Both",AL15+(AP5/2),0))
-            # =IF(AQ26="Leucite",AL15,IF(AQ26="Both",AL15-AQ15,0))
+            # =IF(AQ26='Orthoclase',AL15,IF(AQ26='Both',AL15+(AP5/2),0))
+            # =IF(AQ26='Leucite',AL15,IF(AQ26='Both',AL15-AQ15,0))
 
             Old_Orthoclase = Orthoclase
 
@@ -5056,7 +4936,7 @@ class CIPW(AppForm):
 
             Quartz += (Old_Orthoclase * 6) - (Orthoclase * 6) - (Leucite * 4)
 
-            # =IF(AL16>0,IF(AQ5>=0,"Wollastonite",IF(AL16+(AQ5*2)>0,"Both","Larnite")),"None")
+            # =IF(AL16>0,IF(AQ5>=0,'Wollastonite',IF(AL16+(AQ5*2)>0,'Both','Larnite')),'None')
             if Wollastonite <= 0:
                 WorB = 'None'
             else:
@@ -5068,8 +4948,8 @@ class CIPW(AppForm):
                     else:
                         WorB = 'Larnite'
 
-            # =IF(AR26="Wollastonite",AL16,IF(AR26="Both",AL16+(2*AQ5),0))
-            # =IF(AR26="Larnite",AL16/2,IF(AR26="Both",(AL16-AR16)/2,0))
+            # =IF(AR26='Wollastonite',AL16,IF(AR26='Both',AL16+(2*AQ5),0))
+            # =IF(AR26='Larnite',AL16/2,IF(AR26='Both',(AL16-AR16)/2,0))
 
             Old_Wollastonite = Wollastonite
             if WorB == 'Wollastonite':
@@ -5091,7 +4971,7 @@ class CIPW(AppForm):
             # =AQ5+AL16-AR16-AR21
             Quartz += Old_Wollastonite - Wollastonite - Larnite
 
-            # =IF(AL11>0,IF(AR5>=0,"Diopside",IF(AL11+AR5>0,"Both","LarniteOlivine")),"None")
+            # =IF(AL11>0,IF(AR5>=0,'Diopside',IF(AL11+AR5>0,'Both','LarniteOlivine')),'None')
 
             if Diopside <= 0:
                 DorL = 'None'
@@ -5104,9 +4984,9 @@ class CIPW(AppForm):
                     else:
                         DorL = 'LarniteOlivine'
 
-            # =IF(AS26="Diopside",AL11,IF(AS26="Both",AL11+AR5,0))
-            # =(IF(AS26="LarniteOlivine",AL11/2,IF(AS26="Both",(AL11-AS11)/2,0)))+AN17
-            # =(IF(AS26="LarniteOlivine",AL11/2,IF(AS26="Both",(AL11-AS11)/2,0)))+AR21
+            # =IF(AS26='Diopside',AL11,IF(AS26='Both',AL11+AR5,0))
+            # =(IF(AS26='LarniteOlivine',AL11/2,IF(AS26='Both',(AL11-AS11)/2,0)))+AN17
+            # =(IF(AS26='LarniteOlivine',AL11/2,IF(AS26='Both',(AL11-AS11)/2,0)))+AR21
 
             Old_Diopside = Diopside
             Old_Larnite = Larnite
@@ -5134,7 +5014,7 @@ class CIPW(AppForm):
             # =AR5+(AL11*2)+AN17+AR21-AS21-(AS11*2)-AS17
             Quartz += (Old_Diopside * 2) + Old_Olivine + Old_Larnite - Larnite - (Diopside * 2) - Olivine
 
-            # =IF(AQ20>0,IF(AS5>=0,"Leucite",IF(AQ20+(AS5/2)>0,"Both","Kalsilite")),"None")
+            # =IF(AQ20>0,IF(AS5>=0,'Leucite',IF(AQ20+(AS5/2)>0,'Both','Kalsilite')),'None')
 
             if Leucite <= 0:
                 LorK = 'None'
@@ -5147,8 +5027,8 @@ class CIPW(AppForm):
                     else:
                         LorK = 'Kalsilite'
 
-            # =IF(AT26="Leucite",AQ20,IF(AT26="Both",AQ20+(AS5/2),0))
-            # =IF(AT26="Kalsilite",AQ20,IF(AT26="Both",AQ20-AT20,0))
+            # =IF(AT26='Leucite',AQ20,IF(AT26='Both',AQ20+(AS5/2),0))
+            # =IF(AT26='Kalsilite',AQ20,IF(AT26='Both',AQ20-AT20,0))
 
 
             Old_Leucite = Leucite
@@ -5178,42 +5058,42 @@ class CIPW(AppForm):
             F = Nepheline + Leucite + Kalsilite
 
             for i in self.Minerals:
-                exec('self.DataResult[k].update({\"' + i + '\":' + i + '}) ')
+                exec('self.DataResult[k].update({\'' + i + '\':' + i + '}) ')
 
                 if i =='Q':
-                    m = "Quartz"
+                    m = 'Quartz'
 
-                    exec('self.DataWeight[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + m + '\"][0]}) ')
+                    exec('self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) ')
 
-                    exec('self.DataVolume[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + m + '\"][0]/self.DataBase[\"' + m + '\"][1]}) ')
+                    exec('self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]/self.DataBase[\'' + m + '\'][1]}) ')
 
 
 
                 elif i =='A':
-                    m= "Orthoclase"
+                    m= 'Orthoclase'
 
-                    exec('self.DataWeight[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + m + '\"][0]}) ')
+                    exec('self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) ')
                     exec(
-                        'self.DataVolume[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + m + '\"][0]/self.DataBase[\"' + m + '\"][1]}) ')
+                        'self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]/self.DataBase[\'' + m + '\'][1]}) ')
 
 
                 elif i =='P':
-                    a= "Anorthite"
-                    b= "Albite"
+                    a= 'Anorthite'
+                    b= 'Albite'
 
-                    exec('self.DataWeight[k].update({\"' + i + '\":' + a + '*self.DataBase[\"' + a + '\"][0]+'+b + '*self.DataBase[\"' + b + '\"][0]}) ')
+                    exec('self.DataWeight[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]+'+b + '*self.DataBase[\'' + b + '\'][0]}) ')
                     exec(
-                        'self.DataVolume[k].update({\"' + i + '\":' + a + '*self.DataBase[\"' + a + '\"][0]/self.DataBase[\"' + a + '\"][1]+'+ b + '*self.DataBase[\"' + b + '\"][0]/self.DataBase[\"' + b + '\"][1]}) ')
+                        'self.DataVolume[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+'+ b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]}) ')
 
 
                 elif i =='F':
-                    a = "Nepheline"
-                    b = "Leucite"
-                    c = "Kalsilite"
+                    a = 'Nepheline'
+                    b = 'Leucite'
+                    c = 'Kalsilite'
 
-                    exec('self.DataWeight[k].update({\"' + i + '\":' + a + '*self.DataBase[\"' + a + '\"][0]+'+b + '*self.DataBase[\"' + b + '\"][0]+'+c + '*self.DataBase[\"' + c + '\"][0]}) ')
+                    exec('self.DataWeight[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]+'+b + '*self.DataBase[\'' + b + '\'][0]+'+c + '*self.DataBase[\'' + c + '\'][0]}) ')
                     exec(
-                        'self.DataVolume[k].update({\"' + i + '\":' + a + '*self.DataBase[\"' + a + '\"][0]/self.DataBase[\"' + a + '\"][1]+'+ b + '*self.DataBase[\"' + b + '\"][0]/self.DataBase[\"' + b + '\"][1]+'+ c + '*self.DataBase[\"' + c + '\"][0]/self.DataBase[\"' + c + '\"][1]}) ')
+                        'self.DataVolume[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+'+ b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]+'+ c + '*self.DataBase[\'' + c + '\'][0]/self.DataBase[\'' + c + '\'][1]}) ')
 
 
 
@@ -5222,13 +5102,13 @@ class CIPW(AppForm):
 
 
 
-                if i not in ["Q","A","P","F",]:
-                    exec('self.DataWeight[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + i + '\"][0]}) ')
-                    exec('self.DataVolume[k].update({\"' + i + '\":' + i + '*self.DataBase[\"' + i + '\"][0]/self.DataBase[\"' + i + '\"][1]}) ')
+                if i not in ['Q','A','P','F',]:
+                    exec('self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + i + '\'][0]}) ')
+                    exec('self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + i + '\'][0]/self.DataBase[\'' + i + '\'][1]}) ')
 
             self.DI = 0
             #for i in ['Quartz', 'Anorthite', 'Albite', 'Orthoclase', 'Nepheline', 'Leucite', 'Kalsilite']:
-            #exec('self.DI+=' + i + '*self.DataBase[\"' + i + '\"][0]')
+            #exec('self.DI+=' + i + '*self.DataBase[\'' + i + '\'][0]')
 
             exec('self.DI= Quartz +  Anorthite +  Albite +  Orthoclase +  Nepheline +  Leucite +  Kalsilite ')
             DI = Quartz + Anorthite + Albite + Orthoclase + Nepheline + Leucite + Kalsilite
@@ -5243,7 +5123,7 @@ class CIPW(AppForm):
         DataToWrite = []
         TMP_DataToWrite = ['Label']
 
-        TMP_DataToWrite = ["Label" ,"Marker" ,"Color" ,"Size" ,"Alpha" ,"Style" ,"Width"]
+        TMP_DataToWrite = ['Label' ,'Marker' ,'Color' ,'Size' ,'Alpha' ,'Style' ,'Width']
 
 
         for j in self.Minerals:
@@ -5268,7 +5148,7 @@ class CIPW(AppForm):
         DataToWrite = []
         TMP_DataToWrite = ['Label']
 
-        TMP_DataToWrite = ["Label", "Marker", "Color", "Size", "Alpha", "Style", "Width"]
+        TMP_DataToWrite = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
         for j in self.Calced:
             TMP_DataToWrite.append(str(j))
         DataToWrite.append(TMP_DataToWrite)
@@ -5320,7 +5200,7 @@ class CIPW(AppForm):
 
         self.newdf = pd.DataFrame.from_records(newtmp, columns=labels)
 
-        ##print('\n',tmp,"\n")
+        ##print('\n',tmp,'\n')
 
         #self.newdf = pd.DataFrame(tmp)
 
@@ -5331,16 +5211,16 @@ class CIPW(AppForm):
 
     def saveResult(self):
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          "文件保存",
-                                                          "C:/",
-                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
         if (DataFileOutput != ''):
 
-            if ("csv" in DataFileOutput):
+            if ('csv' in DataFileOutput):
                 self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
-            elif ("xls" in DataFileOutput):
+            elif ('xls' in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
     def QAPF(self):
@@ -5352,6 +5232,7 @@ class CIPW(AppForm):
         self.qapfpop.show()
 
 class QAPF(AppForm, Tool):
+    reference = 'Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
     _df = pd.DataFrame()
     _changed = False
 
@@ -5366,41 +5247,41 @@ class QAPF(AppForm, Tool):
                      (104, -1),
                      (49, -50 * np.sqrt(3) - 4)]
 
-    Labels = ["quartzolite",
+    Labels = ['quartzolite',
 
-              "quartz-rich\ngranitoid",
+              'quartz-rich\ngranitoid',
 
-              "granite",
+              'granite',
 
-              "alkali\nfeldspar\ngranite",
-              "(syeno\ngranite)",
-              "(monzo\ngranite)",
-              "granodiorite",
-              "tonalite",
+              'alkali\nfeldspar\ngranite',
+              '(syeno\ngranite)',
+              '(monzo\ngranite)',
+              'granodiorite',
+              'tonalite',
 
-              "quartz\nalkali\nfeldspar\nsyenite",
-              "quartz\nsyenite",
-              "quartz\nmonzonite",
-              "quartz\nmonzodiorite\nquartz\nmonzogabbro",
-              "quartz\ndiorite\nquartz gabbro\n quartz\nanorthosite",
+              'quartz\nalkali\nfeldspar\nsyenite',
+              'quartz\nsyenite',
+              'quartz\nmonzonite',
+              'quartz\nmonzodiorite\nquartz\nmonzogabbro',
+              'quartz\ndiorite\nquartz gabbro\n quartz\nanorthosite',
 
-              "alkali\nfeldspar\nsyenite",
-              "syenite",
-              "monzonite",
-              "monzodiorite\nmonzogabbro",
-              "diorite\ngabbro\nanorthosite",
+              'alkali\nfeldspar\nsyenite',
+              'syenite',
+              'monzonite',
+              'monzodiorite\nmonzogabbro',
+              'diorite\ngabbro\nanorthosite',
 
-              "foid-bearing\nalkali\nfeldspar\nsyenite",
-              "foid-bearing\nsyenite",
-              "foid-bearing\nmonzonite",
-              "foid-bearing\nmonzodiorite\nfoid-bearing\nmonzogabbro",
-              "foid-bearing\ndiorite\nfoid-bearing gabbro\nfoid-bearing\nanorthosite",
+              'foid-bearing\nalkali\nfeldspar\nsyenite',
+              'foid-bearing\nsyenite',
+              'foid-bearing\nmonzonite',
+              'foid-bearing\nmonzodiorite\nfoid-bearing\nmonzogabbro',
+              'foid-bearing\ndiorite\nfoid-bearing gabbro\nfoid-bearing\nanorthosite',
 
-              "foid\nsyenite",
-              "foid\nmonzosyenite",
-              "foid\nmonzodiorite\nfoid\nmonzogabbro",
-              "foid\ndiorite\nfoid\ngabbro",
-              "foidolite"]
+              'foid\nsyenite',
+              'foid\nmonzosyenite',
+              'foid\nmonzodiorite\nfoid\nmonzogabbro',
+              'foid\ndiorite\nfoid\ngabbro',
+              'foidolite']
 
     Locations = [(5, 5, 95),
 
@@ -5480,14 +5361,14 @@ class QAPF(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to DualTri")
+            #print('DataFrame recieved to DualTri')
 
         self.raw = self._df
         self.create_main_frame()
         self.create_status_bar()
 
         TriLine(Points=[(100, 0, 0), (0, 0, 100), (0, 100, 0), (0, 0, -100), (100, 0, 0), (35, 65, 0)], Sort='',
-                Width=1, Color='black', Style="-",
+                Width=1, Color='black', Style='-',
                 Alpha=0.7, Label='')
 
         for i in range(len(self.LabelPosition)):
@@ -5514,26 +5395,26 @@ class QAPF(AppForm, Tool):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.QAPF)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.QAPF)  # int
 
-        self.Tag_cb = QCheckBox("&Plutonic")
+        self.Tag_cb = QCheckBox('&Plutonic')
         self.Tag_cb.setChecked(True)
         self.Tag_cb.stateChanged.connect(self.QAPF)  # int
 
         if (self.Tag_cb.isChecked()):
-            self.Tag_cb.setText("&Plutonic")
+            self.Tag_cb.setText('&Plutonic')
         else:
-            self.Tag_cb.setText("&Volcanic")
+            self.Tag_cb.setText('&Volcanic')
 
-        self.detail_cb = QCheckBox("&Detail")
+        self.detail_cb = QCheckBox('&Detail')
         self.detail_cb.setChecked(True)
         self.detail_cb.stateChanged.connect(self.QAPF)  # int
 
@@ -5554,26 +5435,6 @@ class QAPF(AppForm, Tool):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
-        self.statusBar().addWidget(self.status_text, 1)
-
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
     def QAPF(self):
 
@@ -5584,7 +5445,7 @@ class QAPF(AppForm, Tool):
         self.axes.set_ylim(-105 * np.sqrt(3) / 2, 105 * np.sqrt(3) / 2)
 
         s = [TriLine(Points=[(100, 0, 0), (0, 0, 100), (0, 100, 0), (0, 0, -100), (100, 0, 0), (0, 100, 0)], Sort='',
-                     Width=1, Color='black', Style="-",
+                     Width=1, Color='black', Style='-',
                      Alpha=0.7, Label='')]
         for i in s:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
@@ -5592,41 +5453,41 @@ class QAPF(AppForm, Tool):
 
         if (self.Tag_cb.isChecked()):
 
-            self.Labels = ["quartzolite",
+            self.Labels = ['quartzolite',
 
-                           "quartz-rich\ngranitoid",
+                           'quartz-rich\ngranitoid',
 
-                           "granite",
+                           'granite',
 
-                           "alkali\nfeldspar\ngranite",
-                           "(syeno\ngranite)",
-                           "(monzo\ngranite)",
-                           "granodiorite",
-                           "tonalite",
+                           'alkali\nfeldspar\ngranite',
+                           '(syeno\ngranite)',
+                           '(monzo\ngranite)',
+                           'granodiorite',
+                           'tonalite',
 
-                           "quartz\nalkali\nfeldspar\nsyenite",
-                           "quartz\nsyenite",
-                           "quartz\nmonzonite",
-                           "quartz\nmonzodiorite\nquartz\nmonzogabbro",
-                           "quartz\ndiorite\nquartz gabbro\n quartz\nanorthosite",
+                           'quartz\nalkali\nfeldspar\nsyenite',
+                           'quartz\nsyenite',
+                           'quartz\nmonzonite',
+                           'quartz\nmonzodiorite\nquartz\nmonzogabbro',
+                           'quartz\ndiorite\nquartz gabbro\n quartz\nanorthosite',
 
-                           "alkali\nfeldspar\nsyenite",
-                           "syenite",
-                           "monzonite",
-                           "monzodiorite\nmonzogabbro",
-                           "diorite\ngabbro\nanorthosite",
+                           'alkali\nfeldspar\nsyenite',
+                           'syenite',
+                           'monzonite',
+                           'monzodiorite\nmonzogabbro',
+                           'diorite\ngabbro\nanorthosite',
 
-                           "foid-bearing\nalkali\nfeldspar\nsyenite",
-                           "foid-bearing\nsyenite",
-                           "foid-bearing\nmonzonite",
-                           "foid-bearing\nmonzodiorite\nfoid-bearing\nmonzogabbro",
-                           "foid-bearing\ndiorite\nfoid-bearing gabbro\nfoid-bearing\nanorthosite",
+                           'foid-bearing\nalkali\nfeldspar\nsyenite',
+                           'foid-bearing\nsyenite',
+                           'foid-bearing\nmonzonite',
+                           'foid-bearing\nmonzodiorite\nfoid-bearing\nmonzogabbro',
+                           'foid-bearing\ndiorite\nfoid-bearing gabbro\nfoid-bearing\nanorthosite',
 
-                           "foid\nsyenite",
-                           "foid\nmonzosyenite",
-                           "foid\nmonzodiorite\nfoid\nmonzogabbro",
-                           "foid\ndiorite\nfoid\ngabbro",
-                           "foidolite"]
+                           'foid\nsyenite',
+                           'foid\nmonzosyenite',
+                           'foid\nmonzodiorite\nfoid\nmonzogabbro',
+                           'foid\ndiorite\nfoid\ngabbro',
+                           'foidolite']
 
             self.Locations = [(5, 5, 95),
 
@@ -5699,10 +5560,10 @@ class QAPF(AppForm, Tool):
                            (-40, 0),
                            (60, 0),
                            (-30, 0)]
-            self.Tag_cb.setText("&Plutonic")
+            self.Tag_cb.setText('&Plutonic')
 
             self.setWindowTitle(
-                "QAPF modal classification of plutonic rocks (based on Streckeisen, 1976, Fig. 1a).\nQ = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.")
+                'QAPF modal classification of plutonic rocks (based on Streckeisen, 1976, Fig. 1a).\nQ = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.')
 
             D1 = (0, 0, 100)
             L1 = [(10, 0, 90), (0, 10, 90)]
@@ -5729,23 +5590,23 @@ class QAPF(AppForm, Tool):
             NSL3 = [CL3, (35, 65, 0)]
             NSL4 = [CL41, (10, 90, 0)]
 
-            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=L4, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=L4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=NSL21, Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                 TriLine(Points=NSL21, Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=NSL22, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL22, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label='')]
 
             for i in s:
@@ -5775,19 +5636,19 @@ class QAPF(AppForm, Tool):
             NSL4 = [CL41, (10, 90, 0)]
 
             s = [
-                TriLine(Points=L2, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                         Label=''),
-                TriLine(Points=L3, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                         Label=''),
-                TriLine(Points=SL5, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                TriLine(Points=SL5, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                         Label=''),
-                TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                         Label=''),
-                TriLine(Points=NSL2, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                TriLine(Points=NSL2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                         Label=''),
-                TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                         Label=''),
-                TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                         Label='')]
             for i in s:
                 self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
@@ -5795,32 +5656,32 @@ class QAPF(AppForm, Tool):
 
 
         else:
-            self.Labels = ["rhyolite",
+            self.Labels = ['rhyolite',
 
-                           "alkali\nfeldspar\rhyolite",
+                           'alkali\nfeldspar\rhyolite',
 
-                           "dacite",
+                           'dacite',
 
-                           "quartz\nalkali\nfeldspar\ntrachyte",
-                           "quartz\ntrachyte",
-                           "quartz\nlatite",
-                           "basalt\nandesite",
+                           'quartz\nalkali\nfeldspar\ntrachyte',
+                           'quartz\ntrachyte',
+                           'quartz\nlatite',
+                           'basalt\nandesite',
 
-                           "alkali\nfeldspar\ntrachyte",
-                           "trachyte",
-                           "latite",
+                           'alkali\nfeldspar\ntrachyte',
+                           'trachyte',
+                           'latite',
 
-                           "foid-bearing\nalkali\nfeldspar\ntrachyte",
-                           "foid-bearing\ntrachyte",
-                           "foid-bearing\nlatite",
+                           'foid-bearing\nalkali\nfeldspar\ntrachyte',
+                           'foid-bearing\ntrachyte',
+                           'foid-bearing\nlatite',
 
-                           "phonolite",
-                           "tephritic\nphonolite",
-                           " phonolitic\nbasanite\n(olivine > 10%)\nphonolitic\ntephrite\n(olivine < 10%)",
-                           " basanite\n(olivine > 10%)\ntephrite\n(olivine < 10%)",
-                           "phonolitic\nfoidite",
-                           "tephritic\nfoidite",
-                           "foidoite"]
+                           'phonolite',
+                           'tephritic\nphonolite',
+                           ' phonolitic\nbasanite\n(olivine > 10%)\nphonolitic\ntephrite\n(olivine < 10%)',
+                           ' basanite\n(olivine > 10%)\ntephrite\n(olivine < 10%)',
+                           'phonolitic\nfoidite',
+                           'tephritic\nfoidite',
+                           'foidoite']
 
             self.Locations = [(35, 15, 50),
 
@@ -5875,10 +5736,10 @@ class QAPF(AppForm, Tool):
                            (-40, 20),
                            (0, 20),
                            (-20, 0)]
-            self.Tag_cb.setText("&Volcanic")
+            self.Tag_cb.setText('&Volcanic')
 
             self.setWindowTitle(
-                "QAPF modal classification of volcanic rocks (based on Streckeisen, 1978, Fig. 1).\nQ = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.")
+                'QAPF modal classification of volcanic rocks (based on Streckeisen, 1978, Fig. 1).\nQ = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.')
 
             D = (0, 0, 100)
             L1 = [(10, 0, 90), (0, 10, 90)]
@@ -5887,13 +5748,13 @@ class QAPF(AppForm, Tool):
 
             L4 = [(95, 0, 5), (0, 95, 5)]
 
-            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''), ]
 
             for i in s:
@@ -5922,22 +5783,22 @@ class QAPF(AppForm, Tool):
             NSL3 = [CL3, (35, 65, 0)]
             NSL4 = [CL41, CL42]
 
-            s = [TriLine(Points=NL4, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+            s = [TriLine(Points=NL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=NSL21, Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                 TriLine(Points=NSL21, Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=NSL22, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL22, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style="--", Alpha=0.7,
+                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
                          Label='')]
 
             for i in s:
@@ -5951,13 +5812,13 @@ class QAPF(AppForm, Tool):
 
             SL5 = [(5, 5, -90), (45, 45, -10)]
 
-            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
-                 TriLine(Points=SL5, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=SL5, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label='')]
 
             for i in s:
@@ -5980,16 +5841,16 @@ class QAPF(AppForm, Tool):
             NSL3 = [CL3, (35, 65, 0)]
             NSL4 = [CL41, CL42]
 
-            s = [TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+            s = [TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=NSL2, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label=''),
 
-                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style="-", Alpha=0.7,
+                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                          Label='')]
 
             for i in s:
@@ -6051,9 +5912,10 @@ class QAPF(AppForm, Tool):
         self.canvas.draw()
 
 class Pearce(AppForm):
+    reference = 'Pearce, J. A., Harris, N. B. W., and Tindle, A. G., 1984, Trace Element Discrimination Diagrams for the Tectonic Interpretation of Granitic Rocks: Journal of Petrology, v. 25, no. 4, p. 956-983.'
     Lines = []
     Tags = []
-    description = "Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites "
+    description = 'Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites '
     text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
 
     Condation0 = {'BaseLines': [[(2, 80), (55, 300)],
@@ -6105,12 +5967,12 @@ class Pearce(AppForm):
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle(
-            "Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites ")
+            'Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites ')
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Pearce")
+            #print('DataFrame recieved to Pearce')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -6128,13 +5990,13 @@ class Pearce(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Pearce)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Pearce)  # int
 
@@ -6146,7 +6008,7 @@ class Pearce(AppForm):
         self.slider.setTickPosition(QSlider.TicksBothSides)
         self.slider.valueChanged.connect(self.Pearce)  # int
 
-        self.detail_cb = QCheckBox("&Detail")
+        self.detail_cb = QCheckBox('&Detail')
         self.detail_cb.setChecked(True)
         self.detail_cb.stateChanged.connect(self.Pearce)  # int
 
@@ -6255,7 +6117,7 @@ class Pearce(AppForm):
 class Harker(AppForm):
     Lines = []
     Tags = []
-    description = "Harker diagram"
+    description = 'Harker diagram'
     usefulelements = ['SiO2',
                       'TiO2',
                       'Al2O3',
@@ -6323,14 +6185,14 @@ class Harker(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle("Harker diagram")
+        self.setWindowTitle('Harker diagram')
 
         self.items = []
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Harker")
+            #print('DataFrame recieved to Harker')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -6357,13 +6219,13 @@ class Harker(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Harker)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Harker)  # int
 
@@ -6384,7 +6246,7 @@ class Harker(AppForm):
 
         self.x_element_label = QLabel('X')
 
-        self.logx_cb = QCheckBox("&Log")
+        self.logx_cb = QCheckBox('&Log')
         self.logx_cb.setChecked(False)
         self.logx_cb.stateChanged.connect(self.Harker)  # int
 
@@ -6397,7 +6259,7 @@ class Harker(AppForm):
 
         self.y_element_label = QLabel('Y')
 
-        self.logy_cb = QCheckBox("&Log")
+        self.logy_cb = QCheckBox('&Log')
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Harker)  # int
 
@@ -6497,6 +6359,7 @@ class Harker(AppForm):
         self.canvas.draw()
 
 class ZirconTiTemp(AppForm):
+    reference = 'Ferry J M, Watson E B. New thermodynamic models and revised calibrations for the Ti-in-zircon and Zr-[J]. Contributions to Mineralogy & Petrology, 2007, 154(4):429-437.'
     Calced = ['Temperature']
 
     DataCalced = {}
@@ -6510,7 +6373,7 @@ class ZirconTiTemp(AppForm):
         self.raw = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved")
+            #print('DataFrame recieved')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -6519,11 +6382,11 @@ class ZirconTiTemp(AppForm):
         self.main_frame = QWidget()
         self.dpi = 128
 
-        self.save_button = QPushButton("&Save Result")
+        self.save_button = QPushButton('&Save Result')
         self.save_button.clicked.connect(self.saveResult)
 
         self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName("tableView")
+        self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
 
         #
@@ -6544,33 +6407,7 @@ class ZirconTiTemp(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your Result.")
-        self.statusBar().addWidget(self.status_text, 1)
 
-    def add_actions(self, target, actions):
-        for action in actions:
-            if action is None:
-                target.addSeparator()
-            else:
-                target.addAction(action)
-
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
 
     def ZirconTiTemp(self):
@@ -6617,19 +6454,20 @@ class ZirconTiTemp(AppForm):
 
     def saveResult(self):
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          "文件保存",
-                                                          "C:/",
-                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
         if (DataFileOutput != ''):
 
-            if ("csv" in DataFileOutput):
+            if ('csv' in DataFileOutput):
                 self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
-            elif ("xls" in DataFileOutput):
+            elif ('xls' in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
 class RutileZrTemp(AppForm):
+    reference = 'Ferry J M, Watson E B. New thermodynamic models and revised calibrations for the Ti-in-zircon and Zr-[J]. Contributions to Mineralogy & Petrology, 2007, 154(4):429-437.'
     Calced = ['Temperature']
 
     DataCalced = {}
@@ -6643,7 +6481,7 @@ class RutileZrTemp(AppForm):
         self.raw = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved")
+            #print('DataFrame recieved')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -6652,11 +6490,11 @@ class RutileZrTemp(AppForm):
         self.main_frame = QWidget()
         self.dpi = 128
 
-        self.save_button = QPushButton("&Save Result")
+        self.save_button = QPushButton('&Save Result')
         self.save_button.clicked.connect(self.saveResult)
 
         self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName("tableView")
+        self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
 
         #
@@ -6677,33 +6515,7 @@ class RutileZrTemp(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your Result.")
-        self.statusBar().addWidget(self.status_text, 1)
 
-    def add_actions(self, target, actions):
-        for action in actions:
-            if action is None:
-                target.addSeparator()
-            else:
-                target.addAction(action)
-
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(":/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
 
     def RutileZrTemp(self):
 
@@ -6744,22 +6556,22 @@ class RutileZrTemp(AppForm):
 
     def saveResult(self):
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          "文件保存",
-                                                          "C:/",
-                                                          "Excel Files (*.xlsx);;CSV Files (*.csv)")  # 数据文件保存输出
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
         if (DataFileOutput != ''):
 
-            if ("csv" in DataFileOutput):
+            if ('csv' in DataFileOutput):
                 self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
-            elif ("xls" in DataFileOutput):
+            elif ('xls' in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
 class Cluster(AppForm):
     Lines = []
     Tags = []
-    description = "Cluster diagram"
+    description = 'Cluster diagram'
     unuseful = ['Name',
                 'Author',
                 'DataType',
@@ -6776,14 +6588,14 @@ class Cluster(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle("Cluster Data")
+        self.setWindowTitle('Cluster Data')
 
         self.items = []
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Cluster")
+            #print('DataFrame recieved to Cluster')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -6812,24 +6624,24 @@ class Cluster(AppForm):
         # Create the navigation toolbar, tied to the canvas
 
         self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName("tableView")
+        self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
 
 
         #self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveDataFile)
 
 
         #self.save_button.clicked.connect(self.saveImgFile)
 
 
-        self.draw_button = QPushButton("&Show")
+        self.draw_button = QPushButton('&Show')
         self.draw_button.clicked.connect(self.Show)
 
-        self.legend_cb = QCheckBox("&Horizontal")
+        self.legend_cb = QCheckBox('&Horizontal')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Cluster)  # int
 
@@ -6893,9 +6705,9 @@ class Cluster(AppForm):
 
 
         if (self.legend_cb.isChecked()):
-            self.legend_cb.setText("&Horizontal")
+            self.legend_cb.setText('&Horizontal')
         else:
-            self.legend_cb.setText("&Vertical")
+            self.legend_cb.setText('&Vertical')
 
         self.WholeData = []
 
@@ -6940,7 +6752,7 @@ class Cluster(AppForm):
             plt.show()
 
         except(ValueError):
-            reply = QMessageBox.warning(self, 'Value Error',"Check Your Data and make sure it contains only numerical values.")
+            reply = QMessageBox.warning(self, 'Value Error','Check Your Data and make sure it contains only numerical values.')
             pass
 
 class XY(AppForm):
@@ -6986,7 +6798,7 @@ class XY(AppForm):
     xlabel = 'x'
     ylabel = 'y'
 
-    description = "X-Y diagram"
+    description = 'X-Y diagram'
     unuseful = ['Name',
                 'Author',
                 'DataType',
@@ -7025,14 +6837,14 @@ class XY(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle("X-Y diagram")
+        self.setWindowTitle('X-Y diagram')
 
         self.items = []
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Magic")
+            #print('DataFrame recieved to Magic')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -7066,16 +6878,16 @@ class XY(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Reset)
 
-        self.load_button = QPushButton("&Load")
+        self.load_button = QPushButton('&Load')
         self.load_button.clicked.connect(self.Load)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
 
@@ -7088,7 +6900,7 @@ class XY(AppForm):
         self.slider.valueChanged.connect(self.Magic)  # int
 
 
-        self.Normalize_cb = QCheckBox("&Normalize")
+        self.Normalize_cb = QCheckBox('&Normalize')
         self.Normalize_cb.setChecked(False)
         self.Normalize_cb.stateChanged.connect(self.Magic)  # int
 
@@ -7109,7 +6921,7 @@ class XY(AppForm):
 
         self.x_element_label = QLabel('X')
 
-        self.logx_cb = QCheckBox("&Log")
+        self.logx_cb = QCheckBox('&Log')
         self.logx_cb.setChecked(False)
         self.logx_cb.stateChanged.connect(self.Magic)  # int
 
@@ -7122,7 +6934,7 @@ class XY(AppForm):
 
         self.y_element_label = QLabel('Y')
 
-        self.logy_cb = QCheckBox("&Log")
+        self.logy_cb = QCheckBox('&Log')
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Magic)  # int
 
@@ -7243,16 +7055,16 @@ class XY(AppForm):
 
     def Load(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
-                                                         "选取文件",
-                                                         "~/",
-                                                         "PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         '选取文件',
+                                                         '~/',
+                                                         'PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
 
         print(fileName,'\t',filetype)
 
 
 
 
-        if ("svg" in fileName):
+        if ('svg' in fileName):
             doc = minidom.parse(fileName)  # parseString also exists
             polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
             polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
@@ -7270,7 +7082,7 @@ class XY(AppForm):
             self.width_load = float(width)
             self.height_load = float(height)
 
-            soup = BeautifulSoup(open(fileName), "lxml")
+            soup = BeautifulSoup(open(fileName), 'lxml')
 
             tmpgon = soup.find_all('polygon')
             tmppolyline = soup.find_all('polyline')
@@ -7282,21 +7094,21 @@ class XY(AppForm):
             self.strgons = []
             for i in tmpgon:
                 a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, "lxml")
+                m = BeautifulSoup(a, 'lxml')
                 k = m.polygon.attrs
                 self.strgons.append(k['points'].split())
 
             self.strpolylines = []
             for i in tmppolyline:
                 a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, "lxml")
+                m = BeautifulSoup(a, 'lxml')
                 k = m.polyline.attrs
                 self.strpolylines.append(k['points'].split())
 
             self.strlines = []
             for i in tmpline:
                 a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, "lxml")
+                m = BeautifulSoup(a, 'lxml')
                 k = m.line.attrs
                 a = str(k['x1']) + ',' + str(k['y1']) + ' ' + str(k['x2']) + ',' + str(k['y2'])
                 self.strlines.append(a.split())
@@ -7304,7 +7116,7 @@ class XY(AppForm):
             self.strpath = []
             for i in tmppath:
                 a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, "lxml")
+                m = BeautifulSoup(a, 'lxml')
                 k = m.path.attrs
                 self.strpath.append(k['d'].split())
 
@@ -7331,7 +7143,7 @@ class XY(AppForm):
                 self.line.append(m)
 
 
-        elif ("png" in fileName or "jpg" in fileName):
+        elif ('png' in fileName or 'jpg' in fileName):
 
             self.img = mpimg.imread(fileName)
             self.flag=1
@@ -7502,11 +7314,11 @@ class XY(AppForm):
         if(self.Left!= self.Right) and (self.Down!= self.Up) and abs(self.Left)+abs(self.Right)+abs(self.Down)+abs(self.Up)!=0:
             self.extent = [self.Left, self.Right, self.Down, self.Up]
         elif (self.Left == self.Right and abs(self.Left)+abs(self.Right)!=0):
-            reply = QMessageBox.warning(self, 'Warning', "You set same value to Left and Right limits.")
+            reply = QMessageBox.warning(self, 'Warning', 'You set same value to Left and Right limits.')
             self.extent = 0
 
         elif (self.Down == self.Up and abs(self.Down)+abs(self.Up)!=0):
-            reply = QMessageBox.warning(self, 'Warning', "You set same value to Up and Down limits.")
+            reply = QMessageBox.warning(self, 'Warning', 'You set same value to Up and Down limits.')
             self.extent = 0
         else:
             self.extent = 0
@@ -7561,14 +7373,14 @@ class XY(AppForm):
                 if(self.Normalize_cb.isChecked()):
 
 
-                    self.xlabel=self.items[a]+" Norm by "+standardnamechosen
+                    self.xlabel=self.items[a]+' Norm by '+standardnamechosen
 
                     self.axes.set_xlabel(self.xlabel)
                     self.x_element_label.setText(self.xlabel)
 
 
 
-                    self.ylabel = self.items[b] + " Norm by " + standardnamechosen
+                    self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
 
                     self.axes.set_ylabel(self.ylabel)
                     self.y_element_label.setText(self.ylabel)
@@ -7632,7 +7444,7 @@ class XY(AppForm):
 class XYZ(AppForm):
     Lines = []
     Tags = []
-    description = "X-Y-Z diagram"
+    description = 'X-Y-Z diagram'
     unuseful = ['Name',
                 'Author',
                 'DataType',
@@ -7662,14 +7474,14 @@ class XYZ(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle("Triangular diagram")
+        self.setWindowTitle('Triangular diagram')
 
         self.items = []
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Magic")
+            #print('DataFrame recieved to Magic')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -7701,16 +7513,16 @@ class XYZ(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Reset)
 
-        self.load_button = QPushButton("&Load")
+        self.load_button = QPushButton('&Load')
         self.load_button.clicked.connect(self.Load)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
 
@@ -7809,16 +7621,16 @@ class XYZ(AppForm):
 
     def Load(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
-                                                         "选取文件",
-                                                         "~/",
-                                                         "PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         '选取文件',
+                                                         '~/',
+                                                         'PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
 
         print(fileName,'\t',filetype)
 
 
 
 
-        if ("svg" in fileName):
+        if ('svg' in fileName):
             doc = minidom.parse(fileName)  # parseString also exists
             polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
             polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
@@ -7859,7 +7671,7 @@ class XYZ(AppForm):
 
             # print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
 
-            soup = BeautifulSoup(open(fileName), "lxml")
+            soup = BeautifulSoup(open(fileName), 'lxml')
 
             tmpgon = soup.find_all('polygon')
             tmpline = soup.find_all('polyline')
@@ -7868,7 +7680,7 @@ class XYZ(AppForm):
             strgons = []
             for i in tmpgon:
                 a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, "lxml")
+                m = BeautifulSoup(a, 'lxml')
                 k = m.polygon.attrs
                 strgons.append(k['points'].split())
             gons = []
@@ -7880,7 +7692,7 @@ class XYZ(AppForm):
             strlines = []
             for i in tmpline:
                 a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, "lxml")
+                m = BeautifulSoup(a, 'lxml')
                 k = m.polyline.attrs
                 strlines.append(k['points'].split())
             lines = []
@@ -7895,7 +7707,7 @@ class XYZ(AppForm):
             # print(self.polygon,'\n',self.polyline)
 
 
-        elif ("png" in fileName or "jpg" in fileName):
+        elif ('png' in fileName or 'jpg' in fileName):
 
             self.img = mpimg.imread(fileName)
             self.flag=1
@@ -7925,7 +7737,7 @@ class XYZ(AppForm):
 
 
         s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
-                     Style="-",
+                     Style='-',
                      Alpha=0.7, Label='')]
         for i in s:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
@@ -8016,12 +7828,10 @@ class XYZ(AppForm):
 
         self.canvas.draw()
 
-
-
 class Magic(AppForm):
     Lines = []
     Tags = []
-    description = "Magic diagram"
+    description = 'Magic diagram'
     unuseful = ['Name',
                 'Author',
                 'DataType',
@@ -8036,14 +7846,14 @@ class Magic(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle("Magic diagram")
+        self.setWindowTitle('Magic diagram')
 
         self.items = []
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print("DataFrame recieved to Magic")
+            #print('DataFrame recieved to Magic')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -8075,16 +7885,16 @@ class Magic(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton("&Save")
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton("&Reset")
+        self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Magic)
 
-        self.load_button = QPushButton("&Load")
+        self.load_button = QPushButton('&Load')
         self.load_button.clicked.connect(self.Load)
 
-        self.legend_cb = QCheckBox("&Legend")
+        self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
 
@@ -8105,7 +7915,7 @@ class Magic(AppForm):
 
         self.x_element_label = QLabel('X')
 
-        self.logx_cb = QCheckBox("&Log")
+        self.logx_cb = QCheckBox('&Log')
         self.logx_cb.setChecked(False)
         self.logx_cb.stateChanged.connect(self.Magic)  # int
 
@@ -8118,7 +7928,7 @@ class Magic(AppForm):
 
         self.y_element_label = QLabel('Y')
 
-        self.logy_cb = QCheckBox("&Log")
+        self.logy_cb = QCheckBox('&Log')
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Magic)  # int
 
@@ -8171,9 +7981,9 @@ class Magic(AppForm):
 
     def Load(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
-                                                         "选取文件",
-                                                         "~/",
-                                                         "SVG Files (*.svg)")  # 设置文件扩展名过滤,注意用双分号间隔
+                                                         '选取文件',
+                                                         '~/',
+                                                         'SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
 
         # #print(fileName)
 
@@ -8218,7 +8028,7 @@ class Magic(AppForm):
 
         #print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
 
-        soup = BeautifulSoup(open(fileName), "lxml")
+        soup = BeautifulSoup(open(fileName), 'lxml')
 
         tmpgon=soup.find_all('polygon')
         tmpline=soup.find_all('polyline')
@@ -8227,7 +8037,7 @@ class Magic(AppForm):
         strgons = []
         for i in tmpgon:
             a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, "lxml")
+            m = BeautifulSoup(a, 'lxml')
             k = m.polygon.attrs
             strgons.append(k['points'].split())
         gons=[]
@@ -8240,7 +8050,7 @@ class Magic(AppForm):
         strlines = []
         for i in tmpline:
             a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, "lxml")
+            m = BeautifulSoup(a, 'lxml')
             k = m.polyline.attrs
             strlines.append(k['points'].split())
         lines=[]

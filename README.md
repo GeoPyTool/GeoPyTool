@@ -28,6 +28,9 @@ Category: Python
 |Temp Calc|2017-10-17 20:48:21|Zircon/Rutile|
 |Load PNG/JPG/SVG|2017-10-23  17:38:21|Load Base Maps|
 |Chinese/English Switch|2017-10-25 21:00:20|Language|
+|More Languages|2017-10-30 23:00:20|User can choose own Language file|
+
+
 ## Introduction
 
 GeoPython is a project of using Python for geology related daily work. It is a set of free softwares: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
