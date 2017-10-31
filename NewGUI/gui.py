@@ -152,17 +152,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         h=self.height()
         step=(w-20)/5-10
 
-        self.tableView.setGeometry(QtCore.QRect(10, 10, w-20, h-80))
 
-        self.pushButtonOpen.setGeometry(QtCore.QRect(10, h-60, step, 32))
+        ButtonHeight = 32
 
-        self.pushButtonSave.setGeometry(QtCore.QRect(15+step, h-60, step, 32))
 
-        self.pushButtonSort.setGeometry(QtCore.QRect(20+step*2, h-60, step, 32))
+        self.tableView.setGeometry(QtCore.QRect(10, 10, w-20, h-120))
 
-        self.pushButtonQuit.setGeometry(QtCore.QRect(25+step*3, h-60, step, 32))
+        self.pushButtonOpen.setGeometry(QtCore.QRect(10, h-84, step, 32))
 
-        self.pushButtonUpdate.setGeometry(QtCore.QRect(30+step*4, h-60, step, 32))
+        self.pushButtonSave.setGeometry(QtCore.QRect(15+step, h-84, step, 32))
+
+        self.pushButtonSort.setGeometry(QtCore.QRect(20+step*2, h-84, step, 32))
+
+        self.pushButtonQuit.setGeometry(QtCore.QRect(25+step*3, h-84, step, 32))
+
+        self.pushButtonUpdate.setGeometry(QtCore.QRect(30+step*4, h-84, step, 32))
 
 
 
@@ -567,17 +571,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         h=self.height()
         step=(w-20)/5-10
 
-        self.tableView.setGeometry(QtCore.QRect(10, 10, w-20, h-80))
+        self.tableView.setGeometry(QtCore.QRect(10, 10, w-20, h-120))
 
-        self.pushButtonOpen.setGeometry(QtCore.QRect(10, h-60, step, 32))
+        self.pushButtonOpen.setGeometry(QtCore.QRect(10, h-84, step, 32))
 
-        self.pushButtonSave.setGeometry(QtCore.QRect(15+step, h-60, step, 32))
+        self.pushButtonSave.setGeometry(QtCore.QRect(15+step, h-84, step, 32))
 
-        self.pushButtonSort.setGeometry(QtCore.QRect(20+step*2, h-60, step, 32))
+        self.pushButtonSort.setGeometry(QtCore.QRect(20+step*2, h-84, step, 32))
 
-        self.pushButtonQuit.setGeometry(QtCore.QRect(25+step*3, h-60, step, 32))
+        self.pushButtonQuit.setGeometry(QtCore.QRect(25+step*3, h-84, step, 32))
 
-        self.pushButtonUpdate.setGeometry(QtCore.QRect(30+step*4, h-60, step, 32))
+        self.pushButtonUpdate.setGeometry(QtCore.QRect(30+step*4, h-84, step, 32))
 
 
 
@@ -857,18 +861,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def QFL(self):
-        self.tripop = QFL(df=self.model._df)
+        self.qflpop = QFL(df=self.model._df)
         try:
-            self.tripop.Tri()
-            self.tripop.show()
+            self.qflpop.Tri()
+            self.qflpop.show()
         except(KeyError):
             self.ErrorEvent()
 
     def QmFLt(self):
-        self.tripop = QmFLt(df=self.model._df)
+        self.qmfltpop = QmFLt(df=self.model._df)
         try:
-            self.tripop.Tri()
-            self.tripop.show()
+            self.qmfltpop.Tri()
+            self.qmfltpop.show()
         except(KeyError):
             self.ErrorEvent()
 

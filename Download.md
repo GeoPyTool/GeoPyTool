@@ -1,14 +1,14 @@
 # GeoPython Application Download Links
 
 
-##### Latest Version: 0.5.72
+##### Latest Version: 0.5.8
 
 # GeoPython exe for Windows:
-[Baidu Download](http://pan.baidu.com/s/1dF5yAwL)
+[Baidu Download](http://pan.baidu.com/s/1boMh0bd)
 
 
 
 
 # GeoPython app for macOS:
-[Baidu Download](http://pan.baidu.com/s/1jIiTJEY)
+[Baidu Download](http://pan.baidu.com/s/1jI1QA0I)
 

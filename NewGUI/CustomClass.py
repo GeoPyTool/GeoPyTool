@@ -1,10 +1,10 @@
-version='0.5.72'
+version = '0.5.8'
 
-date='2017-10-30'
+date = '2017-10-31'
 
-dpi=128
+dpi = 128
 
-#coding:utf-8
+# coding:utf-8
 
 import math
 import sys
@@ -25,12 +25,8 @@ plt.rcParams['pdf.fonttype'] = 'truetype'
 import pandas as pd
 import numpy as np
 
-
-
-
 from scipy.cluster import hierarchy as hc
 from scipy.cluster.hierarchy import dendrogram, linkage
-
 
 from numpy import arange, sin, pi
 from PyQt5.QtCore import *
@@ -49,12 +45,9 @@ from PyQt5.QtWidgets import (QWidget, QLineEdit, QLabel, QHBoxLayout, QVBoxLayou
 
 from xml.dom import minidom
 
-
-
+_translate = QtCore.QCoreApplication.translate
 
 class Tool():
-
-
     def TriToBin(self, x, y, z):
 
         '''
@@ -215,6 +208,7 @@ class Tool():
         return (a, b)
         # plt.fill(a, b, Color=Color, Alpha=Alpha, )
 
+
 class Point():
     '''
     a Point class
@@ -256,6 +250,7 @@ class Point():
         self.Alpha = Alpha
         self.Marker = Marker
         self.Label = Label
+
 
 class Points():
     '''
@@ -302,6 +297,7 @@ class Points():
         self.Label = Label
         self.FontSize = FontSize
 
+
 class Tag():
     '''
     a class for Tag put on canvas
@@ -331,6 +327,7 @@ class Tag():
         self.X_offset = X_offset
         self.Y_offset = Y_offset
         self.FontSize = FontSize
+
 
 class Line():
     '''
@@ -391,7 +388,7 @@ class Line():
 
         else:
 
-            #print('Cannot draw line with one point')
+            # print('Cannot draw line with one point')
             pass
 
     def sequence(self):
@@ -432,6 +429,7 @@ class Line():
         self.X = X_TMP
         self.Y = Y_TMP
 
+
 class TriTag(Tag, Tool):
     '''
     inherit Tag and Tool,a Tag for triangular coord
@@ -447,6 +445,7 @@ class TriTag(Tag, Tool):
         self.X_offset = X_offset
         self.Y_offset = Y_offset
         self.FontSize = FontSize
+
 
 class TriPoint(Point, Tool):
     '''
@@ -477,6 +476,7 @@ class TriPoint(Point, Tool):
         self.Label = Label
 
         self.X, self.Y = self.TriToBin(self.x, self.y, self.z)
+
 
 class TriLine(Line, Tool):
     '''
@@ -519,7 +519,7 @@ class TriLine(Line, Tool):
                 self.z.append(i[2])
 
         else:
-            #print('Cannot draw line with one point')
+            # print('Cannot draw line with one point')
             pass
 
         self.sequence()
@@ -543,6 +543,7 @@ class TriLine(Line, Tool):
         self.x = X_TMP
         self.y = Y_TMP
         self.z = Z_TMP
+
 
 class PandasModel(QtCore.QAbstractTableModel):
     _df = pd.DataFrame()
@@ -568,7 +569,6 @@ class PandasModel(QtCore.QAbstractTableModel):
                 return self._df.index.tolist()[section]
             except (IndexError,):
                 return QtCore.QVariant()
-
 
     def data(self, index, role):
         if role == QtCore.Qt.DisplayRole or role == QtCore.Qt.EditRole:
@@ -626,6 +626,7 @@ class PandasModel(QtCore.QAbstractTableModel):
         self._df.reset_index(inplace=True, drop=True)
         self.layoutChanged.emit()
 
+
 class CustomQTableView(QtWidgets.QTableView):
     def __init__(self, *args):
         super().__init__(*args)
@@ -635,8 +636,8 @@ class CustomQTableView(QtWidgets.QTableView):
     def keyPressEvent(self, event):  # Reimplement the event here, in your case, do nothing
         return
 
-class PlotModel(FigureCanvas):
 
+class PlotModel(FigureCanvas):
     _df = pd.DataFrame()
     _changed = False
 
@@ -723,7 +724,7 @@ class PlotModel(FigureCanvas):
                 Size = df.at[i, 'Size']
                 Color = df.at[i, 'Color']
 
-                #print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
+                # print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
 
                 Alpha = df.at[i, 'Alpha']
                 Marker = df.at[i, 'Marker']
@@ -808,7 +809,7 @@ class PlotModel(FigureCanvas):
                 Size = df.at[i, 'Size']
                 Color = df.at[i, 'Color']
 
-                #print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
+                # print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
 
                 Alpha = df.at[i, 'Alpha']
                 Marker = df.at[i, 'Marker']
@@ -823,6 +824,7 @@ class PlotModel(FigureCanvas):
             # self.axes.xlabel(xLabel, fontsize=12)
 
             self.draw()
+
 
 class MyPopup(QWidget):
     _df = pd.DataFrame()
@@ -868,6 +870,7 @@ class MyPopup(QWidget):
         # self.setGeometry(500, 500, 500, 600)
         self.setWindowTitle('Image')
 
+
 class Zircon(QMainWindow):
     _df = pd.DataFrame()
     _changed = False
@@ -882,7 +885,7 @@ class Zircon(QMainWindow):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved')
+            # print('DataFrame recieved')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -987,11 +990,10 @@ class Zircon(QMainWindow):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-
     def create_status_bar(self):
         self.textbox = QLineEdit(self)
-        self.textbox.setText('Reference：'+'\n'+self.reference)
-        self.statusBar().addWidget(self.textbox , 1)
+        self.textbox.setText('Reference：' + '\n' + self.reference)
+        self.statusBar().addWidget(self.textbox, 1)
 
     def add_actions(self, target, actions):
         for action in actions:
@@ -1315,7 +1317,7 @@ class Zircon(QMainWindow):
         xlimleft3 = 0
         xlimleft4 = -0.005
 
-        #print('\n the value is ', min(min(self.y3)))
+        # print('\n the value is ', min(min(self.y3)))
 
         ylimleft3 = min(min(min(self.y3)), min(min(self.y3_Plot_Only)))
 
@@ -1364,19 +1366,19 @@ class Zircon(QMainWindow):
                 [TMP, ZirconTmp, MeltTmp, self.DCe4test[i], self.DCe3test[i], self.ZirconCe[i] / self.RockCe])
 
         self.newdf = pd.DataFrame(self.DataToWrite)
-        #print('\n')
-        #print(self.newdf)
-
+        # print('\n')
+        # print(self.newdf)
 
 
 
 class AppForm(QMainWindow):
+
     _df = pd.DataFrame()
     _changed = False
 
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
-    reference='Print the reference here.'
+    reference = 'Print the reference here.'
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -1385,7 +1387,7 @@ class AppForm(QMainWindow):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to AppForm')
+            # print('DataFrame recieved to AppForm')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -1483,8 +1485,8 @@ class AppForm(QMainWindow):
 
     def create_status_bar(self):
         self.textbox = QLineEdit(self)
-        self.textbox.setText('Reference：'+'\n'+self.reference)
-        self.statusBar().addWidget(self.textbox , 1)
+        self.textbox.setText('Reference：' + '\n' + self.reference)
+        self.statusBar().addWidget(self.textbox, 1)
 
     def add_actions(self, target, actions):
         for action in actions:
@@ -1502,12 +1504,11 @@ class AppForm(QMainWindow):
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
 
-
     def saveDataFile(self):
 
-        #if self.model._changed == True:
-            #print('changed')
-            #print(self.model._df)
+        # if self.model._changed == True:
+        # print('changed')
+        # print(self.model._df)
 
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',
@@ -1521,8 +1522,6 @@ class AppForm(QMainWindow):
 
             elif ('xls' in DataFileOutput):
                 self.model._df.to_excel(DataFileOutput, encoding='utf-8')
-
-
 
     def create_action(self, text, slot=None, shortcut=None,
                       icon=None, tip=None, checkable=False,
@@ -1541,6 +1540,7 @@ class AppForm(QMainWindow):
             action.setCheckable(True)
         return action
 
+
 class TAS(AppForm):
     _df = pd.DataFrame()
     _changed = False
@@ -1548,7 +1548,7 @@ class TAS(AppForm):
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
 
-    reference='Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
+    reference = 'Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -1557,12 +1557,10 @@ class TAS(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to TAS')
+            # print('DataFrame recieved to TAS')
 
         self.create_main_frame()
         self.create_status_bar()
-
-
 
     def create_main_frame(self):
         self.main_frame = QWidget()
@@ -1571,6 +1569,7 @@ class TAS(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -1593,10 +1592,6 @@ class TAS(AppForm):
         self.more_cb.setChecked(True)
         self.more_cb.stateChanged.connect(self.TAS)  # int
 
-        self.detail_cb = QCheckBox('&Detail')
-        self.detail_cb.setChecked(True)
-        self.detail_cb.stateChanged.connect(self.TAS)  # int
-
         slider_label = QLabel('Location:')
         self.slider = QSlider(Qt.Horizontal)
         self.slider.setRange(1, 5)
@@ -1610,7 +1605,7 @@ class TAS(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.detail_cb, self.tag_cb, self.more_cb,
+        for w in [self.save_button, self.draw_button, self.tag_cb, self.more_cb,
                   self.legend_cb, slider_label, self.slider]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
@@ -1623,13 +1618,12 @@ class TAS(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-
     def TAS(self, Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
             Top=19, Y0=1, Y1=19, Y_Gap=19, FontSize=12, xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', width=12,
             height=12, dpi=300):
 
         self.axes.clear()
-
+        self.axes.axis('off')
         self.axes.set_xlabel(self.xlabel)
         self.axes.set_ylabel(self.ylabel)
 
@@ -1708,7 +1702,7 @@ class TAS(AppForm):
                 Size = df.at[i, 'Size']
                 Color = df.at[i, 'Color']
 
-                #print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
+                # print(Color, df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']))
 
                 Alpha = df.at[i, 'Alpha']
                 Marker = df.at[i, 'Marker']
@@ -1722,30 +1716,49 @@ class TAS(AppForm):
                 a = int(self.slider.value())
                 self.axes.legend(loc=a, fontsize=9)
 
-            if (self.detail_cb.isChecked()):
-                self.DrawLine([(30, 0), (90, 0)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(30, 0), (30, 20)], color='black', linewidth=0.8, alpha=0.8)
 
-                self.DrawLine([(30, 0), (29, 0)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(30, 5), (29, 5)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(30, 10), (29, 10)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(30, 15), (29, 15)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(30, 20), (29, 20)], color='black', linewidth=0.8, alpha=0.8)
+            self.DrawLine([(30, 0), (90, 0)], color='black', linewidth=0.8, alpha=0.5)
+            self.DrawLine([(30, 0), (30, 20)], color='black', linewidth=0.8, alpha=0.5)
 
-                self.DrawLine([(30, 0), (30, -0.5)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(40, 0), (40, -0.5)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(50, 0), (50, -0.5)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(60, 0), (60, -0.5)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(70, 0), (70, -0.5)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(80, 0), (80, -0.5)], color='black', linewidth=0.8, alpha=0.8)
-                self.DrawLine([(90, 0), (90, -0.5)], color='black', linewidth=0.8, alpha=0.8)
+
+
+
+            a=[[(30, 0), (29, 0)],
+                [(30, 5), (29, 5)],
+                [(30, 10), (29, 10)],
+                [(30, 15), (29, 15)],
+                [(30, 20), (29, 20)],]
+
+            b=[[(30, 0), (30, -0.5)],
+                [(40, 0), (40, -0.5)],
+                [(50, 0), (50, -0.5)],
+                [(60, 0), (60, -0.5)],
+                [(70, 0), (70, -0.5)],
+                [(80, 0), (80, -0.5)],
+                [(90, 0), (90, -0.5)],]
+
+
+
+            for i in a:
+                self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
+                self.axes.annotate(str(i[0][1]),i[1] , xycoords='data', xytext=(X_offset, Y_offset),
+                                   textcoords='offset points',
+                                   fontsize=9, color='grey', alpha=0.8)
+
+
+            for i in b:
+                self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
+                self.axes.annotate(str(i[0][0]),i[1] , xycoords='data', xytext=(X_offset, Y_offset-10),
+                                   textcoords='offset points',
+                                   fontsize=9, color='grey', alpha=0.8)
+
+
 
             self.canvas.draw()
 
+
 class REE(AppForm):
-
-
-    reference='Print the reference here.'
+    reference = 'Print the reference here.'
 
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
@@ -1753,7 +1766,7 @@ class REE(AppForm):
     StandardsName = ['C1 Chondrite Sun and McDonough,1989', 'Chondrite Taylor and McLennan,1985',
                      'Chondrite Haskin et al.,1966', 'Chondrite Nakamura,1977', 'MORB Sun and McDonough,1989']
 
-    #RefName=['Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.',]
+    # RefName=['Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.',]
 
     NameChosen = 'C1 Chondrite Sun and McDonough,1989'
     Standards = {
@@ -1781,7 +1794,7 @@ class REE(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to REE')
+            # print('DataFrame recieved to REE')
 
         self.Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
         self.WholeData = []
@@ -1799,6 +1812,8 @@ class REE(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
+
+        self.axes.axis('off')
 
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
@@ -1830,7 +1845,7 @@ class REE(AppForm):
         self.standard.valueChanged.connect(self.REE)  # int
 
         self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
-        self.reference =  self.StandardsName[int(self.standard.value())]
+        self.reference = self.StandardsName[int(self.standard.value())]
 
         #
         # Layout with box sizers
@@ -1856,6 +1871,8 @@ class REE(AppForm):
             xLabel=r'$REE-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
 
         self.axes.clear()
+
+        self.axes.axis('off')
 
         self.WholeData = []
 
@@ -1934,6 +1951,7 @@ class REE(AppForm):
 
         self.canvas.draw()
 
+
 class Trace(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
               30, 31, 32, 33, 34, 35, 36, 37]
@@ -1978,7 +1996,7 @@ class Trace(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Trace')
+            # print('DataFrame recieved to Trace')
 
         self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr',
                         u'Mo',
@@ -2001,6 +2019,7 @@ class Trace(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
 
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
@@ -2036,7 +2055,7 @@ class Trace(AppForm):
         self.standard.valueChanged.connect(self.Trace)  # int
 
         self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
-        self.reference =  self.StandardsName[int(self.standard.value())]
+        self.reference = self.StandardsName[int(self.standard.value())]
         #
         # Layout with box sizers
         #
@@ -2055,7 +2074,7 @@ class Trace(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def Trace(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
+    def oldTrace(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
               Top=6, Y0=-1,
               Y1=3, Y_Gap=5, FontSize=12,
               xLabel=r'$Trace-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
@@ -2094,6 +2113,7 @@ class Trace(AppForm):
             self.setWindowTitle('Trace Standardlized Pattern Diagram Rb-Lu (27 Elements)')
 
         self.axes.clear()
+        self.axes.axis('off')
 
         self.WholeData = []
 
@@ -2127,7 +2147,7 @@ class Trace(AppForm):
 
                 elif self.Element[j] == 'K' and 'K2O' in raw.columns:
                     tmp = raw.at[i, 'K2O'] * (
-                    2 * 39.0983 / 94.1956) * 10000 / standardchosen[
+                        2 * 39.0983 / 94.1956) * 10000 / standardchosen[
                               self.Element[j]]
 
                 elif self.Element[j] == 'Ti' and 'TiO2' in raw.columns:
@@ -2195,6 +2215,146 @@ class Trace(AppForm):
 
         self.canvas.draw()
 
+        pass
+    def Trace(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
+              Top=6, Y0=-1,
+              Y1=3, Y_Gap=5, FontSize=12,
+              xLabel=r'$Trace-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
+
+        if (self.Type_cb.isChecked()):
+            self.Type_cb.setText('&CS-Lu (37 Elements)')
+            self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
+                            u'Pr', u'Mo',
+                            u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb',
+                            u'Dy', u'Li', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
+
+            CommonElements = [i for i in self.Element if i in self._df.columns]
+            self.Element = CommonElements
+            self.xticks = [i for i in range(1,len(CommonElements)+2)]
+            self.xticklabels = CommonElements
+
+            self.setWindowTitle('Trace Standardlized Pattern Diagram CS-Lu '+ str(len(CommonElements)+1) +' Elements')
+
+
+
+        else:
+            self.Type_cb.setText('&Rb-Lu (27 Elements)')
+            self.Element = [u'Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd',
+                            u'Zr', u'Hf',
+                            u'Sm', u'Eu', u'Ti', u'Tb', u'Dy', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
+
+            CommonElements = [i for i in self.Element if i in self._df.columns]
+            self.Element = CommonElements
+            self.xticks = [i for i in range(1,len(CommonElements)+2)]
+            self.xticklabels = CommonElements
+
+            self.setWindowTitle('Trace Standardlized Pattern Diagram Rb-Lu '+ str(len(CommonElements)+1) +' Elements')
+
+
+        self.axes.clear()
+        self.axes.axis('off')
+
+        self.WholeData = []
+
+        raw = self._df
+
+        self.FontSize = FontSize
+
+        PointLabels = []
+        k = 0
+        flag = 1
+
+        standardnamechosen = self.StandardsName[int(self.standard.value())]
+        standardchosen = self.Standards[standardnamechosen]
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            LinesX = []
+            LinesY = []
+
+            for j in range(len(CommonElements)):
+
+                flag = 1
+
+                tmp = 1
+
+                if CommonElements[j] in raw.columns:
+                    tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
+
+                elif CommonElements[j] == 'K' and 'K2O' in raw.columns:
+                    tmp = raw.at[i, 'K2O'] * (
+                        2 * 39.0983 / 94.1956) * 10000 / standardchosen[
+                        CommonElements[j]]
+
+                elif CommonElements[j] == 'Ti' and 'TiO2' in raw.columns:
+                    tmp = raw.at[i, 'TiO2'] * (
+                        47.867 / 79.865) * 10000 / standardchosen[
+                        CommonElements[j]]
+
+                else:
+                    flag = 0
+
+                if flag == 1:
+                    if tmp==tmp:# to delete nan
+                        LinesX.append(j + 1)
+                        LinesY.append(math.log(tmp, 10))
+                        self.WholeData.append(math.log(tmp, 10))
+
+                        if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                            TmpLabel = ''
+                        else:
+                            PointLabels.append(raw.at[i, 'Label'])
+                            TmpLabel = raw.at[i, 'Label']
+
+                        self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
+                                          s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                          label=TmpLabel, edgecolors='black')
+            self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
+                           linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
+
+        Tale = 0
+        Head = 0
+
+        if (len(self.WholeData) > 0):
+            Tale = min(self.WholeData)
+            Head = max(self.WholeData)
+
+        Location = round(Tale - (Head - Tale) / 5)
+
+        count = round((Head - Tale) / 5 * 7) + 1
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a, fontsize=9)
+
+        self.DrawLine([(0, Location), (max(self.xticks), Location)], color='black', linewidth=0.8, alpha=0.8)
+
+        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
+
+        self.standard_label.setText('Standard: ' + self.StandardsName[int(self.standard.value())])
+
+        for i in range(count):
+            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
+                          linewidth=0.8, alpha=0.8)
+
+            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
+                               xycoords='data', xytext=(-15, 0),
+                               textcoords='offset points',
+                               fontsize=8, color='black', alpha=0.8, rotation=90)
+
+        for i in range(min(len(self.xticks), len(self.xticklabels))):
+            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
+                          linewidth=0.8, alpha=0.8)
+            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
+                               textcoords='offset points',
+                               fontsize=8, color='black', alpha=0.8)
+
+        self.canvas.draw()
+
+
 class Stereo(AppForm):
     _df = pd.DataFrame()
     _changed = False
@@ -2209,7 +2369,7 @@ class Stereo(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Stereo')
+            # print('DataFrame recieved to Stereo')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -2221,7 +2381,7 @@ class Stereo(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111, projection='polar')
-        #self.axes.set_xlim(-90, 450)
+        # self.axes.set_xlim(-90, 450)
         self.axes.set_ylim(0, 90)
 
         # Create the navigation toolbar, tied to the canvas
@@ -2286,7 +2446,6 @@ class Stereo(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-
     def eqar(self, A):
         return (2 ** .5) * 90 * np.sin(np.pi * (90. - A) / (2. * 180.))
 
@@ -2318,7 +2477,7 @@ class Stereo(AppForm):
         '''
         self.axes.clear()
 
-        #self.axes.set_xlim(-90, 450)
+        # self.axes.set_xlim(-90, 450)
         self.axes.set_ylim(0, 90)
 
         titles = list('NWSE')
@@ -2404,7 +2563,7 @@ class Stereo(AppForm):
         '''
         self.axes.clear()
 
-        #self.axes.set_xlim(-90, 450)
+        # self.axes.set_xlim(-90, 450)
         self.axes.set_ylim(0, 90)
 
         titles = list('NWSE')
@@ -2506,6 +2665,7 @@ class Stereo(AppForm):
 
         self.canvas.draw()
 
+
 class Rose(AppForm):
     _df = pd.DataFrame()
     _changed = False
@@ -2526,7 +2686,7 @@ class Rose(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Rose')
+            # print('DataFrame recieved to Rose')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -2539,7 +2699,10 @@ class Rose(AppForm):
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111, projection='polar')
         #self.axes.set_xlim(-90, 450)
-        self.axes.set_ylim(0, 90)
+        #self.axes.set_ylim(0, 90)
+
+
+
 
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
@@ -2614,8 +2777,6 @@ class Rose(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-
-
     def eqar(self, A):
         return (2 ** .5) * 90 * np.sin(np.pi * (90. - A) / (2. * 180.))
 
@@ -2647,181 +2808,6 @@ class Rose(AppForm):
 
         return (a, b)
 
-    def lines(self, Width=1, Color='k'):
-        '''
-        read the Excel, then draw the wulf net and Plot points, job done~
-        '''
-        self.axes.clear()
-
-        #self.axes.set_xlim(-90, 450)
-        self.axes.set_ylim(0, 90)
-
-        titles = list('NWSE')
-
-        titles = ['N', '330', '300', 'W', '240', '210', 'S', '150', '120', 'E', '60', '30']
-        self.n = len(titles)
-        self.angles = np.arange(90, 90 + 360, 360.0 / self.n)
-
-        self.angles = np.array([90., 120., 150., 180., 210., 240., 270., 300., 330.,
-                                360., 30., 60.])
-        self.axes.set_thetagrids(self.angles, labels=titles, fontsize=14)
-
-        raw = self._df
-
-        Data = []
-        Labels = []
-
-        if (self.Type_cb.isChecked()):
-            self.Type_cb.setText('Wulf')
-            list1 = [self.eqan(x) for x in range(15, 90, 15)]
-        else:
-            self.Type_cb.setText('Schmidt')
-            list1 = [self.eqar(x) for x in range(15, 90, 15)]
-
-        list2 = [str(x) for x in range(15, 90, 15)]
-        self.axes.set_rgrids(list1, list2)
-
-        for i in range(len(raw)):
-            Data.append([raw.at[i, 'Name'], raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
-                         raw.at[i, 'Width'], raw.at[i, 'Alpha'], raw.at[i, 'Label']])
-            Dip = raw.at[i, 'Dip']
-            Dip_Angle = raw.at[i, 'Dip-Angle']
-
-            Label = raw.at[i, 'Label']
-            if (Label not in Labels):
-                Labels.append(Label)
-            else:
-                Label = ''
-
-            Width = 1
-            Color = 'red'
-            Alpha = 0.8
-            Marker = 'o'
-            Size = 50
-
-            Setting = [Width, Color, Alpha, Marker, Size]
-
-            Width = raw.at[i, 'Width']
-            Color = raw.at[i, 'Color']
-            Alpha = raw.at[i, 'Alpha']
-            Marker = raw.at[i, 'Marker']
-            Size = raw.at[i, 'Size']
-
-            if (Color not in Setting or Color != ''):
-                Width = raw.at[i, 'Width']
-                Color = raw.at[i, 'Color']
-                Alpha = raw.at[i, 'Alpha']
-                Marker = raw.at[i, 'Marker']
-                Size = raw.at[i, 'Size']
-
-                Setting = [Width, Color, Alpha, Marker, Size]
-            r = np.arange(Dip - 90, Dip + 91, 1)
-            BearR = [np.radians(-A + 90) for A in r]
-
-            if (self.Type_cb.isChecked()):
-                self.Type_cb.setText('Wulf')
-                Line = (self.eqan(self.getangular(Dip_Angle, Dip, r)))
-            else:
-                self.Type_cb.setText('Schmidt')
-                Line = (self.eqar(self.getangular(Dip_Angle, Dip, r)))
-
-            self.axes.plot(BearR, Line, color=Color, linewidth=Width, alpha=Alpha, label=Label)
-
-        # self.axes.thetagrids(range(360 + 90, 0 + 90, -30), [str(x) for x in range(0, 360, 30)])
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=2, fontsize=9, bbox_to_anchor=(0, 0))
-
-    def points(self, Width=1, Color='k'):
-        '''
-        read the Excel, then draw the schmidt net and Plot points, job done~
-        '''
-        self.axes.clear()
-
-        #self.axes.set_xlim(-90, 450)
-        self.axes.set_ylim(0, 90)
-
-        titles = list('NWSE')
-
-        titles = ['N', '330', '300', 'W', '240', '210', 'S', '150', '120', 'E', '60', '30']
-        self.n = len(titles)
-        self.angles = np.arange(90, 90 + 360, 360.0 / self.n)
-
-        self.angles = np.array([90., 120., 150., 180., 210., 240., 270., 300., 330.,
-                                360., 30., 60.])
-        self.axes.set_thetagrids(self.angles, labels=titles, fontsize=14)
-
-        raw = self._df
-
-        Data = []
-        Labels = []
-
-        if (self.Type_cb.isChecked()):
-            self.Type_cb.setText('Wulf')
-            list1 = [self.eqan(x) for x in range(15, 90, 15)]
-        else:
-            self.Type_cb.setText('Schmidt')
-            list1 = [self.eqar(x) for x in range(15, 90, 15)]
-        list2 = [str(x) for x in range(15, 90, 15)]
-        self.axes.set_rgrids(list1, list2)
-
-        for i in range(len(raw)):
-            Data.append(
-                [raw.at[i, 'Name'], raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
-                 raw.at[i, 'Width'], raw.at[i, 'Alpha'], raw.at[i, 'Marker'], raw.at[i, 'Label']])
-            Dip = raw.at[i, 'Dip']
-            Dip_Angle = raw.at[i, 'Dip-Angle']
-
-            Label = raw.at[i, 'Label']
-
-            if (Label not in Labels):
-                Labels.append(Label)
-            else:
-                Label = ''
-
-            Width = 1
-            Color = 'red'
-            Alpha = 0.8
-            Marker = 'o'
-            Size = 50
-
-            Setting = [Width, Color, Alpha, Marker, Size]
-
-            Width = raw.at[i, 'Width']
-            Color = raw.at[i, 'Color']
-            Alpha = raw.at[i, 'Alpha']
-            Marker = raw.at[i, 'Marker']
-            Size = raw.at[i, 'Size']
-
-            if (Color not in Setting or Color != ''):
-                Width = raw.at[i, 'Width']
-                Color = raw.at[i, 'Color']
-                Alpha = raw.at[i, 'Alpha']
-                Marker = raw.at[i, 'Marker']
-                Size = raw.at[i, 'Size']
-
-                Setting = [Width, Color, Alpha, Marker, Size]
-
-            if (self.Type_cb.isChecked()):
-                self.Type_cb.setText('Wulf')
-                self.axes.scatter(np.radians(90 - Dip), self.eqan(Dip_Angle), marker=Marker, s=Size, color=Color,
-                                  alpha=Alpha,
-                                  label=Label, edgecolors='black')
-            else:
-                self.Type_cb.setText('Schmidt')
-                self.axes.scatter(np.radians(90 - Dip), self.eqar(Dip_Angle), marker=Marker, s=Size, color=Color,
-                                  alpha=Alpha,
-                                  label=Label, edgecolors='black')
-
-        # plt.plot(120, 30, color='K', linewidth=4, alpha=Alpha, marker='o')
-        # self.axes.thetagrids(range(360 + 90, 0 + 90, -30), [str(x) for x in range(0, 360, 30)])
-
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
-            self.axes.legend(loc=2, fontsize=9, bbox_to_anchor=(0, 0))
 
     def singlerose(self, Width=1, Color=['red']):
         '''
@@ -2836,8 +2822,8 @@ class Rose(AppForm):
         Name = self.SingleRoseName
 
         self.axes.clear()
-        #self.axes.set_xlim(-90, 450)
-        self.axes.set_ylim(0, 90)
+        # self.axes.set_xlim(-90, 450)
+        # self.axes.set_ylim(0, 90)
 
         titles = list('NWSE')
 
@@ -2920,7 +2906,7 @@ class Rose(AppForm):
         list2.reverse()
         self.axes.set_rgrids(list1, list2)
 
-        self.axes.set_thetagrids(range(360 + 90, 0 + 90, -15), [str(x) for x in range(0, 360, 15)])
+        #self.axes.set_thetagrids(range(360 + 90, 0 + 90, -15), [str(x) for x in range(0, 360, 15)])
 
         if (self.legend_cb.isChecked()):
             a = int(self.slider.value())
@@ -2935,8 +2921,8 @@ class Rose(AppForm):
         Name = self.MultipleRoseName
 
         self.axes.clear()
-        #self.axes.set_xlim(-90, 450)
-        self.axes.set_ylim(0, 90)
+        # self.axes.set_xlim(-90, 450)
+        # self.axes.set_ylim(0, 90)
 
         titles = list('NWSE')
 
@@ -3015,7 +3001,7 @@ class Rose(AppForm):
 
         self.axes.set_rgrids(list1, list2)
 
-        self.axes.set_thetagrids(range(360 + 90, 0 + 90, -15), [str(x) for x in range(0, 360, 15)])
+        #self.axes.set_thetagrids(range(360 + 90, 0 + 90, -15), [str(x) for x in range(0, 360, 15)])
 
         if (self.legend_cb.isChecked()):
             a = int(self.slider.value())
@@ -3145,7 +3131,7 @@ class MudStone(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Tri')
+            # print('DataFrame recieved to Tri')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3164,6 +3150,7 @@ class MudStone(AppForm, Tool):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -3199,11 +3186,10 @@ class MudStone(AppForm, Tool):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-
-
     def Tri(self):
 
         self.axes.clear()
+        self.axes.axis('off')
         self.axes.set_xlim(-15, 140)
         self.axes.set_ylim(-10, 100)
 
@@ -3341,9 +3327,8 @@ class MudStone(AppForm, Tool):
 
         self.canvas.draw()
 
+
 class QFL(AppForm, Tool):
-
-
     reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'
     _df = pd.DataFrame()
     _changed = False
@@ -3387,7 +3372,7 @@ class QFL(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Tri')
+            # print('DataFrame recieved to Tri')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3406,6 +3391,7 @@ class QFL(AppForm, Tool):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -3441,10 +3427,10 @@ class QFL(AppForm, Tool):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-
     def Tri(self):
 
         self.axes.clear()
+        self.axes.axis('off')
         self.axes.set_xlim(-10, 140)
         self.axes.set_ylim(-10, 100)
 
@@ -3564,6 +3550,7 @@ class QFL(AppForm, Tool):
 
         self.canvas.draw()
 
+
 class QmFLt(AppForm, Tool):
     reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'
     _df = pd.DataFrame()
@@ -3624,7 +3611,7 @@ class QmFLt(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Tri')
+            # print('DataFrame recieved to Tri')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3643,6 +3630,7 @@ class QmFLt(AppForm, Tool):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -3678,11 +3666,10 @@ class QmFLt(AppForm, Tool):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-
-
     def Tri(self):
 
         self.axes.clear()
+        self.axes.axis('off')
         self.axes.set_xlim(-10, 140)
         self.axes.set_ylim(-10, 100)
 
@@ -3862,6 +3849,7 @@ class QmFLt(AppForm, Tool):
 
         self.canvas.draw()
 
+
 class CIPW(AppForm):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
 
@@ -3901,7 +3889,7 @@ class CIPW(AppForm):
                 'Q',
                 'A',
                 'P',
-                'F',]
+                'F', ]
 
     Calced = ['Fe3+/(Total Fe) in rock',
               'Mg/(Mg+Total Fe) in rock',
@@ -3924,7 +3912,7 @@ class CIPW(AppForm):
         self.raw = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved')
+            # print('DataFrame recieved')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -3959,7 +3947,7 @@ class CIPW(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,self.qapf_button, self.chooser_label, self.chooser]:
+        for w in [self.save_button, self.qapf_button, self.chooser_label, self.chooser]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -3971,8 +3959,6 @@ class CIPW(AppForm):
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
-
-
 
     def Calc(self):
 
@@ -4037,58 +4023,53 @@ class CIPW(AppForm):
         self.DataCalculating = {}
         self.DataResult = {}
 
+        self.ElementsMass = [('SiO2', 60.083),
+                             ('TiO2', 79.865),
+                             ('Al2O3', 101.960077),
+                             ('Fe2O3', 159.687),
+                             ('FeO', 71.844),
+                             ('MnO', 70.937044),
+                             ('MgO', 40.304),
+                             ('CaO', 56.077000000000005),
+                             ('Na2O', 61.978538560000004),
+                             ('K2O', 94.1956),
+                             ('P2O5', 141.942523996),
+                             ('CO2', 44.009),
+                             ('SO3', 80.057),
+                             ('S', 32.06),
+                             ('F', 18.998403163),
+                             ('Cl', 35.45),
+                             ('Sr', 87.62),
+                             ('Ba', 137.327),
+                             ('Ni', 58.6934),
+                             ('Cr', 51.9961),
+                             ('Zr', 91.224)]
 
-        self.ElementsMass=[('SiO2', 60.083),
-                         ('TiO2', 79.865),
-                         ('Al2O3', 101.960077),
-                         ('Fe2O3', 159.687),
-                         ('FeO', 71.844),
-                         ('MnO', 70.937044),
-                         ('MgO', 40.304),
-                         ('CaO', 56.077000000000005),
-                         ('Na2O', 61.978538560000004),
-                         ('K2O', 94.1956),
-                         ('P2O5', 141.942523996),
-                         ('CO2', 44.009),
-                         ('SO3', 80.057),
-                         ('S', 32.06),
-                         ('F', 18.998403163),
-                         ('Cl', 35.45),
-                         ('Sr', 87.62),
-                         ('Ba', 137.327),
-                         ('Ni', 58.6934),
-                         ('Cr', 51.9961),
-                         ('Zr', 91.224)]
-
-        self.BaseMass={'SiO2':60.083,
-                         'TiO2':79.865,
-                         'Al2O3':101.960077,
-                         'Fe2O3':159.687,
-                         'FeO':71.844,
-                         'MnO':70.937044,
-                         'MgO':40.304,
-                         'CaO':56.077000000000005,
-                         'Na2O':61.978538560000004,
-                         'K2O':94.1956,
-                         'P2O5':141.942523996,
-                         'CO2':44.009,
-                         'SO3':80.057,
-                         'S':32.06,
-                         'F':18.998403163,
-                         'Cl':35.45,
-                         'Sr':87.62,
-                         'Ba':137.327,
-                         'Ni':58.6934,
-                         'Cr':51.9961,
-                         'Zr':91.224}
-
-
+        self.BaseMass = {'SiO2': 60.083,
+                         'TiO2': 79.865,
+                         'Al2O3': 101.960077,
+                         'Fe2O3': 159.687,
+                         'FeO': 71.844,
+                         'MnO': 70.937044,
+                         'MgO': 40.304,
+                         'CaO': 56.077000000000005,
+                         'Na2O': 61.978538560000004,
+                         'K2O': 94.1956,
+                         'P2O5': 141.942523996,
+                         'CO2': 44.009,
+                         'SO3': 80.057,
+                         'S': 32.06,
+                         'F': 18.998403163,
+                         'Cl': 35.45,
+                         'Sr': 87.62,
+                         'Ba': 137.327,
+                         'Ni': 58.6934,
+                         'Cr': 51.9961,
+                         'Zr': 91.224}
 
         for i in range(len(self.raw)):
             TmpWhole = 0
             TmpMole = {}
-
-
 
             for j in self.Elements:
                 '''
@@ -4100,15 +4081,14 @@ class CIPW(AppForm):
                 except(KeyError):
                     T_TMP = 0
 
+                if j == 'Sr':
+                    TMP = T_TMP / (87.62 / 103.619 * 10000)
 
-                if j =='Sr':
-                    TMP = T_TMP / (87.62/ 103.619 * 10000)
-
-                elif j =='Ba':
+                elif j == 'Ba':
                     TMP = T_TMP / (137.327 / 153.326 * 10000)
 
 
-                elif j =='Ni':
+                elif j == 'Ni':
                     TMP = T_TMP / (58.6934 / 74.69239999999999 * 10000)
 
                 elif j == 'Cr':
@@ -4119,10 +4099,9 @@ class CIPW(AppForm):
                     TMP = T_TMP / ((2 * 91.224) / 123.22200000000001 * 10000)
 
                 else:
-                    TMP =  T_TMP
+                    TMP = T_TMP
 
                 V = TMP
-
 
                 try:
                     TmpWhole += float(V)
@@ -4141,22 +4120,21 @@ class CIPW(AppForm):
                 except(KeyError):
                     T_TMP = 0
 
+                if j == 'Sr':
+                    TMP = T_TMP / (87.62 / 103.619 * 10000)
 
-                if j =='Sr':
-                    TMP = T_TMP / (87.62/ 103.619 * 10000)
-
-                elif j =='Ba':
+                elif j == 'Ba':
                     TMP = T_TMP / (137.327 / 153.326 * 10000)
 
-                elif j =='Ni':
+                elif j == 'Ni':
                     TMP = T_TMP / (58.6934 / 74.69239999999999 * 10000)
 
                 elif j == 'Cr':
                     TMP = T_TMP / ((2 * 51.9961) / 151.98919999999998 * 10000)
 
                 elif j == 'Zr':
-                    #Zr not Multiple by 2 Here
-                    TMP = T_TMP / (( 91.224) / 123.22200000000001 * 10000)
+                    # Zr not Multiple by 2 Here
+                    TMP = T_TMP / ((91.224) / 123.22200000000001 * 10000)
 
                 else:
                     TMP = T_TMP
@@ -4202,7 +4180,6 @@ class CIPW(AppForm):
                 self.DataCalced[k].update({'Mg/(Mg+Total Fe) in rock': 0})
                 pass
 
-
             try:
                 self.DataCalced[k].update({'Mg/(Mg+Fe2+) in rock': 100 * Mg / (Mg + Fe2)})
             except(ZeroDivisionError):
@@ -4225,10 +4202,9 @@ class CIPW(AppForm):
                 if self.DataCalculating['CaO'][i] >= 10 / 3 * self.DataCalculating['P2O5'][i]:
                     self.DataCalculating['CaO'][i] -= 10 / 3 * self.DataCalculating['P2O5'][i]
                 else:
-                   self.DataCalculating['CaO'][i] = 0
+                    self.DataCalculating['CaO'][i] = 0
             except(ZeroDivisionError):
                 pass
-
 
             self.DataCalculating['P2O5'][i] = self.DataCalculating['P2O5'][i] / 1.5
 
@@ -4240,7 +4216,6 @@ class CIPW(AppForm):
                 self.DataCalculating['F'][i] -= self.DataCalculating['P2O5'][i]
             else:
                 self.DataCalculating['F'][i] = 0
-
 
             if self.DataCalculating['F'][i] >= self.DataCalculating['P2O5'][i]:
                 self.DataCalculating['F'][i] -= self.DataCalculating['P2O5'][i]
@@ -5060,71 +5035,64 @@ class CIPW(AppForm):
             for i in self.Minerals:
                 exec('self.DataResult[k].update({\'' + i + '\':' + i + '}) ')
 
-                if i =='Q':
+                if i == 'Q':
                     m = 'Quartz'
 
                     exec('self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) ')
 
-                    exec('self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]/self.DataBase[\'' + m + '\'][1]}) ')
+                    exec(
+                        'self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]/self.DataBase[\'' + m + '\'][1]}) ')
 
 
 
-                elif i =='A':
-                    m= 'Orthoclase'
+                elif i == 'A':
+                    m = 'Orthoclase'
 
                     exec('self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) ')
                     exec(
                         'self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]/self.DataBase[\'' + m + '\'][1]}) ')
 
 
-                elif i =='P':
-                    a= 'Anorthite'
-                    b= 'Albite'
+                elif i == 'P':
+                    a = 'Anorthite'
+                    b = 'Albite'
 
-                    exec('self.DataWeight[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]+'+b + '*self.DataBase[\'' + b + '\'][0]}) ')
                     exec(
-                        'self.DataVolume[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+'+ b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]}) ')
+                        'self.DataWeight[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]+' + b + '*self.DataBase[\'' + b + '\'][0]}) ')
+                    exec(
+                        'self.DataVolume[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+' + b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]}) ')
 
 
-                elif i =='F':
+                elif i == 'F':
                     a = 'Nepheline'
                     b = 'Leucite'
                     c = 'Kalsilite'
 
-                    exec('self.DataWeight[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]+'+b + '*self.DataBase[\'' + b + '\'][0]+'+c + '*self.DataBase[\'' + c + '\'][0]}) ')
                     exec(
-                        'self.DataVolume[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+'+ b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]+'+ c + '*self.DataBase[\'' + c + '\'][0]/self.DataBase[\'' + c + '\'][1]}) ')
+                        'self.DataWeight[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]+' + b + '*self.DataBase[\'' + b + '\'][0]+' + c + '*self.DataBase[\'' + c + '\'][0]}) ')
+                    exec(
+                        'self.DataVolume[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+' + b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]+' + c + '*self.DataBase[\'' + c + '\'][0]/self.DataBase[\'' + c + '\'][1]}) ')
 
-
-
-
-
-
-
-
-                if i not in ['Q','A','P','F',]:
+                if i not in ['Q', 'A', 'P', 'F', ]:
                     exec('self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + i + '\'][0]}) ')
-                    exec('self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + i + '\'][0]/self.DataBase[\'' + i + '\'][1]}) ')
+                    exec(
+                        'self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + i + '\'][0]/self.DataBase[\'' + i + '\'][1]}) ')
 
             self.DI = 0
-            #for i in ['Quartz', 'Anorthite', 'Albite', 'Orthoclase', 'Nepheline', 'Leucite', 'Kalsilite']:
-            #exec('self.DI+=' + i + '*self.DataBase[\'' + i + '\'][0]')
+            # for i in ['Quartz', 'Anorthite', 'Albite', 'Orthoclase', 'Nepheline', 'Leucite', 'Kalsilite']:
+            # exec('self.DI+=' + i + '*self.DataBase[\'' + i + '\'][0]')
 
             exec('self.DI= Quartz +  Anorthite +  Albite +  Orthoclase +  Nepheline +  Leucite +  Kalsilite ')
             DI = Quartz + Anorthite + Albite + Orthoclase + Nepheline + Leucite + Kalsilite
 
-
-
-            #print('\n\n DI is\n',DI,'\n\n')
+            # print('\n\n DI is\n',DI,'\n\n')
             self.DataCalced[k].update({'Differentiation Index': DI})
-
 
     def WriteData(self, target='DataResult'):
         DataToWrite = []
         TMP_DataToWrite = ['Label']
 
-        TMP_DataToWrite = ['Label' ,'Marker' ,'Color' ,'Size' ,'Alpha' ,'Style' ,'Width']
-
+        TMP_DataToWrite = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
 
         for j in self.Minerals:
             TMP_DataToWrite.append(str(j))
@@ -5169,15 +5137,10 @@ class CIPW(AppForm):
                 except(KeyError):
                     pass
 
-
             DataToWrite.append(TMP_DataToWrite)
 
-        #print('\n',DataToWrite,'\n')
+        # print('\n',DataToWrite,'\n')
         return (DataToWrite)
-
-
-
-
 
     def CIPW(self):
 
@@ -5189,20 +5152,20 @@ class CIPW(AppForm):
         a.append(self.WriteData(target='DataVolume'))
         a.append(self.WriteCalced(target='DataCalced'))
 
-        tmp=a[self.chooser.value() - 1]
+        tmp = a[self.chooser.value() - 1]
 
         labels = tmp[0]
-        newtmp=[]
+        newtmp = []
 
         for s in range(len(tmp)):
-            if s!= 0:
+            if s != 0:
                 newtmp.append(tmp[s])
 
         self.newdf = pd.DataFrame.from_records(newtmp, columns=labels)
 
         ##print('\n',tmp,'\n')
 
-        #self.newdf = pd.DataFrame(tmp)
+        # self.newdf = pd.DataFrame(tmp)
 
 
 
@@ -5224,14 +5187,17 @@ class CIPW(AppForm):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
     def QAPF(self):
-        self.qapfpop = QAPF(df = self.newdf)
+        self.qapfpop = QAPF(df=self.newdf)
         try:
             self.qapfpop.QAPF()
         except(TypeError):
             pass
         self.qapfpop.show()
 
+
 class QAPF(AppForm, Tool):
+
+    infotext ='Q = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.'
     reference = 'Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
     _df = pd.DataFrame()
     _changed = False
@@ -5361,7 +5327,7 @@ class QAPF(AppForm, Tool):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to DualTri')
+            # print('DataFrame recieved to DualTri')
 
         self.raw = self._df
         self.create_main_frame()
@@ -5385,6 +5351,7 @@ class QAPF(AppForm, Tool):
         self.canvas.setParent(self.main_frame)
 
         self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
         self.axes.set_xlim(-10, 110)
         self.axes.set_ylim(-105 * np.sqrt(3) / 2, 105 * np.sqrt(3) / 2)
 
@@ -5432,13 +5399,17 @@ class QAPF(AppForm, Tool):
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
 
+        self.detailtext = QLineEdit(self)
+        self.detailtext.setText(self.infotext)
+        self.vbox.addWidget(self.detailtext)
+
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
-
 
     def QAPF(self):
 
         self.axes.clear()
+        self.axes.axis('off')
         self.Tags = []
 
         self.axes.set_xlim(-10, 110)
@@ -5563,7 +5534,7 @@ class QAPF(AppForm, Tool):
             self.Tag_cb.setText('&Plutonic')
 
             self.setWindowTitle(
-                'QAPF modal classification of plutonic rocks (based on Streckeisen, 1976, Fig. 1a).\nQ = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.')
+                'QAPF modal classification of plutonic rocks (based on Streckeisen, 1976, Fig. 1a).')
 
             D1 = (0, 0, 100)
             L1 = [(10, 0, 90), (0, 10, 90)]
@@ -5896,7 +5867,7 @@ class QAPF(AppForm, Tool):
                                         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                         Label=TmpLabel))
             else:
-                TPoints.append(TriPoint((a, p, 0-f), Size=raw.at[i, 'Size'],
+                TPoints.append(TriPoint((a, p, 0 - f), Size=raw.at[i, 'Size'],
                                         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                         Label=TmpLabel))
 
@@ -5910,6 +5881,7 @@ class QAPF(AppForm, Tool):
             self.axes.legend(loc=3, fontsize=9, bbox_to_anchor=(0, 0))
 
         self.canvas.draw()
+
 
 class Pearce(AppForm):
     reference = 'Pearce, J. A., Harris, N. B. W., and Tindle, A. G., 1984, Trace Element Discrimination Diagrams for the Tectonic Interpretation of Granitic Rocks: Journal of Petrology, v. 25, no. 4, p. 956-983.'
@@ -5926,7 +5898,19 @@ class Pearce(AppForm):
                   'xLabel': r'Y+Nb (PPM)',
                   'yLabel': r'Rb (PPM)',
                   'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
-                  'Locations': [(1, 3), (1, 1), (3, 3), (3, 1)]
+                  'Locations': [(1, 3), (1, 1), (2.4, 2.4), (3, 1)],
+                  'Frame': [[(0, 0), (0, 4)],
+                            [(0, 0), (4, 0)],],
+
+                  'BaseY': [[(0, 1), (-0.1, 1)],
+                            [(0, 2), (-0.1, 2)],
+                            [(0, 3), (-0.1, 3)],],
+
+                  'BaseX': [[(0, 0), (0, -0.1)],
+                            [(1, 0), (1, -0.1)],
+                            [(2, 0), (2, -0.1)],
+                            [(3, 0), (3, -0.1)], ]
+
                   }
 
     Condation1 = {'BaseLines': [[(0.5, 140), (6, 200)],
@@ -5937,7 +5921,18 @@ class Pearce(AppForm):
                   'xLabel': r'Yb+Ta (PPM)',
                   'yLabel': r'Rb (PPM)',
                   'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
-                  'Locations': [(0.5, 3), (0.5, 1), (2, 2.8), (2, 1)]
+                  'Locations': [(0.5, 3), (0.5, 1), (1.5, 2.4), (2, 1)],
+                  'Frame': [[(-1, 0), (-1, 3)],
+                            [(-1, 0), (3, 0)],],
+
+                  'BaseY': [[(-1, 1), (-1.1, 1)],
+                            [(-1, 2), (-1.1, 2)],
+                            [(-1, 3), (-1.1, 3)],],
+
+                  'BaseX': [[(0, 0), (0, -0.1)],
+                            [(-1, 0), (-1, -0.1)],
+                            [(1, 0), (1, -0.1)],
+                            [(2, 0), (2, -0.1)], ]
                   }
 
     Condation2 = {'BaseLines': [[(1, 2000), (50, 10)],
@@ -5947,7 +5942,18 @@ class Pearce(AppForm):
                   'xLabel': r'Y (PPM)',
                   'yLabel': r'Nb (PPM)',
                   'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
-                  'Locations': [(0.5, 1.5), (0.5, 2), (2, 2), (2, 1)]
+                  'Locations': [(0.5, 1.5), (0.5, 2), (2, 2), (2, 1)],
+                  'Frame': [[(-0.5, 0), (-0.5, 3)],
+                            [(-0.5, 0), (3, 0)],],
+
+                  'BaseY': [[(-0.5, 1), (-0.6, 1)],
+                            [(-0.5, 2), (-0.6, 2)],
+                            [(-0.5, 3), (-0.6, 3)],],
+
+                  'BaseX': [[(0, 0), (0, -0.1)],
+                            [(1, 0), (1, -0.1)],
+                            [(2, 0), (2, -0.1)],]
+
                   }
 
     Condation3 = {'BaseLines': [[(0.55, 20), (3, 2)],
@@ -5959,7 +5965,18 @@ class Pearce(AppForm):
                   'xLabel': r'Yb (PPM)',
                   'yLabel': r'Ta (PPM)',
                   'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
-                  'Locations': [(-1, 0.1), (-1, -1), (0.7, 1), (2, 0.5)]
+                  'Locations': [(-0.5, 0.1), (-0.5, -1), (0.7, 1), (2, 0.5)],
+                  'Frame': [[(-1, -1.5), (-1, 2)],
+                            [(-1, -1.5), (2, -1.5)],],
+
+                  'BaseY': [[(-1, 0), (-1.1, 0)],
+                            [(-1, 1), (-1.1, 1)],
+                            [(-1, 2), (-1.1, 2)],],
+
+                  'BaseX': [[(-1, -1.5), (-1, -1.6)],
+                            [(0, -1.5), (0, -1.6)],
+                            [(1, -1.5), (1, -1.6)],
+                            [(2, -1.5), (2, -1.6)], ]
                   }
 
     condation = [Condation0, Condation1, Condation2, Condation3]
@@ -5972,7 +5989,7 @@ class Pearce(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Pearce')
+            # print('DataFrame recieved to Pearce')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -5984,6 +6001,9 @@ class Pearce(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
+
+        self.axes.axis('off')
+
         # self.axes.hold(False)
 
         # Create the navigation toolbar, tied to the canvas
@@ -6048,9 +6068,41 @@ class Pearce(AppForm):
         a = int(self.standard.value())
 
         self.axes.clear()
+        self.axes.axis('off')
 
         self.axes.set_xlabel(self.condation[a]['xLabel'])
         self.axes.set_ylabel(self.condation[a]['yLabel'])
+
+
+        s=[]
+        for i in self.condation[a]['Frame']:
+            self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
+            s.append((i[1][0]/2,i[1][1]/2))
+
+
+        self.axes.annotate(self.condation[a]['xLabel'], s[1], xycoords='data', xytext=(-2, -50),
+                           textcoords='offset points',
+                           fontsize=9, color='grey', alpha=0.8)
+        self.axes.annotate(self.condation[a]['yLabel'], s[0], xycoords='data', xytext=(-50, -2),
+                           textcoords='offset points',rotation=90,
+                           fontsize=9, color='grey', alpha=0.8)
+
+
+
+        for i in self.condation[a]['BaseX']:
+            self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
+            if (type(i[0][0])== int):
+                self.axes.annotate(str(int(np.power(10, np.float32(i[0][0])))), i[1], xycoords='data', xytext=(-2,-10),
+                                   textcoords='offset points',
+                                   fontsize=9, color='grey', alpha=0.8)
+
+        for i in self.condation[a]['BaseY']:
+            self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
+            if (type(i[0][1]) == int):
+                self.axes.annotate(str(int(np.power(10, np.float32(i[0][1])))), i[1], xycoords='data', xytext=(-15,-10),
+                               textcoords='offset points',
+                               fontsize=9, color='grey', alpha=0.8)
+
 
         BaseLines = self.condation[a]['BaseLines']
 
@@ -6113,6 +6165,7 @@ class Pearce(AppForm):
                                    fontsize=8, color='grey', alpha=0.8)
 
         self.canvas.draw()
+
 
 class Harker(AppForm):
     Lines = []
@@ -6192,7 +6245,7 @@ class Harker(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Harker')
+            # print('DataFrame recieved to Harker')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -6345,7 +6398,6 @@ class Harker(AppForm):
 
                     self.axes.set_ylabel('$log10$ ' + self.items[b])
 
-
                 self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
                                   s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                   label=TmpLabel, edgecolors='black')
@@ -6357,6 +6409,7 @@ class Harker(AppForm):
             self.axes.legend(loc=a, fontsize=9)
 
         self.canvas.draw()
+
 
 class ZirconTiTemp(AppForm):
     reference = 'Ferry J M, Watson E B. New thermodynamic models and revised calibrations for the Ti-in-zircon and Zr-[J]. Contributions to Mineralogy & Petrology, 2007, 154(4):429-437.'
@@ -6373,7 +6426,7 @@ class ZirconTiTemp(AppForm):
         self.raw = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved')
+            # print('DataFrame recieved')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -6407,14 +6460,11 @@ class ZirconTiTemp(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-
-
-
     def ZirconTiTemp(self):
 
-        MaxTemps=[]
-        MinTemps=[]
-        MidTemps=[]
+        MaxTemps = []
+        MinTemps = []
+        MidTemps = []
 
         for i in range(len(self.raw)):
             Ti = self.raw.at[i, 'Ti']
@@ -6422,34 +6472,34 @@ class ZirconTiTemp(AppForm):
             try:
                 ASiO2 = self.raw.at[i, 'ASiO2']
             except(KeyError):
-                ASiO2 =1
-
+                ASiO2 = 1
 
             try:
                 ATiO2 = self.raw.at[i, 'ATiO2']
             except(KeyError):
-                ATiO2 =1
+                ATiO2 = 1
 
-            TiTemp1=(4800+86)/((5.711+0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+            TiTemp1 = (4800 + 86) / ((5.711 + 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
 
-            TiTemp2=(4800-86)/((5.711+0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+            TiTemp2 = (4800 - 86) / ((5.711 + 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
 
-            TiTemp3=(4800+86)/((5.711-0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+            TiTemp3 = (4800 + 86) / ((5.711 - 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
 
-            TiTemp4=(4800-86)/((5.711-0.072) -np.log10(Ti)-np.log10(ASiO2) +np.log10(ATiO2) ) - 273.15
+            TiTemp4 = (4800 - 86) / ((5.711 - 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
 
-            TiTempBig,TiTempSmall=max([TiTemp1,TiTemp2,TiTemp3,TiTemp4]),min(([TiTemp1,TiTemp2,TiTemp3,TiTemp4]))
+            TiTempBig, TiTempSmall = max([TiTemp1, TiTemp2, TiTemp3, TiTemp4]), min(
+                ([TiTemp1, TiTemp2, TiTemp3, TiTemp4]))
 
             MaxTemps.append(TiTempBig)
             MinTemps.append(TiTempSmall)
-            MidTemps.append((TiTempSmall+TiTempBig)/2)
+            MidTemps.append((TiTempSmall + TiTempBig) / 2)
 
-        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps,'Temp Mid': MidTemps, }
+        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps, 'Temp Mid': MidTemps, }
 
         tmpdftoadd = pd.DataFrame(tmpdata)
 
         self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
-        self.model = PandasModel(self.newdf )
+        self.model = PandasModel(self.newdf)
         self.tableView.setModel(self.model)
 
     def saveResult(self):
@@ -6465,6 +6515,7 @@ class ZirconTiTemp(AppForm):
 
             elif ('xls' in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+
 
 class RutileZrTemp(AppForm):
     reference = 'Ferry J M, Watson E B. New thermodynamic models and revised calibrations for the Ti-in-zircon and Zr-[J]. Contributions to Mineralogy & Petrology, 2007, 154(4):429-437.'
@@ -6481,7 +6532,7 @@ class RutileZrTemp(AppForm):
         self.raw = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved')
+            # print('DataFrame recieved')
 
         self.create_main_frame()
         self.create_status_bar()
@@ -6515,13 +6566,11 @@ class RutileZrTemp(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-
-
     def RutileZrTemp(self):
 
-        MaxTemps=[]
-        MinTemps=[]
-        MidTemps=[]
+        MaxTemps = []
+        MinTemps = []
+        MidTemps = []
 
         for i in range(len(self.raw)):
             Zr = self.raw.at[i, 'Zr']
@@ -6529,29 +6578,29 @@ class RutileZrTemp(AppForm):
             try:
                 ASiO2 = self.raw.at[i, 'ASiO2']
             except(KeyError):
-                ASiO2 =1
+                ASiO2 = 1
 
+            ZrTemp1 = (4530 + 111) / ((7.42 + 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
 
-            ZrTemp1=(4530+111)/((7.42+0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+            ZrTemp2 = (4530 - 111) / ((7.42 + 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
 
-            ZrTemp2=(4530-111)/((7.42+0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+            ZrTemp3 = (4530 + 111) / ((7.42 - 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
 
-            ZrTemp3=(4530+111)/((7.42-0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
+            ZrTemp4 = (4530 - 111) / ((7.42 - 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
 
-            ZrTemp4=(4530-111)/((7.42-0.105) -np.log10(Zr)-np.log10(ASiO2)) - 273.15
-
-            ZrTempBig,ZrTempSmall=max([ZrTemp1,ZrTemp2,ZrTemp3,ZrTemp4]),min(([ZrTemp1,ZrTemp2,ZrTemp3,ZrTemp4]))
+            ZrTempBig, ZrTempSmall = max([ZrTemp1, ZrTemp2, ZrTemp3, ZrTemp4]), min(
+                ([ZrTemp1, ZrTemp2, ZrTemp3, ZrTemp4]))
 
             MaxTemps.append(ZrTempBig)
             MinTemps.append(ZrTempSmall)
-            MidTemps.append((ZrTempSmall+ZrTempBig)/2)
+            MidTemps.append((ZrTempSmall + ZrTempBig) / 2)
 
-        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps,'Temp Mid': MidTemps, }
+        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps, 'Temp Mid': MidTemps, }
 
         tmpdftoadd = pd.DataFrame(tmpdata)
 
         self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
-        self.model = PandasModel(self.newdf )
+        self.model = PandasModel(self.newdf)
         self.tableView.setModel(self.model)
 
     def saveResult(self):
@@ -6567,6 +6616,7 @@ class RutileZrTemp(AppForm):
 
             elif ('xls' in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+
 
 class Cluster(AppForm):
     Lines = []
@@ -6584,8 +6634,6 @@ class Cluster(AppForm):
                 'Width',
                 'Tag']
 
-
-
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Cluster Data')
@@ -6595,7 +6643,7 @@ class Cluster(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Cluster')
+            # print('DataFrame recieved to Cluster')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -6609,15 +6657,12 @@ class Cluster(AppForm):
         self.create_main_frame()
         self.create_status_bar()
 
-
-
-
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        #self.canvas = FigureCanvas(self.fig)
-        #self.canvas.setParent(self.main_frame)
+        # self.canvas = FigureCanvas(self.fig)
+        # self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
         # self.axes.hold(False)
 
@@ -6627,15 +6672,13 @@ class Cluster(AppForm):
         self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
 
-
-        #self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+        # self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveDataFile)
 
-
-        #self.save_button.clicked.connect(self.saveImgFile)
+        # self.save_button.clicked.connect(self.saveImgFile)
 
 
         self.draw_button = QPushButton('&Show')
@@ -6653,23 +6696,14 @@ class Cluster(AppForm):
         self.slider.setTickPosition(QSlider.TicksBothSides)
         self.slider.valueChanged.connect(self.Cluster)  # int
 
-
-
-
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-
-
-        for w in [self.save_button,self.draw_button]:
+        for w in [self.save_button, self.draw_button]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-
-
-
 
         self.vbox = QVBoxLayout()
 
@@ -6680,29 +6714,24 @@ class Cluster(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def Read(self,inpoints):
-        points=[]
+    def Read(self, inpoints):
+        points = []
         for i in inpoints:
             points.append(i.split())
 
-        result=[]
+        result = []
         for i in points:
             for l in range(len(i)):
-                a=float((i[l].split(','))[0])
-                a= a*self.x_scale
+                a = float((i[l].split(','))[0])
+                a = a * self.x_scale
 
-                b=float((i[l].split(','))[1])
-                b= (self.height_load-b)*self.y_scale
+                b = float((i[l].split(','))[1])
+                b = (self.height_load - b) * self.y_scale
 
-                result.append((a,b))
-        return(result)
-
-
+                result.append((a, b))
+        return (result)
 
     def Cluster(self):
-
-
-
 
         if (self.legend_cb.isChecked()):
             self.legend_cb.setText('&Horizontal')
@@ -6713,21 +6742,18 @@ class Cluster(AppForm):
 
         self.axes.clear()
 
-
-
-
-        dataframe= self._df
+        dataframe = self._df
 
         ItemsAvalibale = self._df.columns.values.tolist()
 
-        ItemsToTest = ['Number','Tag','Name','Author','DataType','Label','Marker','Color','Size','Alpha','Style','Width']
+        ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Label', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width']
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
                 dataframe = dataframe.drop(i, 1)
 
-
-        self._df= dataframe
+        self._df = dataframe
 
         self.model = PandasModel(self._df)
         self.tableView.setModel(self.model)
@@ -6735,10 +6761,10 @@ class Cluster(AppForm):
         PointLabels = []
 
 
-        #self.canvas.draw()
+        # self.canvas.draw()
 
     def Show(self):
-        dataframe= self._df
+        dataframe = self._df
         corr = 1 - dataframe.corr()
 
         try:
@@ -6752,15 +6778,16 @@ class Cluster(AppForm):
             plt.show()
 
         except(ValueError):
-            reply = QMessageBox.warning(self, 'Value Error','Check Your Data and make sure it contains only numerical values.')
+            reply = QMessageBox.warning(self, 'Value Error',
+                                        'Check Your Data and make sure it contains only numerical values.')
             pass
 
-class XY(AppForm):
 
+class XY(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
-                   u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
-                   u'Li',
-                   u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
+               u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
+               u'Li',
+               u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
 
     StandardsName = ['OIB', 'EMORB', 'C1', 'PM', 'NMORB']
 
@@ -6791,7 +6818,6 @@ class XY(AppForm):
                   'Gd': 3.68, 'Tb': 0.67, 'Dy': 4.55, 'Li': 4.3, 'Y': 28, 'Ho': 1.01, 'Er': 2.97, 'Tm': 0.456,
                   'Yb': 3.05, 'Lu': 0.455}, }
 
-
     Lines = []
     Tags = []
 
@@ -6811,29 +6837,26 @@ class XY(AppForm):
                 'Width',
                 'Tag']
 
-
-    width_plot=100.0
-    height_plot=100.0
+    width_plot = 100.0
+    height_plot = 100.0
 
     width_load = width_plot
     height_load = height_plot
 
-
     polygon = []
     polyline = []
-    line=[]
-
+    line = []
 
     strgons = []
     strlines = []
-    strpolylines=[]
+    strpolylines = []
 
-    extent=0
+    extent = 0
 
-    Left=0
-    Right=0
-    Up=0
-    Down=0
+    Left = 0
+    Right = 0
+    Up = 0
+    Down = 0
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -6844,7 +6867,7 @@ class XY(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Magic')
+            # print('DataFrame recieved to Magic')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -6858,12 +6881,10 @@ class XY(AppForm):
         self.create_main_frame()
         self.create_status_bar()
 
-
-
         self.polygon = 0
         self.polyline = 0
 
-        self.flag=0
+        self.flag = 0
 
     def create_main_frame(self):
         self.main_frame = QWidget()
@@ -6899,14 +6920,13 @@ class XY(AppForm):
         self.slider.setTickPosition(QSlider.TicksBothSides)
         self.slider.valueChanged.connect(self.Magic)  # int
 
-
         self.Normalize_cb = QCheckBox('&Normalize')
         self.Normalize_cb.setChecked(False)
         self.Normalize_cb.stateChanged.connect(self.Magic)  # int
 
-        self.norm_slider_label = QLabel('Standard:'+self.NameChosen)
+        self.norm_slider_label = QLabel('Standard:' + self.NameChosen)
         self.norm_slider = QSlider(Qt.Horizontal)
-        self.norm_slider.setRange(0,4)
+        self.norm_slider.setRange(0, 4)
         self.norm_slider.setValue(0)
         self.norm_slider.setTracking(True)
         self.norm_slider.setTickPosition(QSlider.TicksBothSides)
@@ -6938,9 +6958,8 @@ class XY(AppForm):
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Magic)  # int
 
-
         self.width_size_seter_label = QLabel('Width')
-        self.width_size_seter=QLineEdit(self)
+        self.width_size_seter = QLineEdit(self)
 
         self.width_size_seter.textChanged[str].connect(self.WChanged)
 
@@ -6949,20 +6968,18 @@ class XY(AppForm):
 
         self.height_size_seter.textChanged[str].connect(self.HChanged)
 
-
-
         self.Left_size_seter_label = QLabel('Left')
-        self.Left_size_seter=QLineEdit(self)
+        self.Left_size_seter = QLineEdit(self)
 
         self.Left_size_seter.textChanged[str].connect(self.LeftChanged)
 
         self.Right_size_seter_label = QLabel('Right')
-        self.Right_size_seter=QLineEdit(self)
+        self.Right_size_seter = QLineEdit(self)
 
         self.Right_size_seter.textChanged[str].connect(self.RightChanged)
 
         self.Up_size_seter_label = QLabel('Up')
-        self.Up_size_seter=QLineEdit(self)
+        self.Up_size_seter = QLineEdit(self)
 
         self.Up_size_seter.textChanged[str].connect(self.UpChanged)
 
@@ -6970,9 +6987,6 @@ class XY(AppForm):
         self.Down_size_seter = QLineEdit(self)
 
         self.Down_size_seter.textChanged[str].connect(self.DownChanged)
-
-
-
 
         #
         # Layout with box sizers
@@ -7003,17 +7017,15 @@ class XY(AppForm):
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
-
-        for w in [self.width_size_seter_label,self.width_size_seter]:
+        for w in [self.width_size_seter_label, self.width_size_seter]:
             self.hbox4.addWidget(w)
             self.hbox4.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.height_size_seter_label,self.height_size_seter]:
+        for w in [self.height_size_seter_label, self.height_size_seter]:
             self.hbox5.addWidget(w)
             self.hbox5.setAlignment(w, Qt.AlignVCenter)
 
-
-        for w in [self.Left_size_seter,self.Left_size_seter_label,self.Right_size_seter,self.Right_size_seter_label]:
+        for w in [self.Left_size_seter, self.Left_size_seter_label, self.Right_size_seter, self.Right_size_seter_label]:
             self.hbox6.addWidget(w)
             self.hbox6.setAlignment(w, Qt.AlignVCenter)
 
@@ -7036,22 +7048,22 @@ class XY(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def Read(self,inpoints):
-        points=[]
+    def Read(self, inpoints):
+        points = []
         for i in inpoints:
             points.append(i.split())
 
-        result=[]
+        result = []
         for i in points:
             for l in range(len(i)):
-                a=float((i[l].split(','))[0])
-                a= a*self.x_scale
+                a = float((i[l].split(','))[0])
+                a = a * self.x_scale
 
-                b=float((i[l].split(','))[1])
-                b= (self.height_load-b)*self.y_scale
+                b = float((i[l].split(','))[1])
+                b = (self.height_load - b) * self.y_scale
 
-                result.append((a,b))
-        return(result)
+                result.append((a, b))
+        return (result)
 
     def Load(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
@@ -7059,10 +7071,7 @@ class XY(AppForm):
                                                          '~/',
                                                          'PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
 
-        print(fileName,'\t',filetype)
-
-
-
+        print(fileName, '\t', filetype)
 
         if ('svg' in fileName):
             doc = minidom.parse(fileName)  # parseString also exists
@@ -7146,23 +7155,18 @@ class XY(AppForm):
         elif ('png' in fileName or 'jpg' in fileName):
 
             self.img = mpimg.imread(fileName)
-            self.flag=1
-
-
+            self.flag = 1
 
         self.Magic()
-
 
     def Reset(self):
         self.flag = 0
         self.Magic()
 
-
     def WChanged(self, text):
-        w='width '+text
+        w = 'width ' + text
         self.width_size_seter_label.setText(w)
         self.width_size_seter_label.adjustSize()
-
 
         try:
             self.width_plot = float(text)
@@ -7171,27 +7175,25 @@ class XY(AppForm):
 
         self.x_scale = self.width_plot / self.width_load
 
-        self.polygon=[]
+        self.polygon = []
         for i in self.strgons:
-            m =  self.Read(i)
+            m = self.Read(i)
             m.append(m[0])
             self.polygon.append(m)
 
-        self.polyline=[]
+        self.polyline = []
         for i in self.strpolylines:
-            m =  self.Read(i)
-            #print('i: ',i,'\n m:',m)
+            m = self.Read(i)
+            # print('i: ',i,'\n m:',m)
             self.polyline.append(m)
 
-        self.line=[]
+        self.line = []
         for i in self.strlines:
-            m =  self.Read(i)
-            #print('i: ',i,'\n m:',m)
+            m = self.Read(i)
+            # print('i: ',i,'\n m:',m)
             self.line.append(m)
 
-
         self.Magic()
-
 
     def HChanged(self, text):
         h = 'height ' + text
@@ -7203,28 +7205,25 @@ class XY(AppForm):
         except:
             pass
 
-
-
         self.y_scale = self.height_plot / self.height_load
 
-        self.polygon=[]
+        self.polygon = []
         for i in self.strgons:
-            m =  self.Read(i)
+            m = self.Read(i)
             m.append(m[0])
             self.polygon.append(m)
 
-        self.polyline=[]
+        self.polyline = []
         for i in self.strpolylines:
-            m =  self.Read(i)
-            #print('i: ',i,'\n m:',m)
+            m = self.Read(i)
+            # print('i: ',i,'\n m:',m)
             self.polyline.append(m)
 
-        self.line=[]
+        self.line = []
         for i in self.strlines:
-            m =  self.Read(i)
-            #print('i: ',i,'\n m:',m)
+            m = self.Read(i)
+            # print('i: ',i,'\n m:',m)
             self.line.append(m)
-
 
         self.Magic()
 
@@ -7299,8 +7298,7 @@ class XY(AppForm):
 
         self.y_scale = self.height_plot / self.height_load
 
-
-        #print(self.x_scale,' and ',self.x_scale)
+        # print(self.x_scale,' and ',self.x_scale)
 
         raw = self._df
 
@@ -7310,29 +7308,27 @@ class XY(AppForm):
 
         self.axes.clear()
 
-
-        if(self.Left!= self.Right) and (self.Down!= self.Up) and abs(self.Left)+abs(self.Right)+abs(self.Down)+abs(self.Up)!=0:
+        if (self.Left != self.Right) and (self.Down != self.Up) and abs(self.Left) + abs(self.Right) + abs(
+                self.Down) + abs(self.Up) != 0:
             self.extent = [self.Left, self.Right, self.Down, self.Up]
-        elif (self.Left == self.Right and abs(self.Left)+abs(self.Right)!=0):
+        elif (self.Left == self.Right and abs(self.Left) + abs(self.Right) != 0):
             reply = QMessageBox.warning(self, 'Warning', 'You set same value to Left and Right limits.')
             self.extent = 0
 
-        elif (self.Down == self.Up and abs(self.Down)+abs(self.Up)!=0):
+        elif (self.Down == self.Up and abs(self.Down) + abs(self.Up) != 0):
             reply = QMessageBox.warning(self, 'Warning', 'You set same value to Up and Down limits.')
             self.extent = 0
         else:
             self.extent = 0
-
 
         standardnamechosen = self.StandardsName[int(self.norm_slider.value())]
         standardchosen = self.Standards[standardnamechosen]
 
         self.norm_slider_label.setText(standardnamechosen)
 
-
-        if self.flag!=0:
-            if self.extent!=0:
-                self.axes.imshow(self.img,interpolation='nearest', aspect='auto',extent=self.extent)
+        if self.flag != 0:
+            if self.extent != 0:
+                self.axes.imshow(self.img, interpolation='nearest', aspect='auto', extent=self.extent)
             else:
                 self.axes.imshow(self.img, interpolation='nearest', aspect='auto')
 
@@ -7366,49 +7362,39 @@ class XY(AppForm):
                 xuse = x
                 yuse = y
 
+                self.xlabel = self.items[a]
+                self.ylabel = self.items[b]
 
-                self.xlabel=self.items[a]
-                self.ylabel=self.items[b]
+                if (self.Normalize_cb.isChecked()):
 
-                if(self.Normalize_cb.isChecked()):
-
-
-                    self.xlabel=self.items[a]+' Norm by '+standardnamechosen
+                    self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
 
                     self.axes.set_xlabel(self.xlabel)
                     self.x_element_label.setText(self.xlabel)
-
-
 
                     self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
 
                     self.axes.set_ylabel(self.ylabel)
                     self.y_element_label.setText(self.ylabel)
 
-
-
-                    if self.items[a] in  self.Element:
+                    if self.items[a] in self.Element:
                         xuse = xuse / standardchosen[self.items[a]]
 
                     if self.items[b] in self.Element:
                         yuse = yuse / standardchosen[self.items[b]]
 
-
-
                 if (self.logx_cb.isChecked()):
                     xuse = math.log(x, 10)
-                    self.xlabel='$log10$ ' +  self.xlabel
+                    self.xlabel = '$log10$ ' + self.xlabel
 
                     self.axes.set_xlabel(self.xlabel)
 
                 if (self.logy_cb.isChecked()):
                     yuse = math.log(y, 10)
 
-                    self.ylabel='$log10$ ' +  self.ylabel
+                    self.ylabel = '$log10$ ' + self.ylabel
 
                     self.axes.set_ylabel(self.ylabel)
-
-
 
                 self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
                                   s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
@@ -7420,10 +7406,9 @@ class XY(AppForm):
             a = int(self.slider.value())
             self.axes.legend(loc=a, fontsize=9)
 
+        if self.polygon != 0 and self.polyline != 0 and self.line != 0:
 
-        if self.polygon !=0 and  self.polyline !=0 and self.line !=0:
-
-            #print('gon: ',self.polygon,' \n line:',self.polyline)
+            # print('gon: ',self.polygon,' \n line:',self.polyline)
 
             for i in self.polygon:
                 self.DrawLine(i)
@@ -7436,10 +7421,11 @@ class XY(AppForm):
 
 
 
-                    #self.DrawLine(self.polygon)
-            #self.DrawLine(self.polyline)
+                # self.DrawLine(self.polygon)
+                # self.DrawLine(self.polyline)
 
         self.canvas.draw()
+
 
 class XYZ(AppForm):
     Lines = []
@@ -7459,15 +7445,15 @@ class XYZ(AppForm):
 
     polygon = []
     polyline = []
-    line=[]
-    flag=0
+    line = []
+    flag = 0
 
     strgons = []
     strlines = []
-    strpolylines=[]
+    strpolylines = []
 
-    width_plot=100.0
-    height_plot=50*math.sqrt(3)
+    width_plot = 100.0
+    height_plot = 50 * math.sqrt(3)
 
     width_load = width_plot
     height_load = height_plot
@@ -7481,7 +7467,7 @@ class XYZ(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Magic')
+            # print('DataFrame recieved to Magic')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -7495,8 +7481,6 @@ class XYZ(AppForm):
         self.create_main_frame()
         self.create_status_bar()
 
-
-
         self.polygon = 0
         self.polyline = 0
 
@@ -7507,6 +7491,8 @@ class XYZ(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
+
         # self.axes.hold(False)
 
         # Create the navigation toolbar, tied to the canvas
@@ -7543,8 +7529,6 @@ class XYZ(AppForm):
 
         self.x_element_label = QLabel('X')
 
-
-
         self.y_element = QSlider(Qt.Horizontal)
         self.y_element.setRange(0, len(self.items) - 1)
         self.y_element.setValue(0)
@@ -7553,9 +7537,6 @@ class XYZ(AppForm):
         self.y_element.valueChanged.connect(self.Magic)  # int
 
         self.y_element_label = QLabel('Y')
-
-
-
 
         self.z_element = QSlider(Qt.Horizontal)
         self.z_element.setRange(0, len(self.items) - 1)
@@ -7602,22 +7583,22 @@ class XYZ(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def Read(self,inpoints):
-        points=[]
+    def Read(self, inpoints):
+        points = []
         for i in inpoints:
             points.append(i.split())
 
-        result=[]
+        result = []
         for i in points:
             for l in range(len(i)):
-                a=float((i[l].split(','))[0])
-                a= a*self.x_scale
+                a = float((i[l].split(','))[0])
+                a = a * self.x_scale
 
-                b=float((i[l].split(','))[1])
-                b= (self.height_load-b)*self.y_scale
+                b = float((i[l].split(','))[1])
+                b = (self.height_load - b) * self.y_scale
 
-                result.append((a,b))
-        return(result)
+                result.append((a, b))
+        return (result)
 
     def Load(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
@@ -7625,10 +7606,7 @@ class XYZ(AppForm):
                                                          '~/',
                                                          'PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
 
-        print(fileName,'\t',filetype)
-
-
-
+        print(fileName, '\t', filetype)
 
         if ('svg' in fileName):
             doc = minidom.parse(fileName)  # parseString also exists
@@ -7710,10 +7688,7 @@ class XYZ(AppForm):
         elif ('png' in fileName or 'jpg' in fileName):
 
             self.img = mpimg.imread(fileName)
-            self.flag=1
-
-
-
+            self.flag = 1
 
         self.Magic()
 
@@ -7734,7 +7709,7 @@ class XYZ(AppForm):
         c = int(self.z_element.value())
 
         self.axes.clear()
-
+        self.axes.axis('off')
 
         s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
                      Style='-',
@@ -7743,26 +7718,21 @@ class XYZ(AppForm):
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
                            label=i.Label)
 
-        x=[0,100]
-        y=[0,50*np.sqrt(3)]
+        x = [0, 100]
+        y = [0, 50 * np.sqrt(3)]
 
+        extent = [min(x), max(x), min(y), max(y)]
 
+        if self.flag != 0:
+            self.axes.imshow(self.img, interpolation='nearest', aspect='auto', extent=extent)
 
-        extent=[min(x), max(x),min(y),max(y)]
+        # self.x_element_label.setText(self.items[a])
+        # self.y_element_label.setText(self.items[b])
+        # self.z_element_label.setText(self.items[c])
 
-        if self.flag!=0:
-            self.axes.imshow(self.img,interpolation='nearest', aspect='auto',extent=extent)
-
-
-
-        #self.x_element_label.setText(self.items[a])
-        #self.y_element_label.setText(self.items[b])
-        #self.z_element_label.setText(self.items[c])
-
-        self.axes.annotate(self.items[a], (2,15))
-        self.axes.annotate(self.items[b], (97,15))
-        self.axes.annotate(self.items[c], (40,85))
-
+        self.axes.annotate(self.items[a], (2, 15))
+        self.axes.annotate(self.items[b], (97, 15))
+        self.axes.annotate(self.items[c], (40, 85))
 
         PointLabels = []
         TPoints = []
@@ -7780,40 +7750,36 @@ class XYZ(AppForm):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
 
-            x, y,z = 0, 0,0
-            xuse, yuse,zuse = 0, 0,0
+            x, y, z = 0, 0, 0
+            xuse, yuse, zuse = 0, 0, 0
 
-            x, y , z= raw.at[i, self.items[a]], raw.at[i, self.items[b]],raw.at[i, self.items[c]]
+            x, y, z = raw.at[i, self.items[a]], raw.at[i, self.items[b]], raw.at[i, self.items[c]]
 
-            #print(a,x,'\n',b,y,'\n',c,z,'\n')
+            # print(a,x,'\n',b,y,'\n',c,z,'\n')
 
             try:
                 xuse = float(x)
                 yuse = float(y)
                 zuse = float(z)
 
-                TPoints.append(TriPoint((xuse,yuse,zuse), Size=raw.at[i, 'Size'],Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],Label=TmpLabel))
+                TPoints.append(TriPoint((xuse, yuse, zuse), Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'],
+                                        Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel))
 
 
             except:
                 pass
 
-
-
-
         for i in TPoints:
             self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
                               label=i.Label, edgecolors='black')
-
 
         if (self.legend_cb.isChecked()):
             a = int(self.slider.value())
             self.axes.legend(loc=a, fontsize=9)
 
+        if self.polygon != 0 and self.polyline != 0:
 
-        if self.polygon !=0 and  self.polyline !=0 :
-
-            #print('gon: ',self.polygon,' \n line:',self.polyline)
+            # print('gon: ',self.polygon,' \n line:',self.polyline)
 
             for i in self.polygon:
                 self.DrawLine(i)
@@ -7823,10 +7789,11 @@ class XYZ(AppForm):
 
 
 
-                    #self.DrawLine(self.polygon)
-            #self.DrawLine(self.polyline)
+                # self.DrawLine(self.polygon)
+                # self.DrawLine(self.polyline)
 
         self.canvas.draw()
+
 
 class Magic(AppForm):
     Lines = []
@@ -7853,7 +7820,7 @@ class Magic(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            #print('DataFrame recieved to Magic')
+            # print('DataFrame recieved to Magic')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -7866,8 +7833,6 @@ class Magic(AppForm):
 
         self.create_main_frame()
         self.create_status_bar()
-
-
 
         self.polygon = 0
         self.polyline = 0
@@ -7962,22 +7927,22 @@ class Magic(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def Read(self,inpoints):
-        points=[]
+    def Read(self, inpoints):
+        points = []
         for i in inpoints:
             points.append(i.split())
 
-        result=[]
+        result = []
         for i in points:
             for l in range(len(i)):
-                a=float((i[l].split(','))[0])
-                a= a*self.x_scale
+                a = float((i[l].split(','))[0])
+                a = a * self.x_scale
 
-                b=float((i[l].split(','))[1])
-                b= (self.height_load-b)*self.y_scale
+                b = float((i[l].split(','))[1])
+                b = (self.height_load - b) * self.y_scale
 
-                result.append((a,b))
-        return(result)
+                result.append((a, b))
+        return (result)
 
     def Load(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
@@ -7994,8 +7959,8 @@ class Magic(AppForm):
         svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
         svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
 
-        #print(svg_width)
-        #print(svg_height)
+        # print(svg_width)
+        # print(svg_height)
 
         digit = '01234567890.-'
         width = svg_width[0].replace('px', '').replace('pt', '')
@@ -8019,20 +7984,19 @@ class Magic(AppForm):
         #print(height)
         '''
 
-
-        self.width_load=float(width)
-        self.height_load=float(height)
+        self.width_load = float(width)
+        self.height_load = float(height)
 
         self.x_scale = 100.0 / float(width)
         self.y_scale = 50.0 * math.sqrt(3) / float(height)
 
-        #print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
+        # print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
 
         soup = BeautifulSoup(open(fileName), 'lxml')
 
-        tmpgon=soup.find_all('polygon')
-        tmpline=soup.find_all('polyline')
-        tmptext=soup.find_all('text')
+        tmpgon = soup.find_all('polygon')
+        tmpline = soup.find_all('polyline')
+        tmptext = soup.find_all('text')
 
         strgons = []
         for i in tmpgon:
@@ -8040,12 +8004,11 @@ class Magic(AppForm):
             m = BeautifulSoup(a, 'lxml')
             k = m.polygon.attrs
             strgons.append(k['points'].split())
-        gons=[]
+        gons = []
         for i in strgons:
-            m =  self.Read(i)
+            m = self.Read(i)
             m.append(m[0])
             gons.append(m)
-
 
         strlines = []
         for i in tmpline:
@@ -8053,24 +8016,19 @@ class Magic(AppForm):
             m = BeautifulSoup(a, 'lxml')
             k = m.polyline.attrs
             strlines.append(k['points'].split())
-        lines=[]
+        lines = []
         for i in strlines:
-            m =  self.Read(i)
-            #print('i: ',i,'\n m:',m)
+            m = self.Read(i)
+            # print('i: ',i,'\n m:',m)
             lines.append(m)
-
-
-
 
         self.polygon = gons
         self.polyline = lines
 
-        #print(self.polygon,'\n',self.polyline)
+        # print(self.polygon,'\n',self.polyline)
 
 
         self.Magic()
-
-
 
     # text_location= [path.getAttribute('transform') for path in doc.getElementsByTagName('text')]
     '''
@@ -8086,8 +8044,6 @@ class Magic(AppForm):
 
             polygon.append([a,b])
     '''
-
-
 
     def Magic(self):
 
@@ -8151,10 +8107,9 @@ class Magic(AppForm):
             a = int(self.slider.value())
             self.axes.legend(loc=a, fontsize=9)
 
+        if self.polygon != 0 and self.polyline != 0:
 
-        if self.polygon !=0 and  self.polyline !=0 :
-
-            #print('gon: ',self.polygon,' \n line:',self.polyline)
+            # print('gon: ',self.polygon,' \n line:',self.polyline)
 
             for i in self.polygon:
                 self.DrawLine(i)
@@ -8164,7 +8119,7 @@ class Magic(AppForm):
 
 
 
-                    #self.DrawLine(self.polygon)
-            #self.DrawLine(self.polyline)
+                # self.DrawLine(self.polygon)
+                # self.DrawLine(self.polyline)
 
         self.canvas.draw()
