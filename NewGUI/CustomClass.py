@@ -1,6 +1,6 @@
-version = '0.5.8'
+version = '0.6.0'
 
-date = '2017-10-31'
+date = '2017-11-1'
 
 dpi = 128
 
@@ -633,8 +633,31 @@ class CustomQTableView(QtWidgets.QTableView):
         self.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers |
                              QtWidgets.QAbstractItemView.DoubleClicked)
 
-    def keyPressEvent(self, event):  # Reimplement the event here, in your case, do nothing
+    def keyPressEvent(self, event):  # Reimplement the event here
         return
+
+
+    # Code below is to add right click menu
+    def contextMenuEvent(self, pos):
+        if self.selectionModel().selection().indexes():
+            for i in self.selectionModel().selection().indexes():
+                row, column = i.row(), i.column()
+            menu = QtGui.QMenu()
+            openAction = menu.addAction("Open")
+            deleAction = menu.addAction("Delete")
+            renaAction = menu.addAction("Rename")
+            action = menu.exec_(self.mapToGlobal(pos))
+            if action == openAction:
+                self.openAction(row, column)
+
+    def openAction(self, row, column):
+        if self._slideShowWin:
+            self._slideShowWin.showImageByPath(self._twoDLst[row][column])
+            self._animateUpOpen()
+
+    def deleteSelected(self):
+        # TODO
+        pass
 
 
 class PlotModel(FigureCanvas):

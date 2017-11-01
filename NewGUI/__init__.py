@@ -108,6 +108,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     talk=''
 
+    targetversion = '0'
+
     def __init__(self):
 
 
@@ -610,27 +612,49 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
 
         url = 'https://raw.githubusercontent.com/chinageology/GeoPython/master/NewGUI/CustomClass.py'
-        r = requests.get(url, allow_redirects=True)
 
-        targetversion = CustomClass.version
-        NewVersion = 'target'+r.text[0:16]
+
+        r= 0
+        try:
+            r = requests.get(url, allow_redirects=True)
+            r.raise_for_status()
+            NewVersion = 'self.target' + r.text.splitlines()[0]
+
+        except requests.exceptions.ConnectionError as err:
+            print(err)
+            r=0
+            buttonReply = QMessageBox.information(self,  _translate('MainWindow', u'NetWork Error'),_translate('MainWindow', u'Net work unavailable.'))
+            NewVersion ="targetversion = '0'"
+
+
         exec(NewVersion)
+        print('web is', self.targetversion)
+        print(NewVersion)
 
-        print(targetversion)
-        print(version)
-        if (version< targetversion):
 
-            buttonReply = QMessageBox.question(self, _translate('MainWindow', u'Version'), self.talk + _translate('MainWindow','New version available.\n Download and update?'),
-                                               QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if buttonReply == QMessageBox.Yes:
-                print('Yes clicked.')
-                webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/Download.md')
+        self.talk=  _translate('MainWindow','Version Online is ') + self.targetversion +'\n'+_translate('MainWindow','You are using GeoPython ') + version +'\n'+ _translate('MainWindow','released on ') + date + '\n'
+
+
+
+        if r != 0:
+
+
+            print('now is',version)
+            if (version < self.targetversion):
+
+                buttonReply = QMessageBox.question(self, _translate('MainWindow', u'Version'),
+                                                   self.talk + _translate('MainWindow',
+                                                                          'New version available.\n Download and update?'),
+                                                   QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                if buttonReply == QMessageBox.Yes:
+                    print('Yes clicked.')
+                    webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/Download.md')
+                else:
+                    print('No clicked.')
             else:
-                print('No clicked.')
-        else:
-            buttonReply = QMessageBox.information(self, _translate('MainWindow', u'Version'),
-                                               self.talk + _translate('MainWindow',
-                                                                        'This is the latest version.'))
+                buttonReply = QMessageBox.information(self, _translate('MainWindow', u'Version'),
+                                                      self.talk + _translate('MainWindow',
+                                                                             'This is the latest version.'))
 
     def Update(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/Download.md')
