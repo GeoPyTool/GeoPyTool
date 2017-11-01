@@ -37,6 +37,7 @@ wqy.ttf
 xy.png
 geopython/CustomClass.py
 geopython/Test.py
+geopython/WinCustomClass.py
 geopython/__init__.py
 geopython/appgui.py
 geopython/calc.png
