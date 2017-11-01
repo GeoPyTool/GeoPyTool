@@ -4,6 +4,7 @@ date = '2017-11-1'
 
 dpi = 128
 
+
 # coding:utf-8
 
 import math
@@ -32,7 +33,7 @@ LocationOfMySelf=os.path.dirname(__file__)
 
 print(LocationOfMySelf)
 
-fpath = LocationOfMySelf+('/geopython/wqy.ttf')
+fpath = ('wqy.ttf')
 
 font = ft2font.FT2Font(fpath)
 fprop = fm.FontProperties(fname=fpath)

@@ -91,10 +91,23 @@ from PyQt5.QtGui import QPixmap, QIcon, QKeySequence
 from PyQt5.QtWidgets import (QWidget, QMessageBox, qApp, QShortcut, QLabel, QMainWindow, QMenu, QHBoxLayout,
                              QVBoxLayout,
                              QApplication, QPushButton, QSlider,
-                             QFileDialog, QAction)
+                             QFileDialog, QAction,QProxyStyle,QStyle)
 
 
 _translate = QtCore.QCoreApplication.translate
+
+
+# Create a custom "QProxyStyle" to enlarge the QMenu icons
+#-----------------------------------------------------------
+class MyProxyStyle(QProxyStyle):
+    pass
+    def pixelMetric(self, QStyle_PixelMetric, option=None, widget=None):
+
+        if QStyle_PixelMetric == QStyle.PM_SmallIconSize:
+            return 24
+        else:
+            return QProxyStyle.pixelMetric(self, QStyle_PixelMetric, option, widget)
+
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -104,6 +117,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     lang = True
 
     app = QtWidgets.QApplication(sys.argv)
+    myStyle = MyProxyStyle('Fusion')    # The proxy style should be based on an existing style,
+                                        # like 'Windows', 'Motif', 'Plastique', 'Fusion', ...
+    app.setStyle(myStyle)
+
     trans = QtCore.QTranslator()
 
     talk=''
@@ -115,11 +132,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         super(Ui_MainWindow, self).__init__()
         self.setObjectName('MainWindow')
-        self.resize(1000, 500)
+        self.resize(800, 480)
 
 
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate('MainWindow', u'GeoPython'))
+        self.setWindowIcon(QIcon(LocationOfMySelf+'/geopython.png'))
         self.talk=  _translate('MainWindow','You are using GeoPython ') + version +'\n'+  _translate('MainWindow','released on ') + date
 
         self.model = PandasModel(self.raw)
@@ -150,32 +168,44 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButtonUpdate = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonUpdate.setObjectName('pushButtonUpdate')
 
+
+
         w=self.width()
         h=self.height()
-        step=(w-20)/5-10
 
 
-        ButtonHeight = 32
+        if h<360:
+            h=360
+            self.resize(w,h)
+
+        if w<640:
+            w = 640
+            self.resize(w, h)
+
+        step = (w * 94 / 100) / 5
+        foot=h*3/48
 
 
-        self.tableView.setGeometry(QtCore.QRect(10, 10, w-20, h-120))
+        #if foot<=10: foot=10
 
-        self.pushButtonOpen.setGeometry(QtCore.QRect(10, h-84, step, 32))
+        self.tableView.setGeometry(QtCore.QRect(w/100, h/48, w*98/100, h*38/48))
 
-        self.pushButtonSave.setGeometry(QtCore.QRect(15+step, h-84, step, 32))
+        self.pushButtonOpen.setGeometry(QtCore.QRect(w/100, h*40/48, step, foot))
 
-        self.pushButtonSort.setGeometry(QtCore.QRect(20+step*2, h-84, step, 32))
+        self.pushButtonSave.setGeometry(QtCore.QRect(2*w/100+step, h*40/48, step, foot))
 
-        self.pushButtonQuit.setGeometry(QtCore.QRect(25+step*3, h-84, step, 32))
+        self.pushButtonSort.setGeometry(QtCore.QRect(3*w/100+step*2, h*40/48, step, foot))
 
-        self.pushButtonUpdate.setGeometry(QtCore.QRect(30+step*4, h-84, step, 32))
+        self.pushButtonQuit.setGeometry(QtCore.QRect(4*w/100+step*3, h*40/48, step, foot))
 
-
+        self.pushButtonUpdate.setGeometry(QtCore.QRect(5*w/100+step*4, h*40/48, step, foot))
 
         self.menubar = QtWidgets.QMenuBar(self)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 22))
         self.menubar.setNativeMenuBar(True)
         self.menubar.setObjectName('menubar')
+
+
 
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName('menuFile')
@@ -206,94 +236,94 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.statusbar.setObjectName('statusbar')
         self.setStatusBar(self.statusbar)
 
-        self.actionOpen = QtWidgets.QAction(QIcon(LocationOfMySelf+'/open.png'), 'Open',self)
+        self.actionOpen = QtWidgets.QAction(QIcon(LocationOfMySelf+'/open.png'), u'Open',self)
         self.actionOpen.setObjectName('actionOpen')
         self.actionOpen.setShortcut('Ctrl+O')
 
-        self.actionSave = QtWidgets.QAction(QIcon(LocationOfMySelf+'/save.png'), 'Save',self)
+        self.actionSave = QtWidgets.QAction(QIcon(LocationOfMySelf+'/save.png'), u'Save',self)
         self.actionSave.setObjectName('actionSave')
         self.actionSave.setShortcut('Ctrl+S')
 
-        self.actionCnWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/cn.png'), 'Chinese Forum',self)
+        self.actionCnWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/forum.png'), u'Chinese Forum',self)
         self.actionCnWeb.setObjectName('actionCnWeb')
 
-        self.actionEnWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/en.png'), 'English Forum',self)
+        self.actionEnWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/forum.png'), u'English Forum',self)
         self.actionEnWeb.setObjectName('actionEnWeb')
 
-        self.actionGoGithub = QtWidgets.QAction(QIcon(LocationOfMySelf+'/github.png'), 'GitHub',self)
+        self.actionGoGithub = QtWidgets.QAction(QIcon(LocationOfMySelf+'/github.png'), u'GitHub',self)
         self.actionGoGithub.setObjectName('actionGoGithub')
 
-        self.actionVersionCheck = QtWidgets.QAction(QIcon(LocationOfMySelf+'/version.png'), 'Version',self)
+        self.actionVersionCheck = QtWidgets.QAction(QIcon(LocationOfMySelf+'/update.png'), u'Version',self)
         self.actionVersionCheck.setObjectName('actionVersionCheck')
 
 
-        self.actionCnS = QtWidgets.QAction(QIcon(LocationOfMySelf+'/cn.png'), u'Simplified Chinese',self)
+        self.actionCnS = QtWidgets.QAction(QIcon(LocationOfMySelf+'/cns.png'), u'Simplified Chinese',self)
         self.actionCnS.setObjectName('actionCnS')
 
-        self.actionCnT = QtWidgets.QAction(QIcon(LocationOfMySelf+'/cn.png'), u'Traditional Chinese',self)
+        self.actionCnT = QtWidgets.QAction(QIcon(LocationOfMySelf+'/cnt.png'), u'Traditional Chinese',self)
         self.actionCnT.setObjectName('actionCnT')
 
         self.actionEn = QtWidgets.QAction(QIcon(LocationOfMySelf+'/en.png'), u'English',self)
         self.actionEn.setObjectName('actionEn')
 
-        self.actionLoadLanguage = QtWidgets.QAction(QIcon(LocationOfMySelf+'/en.png'), u'Load Language',self)
+        self.actionLoadLanguage = QtWidgets.QAction(QIcon(LocationOfMySelf+'/lang.png'), u'Load Language',self)
         self.actionLoadLanguage.setObjectName('actionLoadLanguage')
 
-        self.actionTAS = QtWidgets.QAction(self)
+        self.actionTAS = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'TAS',self)
         self.actionTAS.setObjectName('actionTAS')
 
-        self.actionTrace = QtWidgets.QAction(self)
+        self.actionTrace = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider2.png'), u'Trace',self)
         self.actionTrace.setObjectName('actionTrace')
 
-        self.actionRee = QtWidgets.QAction(self)
+        self.actionRee = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider2.png'), u'Ree',self)
         self.actionRee.setObjectName('actionRee')
 
-        self.actionPearce = QtWidgets.QAction(self)
+        self.actionPearce = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'Pearce',self)
         self.actionPearce.setObjectName('actionPearce')
 
-        self.actionHarker = QtWidgets.QAction(self)
+        self.actionHarker = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'Harker',self)
         self.actionHarker.setObjectName('actionHarker')
 
-        self.actionStereo = QtWidgets.QAction(self)
+        self.actionStereo = QtWidgets.QAction(QIcon(LocationOfMySelf+'/structure.png'),u'Stereo',self)
         self.actionStereo.setObjectName('actionStereo')
 
-        self.actionRose = QtWidgets.QAction(self)
+        self.actionRose = QtWidgets.QAction(QIcon(LocationOfMySelf+'/rose.png'),u'Rose',self)
         self.actionRose.setObjectName('actionRose')
 
-        self.actionQFL = QtWidgets.QAction(self)
+        self.actionQFL = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'QFL',self)
         self.actionQFL.setObjectName('actionQFL')
 
-        self.actionQmFLt = QtWidgets.QAction(self)
+        self.actionQmFLt = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'QmFLt',self)
         self.actionQmFLt.setObjectName('actionQmFLt')
 
-        self.actionCIPW = QtWidgets.QAction(self)
+        self.actionCIPW = QtWidgets.QAction(QIcon(LocationOfMySelf+'/calc.png'),u'CIPW',self)
         self.actionCIPW.setObjectName('actionCIPW')
 
-        self.actionZirconCe = QtWidgets.QAction(self)
+        self.actionZirconCe = QtWidgets.QAction(QIcon(LocationOfMySelf+'/calc.png'),u'ZirconCe',self)
         self.actionZirconCe.setObjectName('actionZirconCe')
 
-        self.actionZirconTiTemp = QtWidgets.QAction(self)
+        self.actionZirconTiTemp = QtWidgets.QAction(QIcon(LocationOfMySelf+'/temperature.png'),u'ZirconTiTemp',self)
         self.actionZirconTiTemp.setObjectName('actionZirconTiTemp')
 
-        self.actionRutileZrTemp = QtWidgets.QAction(self)
+        self.actionRutileZrTemp = QtWidgets.QAction(QIcon(LocationOfMySelf+'/temperature.png'),u'RutileZrTemp',self)
         self.actionRutileZrTemp.setObjectName('actionRutileZrTemp')
 
-        self.actionCluster = QtWidgets.QAction(self)
+        self.actionCluster = QtWidgets.QAction(QIcon(LocationOfMySelf+'/cluster.png'),u'Cluster',self)
         self.actionCluster.setObjectName('actionCluster')
 
-        self.actionQAPF = QtWidgets.QAction(self)
+        self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
-        self.actionMudStone = QtWidgets.QAction(self)
+        self.actionMudStone = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'MudStone',self)
         self.actionMudStone.setObjectName('actionMudStone')
 
-        self.actionXY = QtWidgets.QAction(self)
+        self.actionXY = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'X-Y',self)
         self.actionXY.setObjectName('actionXY')
 
-        self.actionXYZ = QtWidgets.QAction(self)
+        self.actionXYZ = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'Triangular',self)
         self.actionXYZ.setObjectName('actionXYZ')
 
-        self.actionMagic = QtWidgets.QAction(self)
+        self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'Magic',self)
         self.actionMagic.setObjectName('actionMagic')
 
         self.menuFile.addAction(self.actionOpen)
@@ -424,7 +454,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButtonSave.setIcon(QtGui.QIcon(LocationOfMySelf+'/save.png'))
         self.pushButtonSort.setIcon(QtGui.QIcon(LocationOfMySelf+'/set.png'))
         self.pushButtonQuit.setIcon(QtGui.QIcon(LocationOfMySelf+'/quit.png'))
-        self.pushButtonUpdate.setIcon(QtGui.QIcon(LocationOfMySelf+'/version.png'))
+        self.pushButtonUpdate.setIcon(QtGui.QIcon(LocationOfMySelf+'/update.png'))
 
 
 
@@ -504,11 +534,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButtonQuit.setText(_translate('MainWindow',u'Quit App'))
         self.pushButtonUpdate.setText(_translate('MainWindow', u'Check Update'))
 
-        self.pushButtonOpen.setIcon(QtGui.QIcon(LocationOfMySelf+'/open.png'))
-        self.pushButtonSave.setIcon(QtGui.QIcon(LocationOfMySelf+'/save.png'))
-        self.pushButtonSort.setIcon(QtGui.QIcon(LocationOfMySelf+'/set.png'))
-        self.pushButtonQuit.setIcon(QtGui.QIcon(LocationOfMySelf+'/quit.png'))
-        self.pushButtonUpdate.setIcon(QtGui.QIcon(LocationOfMySelf+'/version.png'))
 
         self.menuFile.setTitle(_translate('MainWindow', u'Data File'))
 
@@ -571,19 +596,31 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         w=self.width()
         h=self.height()
-        step=(w-20)/5-10
+        if h<360:
+            h=360
+            self.resize(w,h)
+        if w<640:
+            w = 640
+            self.resize(w, h)
 
-        self.tableView.setGeometry(QtCore.QRect(10, 10, w-20, h-120))
 
-        self.pushButtonOpen.setGeometry(QtCore.QRect(10, h-84, step, 32))
+        step = (w * 94 / 100) / 5
+        foot=h*3/48
 
-        self.pushButtonSave.setGeometry(QtCore.QRect(15+step, h-84, step, 32))
 
-        self.pushButtonSort.setGeometry(QtCore.QRect(20+step*2, h-84, step, 32))
+        #if foot<=10: foot=10
 
-        self.pushButtonQuit.setGeometry(QtCore.QRect(25+step*3, h-84, step, 32))
+        self.tableView.setGeometry(QtCore.QRect(w/100, h/48, w*98/100, h*38/48))
 
-        self.pushButtonUpdate.setGeometry(QtCore.QRect(30+step*4, h-84, step, 32))
+        self.pushButtonOpen.setGeometry(QtCore.QRect(w/100, h*40/48, step, foot))
+
+        self.pushButtonSave.setGeometry(QtCore.QRect(2*w/100+step, h*40/48, step, foot))
+
+        self.pushButtonSort.setGeometry(QtCore.QRect(3*w/100+step*2, h*40/48, step, foot))
+
+        self.pushButtonUpdate.setGeometry(QtCore.QRect(4*w/100+step*3, h*40/48, step, foot))
+
+        self.pushButtonQuit.setGeometry(QtCore.QRect(5*w/100+step*4, h*40/48, step, foot))
 
 
 
@@ -621,6 +658,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             NewVersion = 'self.target' + r.text.splitlines()[0]
 
         except requests.exceptions.ConnectionError as err:
+            print(err)
+            r=0
+            buttonReply = QMessageBox.information(self,  _translate('MainWindow', u'NetWork Error'),_translate('MainWindow', u'Net work unavailable.'))
+            NewVersion ="targetversion = '0'"
+
+        except requests.exceptions.HTTPError as err:
             print(err)
             r=0
             buttonReply = QMessageBox.information(self,  _translate('MainWindow', u'NetWork Error'),_translate('MainWindow', u'Net work unavailable.'))
@@ -698,7 +741,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def ErrorEvent(self):
 
-        reply = QMessageBox.information(self, 'Warning', 'Your Data mismatch this Plot.')
+        reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Plot.'))
 
 
 
@@ -747,12 +790,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.tableView.setModel(self.model)
 
         if flag == 0:
-            reply = QMessageBox.information(self, 'Ready',
-                                        'Everything fine and no need to set up.')
+            reply = QMessageBox.information(self,  _translate('MainWindow','Ready'),
+                                         _translate('MainWindow','Everything fine and no need to set up.'))
 
         else:
-            reply = QMessageBox.information(self, 'Ready',
-                                        'Items added, Modify in the Table to set up details.')
+            reply = QMessageBox.information(self,  _translate('MainWindow','Ready'),
+                                         _translate('MainWindow','Items added, Modify in the Table to set up details.'))
 
 
     def getDataFile(self):
@@ -922,7 +965,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         try:
             self.zirconpop.MultiBallard()
             self.zirconpop.show()
-        except(KeyError):
+        except(KeyError,ValueError):
             self.ErrorEvent()
 
     def XY(self):

@@ -14,7 +14,7 @@ setup(name='geopython',
       url='http://blog.cycleuser.org',
       packages=['geopython'],
       package_data={
-          'geopython': ['*.png','*.qm'],
+          'geopython': ['*.png','*.qm','*.ttf'],
       },
       include_package_data=True,
 
