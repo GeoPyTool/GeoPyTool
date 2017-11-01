@@ -1,10 +1,10 @@
-version = '0.6.33'
+version = '0.6.32'
 
 date = '2017-11-1'
 
 dpi = 128
-
-# coding:utf-8
+# -*- coding: utf-8 -*-
+#coding:utf-8
 
 import math
 import sys
@@ -676,13 +676,6 @@ class PlotModel(FigureCanvas):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
 
         self.axes = self.fig.add_subplot(111, xlabel=xlabel + '\n' + description, ylabel=ylabel, xlim=xlim, ylim=ylim)
-        # 设定横纵坐标轴的标签
-
-        # 每次plot()调用的时候，我们希望原来的坐标轴被清除(所以False)
-        # self.axes.hold(False)
-
-
-
 
         FigureCanvas.__init__(self, self.fig)
 

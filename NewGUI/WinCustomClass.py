@@ -1,11 +1,11 @@
-version = '0.6.33'
+version = '0.6.32'
 
 date = '2017-11-1'
 
 dpi = 128
 
-
-# coding:utf-8
+# -*- coding: utf-8 -*-
+#coding:utf-8
 
 import math
 import sys
