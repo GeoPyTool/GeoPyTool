@@ -1,12 +1,18 @@
-Title: GeoPython, a one-stop cross-platform application for geology related daily work
-Date: 2017-11-04 16:20:48
-Category: Python
-
 # GeoPython,a one-stop cross-platform application for geology related daily work
+
 
 ##### author: cycleuser
 ##### email: cycleuser@cycleuser.org
 ##### Copyright 2017 cycleuser
+
+
+
+Please read The Wiki here:
+> 详细文档请访问下面的链接：
+
+https://github.com/chinageology/GeoPython/wiki
+
+
 
 [Official BBS](http://bbs.geopython.com/)
 
