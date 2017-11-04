@@ -7,7 +7,10 @@ Category: Python
 ##### author: cycleuser
 ##### email: cycleuser@cycleuser.org
 ##### Copyright 2017 cycleuser
-##### [Official BBS](http://bbs.geopython.com/)
+
+[Official BBS](http://bbs.geopython.com/)
+
+[Download](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 
 [Milestones](https://github.com/chinageology/GeoPython/blob/master/MileStones_EN.md)
 
@@ -28,7 +31,10 @@ GeoPython contains both traditional routines and newly developed methods, which 
 
 
 #GeoPython, 用于地质学日常研究的一站式跨平台解决方案
-##### [官方 BBS](http://bbs.geopython.com/)
+
+[官方 BBS](http://bbs.geopython.com/)
+
+[下载链接](https://github.com/chinageology/GeoPython/blob/master/Download.md)
 
 [开发记录](https://github.com/chinageology/GeoPython/blob/master/MileStones_CN.md)
 
