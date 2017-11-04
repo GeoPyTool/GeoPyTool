@@ -5,12 +5,12 @@
 ##### email: cycleuser@cycleuser.org
 ##### Copyright 2017 cycleuser
 
+# Please read The Wiki here:
+>#  详细文档请访问下面的链接：
+
+# https://github.com/chinageology/GeoPython/wiki
 
 
-Please read The Wiki here:
-> 详细文档请访问下面的链接：
-
-https://github.com/chinageology/GeoPython/wiki
 
 
 
