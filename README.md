@@ -3,12 +3,15 @@ Date: 2017-11-04 16:20:48
 Category: Python
 
 # GeoPython,a one-stop cross-platform application for geology related daily work
->#GeoPython, 用于地质学日常研究的一站式跨平台解决方案
 
 ##### author: cycleuser
 ##### email: cycleuser@cycleuser.org
 ##### Copyright 2017 cycleuser
 ##### [Official BBS](http://bbs.geopython.com/)
+
+[Milestones](https://github.com/chinageology/GeoPython/blob/master/MileStones_EN.md)
+
+[Installation Guide](https://github.com/chinageology/GeoPython/blob/master/Installation_EN.md)
 
 ## Introduction
 
@@ -20,7 +23,15 @@ GeoPython is an application based on Python and designed as a solution for geolo
 
 It is a **free software**: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-GeoPython contains both traditional routines and newly developed methods, which are shown in the table below.
+GeoPython contains both traditional routines and newly developed methods, which are shown in the table [here](https://github.com/chinageology/GeoPython/blob/master/Functions_EN.md).
+
+
+
+#GeoPython, 用于地质学日常研究的一站式跨平台解决方案
+
+[开发记录](https://github.com/chinageology/GeoPython/blob/master/MileStones_CN.md)
+
+[安装指南](https://github.com/chinageology/GeoPython/blob/master/Installation_CN.md)
 
 ## 简介
 
@@ -31,4 +42,4 @@ GeoPython 不需依赖任何其他软件，不像 GeoKit 那样依赖特定版�
 
 GeoPython 是一个自由软件:您可以根据自由软件基金会发布的GNU通用公共许可证的条款重新发布或者对其进行修改，但必须也基于同样的 GPLV3（GNU通用公共许可证第三版 ） ，或者更新版本的 GNU General Public License。
 
-GeoPython 包含了一些常用的传统方法，也实现了一些近年来新诞生的研究成果，主要功能如下表格所示。
+GeoPython 包含了一些常用的传统方法，也实现了一些近年来新诞生的研究成果，主要功能如[表格所示](https://github.com/chinageology/GeoPython/blob/master/Functions_CN.md)。
