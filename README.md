@@ -28,6 +28,7 @@ GeoPython contains both traditional routines and newly developed methods, which 
 
 
 #GeoPython, 用于地质学日常研究的一站式跨平台解决方案
+##### [官方 BBS](http://bbs.geopython.com/)
 
 [开发记录](https://github.com/chinageology/GeoPython/blob/master/MileStones_CN.md)
 
