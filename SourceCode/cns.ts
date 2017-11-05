@@ -189,22 +189,22 @@
         <translation>英文</translation>
     </message>
     <message>
-        <location filename="Test.py" line="679"/>
+        <location filename="Test.py" line="681"/>
         <source>You are using GeoPython </source>
         <translation>你正在使用的是 GeoPython</translation>
     </message>
     <message>
-        <location filename="Test.py" line="679"/>
+        <location filename="Test.py" line="681"/>
         <source>released on </source>
         <translation>发布日期为 </translation>
     </message>
     <message>
-        <location filename="Test.py" line="804"/>
+        <location filename="Test.py" line="806"/>
         <source>Choose Data File</source>
         <translation>选择数据文件</translation>
     </message>
     <message>
-        <location filename="Test.py" line="825"/>
+        <location filename="Test.py" line="827"/>
         <source>Save Data File</source>
         <translation>存储数据文件</translation>
     </message>
@@ -239,18 +239,18 @@
         <translation type="obsolete">是否访问下载链接检查更新？</translation>
     </message>
     <message>
-        <location filename="Test.py" line="699"/>
+        <location filename="Test.py" line="701"/>
         <source>Version</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="Test.py" line="689"/>
+        <location filename="Test.py" line="691"/>
         <source>New version available.
  Download and update?</source>
         <translation>发现新版本，是否前往下载？</translation>
     </message>
     <message>
-        <location filename="Test.py" line="699"/>
+        <location filename="Test.py" line="701"/>
         <source>This is the latest version.</source>
         <translation>已经是最新版本。</translation>
     </message>
@@ -295,49 +295,60 @@
         <translation>加载语言</translation>
     </message>
     <message>
-        <location filename="Test.py" line="732"/>
+        <location filename="Test.py" line="734"/>
         <source>Choose Language File</source>
         <translation>选择语言文件</translation>
     </message>
     <message>
-        <location filename="Test.py" line="670"/>
+        <location filename="Test.py" line="672"/>
         <source>NetWork Error</source>
         <translation>网络错误</translation>
     </message>
     <message>
-        <location filename="Test.py" line="670"/>
+        <location filename="Test.py" line="672"/>
         <source>Net work unavailable.</source>
         <translation>更新服务器无法连接。</translation>
     </message>
     <message>
-        <location filename="Test.py" line="679"/>
+        <location filename="Test.py" line="681"/>
         <source>Version Online is </source>
         <translation>当前线上最新版本为 </translation>
     </message>
     <message>
-        <location filename="Test.py" line="745"/>
+        <location filename="Test.py" line="747"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
         <location filename="Test.py" line="745"/>
         <source>Your Data mismatch this Plot.</source>
-        <translation>你的数据不适用于此图解</translation>
+        <translation type="obsolete">你的数据不适用于此图解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="798"/>
+        <location filename="Test.py" line="800"/>
         <source>Ready</source>
         <translation>完毕</translation>
     </message>
     <message>
-        <location filename="Test.py" line="794"/>
+        <location filename="Test.py" line="796"/>
         <source>Everything fine and no need to set up.</source>
         <translation>图件信息完整无需设置</translation>
     </message>
     <message>
-        <location filename="Test.py" line="798"/>
+        <location filename="Test.py" line="800"/>
         <source>Items added, Modify in the Table to set up details.</source>
         <translation>设置项目已添加，请自行调整颜色分类等信息</translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="747"/>
+        <source>Your Data mismatch this Plot.
+ Some Items missing?
+ Or maybe there are blanks in items names?
+ Or there are nonnumerical value？</source>
+        <translation>你的数据不适用于此图解。
+检查一下是否缺少必需项目？
+或者是项目名称里面有空格等字符导致无法读取？
+或者是项目的值当中有非数值的元素？</translation>
     </message>
 </context>
 <context>

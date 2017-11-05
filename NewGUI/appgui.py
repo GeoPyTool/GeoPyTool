@@ -596,12 +596,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         w=self.width()
         h=self.height()
-        if h<360:
+        '''
+        if h<=360:
             h=360
             self.resize(w,h)
-        if w<640:
+        if w<=640:
             w = 640
             self.resize(w, h)
+        '''
 
 
         step = (w * 94 / 100) / 5
@@ -633,7 +635,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                          'All Files (*);;Text Files (*.txt)')  # 设置文件扩展名过滤,注意用双分号间隔
 
     def goGitHub(self):
-        webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/README.md')
+        webbrowser.open('https://github.com/chinageology/GeoPython/wiki')
+
+
 
     def goCnBBS(self):
         webbrowser.open('http://bbs.geopython.com/-f2.html')
@@ -648,7 +652,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         _translate = QtCore.QCoreApplication.translate
 
-        url = 'https://raw.githubusercontent.com/chinageology/GeoPython/master/NewGUI/WinCustomClass.py'
+        url = 'https://raw.githubusercontent.com/chinageology/GeoPython/master/SourceCode/WinCustomClass.py'
 
 
         r= 0
@@ -699,7 +703,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                                              'This is the latest version.'))
 
     def Update(self):
-        webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/Download.md')
+        webbrowser.open('https://github.com/chinageology/GeoPython/wiki/Download')
 
 
     def to_ChineseS(self):
@@ -738,9 +742,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.retranslateUi()
 
 
+
     def ErrorEvent(self):
 
-        reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Plot.'))
+        reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Plot.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
 
 
 

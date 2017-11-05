@@ -3,244 +3,287 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="Test.py" line="121"/>
+        <location filename="Test.py" line="140"/>
         <source>GeoPython</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="478"/>
+        <location filename="Test.py" line="681"/>
         <source>You are using GeoPython </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="478"/>
+        <location filename="Test.py" line="681"/>
         <source>released on </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="509"/>
+        <location filename="Test.py" line="554"/>
         <source>Open Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="510"/>
+        <location filename="Test.py" line="555"/>
         <source>Save Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="484"/>
+        <location filename="Test.py" line="534"/>
         <source>Set Format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="485"/>
+        <location filename="Test.py" line="535"/>
         <source>Quit App</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="539"/>
+        <location filename="Test.py" line="584"/>
         <source>Check Update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="494"/>
+        <location filename="Test.py" line="539"/>
         <source>Data File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="496"/>
+        <location filename="Test.py" line="541"/>
         <source>Geochemistry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="498"/>
+        <location filename="Test.py" line="543"/>
         <source>Structure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="500"/>
+        <location filename="Test.py" line="545"/>
         <source>Calculation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="502"/>
+        <location filename="Test.py" line="547"/>
         <source>Statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="504"/>
+        <location filename="Test.py" line="549"/>
         <source>Others</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="506"/>
+        <location filename="Test.py" line="551"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="507"/>
+        <location filename="Test.py" line="552"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="512"/>
+        <location filename="Test.py" line="557"/>
         <source>TAS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="513"/>
+        <location filename="Test.py" line="558"/>
         <source>Trace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="514"/>
+        <location filename="Test.py" line="559"/>
         <source>REE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="515"/>
+        <location filename="Test.py" line="560"/>
         <source>Pearce</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="516"/>
+        <location filename="Test.py" line="561"/>
         <source>Harker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="518"/>
+        <location filename="Test.py" line="563"/>
         <source>QAPF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="520"/>
+        <location filename="Test.py" line="565"/>
         <source>Stereo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="521"/>
+        <location filename="Test.py" line="566"/>
         <source>Rose</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="522"/>
+        <location filename="Test.py" line="567"/>
         <source>QFL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="523"/>
+        <location filename="Test.py" line="568"/>
         <source>QmFLt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="525"/>
+        <location filename="Test.py" line="570"/>
         <source>CIPW</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="527"/>
+        <location filename="Test.py" line="572"/>
         <source>ZirconCe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="528"/>
+        <location filename="Test.py" line="573"/>
         <source>ZirconTiTemp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="529"/>
+        <location filename="Test.py" line="574"/>
         <source>RutileZrTemp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="530"/>
+        <location filename="Test.py" line="575"/>
         <source>Cluster</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="532"/>
+        <location filename="Test.py" line="577"/>
         <source>X-Y plot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="533"/>
+        <location filename="Test.py" line="578"/>
         <source>X-Y-Z plot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="535"/>
+        <location filename="Test.py" line="580"/>
         <source>Magic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="537"/>
+        <location filename="Test.py" line="582"/>
         <source>Sand-Silt-Mud</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="592"/>
+        <location filename="Test.py" line="701"/>
         <source>Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="540"/>
+        <location filename="Test.py" line="585"/>
         <source>Chinese Forum</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="541"/>
+        <location filename="Test.py" line="586"/>
         <source>English Forum</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="542"/>
+        <location filename="Test.py" line="587"/>
         <source>Github</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="546"/>
+        <location filename="Test.py" line="591"/>
         <source>Simplified Chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="547"/>
+        <location filename="Test.py" line="592"/>
         <source>Traditional Chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="548"/>
+        <location filename="Test.py" line="593"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="549"/>
+        <location filename="Test.py" line="594"/>
         <source>Load Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="697"/>
+        <location filename="Test.py" line="806"/>
         <source>Choose Data File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="584"/>
+        <location filename="Test.py" line="691"/>
         <source>New version available.
  Download and update?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="592"/>
+        <location filename="Test.py" line="701"/>
         <source>This is the latest version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="625"/>
+        <location filename="Test.py" line="734"/>
         <source>Choose Language File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Test.py" line="718"/>
+        <location filename="Test.py" line="827"/>
         <source>Save Data File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="672"/>
+        <source>NetWork Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="672"/>
+        <source>Net work unavailable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="681"/>
+        <source>Version Online is </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="747"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="Test.py" line="747"/>
+        <source>Your Data mismatch this Plot.
+ Some Items missing?
+ Or maybe there are blanks in items names?
+ Or there are nonnumerical value？</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="800"/>
+        <source>Ready</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="796"/>
+        <source>Everything fine and no need to set up.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="800"/>
+        <source>Items added, Modify in the Table to set up details.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

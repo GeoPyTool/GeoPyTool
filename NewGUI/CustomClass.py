@@ -1,6 +1,6 @@
-version = '0.6.33'
+version = '0.6.34'
 
-date = '2017-11-1'
+date = '2017-11-5'
 
 dpi = 128
 # -*- coding: utf-8 -*-
@@ -6967,6 +6967,10 @@ class XY(AppForm):
 
         self.x_element_label = QLabel('X')
 
+        #self.x_calculator = QLineEdit(self)
+
+
+
         self.logx_cb = QCheckBox('&Log')
         self.logx_cb.setChecked(False)
         self.logx_cb.stateChanged.connect(self.Magic)  # int
@@ -6979,6 +6983,9 @@ class XY(AppForm):
         self.y_element.valueChanged.connect(self.Magic)  # int
 
         self.y_element_label = QLabel('Y')
+
+        #self.y_calculator = QLineEdit(self)
+
 
         self.logy_cb = QCheckBox('&Log')
         self.logy_cb.setChecked(False)
@@ -7739,7 +7746,7 @@ class XYZ(AppForm):
 
         s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
                      Style='-',
-                     Alpha=0.7, Label='')]
+                     Alpha=0.3, Label='')]
         for i in s:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
                            label=i.Label)

@@ -223,6 +223,21 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="Test.py" line="672"/>
+        <source>NetWork Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="672"/>
+        <source>Net work unavailable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="681"/>
+        <source>Version Online is </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="Test.py" line="691"/>
         <source>New version available.
  Download and update?</source>
@@ -236,26 +251,6 @@
     <message>
         <location filename="Test.py" line="734"/>
         <source>Choose Language File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Test.py" line="827"/>
-        <source>Save Data File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Test.py" line="672"/>
-        <source>NetWork Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Test.py" line="672"/>
-        <source>Net work unavailable.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Test.py" line="681"/>
-        <source>Version Online is </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -284,6 +279,11 @@
     <message>
         <location filename="Test.py" line="800"/>
         <source>Items added, Modify in the Table to set up details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="827"/>
+        <source>Save Data File</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

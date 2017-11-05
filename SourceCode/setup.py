@@ -14,7 +14,7 @@ setup(name='geopython',
       url='https://github.com/chinageology/GeoPython',
       packages=['geopython'],
       package_data={
-          'geopython': ['*.png','*.qm','*.ttf'],
+          'geopython': ['*.png','*.qm','*.ttf','*.md'],
       },
       include_package_data=True,
 
