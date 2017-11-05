@@ -36,6 +36,9 @@ GeoPython contains both traditional routines and newly developed methods, which 
 
 [Installation Guide](https://github.com/chinageology/GeoPython/wiki/Installation)
 
+
+[Demonstration](https://github.com/chinageology/GeoPython/wiki/Demonstration)
+
 # GeoPython, 用于地质学日常研究的一站式跨平台解决方案
 
 
@@ -60,3 +63,6 @@ GeoPython 包含了一些常用的传统方法，也实现了一些近年来新�
 [开发记录](https://github.com/chinageology/GeoPython/wiki/%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95)
 
 [安装指南](https://github.com/chinageology/GeoPython/wiki/%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97)
+
+
+[操作演示](https://github.com/chinageology/GeoPython/wiki/%E4%BD%BF%E7%94%A8%E6%BC%94%E7%A4%BA)
