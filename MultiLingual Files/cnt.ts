@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="zh_TW" sourcelanguage="en">
+<!DOCTYPE TS>
+<TS version="2.1" language="zh_TW" sourcelanguage="en">
 <context>
     <name>MainWindow</name>
     <message>
@@ -188,22 +189,22 @@
         <translation>英文</translation>
     </message>
     <message>
-        <location filename="Test.py" line="679"/>
+        <location filename="Test.py" line="681"/>
         <source>You are using GeoPython </source>
         <translation>你正在使用的是 GeoPython</translation>
     </message>
     <message>
-        <location filename="Test.py" line="679"/>
+        <location filename="Test.py" line="681"/>
         <source>released on </source>
         <translation>發布日期為 </translation>
     </message>
     <message>
-        <location filename="Test.py" line="804"/>
+        <location filename="Test.py" line="806"/>
         <source>Choose Data File</source>
         <translation>選擇數據文件</translation>
     </message>
     <message>
-        <location filename="Test.py" line="825"/>
+        <location filename="Test.py" line="827"/>
         <source>Save Data File</source>
         <translation>存儲數據文件</translation>
     </message>
@@ -238,18 +239,18 @@
         <translation type="obsolete">是否訪問下載鏈接檢查更新？</translation>
     </message>
     <message>
-        <location filename="Test.py" line="699"/>
+        <location filename="Test.py" line="701"/>
         <source>Version</source>
         <translation>檢查更新</translation>
     </message>
     <message>
-        <location filename="Test.py" line="689"/>
+        <location filename="Test.py" line="691"/>
         <source>New version available.
  Download and update?</source>
         <translation>發現新版本，是否前往下載？</translation>
     </message>
     <message>
-        <location filename="Test.py" line="699"/>
+        <location filename="Test.py" line="701"/>
         <source>This is the latest version.</source>
         <translation>已經是最新版本。</translation>
     </message>
@@ -294,49 +295,60 @@
         <translation>加載語言</translation>
     </message>
     <message>
-        <location filename="Test.py" line="732"/>
+        <location filename="Test.py" line="734"/>
         <source>Choose Language File</source>
         <translation>選擇語言文件</translation>
     </message>
     <message>
-        <location filename="Test.py" line="670"/>
+        <location filename="Test.py" line="672"/>
         <source>NetWork Error</source>
         <translation>網絡錯誤</translation>
     </message>
     <message>
-        <location filename="Test.py" line="670"/>
+        <location filename="Test.py" line="672"/>
         <source>Net work unavailable.</source>
         <translation>更新服務器無法連接。</translation>
     </message>
     <message>
-        <location filename="Test.py" line="679"/>
+        <location filename="Test.py" line="681"/>
         <source>Version Online is </source>
         <translation>當前線上最新版本為 </translation>
     </message>
     <message>
-        <location filename="Test.py" line="745"/>
+        <location filename="Test.py" line="747"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
         <location filename="Test.py" line="745"/>
         <source>Your Data mismatch this Plot.</source>
-        <translation>你的數據不適用於此圖解</translation>
+        <translation type="obsolete">你的數據不適用於此圖解</translation>
     </message>
     <message>
-        <location filename="Test.py" line="798"/>
+        <location filename="Test.py" line="800"/>
         <source>Ready</source>
         <translation>完畢</translation>
     </message>
     <message>
-        <location filename="Test.py" line="794"/>
+        <location filename="Test.py" line="796"/>
         <source>Everything fine and no need to set up.</source>
         <translation>圖件信息完整無需設置</translation>
     </message>
     <message>
-        <location filename="Test.py" line="798"/>
+        <location filename="Test.py" line="800"/>
         <source>Items added, Modify in the Table to set up details.</source>
         <translation>設置項目已添加，請自行調整顏色分類等信息</translation>
+    </message>
+    <message>
+        <location filename="Test.py" line="747"/>
+        <source>Your Data mismatch this Plot.
+ Some Items missing?
+ Or maybe there are blanks in items names?
+ Or there are nonnumerical value？</source>
+        <translation type="unfinished">你的數據不適用於此圖解。
+檢查一下是否缺少必需項目？
+或者是項目名稱裏面有空格等字符導致無法讀取？
+或者是項目的值當中有非數值的元素？</translation>
     </message>
 </context>
 <context>
