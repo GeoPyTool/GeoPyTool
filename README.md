@@ -50,6 +50,7 @@ GeoPython 是一个自由软件:您可以根据自由软件基金会发布的GNU
 
 GeoPython 包含了一些常用的传统方法，也实现了一些近年来新诞生的研究成果，主要功能如[表格所示](https://github.com/chinageology/GeoPython/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8)。
 
+大家有各种问题交流，除了在[知乎这里](https://zhuanlan.zhihu.com/p/30651165?group_id=910460052293672960)留言外，还可以去注册一下[咱们的论坛](bbs.geopython.com)，或者加入咱们的QQ群： 560675626 （为避免无关人员骚扰，加群申请填写暗号 大胖是个好家伙 来通过验证）。
 
 
 [官方 BBS](http://bbs.geopython.com/)
