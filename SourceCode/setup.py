@@ -8,10 +8,10 @@ date=CustomClass.date
 
 setup(name='geopython',
       version=version,
-      description='a tool set for daily geology related task.',
+      description='a tool for daily geology related task. visit bbs.geopython.com for further information',
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',
-      url='http://blog.cycleuser.org',
+      url='https://github.com/chinageology/GeoPython',
       packages=['geopython'],
       package_data={
           'geopython': ['*.png','*.qm','*.ttf'],
