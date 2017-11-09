@@ -97,6 +97,7 @@ from PyQt5.QtWidgets import (QWidget, QMessageBox, qApp, QShortcut, QLabel, QMai
 _translate = QtCore.QCoreApplication.translate
 
 
+
 # Create a custom "QProxyStyle" to enlarge the QMenu icons
 #-----------------------------------------------------------
 class MyProxyStyle(QProxyStyle):
@@ -114,7 +115,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     # raw=0
     raw = pd.DataFrame(index=[], columns=[])  # raw is initialized as a blank dataframe
 
-    lang = True
+    Language = ''
 
     app = QtWidgets.QApplication(sys.argv)
     myStyle = MyProxyStyle('Fusion')    # The proxy style should be based on an existing style,
@@ -517,6 +518,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
 
 
+        self.ReadConfig()
+
+        self.trans.load(LocationOfMySelf+'/'+self.Language)
+        self.app.installTranslator(self.trans)
+        self.retranslateUi()
+
+
+
     def retranslateUi(self):
 
 
@@ -637,7 +646,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def goGitHub(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/wiki')
 
-
     def goCnBBS(self):
         webbrowser.open('http://bbs.geopython.com/-f2.html')
 
@@ -706,11 +714,43 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         webbrowser.open('https://github.com/chinageology/GeoPython/wiki/Download')
 
 
+    def ReadConfig(self):
+        if(os.path.isfile('config.ini')):
+
+            try:
+                with open('config.ini', 'rt') as f:
+                    data = f.read()
+                    print(data)
+                    try:
+                        print("self." + data)
+                        exec("self." + data)
+                    except:
+                        pass
+                    print(self.Language)
+
+
+            except():
+                pass
+
+
+    def WriteConfig(self,text=LocationOfMySelf+'/en'):
+        try:
+            with open('config.ini', 'wt') as f:
+                f.write(text)
+        except():
+            pass
+
+
     def to_ChineseS(self):
 
         self.trans.load(LocationOfMySelf+'/cns')
         self.app.installTranslator(self.trans)
         self.retranslateUi()
+
+        self.WriteConfig('Language = \'cns\'')
+
+
+
 
     def to_ChineseT(self):
 
@@ -718,12 +758,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
+        self.WriteConfig('Language = \'cnt\'')
 
     def to_English(self):
 
         self.trans.load(LocationOfMySelf+'/en')
         self.app.installTranslator(self.trans)
         self.retranslateUi()
+        self.WriteConfig('Language = \'en\'')
 
 
 

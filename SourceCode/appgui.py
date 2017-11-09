@@ -516,6 +516,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionEn.setText(_translate('MainWindow',u'English'))
         self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
 
+        self.ReadConfig()
+
+        self.trans.load(self.Language)
+        self.app.installTranslator(self.trans)
+        self.retranslateUi()
+
+
 
     def retranslateUi(self):
 
@@ -706,11 +713,48 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         webbrowser.open('https://github.com/chinageology/GeoPython/wiki/Download')
 
 
+    def ReadConfig(self):
+        if(os.path.isfile('config.ini')):
+
+            try:
+                with open('config.ini', 'rt') as f:
+                    try:
+                        data = f.read()
+                    except:
+                        data = 'Language = \'en\''
+                        pass
+
+                    print(data)
+                    try:
+                        print("self." + data)
+                        exec("self." + data)
+                    except:
+                        pass
+                    print(self.Language)
+
+
+            except():
+                pass
+
+
+    def WriteConfig(self,text='Language = \'en\''):
+        try:
+            with open('config.ini', 'wt') as f:
+                f.write(text)
+        except():
+            pass
+
+
     def to_ChineseS(self):
 
         self.trans.load('cns')
         self.app.installTranslator(self.trans)
         self.retranslateUi()
+
+        self.WriteConfig('Language = \'cns\'')
+
+
+
 
     def to_ChineseT(self):
 
@@ -718,12 +762,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
+        self.WriteConfig('Language = \'cnt\'')
 
     def to_English(self):
 
         self.trans.load('en')
         self.app.installTranslator(self.trans)
         self.retranslateUi()
+        self.WriteConfig('Language = \'en\'')
+
 
 
 

@@ -30,7 +30,9 @@ include web.png
 include website.png
 include xy.png
 
+include config.ini
 
+include *.ini
 include *.png
 include cns.qm
 include cnt.qm
