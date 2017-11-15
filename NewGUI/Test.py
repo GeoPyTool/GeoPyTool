@@ -94,6 +94,16 @@ from PyQt5.QtWidgets import (QWidget, QMessageBox, qApp, QShortcut, QLabel, QMai
                              QFileDialog, QAction,QProxyStyle,QStyle)
 
 
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn import datasets
+from sklearn.decomposition import PCA
+from sklearn.neighbors import NearestNeighbors
+import matplotlib
+import scipy.stats as st
+
+
+
+
 _translate = QtCore.QCoreApplication.translate
 
 
