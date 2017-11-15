@@ -4,9 +4,9 @@
 ##### Latest Version 当前最新版本: 0.6.59
 
 # GeoPython exe for Windows:
-[Baidu Download 百度网盘](http://pan.baidu.com/s/1hsH4lEW)
+[Baidu Download 百度网盘](http://pan.baidu.com/s/1bpB9iyj)
 
-[Google Drive](https://drive.google.com/open?id=1recLX_1U9gVG5GnLZIH3ZwjNB3IDKiu-)
+[Google Drive](https://drive.google.com/open?id=1Y_-GdU754AMGdcnxepFbWfZ_rS0IUdlE)
 
 
 
