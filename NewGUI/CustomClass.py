@@ -1,50 +1,55 @@
-version = '0.6.59'
+version = '0.7.24'
 
-date = '2017-11-14'
+date = '2017-11-16'
 
 dpi = 128
-# -*- coding: utf-8 -*-
 #coding:utf-8
 
-import math
 import sys
-import csv
-import random
-
-
-
-
-from bs4 import BeautifulSoup
 import os
 import matplotlib
 matplotlib.use('Qt5Agg')
+import math
+import csv
+import random
+import webbrowser
+import re
+
+import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
-from matplotlib import ft2font
-from matplotlib.font_manager import ttfFontProperty
-
-from mpl_toolkits.mplot3d import Axes3D
-from sklearn import datasets
-from sklearn.decomposition import PCA
-from sklearn.neighbors import NearestNeighbors
-import matplotlib
-import scipy.stats as st
 import matplotlib.font_manager as font_manager
-import matplotlib.image as mpimg
 
 
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QMainWindow,QWidget, QFileDialog, QAction, QLineEdit, \
+    QApplication, QPushButton, QSlider, QLabel, QHBoxLayout, QVBoxLayout,QProxyStyle,QStyle,qApp,QCheckBox
+
+from numpy import vstack, array, nan, mean, median, ptp, var, std, cov, corrcoef, arange, sin, pi
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.font_manager import ttfFontProperty
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
+from matplotlib import ft2font
+from scipy.cluster import hierarchy as hc
 
 LocationOfMySelf=os.path.dirname(__file__)
 
-print(LocationOfMySelf)
+print(LocationOfMySelf,'CustomClass')
 
-fpath = LocationOfMySelf+('/geopython/wqy.ttf')
+LocationOfMySelf=LocationOfMySelf+'/geopython/'
+
+fpath = LocationOfMySelf+('wqy.ttf')
 
 font = ft2font.FT2Font(fpath)
-fprop = fm.FontProperties(fname=fpath)
+fprop = font_manager.FontProperties(fname=fpath)
 
 ttfFontProp = ttfFontProperty(font)
-fontprop = fm.FontProperties(family='sans-serif',
+fontprop = font_manager.FontProperties(family='sans-serif',
                             #name=ap.fontprop.name,
                             size=9,
                             fname=ttfFontProp.fname,
@@ -57,28 +62,10 @@ plt.rcParams['svg.fonttype'] = 'none'
 plt.rcParams['pdf.fonttype'] = 'truetype'
 plt.rcParams['axes.unicode_minus']=False
 
-import pandas as pd
-import numpy as np
 
-from scipy.cluster import hierarchy as hc
-from scipy.cluster.hierarchy import dendrogram, linkage
 
-from numpy import arange, sin, pi
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import (QWidget, QLineEdit, QLabel, QHBoxLayout, QVBoxLayout,
-                             QApplication, QPushButton, QSlider,
-                             QFileDialog, QAction)
 
-from xml.dom import minidom
+
 
 _translate = QtCore.QCoreApplication.translate
 
@@ -243,7 +230,6 @@ class Tool():
         return (a, b)
         # plt.fill(a, b, Color=Color, Alpha=Alpha, )
 
-
 class Point():
     '''
     a Point class
@@ -285,7 +271,6 @@ class Point():
         self.Alpha = Alpha
         self.Marker = Marker
         self.Label = Label
-
 
 class Points():
     '''
@@ -332,7 +317,6 @@ class Points():
         self.Label = Label
         self.FontSize = FontSize
 
-
 class Tag():
     '''
     a class for Tag put on canvas
@@ -362,7 +346,6 @@ class Tag():
         self.X_offset = X_offset
         self.Y_offset = Y_offset
         self.FontSize = FontSize
-
 
 class Line():
     '''
@@ -464,7 +447,6 @@ class Line():
         self.X = X_TMP
         self.Y = Y_TMP
 
-
 class TriTag(Tag, Tool):
     '''
     inherit Tag and Tool,a Tag for triangular coord
@@ -480,7 +462,6 @@ class TriTag(Tag, Tool):
         self.X_offset = X_offset
         self.Y_offset = Y_offset
         self.FontSize = FontSize
-
 
 class TriPoint(Point, Tool):
     '''
@@ -511,7 +492,6 @@ class TriPoint(Point, Tool):
         self.Label = Label
 
         self.X, self.Y = self.TriToBin(self.x, self.y, self.z)
-
 
 class TriLine(Line, Tool):
     '''
@@ -579,7 +559,6 @@ class TriLine(Line, Tool):
         self.y = Y_TMP
         self.z = Z_TMP
 
-
 class PandasModel(QtCore.QAbstractTableModel):
     _df = pd.DataFrame()
     _changed = False
@@ -588,6 +567,12 @@ class PandasModel(QtCore.QAbstractTableModel):
         QtCore.QAbstractTableModel.__init__(self, parent=parent)
         self._df = df
         self._changed = False
+
+
+        self._filters = {}
+        self._sortBy = []
+        self._sortDirection = []
+
 
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
         if role != QtCore.Qt.DisplayRole:
@@ -656,11 +641,13 @@ class PandasModel(QtCore.QAbstractTableModel):
 
     def sort(self, column, order):
         colname = self._df.columns.tolist()[column]
+
+        index = self._df.index.tolist()
         self.layoutAboutToBeChanged.emit()
         self._df.sort_values(colname, ascending=order == QtCore.Qt.AscendingOrder, inplace=True)
         self._df.reset_index(inplace=True, drop=True)
-        self.layoutChanged.emit()
 
+        self.layoutChanged.emit()
 
 class CustomQTableView(QtWidgets.QTableView):
     def __init__(self, *args):
@@ -671,6 +658,174 @@ class CustomQTableView(QtWidgets.QTableView):
     def keyPressEvent(self, event):  # Reimplement the event here
         return
 
+class AppForm(QMainWindow):
+
+    _df = pd.DataFrame()
+    _changed = False
+
+    xlabel = r'$SiO_2 wt\%$'
+    ylabel = r'$Na_2O + K_2O wt\%$'
+    reference = 'Print the reference here.'
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved to AppForm')
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def DrawLine(self, l=[(41, 0), (41, 3), (45, 3)], color='grey', linewidth=0.5, linestyle='-', linelabel='',
+                 alpha=0.5):
+        x = []
+        y = []
+        for i in l:
+            x.append(i[0])
+            y.append(i[1])
+
+        self.axes.plot(x, y, color=color, linewidth=linewidth, linestyle=linestyle, label=linelabel, alpha=alpha)
+        return (x, y)
+
+    def DrawLogLine(self, l=[(41, 0), (41, 3), (45, 3)], color='grey', linewidth=0.5, linestyle='-', linelabel='',
+                    alpha=0.5):
+        x = []
+        y = []
+        for i in l:
+            x.append(math.log(i[0], 10))
+            y.append(math.log(i[1], 10))
+
+        self.axes.plot(x, y, color=color, linewidth=linewidth, linestyle=linestyle, label=linelabel, alpha=alpha)
+        return (x, y)
+
+    def save_plot(self):
+        file_choices = 'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)'
+
+        path = QFileDialog.getSaveFileName(self,
+                                           'Save file', '',
+                                           file_choices)
+        if path:
+            self.canvas.print_figure(path, dpi=self.dpi)
+            self.statusBar().showMessage('Saved to %s' % path, 2000)
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton('&Save')
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton('&Reset')
+        self.draw_button.clicked.connect(self.TAS)
+
+        self.legend_cb = QCheckBox('&Legend')
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.TAS)  # int
+
+        self.tag_cb = QCheckBox('&Tag')
+        self.tag_cb.setChecked(True)
+        self.tag_cb.stateChanged.connect(self.TAS)  # int
+
+        self.more_cb = QCheckBox('&More')
+        self.more_cb.setChecked(True)
+        self.more_cb.stateChanged.connect(self.TAS)  # int
+
+        self.detail_cb = QCheckBox('&Detail')
+        self.detail_cb.setChecked(True)
+        self.detail_cb.stateChanged.connect(self.TAS)  # int
+
+        slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.TAS)  # int
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button, self.detail_cb, self.tag_cb, self.more_cb,
+                  self.legend_cb, slider_label, self.slider]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def create_status_bar(self):
+        self.textbox = QLineEdit(self)
+        self.textbox.setText('Reference：' + '\n' + self.reference)
+        self.statusBar().addWidget(self.textbox, 1)
+
+    def add_actions(self, target, actions):
+        for action in actions:
+            if action is None:
+                target.addSeparator()
+            else:
+                target.addAction(action)
+
+    def saveImgFile(self):
+        ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                         '文件保存',
+                                                         'C:/',
+                                                         'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
+
+        if (ImgFileOutput != ''):
+            self.canvas.print_figure(ImgFileOutput, dpi=300)
+
+    def saveDataFile(self):
+
+        # if self.model._changed == True:
+        # print('changed')
+        # print(self.model._df)
+
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ('csv' in DataFileOutput):
+                self.model._df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ('xls' in DataFileOutput):
+                self.model._df.to_excel(DataFileOutput, encoding='utf-8')
+
+    def create_action(self, text, slot=None, shortcut=None,
+                      icon=None, tip=None, checkable=False,
+                      signal='triggered()'):
+        action = QAction(text, self)
+        if icon is not None:
+            action.setIcon(QIcon(':/%s.png' % icon))
+        if shortcut is not None:
+            action.setShortcut(shortcut)
+        if tip is not None:
+            action.setToolTip(tip)
+            action.setStatusTip(tip)
+        if slot is not None:
+            action.triggered.connect(slot)
+        if checkable:
+            action.setCheckable(True)
+        return action
 
 class PlotModel(FigureCanvas):
     _df = pd.DataFrame()
@@ -853,53 +1008,7 @@ class PlotModel(FigureCanvas):
 
             self.draw()
 
-
-class MyPopup(QWidget):
-    _df = pd.DataFrame()
-    _changed = False
-
-    def __init__(self, width=100, height=100, dpi=100,
-                 description='TAS (total alkali–silica) diagram (after Wilson et al. 1989).\nF Foidite, Ph Phonolite, Pc Pocrobasalt,\nU1 Tephrite (ol < 10%) Basanite(ol > 10%), U2 Phonotephrite, U3 Tephriphonolite,\nBa alkalic basalt,Bs subalkalic baslt, S1 Trachybasalt, S2 Basaltic Trachyandesite, S3 Trachyandesite,\nO1 Basaltic Andesite, O2 Andesite, O3 Dacite,  \nT Trachyte , Td Trachydacite , R Rhyolite, Q Silexite \n S/N/L Sodalitite/Nephelinolith/Leucitolith'
-                 , tag='tas-Wilson1989-volcano', xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', xlim=(30,
-                                                                                                              90),
-                 ylim=(
-                         0, 20)):
-        QWidget.__init__(self)
-
-        self.initUI()
-
-        self.MyCanvas = PlotModel(self, width=width, height=height, dpi=dpi, description=description, tag=tag,
-                                  xlabel=xlabel, ylabel=ylabel, xlim=xlim, ylim=ylim)
-
-        self.MyCanvas.setGeometry(QtCore.QRect(10, 10, 512, 512))
-
-        self.MyCanvas.setObjectName('MyCanvas')
-
-    def saveImgFile(self):
-        ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                         '文件保存',
-                                                         'C:/',
-                                                         'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
-
-        if (ImgFileOutput != ''):
-            self.MyCanvas.print_figure(ImgFileOutput, dpi=300)
-
-    def initUI(self):
-        QToolTip.setFont(QFont('SansSerif', 10))
-
-        self.setToolTip('This is a <b>QWidget</b> widget')
-
-        btn = QPushButton('Save Image', self)
-        btn.setToolTip('This is a <b>QPushButton</b> widget')
-        btn.resize(btn.sizeHint())
-        btn.move(256, 550)
-        btn.clicked.connect(self.saveImgFile)
-
-        # self.setGeometry(500, 500, 500, 600)
-        self.setWindowTitle('Image')
-
-
-class Zircon(QMainWindow):
+class ZirconCe(QMainWindow):
     _df = pd.DataFrame()
     _changed = False
 
@@ -1397,178 +1506,6 @@ class Zircon(QMainWindow):
         # print('\n')
         # print(self.newdf)
 
-
-
-class AppForm(QMainWindow):
-
-    _df = pd.DataFrame()
-    _changed = False
-
-    xlabel = r'$SiO_2 wt\%$'
-    ylabel = r'$Na_2O + K_2O wt\%$'
-    reference = 'Print the reference here.'
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to AppForm')
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def DrawLine(self, l=[(41, 0), (41, 3), (45, 3)], color='grey', linewidth=0.5, linestyle='-', linelabel='',
-                 alpha=0.5):
-        x = []
-        y = []
-        for i in l:
-            x.append(i[0])
-            y.append(i[1])
-
-        self.axes.plot(x, y, color=color, linewidth=linewidth, linestyle=linestyle, label=linelabel, alpha=alpha)
-        return (x, y)
-
-    def DrawLogLine(self, l=[(41, 0), (41, 3), (45, 3)], color='grey', linewidth=0.5, linestyle='-', linelabel='',
-                    alpha=0.5):
-        x = []
-        y = []
-        for i in l:
-            x.append(math.log(i[0], 10))
-            y.append(math.log(i[1], 10))
-
-        self.axes.plot(x, y, color=color, linewidth=linewidth, linestyle=linestyle, label=linelabel, alpha=alpha)
-        return (x, y)
-
-    def save_plot(self):
-        file_choices = 'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)'
-
-        path = QFileDialog.getSaveFileName(self,
-                                           'Save file', '',
-                                           file_choices)
-        if path:
-            self.canvas.print_figure(path, dpi=self.dpi)
-            self.statusBar().showMessage('Saved to %s' % path, 2000)
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.TAS)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.TAS)  # int
-
-        self.tag_cb = QCheckBox('&Tag')
-        self.tag_cb.setChecked(True)
-        self.tag_cb.stateChanged.connect(self.TAS)  # int
-
-        self.more_cb = QCheckBox('&More')
-        self.more_cb.setChecked(True)
-        self.more_cb.stateChanged.connect(self.TAS)  # int
-
-        self.detail_cb = QCheckBox('&Detail')
-        self.detail_cb.setChecked(True)
-        self.detail_cb.stateChanged.connect(self.TAS)  # int
-
-        slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.TAS)  # int
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button, self.detail_cb, self.tag_cb, self.more_cb,
-                  self.legend_cb, slider_label, self.slider]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def create_status_bar(self):
-        self.textbox = QLineEdit(self)
-        self.textbox.setText('Reference：' + '\n' + self.reference)
-        self.statusBar().addWidget(self.textbox, 1)
-
-    def add_actions(self, target, actions):
-        for action in actions:
-            if action is None:
-                target.addSeparator()
-            else:
-                target.addAction(action)
-
-    def saveImgFile(self):
-        ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                         '文件保存',
-                                                         'C:/',
-                                                         'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
-
-        if (ImgFileOutput != ''):
-            self.canvas.print_figure(ImgFileOutput, dpi=300)
-
-    def saveDataFile(self):
-
-        # if self.model._changed == True:
-        # print('changed')
-        # print(self.model._df)
-
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          '文件保存',
-                                                          'C:/',
-                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ('csv' in DataFileOutput):
-                self.model._df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-
-            elif ('xls' in DataFileOutput):
-                self.model._df.to_excel(DataFileOutput, encoding='utf-8')
-
-    def create_action(self, text, slot=None, shortcut=None,
-                      icon=None, tip=None, checkable=False,
-                      signal='triggered()'):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon(':/%s.png' % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            action.triggered.connect(slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
-
-
 class TAS(AppForm):
     _df = pd.DataFrame()
     _changed = False
@@ -1787,214 +1724,6 @@ class TAS(AppForm):
 
 
             self.canvas.draw()
-
-
-class REE(AppForm):
-    reference = 'Print the reference here.'
-
-    xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-    xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
-
-    StandardsName = ['C1 Chondrite Sun and McDonough,1989', 'Chondrite Taylor and McLennan,1985',
-                     'Chondrite Haskin et al.,1966', 'Chondrite Nakamura,1977', 'MORB Sun and McDonough,1989']
-
-    # RefName=['Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.',]
-
-    NameChosen = 'C1 Chondrite Sun and McDonough,1989'
-    Standards = {
-        'C1 Chondrite Sun and McDonough,1989': {'La': 0.237, 'Ce': 0.612, 'Pr': 0.095, 'Nd': 0.467, 'Sm': 0.153,
-                                                'Eu': 0.058, 'Gd': 0.2055, 'Tb': 0.0374, 'Dy': 0.254, 'Ho': 0.0566,
-                                                'Er': 0.1655, 'Tm': 0.0255, 'Yb': 0.17, 'Lu': 0.0254},
-        'Chondrite Taylor and McLennan,1985': {'La': 0.367, 'Ce': 0.957, 'Pr': 0.137, 'Nd': 0.711, 'Sm': 0.231,
-                                               'Eu': 0.087, 'Gd': 0.306, 'Tb': 0.058, 'Dy': 0.381, 'Ho': 0.0851,
-                                               'Er': 0.249, 'Tm': 0.0356, 'Yb': 0.248, 'Lu': 0.0381},
-        'Chondrite Haskin et al.,1966': {'La': 0.32, 'Ce': 0.787, 'Pr': 0.112, 'Nd': 0.58, 'Sm': 0.185, 'Eu': 0.071,
-                                         'Gd': 0.256, 'Tb': 0.05, 'Dy': 0.343, 'Ho': 0.07, 'Er': 0.225, 'Tm': 0.03,
-                                         'Yb': 0.186, 'Lu': 0.034},
-        'Chondrite Nakamura,1977': {'La': 0.33, 'Ce': 0.865, 'Pr': 0.112, 'Nd': 0.63, 'Sm': 0.203, 'Eu': 0.077,
-                                    'Gd': 0.276, 'Tb': 0.047, 'Dy': 0.343, 'Ho': 0.07, 'Er': 0.225, 'Tm': 0.03,
-                                    'Yb': 0.22,
-                                    'Lu': 0.034},
-        'MORB Sun and McDonough,1989': {'La': 2.5, 'Ce': 7.5, 'Pr': 1.32, 'Nd': 7.3, 'Sm': 2.63, 'Eu': 1.02, 'Gd': 3.68,
-                                        'Tb': 0.67, 'Dy': 4.55, 'Ho': 1.052, 'Er': 2.97, 'Tm': 0.46, 'Yb': 3.05,
-                                        'Lu': 0.46}}
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('REE Standardlized Pattern Diagram')
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to REE')
-
-        self.Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
-        self.WholeData = []
-        self.X0 = 1
-        self.X1 = 15
-        self.X_Gap = 15
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-
-        self.axes.axis('off')
-
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.REE)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.REE)  # int
-
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.REE)  # int
-
-        self.standard = QSlider(Qt.Horizontal)
-        self.standard.setRange(0, 4)
-        self.standard.setValue(0)
-        self.standard.setTracking(True)
-        self.standard.setTickPosition(QSlider.TicksBothSides)
-        self.standard.valueChanged.connect(self.REE)  # int
-
-        self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
-        self.reference = self.StandardsName[int(self.standard.value())]+'Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button,
-                  self.legend_cb, self.slider_label, self.slider, self.standard_label, self.standard]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def REE(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
-            Top=6, Y0=-1,
-            Y1=3, Y_Gap=5, FontSize=12,
-            xLabel=r'$REE-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
-
-        self.axes.clear()
-
-        self.axes.axis('off')
-
-        self.WholeData = []
-
-        raw = self._df
-
-        self.FontSize = FontSize
-
-        PointLabels = []
-        k = 0
-
-        standardnamechosen = self.StandardsName[int(self.standard.value())]
-        standardchosen = self.Standards[standardnamechosen]
-
-        for i in range(len(raw)):
-            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
-
-            TmpLabel = ''
-
-            LinesX = []
-            LinesY = []
-            for j in range(len(self.Element)):
-                tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
-
-                tmpflag = 1
-                a = 0
-                try:
-                    a = math.log(tmp, 10)
-                except(ValueError):
-                    tmpflag = 0
-                    pass
-
-                if (tmpflag == 1):
-
-                    LinesY.append(a)
-                    LinesX.append(j + 1)
-
-                    self.WholeData.append(math.log(tmp, 10))
-
-                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                        TmpLabel = ''
-                    else:
-                        PointLabels.append(raw.at[i, 'Label'])
-                        TmpLabel = raw.at[i, 'Label']
-
-                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
-
-            self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
-                           linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
-
-        Tale = 0
-        Head = 0
-
-        if (len(self.WholeData) > 0):
-            Tale = min(self.WholeData)
-            Head = max(self.WholeData)
-
-        Location = round(Tale - (Head - Tale) / 5)
-
-        count = round((Head - Tale) / 5 * 7) + 1
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, prop=fontprop)
-
-        self.DrawLine([(0, Location), (16, Location)], color='black', linewidth=0.8, alpha=0.8)
-
-        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
-
-        self.standard_label.setText('Standard: ' + self.StandardsName[int(self.standard.value())])
-
-        for i in range(count):
-            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
-                          linewidth=0.8, alpha=0.8)
-
-            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
-                               xycoords='data', xytext=(-15, 0),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8, rotation=90)
-
-        for i in range(min(len(self.xticks), len(self.xticklabels))):
-            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
-                          linewidth=0.8, alpha=0.8)
-            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8)
-
-        self.canvas.draw()
-
 
 class Trace(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -2409,6 +2138,1014 @@ class Trace(AppForm):
 
         self.canvas.draw()
 
+class REE(AppForm):
+    reference = 'Print the reference here.'
+
+    xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
+
+    StandardsName = ['C1 Chondrite Sun and McDonough,1989', 'Chondrite Taylor and McLennan,1985',
+                     'Chondrite Haskin et al.,1966', 'Chondrite Nakamura,1977', 'MORB Sun and McDonough,1989']
+
+    # RefName=['Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.',]
+
+    NameChosen = 'C1 Chondrite Sun and McDonough,1989'
+    Standards = {
+        'C1 Chondrite Sun and McDonough,1989': {'La': 0.237, 'Ce': 0.612, 'Pr': 0.095, 'Nd': 0.467, 'Sm': 0.153,
+                                                'Eu': 0.058, 'Gd': 0.2055, 'Tb': 0.0374, 'Dy': 0.254, 'Ho': 0.0566,
+                                                'Er': 0.1655, 'Tm': 0.0255, 'Yb': 0.17, 'Lu': 0.0254},
+        'Chondrite Taylor and McLennan,1985': {'La': 0.367, 'Ce': 0.957, 'Pr': 0.137, 'Nd': 0.711, 'Sm': 0.231,
+                                               'Eu': 0.087, 'Gd': 0.306, 'Tb': 0.058, 'Dy': 0.381, 'Ho': 0.0851,
+                                               'Er': 0.249, 'Tm': 0.0356, 'Yb': 0.248, 'Lu': 0.0381},
+        'Chondrite Haskin et al.,1966': {'La': 0.32, 'Ce': 0.787, 'Pr': 0.112, 'Nd': 0.58, 'Sm': 0.185, 'Eu': 0.071,
+                                         'Gd': 0.256, 'Tb': 0.05, 'Dy': 0.343, 'Ho': 0.07, 'Er': 0.225, 'Tm': 0.03,
+                                         'Yb': 0.186, 'Lu': 0.034},
+        'Chondrite Nakamura,1977': {'La': 0.33, 'Ce': 0.865, 'Pr': 0.112, 'Nd': 0.63, 'Sm': 0.203, 'Eu': 0.077,
+                                    'Gd': 0.276, 'Tb': 0.047, 'Dy': 0.343, 'Ho': 0.07, 'Er': 0.225, 'Tm': 0.03,
+                                    'Yb': 0.22,
+                                    'Lu': 0.034},
+        'MORB Sun and McDonough,1989': {'La': 2.5, 'Ce': 7.5, 'Pr': 1.32, 'Nd': 7.3, 'Sm': 2.63, 'Eu': 1.02, 'Gd': 3.68,
+                                        'Tb': 0.67, 'Dy': 4.55, 'Ho': 1.052, 'Er': 2.97, 'Tm': 0.46, 'Yb': 3.05,
+                                        'Lu': 0.46}}
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('REE Standardlized Pattern Diagram')
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved to REE')
+
+        self.Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
+        self.WholeData = []
+        self.X0 = 1
+        self.X1 = 15
+        self.X_Gap = 15
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+
+        self.axes.axis('off')
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton('&Save')
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton('&Reset')
+        self.draw_button.clicked.connect(self.REE)
+
+        self.legend_cb = QCheckBox('&Legend')
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.REE)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.REE)  # int
+
+        self.standard = QSlider(Qt.Horizontal)
+        self.standard.setRange(0, 4)
+        self.standard.setValue(0)
+        self.standard.setTracking(True)
+        self.standard.setTickPosition(QSlider.TicksBothSides)
+        self.standard.valueChanged.connect(self.REE)  # int
+
+        self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
+        self.reference = self.StandardsName[int(self.standard.value())]+'Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button,
+                  self.legend_cb, self.slider_label, self.slider, self.standard_label, self.standard]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def REE(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
+            Top=6, Y0=-1,
+            Y1=3, Y_Gap=5, FontSize=12,
+            xLabel=r'$REE-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
+
+        self.axes.clear()
+
+        self.axes.axis('off')
+
+        self.WholeData = []
+
+        raw = self._df
+
+        self.FontSize = FontSize
+
+        PointLabels = []
+        k = 0
+
+        standardnamechosen = self.StandardsName[int(self.standard.value())]
+        standardchosen = self.Standards[standardnamechosen]
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            LinesX = []
+            LinesY = []
+            for j in range(len(self.Element)):
+                tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
+
+                tmpflag = 1
+                a = 0
+                try:
+                    a = math.log(tmp, 10)
+                except(ValueError):
+                    tmpflag = 0
+                    pass
+
+                if (tmpflag == 1):
+
+                    LinesY.append(a)
+                    LinesX.append(j + 1)
+
+                    self.WholeData.append(math.log(tmp, 10))
+
+                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                        TmpLabel = ''
+                    else:
+                        PointLabels.append(raw.at[i, 'Label'])
+                        TmpLabel = raw.at[i, 'Label']
+
+                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel, edgecolors='black')
+
+            self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
+                           linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
+
+        Tale = 0
+        Head = 0
+
+        if (len(self.WholeData) > 0):
+            Tale = min(self.WholeData)
+            Head = max(self.WholeData)
+
+        Location = round(Tale - (Head - Tale) / 5)
+
+        count = round((Head - Tale) / 5 * 7) + 1
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a, prop=fontprop)
+
+        self.DrawLine([(0, Location), (16, Location)], color='black', linewidth=0.8, alpha=0.8)
+
+        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
+
+        self.standard_label.setText('Standard: ' + self.StandardsName[int(self.standard.value())])
+
+        for i in range(count):
+            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
+                          linewidth=0.8, alpha=0.8)
+
+            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
+                               xycoords='data', xytext=(-15, 0),
+                               textcoords='offset points',
+                               fontsize=8, color='black', alpha=0.8, rotation=90)
+
+        for i in range(min(len(self.xticks), len(self.xticklabels))):
+            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
+                          linewidth=0.8, alpha=0.8)
+            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
+                               textcoords='offset points',
+                               fontsize=8, color='black', alpha=0.8)
+
+        self.canvas.draw()
+
+class Pearce(AppForm):
+    reference = 'Pearce, J. A., Harris, N. B. W., and Tindle, A. G., 1984, Trace Element Discrimination Diagrams for the Tectonic Interpretation of Granitic Rocks: Journal of Petrology, v. 25, no. 4, p. 956-983.'
+    Lines = []
+    Tags = []
+    description = 'Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites '
+    text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
+
+    Condation0 = {'BaseLines': [[(2, 80), (55, 300)],
+                                [(55, 300), (400, 2000)],
+                                [(55, 300), (51.5, 8)],
+                                [(51.5, 8), (50, 1)],
+                                [(51.5, 8), (2000, 400)], ],
+                  'xLabel': r'Y+Nb (PPM)',
+                  'yLabel': r'Rb (PPM)',
+                  'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
+                  'Locations': [(1, 3), (1, 1), (2.4, 2.4), (3, 1)],
+                  'Frame': [[(0, 0), (0, 4)],
+                            [(0, 0), (4, 0)],],
+
+                  'BaseY': [[(0, 1), (-0.1, 1)],
+                            [(0, 2), (-0.1, 2)],
+                            [(0, 3), (-0.1, 3)],],
+
+                  'BaseX': [[(0, 0), (0, -0.1)],
+                            [(1, 0), (1, -0.1)],
+                            [(2, 0), (2, -0.1)],
+                            [(3, 0), (3, -0.1)], ]
+
+                  }
+
+    Condation1 = {'BaseLines': [[(0.5, 140), (6, 200)],
+                                [(6, 200), (50, 2000)],
+                                [(6, 200), (6, 8)],
+                                [(6, 8), (6, 1)],
+                                [(6, 8), (200, 400)], ],
+                  'xLabel': r'Yb+Ta (PPM)',
+                  'yLabel': r'Rb (PPM)',
+                  'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
+                  'Locations': [(0.5, 3), (0.5, 1), (1.5, 2.4), (2, 1)],
+                  'Frame': [[(-1, 0), (-1, 3)],
+                            [(-1, 0), (3, 0)],],
+
+                  'BaseY': [[(-1, 1), (-1.1, 1)],
+                            [(-1, 2), (-1.1, 2)],
+                            [(-1, 3), (-1.1, 3)],],
+
+                  'BaseX': [[(0, 0), (0, -0.1)],
+                            [(-1, 0), (-1, -0.1)],
+                            [(1, 0), (1, -0.1)],
+                            [(2, 0), (2, -0.1)], ]
+                  }
+
+    Condation2 = {'BaseLines': [[(1, 2000), (50, 10)],
+                                [(40, 1), (50, 10)],
+                                [(50, 10), (1000, 100)],
+                                [(25, 25), (1000, 400)], ],
+                  'xLabel': r'Y (PPM)',
+                  'yLabel': r'Nb (PPM)',
+                  'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
+                  'Locations': [(0.5, 1.5), (0.5, 2), (2, 2), (2, 1)],
+                  'Frame': [[(-0.5, 0), (-0.5, 3)],
+                            [(-0.5, 0), (3, 0)],],
+
+                  'BaseY': [[(-0.5, 1), (-0.6, 1)],
+                            [(-0.5, 2), (-0.6, 2)],
+                            [(-0.5, 3), (-0.6, 3)],],
+
+                  'BaseX': [[(0, 0), (0, -0.1)],
+                            [(1, 0), (1, -0.1)],
+                            [(2, 0), (2, -0.1)],]
+
+                  }
+
+    Condation3 = {'BaseLines': [[(0.55, 20), (3, 2)],
+                                [(0.1, 0.35), (3, 2)],
+                                [(3, 2), (5, 1)],
+                                [(5, 0.05), (5, 1)],
+                                [(5, 1), (100, 7)],
+                                [(3, 2), (100, 20)], ],
+                  'xLabel': r'Yb (PPM)',
+                  'yLabel': r'Ta (PPM)',
+                  'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
+                  'Locations': [(-0.5, 0.1), (-0.5, -1), (0.7, 1), (2, 0.5)],
+                  'Frame': [[(-1, -1.5), (-1, 2)],
+                            [(-1, -1.5), (2, -1.5)],],
+
+                  'BaseY': [[(-1, 0), (-1.1, 0)],
+                            [(-1, 1), (-1.1, 1)],
+                            [(-1, 2), (-1.1, 2)],],
+
+                  'BaseX': [[(-1, -1.5), (-1, -1.6)],
+                            [(0, -1.5), (0, -1.6)],
+                            [(1, -1.5), (1, -1.6)],
+                            [(2, -1.5), (2, -1.6)], ]
+                  }
+
+    condation = [Condation0, Condation1, Condation2, Condation3]
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle(
+            'Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites ')
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved to Pearce')
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+
+        self.axes.axis('off')
+
+        # self.axes.hold(False)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton('&Save')
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton('&Reset')
+        self.draw_button.clicked.connect(self.Pearce)
+
+        self.legend_cb = QCheckBox('&Legend')
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Pearce)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Pearce)  # int
+
+        self.detail_cb = QCheckBox('&Detail')
+        self.detail_cb.setChecked(True)
+        self.detail_cb.stateChanged.connect(self.Pearce)  # int
+
+        self.standard = QSlider(Qt.Horizontal)
+        self.standard.setRange(0, 3)
+        self.standard.setValue(0)
+        self.standard.setTracking(True)
+        self.standard.setTickPosition(QSlider.TicksBothSides)
+        self.standard.valueChanged.connect(self.Pearce)  # int
+
+        self.standard_label = QLabel('Type')
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button,
+                  self.legend_cb, self.slider_label, self.slider, self.detail_cb, self.standard_label, self.standard]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Pearce(self):
+
+        self.WholeData = []
+
+        raw = self._df
+
+        a = int(self.standard.value())
+
+        self.axes.clear()
+        self.axes.axis('off')
+
+        self.axes.set_xlabel(self.condation[a]['xLabel'])
+        self.axes.set_ylabel(self.condation[a]['yLabel'])
+
+
+        s=[]
+        for i in self.condation[a]['Frame']:
+            self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
+            s.append((i[1][0]/2,i[1][1]/2))
+
+
+        self.axes.annotate(self.condation[a]['xLabel'], s[1], xycoords='data', xytext=(-2, -50),
+                           textcoords='offset points',
+                           fontsize=9, color='grey', alpha=0.8)
+        self.axes.annotate(self.condation[a]['yLabel'], s[0], xycoords='data', xytext=(-50, -2),
+                           textcoords='offset points',rotation=90,
+                           fontsize=9, color='grey', alpha=0.8)
+
+
+
+        for i in self.condation[a]['BaseX']:
+            self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
+            if (type(i[0][0])== int):
+                self.axes.annotate(str(int(np.power(10, np.float32(i[0][0])))), i[1], xycoords='data', xytext=(-2,-10),
+                                   textcoords='offset points',
+                                   fontsize=9, color='grey', alpha=0.8)
+
+        for i in self.condation[a]['BaseY']:
+            self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
+            if (type(i[0][1]) == int):
+                self.axes.annotate(str(int(np.power(10, np.float32(i[0][1])))), i[1], xycoords='data', xytext=(-15,-10),
+                               textcoords='offset points',
+                               fontsize=9, color='grey', alpha=0.8)
+
+
+        BaseLines = self.condation[a]['BaseLines']
+
+        for i in BaseLines:
+            self.DrawLogLine(l=i)
+        PointLabels = []
+
+        self.Tags = []
+
+        for i in range(len(self.condation[a]['Labels'])):
+            self.Tags.append(Tag(Label=self.condation[a]['Labels'][i], Location=self.condation[a]['Locations'][i]))
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+
+            x, y = 0, 0
+
+            if (a == 0):
+                x, y = (raw.at[i, 'Y'] + raw.at[i, 'Nb']), raw.at[i, 'Rb']
+            elif (a == 1):
+                x, y = (raw.at[i, 'Yb'] + raw.at[i, 'Ta']), raw.at[i, 'Rb']
+            elif (a == 2):
+                x, y = raw.at[i, 'Y'], raw.at[i, 'Nb']
+            elif (a == 3):
+                x, y = raw.at[i, 'Yb'], raw.at[i, 'Ta']
+
+            self.axes.scatter(math.log(x, 10), math.log(y, 10), marker=raw.at[i, 'Marker'],
+                              s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                              label=TmpLabel, edgecolors='black')
+
+        Tale = 0
+        Head = 0
+
+        if (len(self.WholeData) > 0):
+            Tale = min(self.WholeData)
+            Head = max(self.WholeData)
+
+        Location = round(Tale - (Head - Tale) / 5)
+
+        count = round((Head - Tale) / 5 * 7)
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a, prop=fontprop)
+
+        if (self.detail_cb.isChecked()):
+            for i in self.Tags:
+                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
+                                   textcoords='offset points',
+                                   fontsize=8, color='grey', alpha=0.8)
+
+        self.canvas.draw()
+
+class QFL(AppForm, Tool):
+    reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'
+    _df = pd.DataFrame()
+    _changed = False
+
+    xlabel = r''
+    ylabel = r''
+
+    Tags = []
+
+    Label = [u'Q', u'F', u'L']
+    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
+                     (-6, -1),
+                     (104, -1)]
+
+    Labels = [u'Craton \n Interior',
+              u'Transitional \n Continental',
+              u'Basement \n Uplift',
+              u'Recycled \n Orogenic',
+              u'Dissected \n Arc',
+              u'Transitional \n Arc',
+              u'Undissected \n Arc']
+    Locations = [(8.5, 1.5, 90),
+                 (28.5, 1.5, 70),
+                 (58.5, 1.5, 40),
+                 (18, 22, 70),
+                 (35, 30, 35),
+                 (15, 60, 15),
+                 (11, 80, 9)]
+    Offset = [(-80, 2),
+              (-80, 2),
+              (-80, 2),
+              (-20, -5),
+              (-20, -8),
+              (-60, -2),
+              (-40, -5)]
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Q-F-L')
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved to Tri')
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+        self.raw = self._df
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i],
+                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
+                                                        self.Locations[i][2]),
+                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+        self.fig = Figure((8.0, 6.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton('&Save')
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton('&Reset')
+        self.draw_button.clicked.connect(self.Tri)
+
+        self.legend_cb = QCheckBox('&Legend')
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Tri)  # int
+
+        self.Tag_cb = QCheckBox('&Tag')
+        self.Tag_cb.setChecked(True)
+        self.Tag_cb.stateChanged.connect(self.Tri)  # int
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button, self.legend_cb, self.Tag_cb]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Tri(self):
+
+        self.axes.clear()
+        self.axes.axis('off')
+        self.axes.set_xlim(-10, 140)
+        self.axes.set_ylim(-10, 100)
+
+        # self.axes.spines['right'].set_color('none')
+        # self.axes.spines['top'].set_color('none')
+        # self.axes.spines['bottom'].set_color('none')
+        # self.axes.spines['left'].set_color('none')
+
+
+
+        s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
+                     Style='-',
+                     Alpha=0.7, Label='')]
+        for i in s:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        for i in range(len(self.LabelPosition)):
+            self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
+                               textcoords='offset points',
+                               fontsize=16, )
+
+        a = [TriLine(Points=[(85, 15, 0), (0, 3, 97)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                     Label=''),
+             TriLine(Points=[(45, 0, 55), (0, 75, 25)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                     Label=''),
+             TriLine(Points=[(50, 50, 0), (0, 75, 25)], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                     Label='')]
+
+        for i in a:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        T0 = (85, 15, 0)
+        T1 = (0, 3, 97)
+        T2 = (87, 0, 13)
+        T3 = (0, 63, 37)
+        T4 = self.TriCross(A=[T0, T1], B=[T2, T3])
+
+        T2 = (87, 0, 13)
+        T3 = (0, 63, 37)
+        T5 = (45, 0, 55)
+        T6 = (0, 75, 25)
+
+        T7 = self.TriCross(A=[T2, T3], B=[T5, T6])
+
+        b = [TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                     Label=''),
+             TriLine(Points=[T7, (0, 63, 37)], Sort='', Width=1, Color='black', Style=':', Alpha=0.7,
+                     Label='')]
+
+        for i in b:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        y = 3 * np.sqrt(3) * (82 - 7.5 - np.sqrt(15)) / (18 * np.sqrt(3) - 1.5)
+        z = 82 - np.power(15, 0.5)
+        x = 100 - y - z
+
+        p0 = (85, 15, 0)
+        p1 = (0, 3, 97)
+        p2 = (18, 0, 82)
+        p3 = (0, 36, 64)
+
+        p4 = self.TriCross(A=[p0, p1], B=[p2, p3])
+
+        c = [TriLine(Points=[(18, 0, 82), p4], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                     Label='')]
+
+        for i in c:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        p, q = self.TriFill(P=[(100, 0, 0), (85, 15, 0), (0, 3, 97), (0, 0, 100)], Color='blue', Alpha=0.13)
+
+        self.axes.fill(p, q, Color='blue', Alpha=0.13, )
+
+        ap0 = (85, 15, 0)
+        ap1 = (0, 3, 97)
+        ap2 = (0, 75, 25)
+        ap3 = (45, 0, 55)
+
+        ap4 = self.TriCross(A=[ap0, ap1], B=[ap2, ap3])
+
+        m, n = self.TriFill(P=[(0, 75, 25), (0, 3, 97), ap4], Color='red', Alpha=0.13)
+
+        self.axes.fill(m, n, Color='red', Alpha=0.13, )
+
+        raw = self._df
+        PointLabels = []
+        TPoints = []
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'L'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
+                                    Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
+                                    Label=TmpLabel))
+
+        for i in TPoints:
+            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
+                              label=i.Label, edgecolors='black')
+
+        if (self.Tag_cb.isChecked()):
+            for i in self.Tags:
+                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
+                                   textcoords='offset points',
+                                   fontsize=i.FontSize, color='grey', alpha=0.8)
+
+        if (self.legend_cb.isChecked()):
+            # a = int(self.slider.value())
+            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
+            self.axes.legend(loc=4, prop=fontprop, bbox_to_anchor=(1.1, 0.5))
+
+        self.canvas.draw()
+
+class QmFLt(AppForm, Tool):
+    reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'
+    _df = pd.DataFrame()
+    _changed = False
+
+    xlabel = r''
+    ylabel = r''
+
+    Tags = []
+
+    Label = [u'Qm', u'F', u'Lt']
+    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
+                     (-6, -1),
+                     (104, -1)]
+
+    Labels = [u'Craton \n Interior',
+              u'Transitional \n Continental',
+              u'Basement \n Uplift',
+
+              u'Mixed',
+              u'Dissected \n Arc',
+              u'Transitional \n Arc',
+              u'Undissected \n Arc',
+
+              u'Quartzose \n Recycled',
+              u'Transitional \n Recycled',
+              u'Lithic \n Recycled']
+    Locations = [(15, 5, 90),
+                 (30, 8, 62),
+                 (60, 10, 30),
+
+                 (30, 25, 45),
+                 (40, 20, 40),
+                 (40, 40, 20),
+                 (20, 70, 10),
+
+                 (10, 3, 60),
+                 (10, 50, 40),
+                 (10, 80, 10)]
+
+    Offset = [(-66, 2),
+              (-108, 2),
+              (-95, 2),
+
+              (-10, +10),
+              (-10, -25),
+              (-40, -20),
+              (-30, -35),
+
+              (+68, -28),
+              (+50, -2),
+              (+52, -15)]
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Qm-F-lt')
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved to Tri')
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+        self.raw = self._df
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i],
+                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
+                                                        self.Locations[i][2]),
+                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+        self.fig = Figure((8.0, 6.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton('&Save')
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton('&Reset')
+        self.draw_button.clicked.connect(self.Tri)
+
+        self.legend_cb = QCheckBox('&Legend')
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Tri)  # int
+
+        self.Tag_cb = QCheckBox('&Tag')
+        self.Tag_cb.setChecked(True)
+        self.Tag_cb.stateChanged.connect(self.Tri)  # int
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button, self.legend_cb, self.Tag_cb]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Tri(self):
+
+        self.axes.clear()
+        self.axes.axis('off')
+        self.axes.set_xlim(-10, 140)
+        self.axes.set_ylim(-10, 100)
+
+        # self.axes.spines['right'].set_color('none')
+        # self.axes.spines['top'].set_color('none')
+        # self.axes.spines['bottom'].set_color('none')
+        # self.axes.spines['left'].set_color('none')
+
+
+
+        s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
+                     Style='-',
+                     Alpha=0.7, Label='')]
+        for i in s:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        for i in range(len(self.LabelPosition)):
+            self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
+                               textcoords='offset points',
+                               fontsize=16, )
+
+        a = [TriLine(Points=[(77, 23, 0), (0, 11, 89)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                     Label='')]
+
+        for i in a:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        T0 = (77, 23, 0)
+        T1 = (0, 11, 89)
+        T2 = (43, 0, 57)
+        T3 = (0, 87, 13)
+
+        T4 = self.TriCross(A=[T0, T1], B=[T2, T3])
+
+        T2 = (43, 0, 57)
+        T3 = (0, 87, 13)
+
+        T5 = (82, 0, 18)
+        T6 = (0, 68, 32)
+
+        T7 = self.TriCross(A=[T2, T3], B=[T5, T6])
+
+        T0 = (77, 23, 0)
+        T1 = (0, 11, 89)
+
+        T5 = (82, 0, 18)
+        T6 = (0, 68, 32)
+
+        T8 = self.TriCross(A=[T0, T1], B=[T5, T6])
+
+        b = [TriLine(Points=[T4, T2], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                     Label=''),
+
+             TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                     Label=''),
+
+             TriLine(Points=[T7, T3], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                     Label=''),
+
+             TriLine(Points=[T8, T7], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                     Label=''),
+
+             TriLine(Points=[T7, (0, 68, 32)], Sort='', Width=1, Color='black', Style=':', Alpha=0.7,
+                     Label=''), ]
+
+        for i in b:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        T9 = (13, 87, 0)
+
+        T10 = (20, 0, 80)
+        T11 = (13, 87, 0)
+        T0 = (77, 23, 0)
+        T1 = (0, 11, 89)
+
+        T12 = self.TriCross(A=[T10, T11], B=[T0, T1])
+
+        c = [TriLine(Points=[T9, T12], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                     Label=''), ]
+
+        for i in c:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        p, q = self.TriFill(P=[(100, 0, 0), T0, T1, (0, 0, 100)], Color='blue', Alpha=0.13)
+
+        self.axes.fill(p, q, Color='blue', Alpha=0.13, )
+
+        m, n = self.TriFill(P=[T12, T11, (0, 100, 0), T1], Color='red', Alpha=0.13)
+
+        self.axes.fill(m, n, Color='red', Alpha=0.13, )
+
+        T10 = (20, 0, 80)
+        T11 = (13, 87, 0)
+        T13 = (47, 53, 0)
+        T14 = (0, 82, 18)
+
+        T15 = self.TriCross(A=[T10, T11], B=[T13, T14])
+
+        k = [TriLine(Points=[T15, T13], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                     Label=''),
+
+             TriLine(Points=[T15, T14], Sort='', Width=1, Color='black', Style=':', Alpha=0.7,
+                     Label=''), ]
+
+        for i in k:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        T10 = (20, 0, 80)
+        T16 = (0, 40, 60)
+
+        T17 = self.TriCross(A=[T10, T16], B=[T0, T1])
+
+        k = [TriLine(Points=[T17, T10], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                     Label=''), ]
+
+        for i in k:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        T10 = (20, 0, 80)
+        T11 = (13, 87, 0)
+        T18 = (0, 42, 59)
+        T19 = (84, 0, 16)
+
+        T20 = self.TriCross(A=[T10, T11], B=[T18, T19])
+
+        k = [TriLine(Points=[T18, T20], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                     Label=''), ]
+        for i in k:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        T21 = (0, 71, 29)
+        T22 = (58, 42, 0)
+
+        T23 = self.TriCross(A=[T10, T11], B=[T21, T22])
+
+        k = [TriLine(Points=[T23, T21], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                     Label=''), ]
+        for i in k:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        raw = self._df
+        PointLabels = []
+        TPoints = []
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+            TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'Lt'], raw.at[i, 'Qm']), Size=raw.at[i, 'Size'],
+                                    Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
+                                    Label=TmpLabel))
+
+        for i in TPoints:
+            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
+                              label=i.Label, edgecolors='black')
+
+        if (self.Tag_cb.isChecked()):
+            for i in self.Tags:
+                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
+                                   textcoords='offset points',
+                                   fontsize=i.FontSize, color='grey', alpha=0.8)
+
+        if (self.legend_cb.isChecked()):
+            # a = int(self.slider.value())
+            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
+            self.axes.legend(loc=4, prop=fontprop, bbox_to_anchor=(1.1, 0.5))
+
+        self.canvas.draw()
 
 class Stereo(AppForm):
     _df = pd.DataFrame()
@@ -2719,7 +3456,6 @@ class Stereo(AppForm):
             self.points()
 
         self.canvas.draw()
-
 
 class Rose(AppForm):
     _df = pd.DataFrame()
@@ -3087,8 +3823,10 @@ class Rose(AppForm):
 
         self.canvas.draw()
 
+class QAPF(AppForm, Tool):
 
-class MudStone(AppForm, Tool):
+    infotext ='Q = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.'
+    reference = 'Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
     _df = pd.DataFrame()
     _changed = False
 
@@ -3097,356 +3835,157 @@ class MudStone(AppForm, Tool):
 
     Tags = []
 
-    Label = [u'Clay', u'Sand', u'Silt']
-    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
-                     (-13, -2),
-                     (104, -1)]
-
-    Labels = [u'Y',
-              u'SY',
-              u'TY',
-              u'YS',
-              u'STY',
-              u'YT',
-              u'S',
-              u'TS',
-              u'ST',
-              u'T',
-              '20',
-              '40',
-              '60',
-              '80',
-
-              '80',
-              '60',
-              '40',
-              '20',
-
-              '80',
-              '60',
-              '40',
-              '20', ]
-
-    Locations = [(10, 10, 80),
-                 (40, 10, 50),
-                 (10, 40, 50),
-                 (50, 10, 40),
-                 (30, 30, 30),
-                 (10, 50, 40),
-                 (80, 10, 10),
-                 (60, 30, 10),
-                 (40, 50, 10),
-                 (10, 80, 10),
-
-                 (20, 0, 80),
-                 (40, 0, 60),
-                 (60, 0, 40),
-                 (80, 0, 20),
-
-                 (20, 80, 0),
-                 (40, 60, 0),
-                 (60, 40, 0),
-                 (80, 20, 0),
-
-                 (0, 20, 80),
-                 (0, 40, 60),
-                 (0, 60, 40),
-                 (0, 80, 20),
-                 ]
-    Offset = [(0, 0),
-              (0, 0),
-              (0, 0),
-              (0, 0),
-              (0, 0),
-              (0, 0),
-              (0, 0),
-              (0, 0),
-              (0, 0),
-              (0, 0),
-
-              (-18, 0),
-              (-18, 0),
-              (-18, 0),
-              (-18, 0),
-
-              (0, -18),
-              (0, -18),
-              (0, -18),
-              (0, -18),
-
-              (0, 0),
-              (0, 0),
-              (0, 0),
-              (0, 0), ]
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Sand-Silt-Clay')
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to Tri')
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-        self.raw = self._df
-        for i in range(len(self.Labels)):
-            self.Tags.append(Tag(Label=self.Labels[i],
-                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
-                                                        self.Locations[i][2]),
-                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-        self.fig = Figure((15.0, 9.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        self.axes.axis('off')
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Tri)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Tri)  # int
-
-        self.Tag_cb = QCheckBox('&Tag')
-        self.Tag_cb.setChecked(True)
-        self.Tag_cb.stateChanged.connect(self.Tri)  # int
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button, self.legend_cb, self.Tag_cb]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def Tri(self):
-
-        self.axes.clear()
-        self.axes.axis('off')
-        self.axes.set_xlim(-15, 140)
-        self.axes.set_ylim(-10, 100)
-
-        s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
-                     Style='-',
-                     Alpha=0.7, Label='')]
-        for i in s:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        for i in range(len(self.LabelPosition)):
-            self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
-                               textcoords='offset points',
-                               fontsize=16, )
-        # 20间隔点坐标：
-        Gap20 = [(20, 0, 80),
-                 (40, 0, 60),
-                 (60, 0, 40),
-                 (80, 0, 20),
-
-                 (20, 80, 0),
-                 (40, 60, 0),
-                 (60, 40, 0),
-                 (80, 20, 0),
-
-                 (0, 80, 20),
-                 (0, 60, 40),
-                 (0, 40, 60),
-                 (0, 20, 80)]
-
-        # 二等分点坐标：
-        Gap50 = [(50, 0, 50),
-                 (40, 20, 40),
-
-                 (0, 50, 50),
-                 (20, 40, 40),
-
-                 (50, 50, 0),
-                 (40, 40, 20), ]
-
-        # 四等分点坐标：
-        Gap25 = [(25, 0, 75),
-                 (0, 25, 75),
-
-                 (75, 0, 25),
-                 (75, 25, 0),
-
-                 (25, 75, 0),
-                 (0, 75, 25), ]
-
-        # 中心三角坐标：
-        Middle = [(20, 20, 60),
-                  (60, 20, 20),
-                  (20, 60, 20), ]
-
-        # 中心三角垂直链接四等分线坐标：
-        Other = [(12.5, 12.5, 75),
-                 (75, 12.5, 12.5),
-                 (12.5, 75, 12.5), ]
-
-        tmp = []
-        # 中心三角绘制
-        tmp.append(
-            TriLine(Points=[Middle[0], Middle[1], Middle[2], Middle[0]], Sort='', Width=1, Color='black', Style='-',
-                    Alpha=0.7,
-                    Label=''))
-
-        # 二等分和四等分线条绘制
-        for i in range(len(Gap50)):
-
-            if i % 2 == 0:
-                tmp.append(
-                    TriLine(Points=[Gap50[i], Gap50[i + 1]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                            Label=''))
-                tmp.append(
-                    TriLine(Points=[Gap25[i], Gap25[i + 1]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                            Label=''))
-
-        # 中心外延线条绘制
-        for i in range(len(Middle)):
-            tmp.append(TriLine(Points=[Middle[i], Other[i]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                               Label=''))
-
-        # 20网格线条绘制
-        for i in range(len(Gap20)):
-            if i <= len(Gap20) - 5:
-                tmp.append(
-                    TriLine(Points=[Gap20[i], Gap20[i + 4]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
-                            Label=''))
-            else:
-                tmp.append(
-                    TriLine(Points=[Gap20[i], Gap20[-1 - i]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
-                            Label=''))
-
-        for i in tmp:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        raw = self._df
-        PointLabels = []
-        TPoints = []
-        for i in range(len(raw)):
-            TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                TmpLabel = ''
-            else:
-                PointLabels.append(raw.at[i, 'Label'])
-                TmpLabel = raw.at[i, 'Label']
-
-            TPoints.append(TriPoint((raw.at[i, 'sand'], raw.at[i, 'silt'], raw.at[i, 'clay']), Size=raw.at[i, 'Size'],
-                                    Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
-                                    Label=TmpLabel))
-
-
-            # TPoints.append(TriPoint((raw.at[i, 'X'], raw.at[i, 'Y'], raw.at[i, 'Z']), Size=raw.at[i, 'Size'],
-            #         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
-            #         Label=TmpLabel))
-
-        for i in TPoints:
-            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
-                              label=i.Label, edgecolors='black')
-
-        if (self.Tag_cb.isChecked()):
-            for i in self.Tags:
-                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
-                                   textcoords='offset points',
-                                   fontsize=i.FontSize, color='grey', alpha=0.8)
-
-        if (self.legend_cb.isChecked()):
-            # a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
-            self.axes.legend(loc=4, prop=fontprop, bbox_to_anchor=(1.1, 0.5))
-
-        self.canvas.draw()
-
-        self.canvas.draw()
-
-
-class QFL(AppForm, Tool):
-    reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'
-    _df = pd.DataFrame()
-    _changed = False
-
-    xlabel = r''
-    ylabel = r''
-
-    Tags = []
-
-    Label = [u'Q', u'F', u'L']
+    Label = [u'Q', u'A', u'P', u'F']
     LabelPosition = [(48, 50 * np.sqrt(3) + 2),
                      (-6, -1),
-                     (104, -1)]
+                     (104, -1),
+                     (49, -50 * np.sqrt(3) - 4)]
 
-    Labels = [u'Craton \n Interior',
-              u'Transitional \n Continental',
-              u'Basement \n Uplift',
-              u'Recycled \n Orogenic',
-              u'Dissected \n Arc',
-              u'Transitional \n Arc',
-              u'Undissected \n Arc']
-    Locations = [(8.5, 1.5, 90),
-                 (28.5, 1.5, 70),
-                 (58.5, 1.5, 40),
-                 (18, 22, 70),
-                 (35, 30, 35),
-                 (15, 60, 15),
-                 (11, 80, 9)]
-    Offset = [(-80, 2),
-              (-80, 2),
-              (-80, 2),
-              (-20, -5),
-              (-20, -8),
-              (-60, -2),
-              (-40, -5)]
+    Labels = ['quartzolite',
+
+              'quartz-rich\ngranitoid',
+
+              'granite',
+
+              'alkali\nfeldspar\ngranite',
+              '(syeno\ngranite)',
+              '(monzo\ngranite)',
+              'granodiorite',
+              'tonalite',
+
+              'quartz\nalkali\nfeldspar\nsyenite',
+              'quartz\nsyenite',
+              'quartz\nmonzonite',
+              'quartz\nmonzodiorite\nquartz\nmonzogabbro',
+              'quartz\ndiorite\nquartz gabbro\n quartz\nanorthosite',
+
+              'alkali\nfeldspar\nsyenite',
+              'syenite',
+              'monzonite',
+              'monzodiorite\nmonzogabbro',
+              'diorite\ngabbro\nanorthosite',
+
+              'foid-bearing\nalkali\nfeldspar\nsyenite',
+              'foid-bearing\nsyenite',
+              'foid-bearing\nmonzonite',
+              'foid-bearing\nmonzodiorite\nfoid-bearing\nmonzogabbro',
+              'foid-bearing\ndiorite\nfoid-bearing gabbro\nfoid-bearing\nanorthosite',
+
+              'foid\nsyenite',
+              'foid\nmonzosyenite',
+              'foid\nmonzodiorite\nfoid\nmonzogabbro',
+              'foid\ndiorite\nfoid\ngabbro',
+              'foidolite']
+
+    Locations = [(5, 5, 95),
+
+                 (10, 10, 80),
+
+                 (35, 15, 50),
+
+                 (45, 5, 50),
+                 (45, 25, 30),
+                 (35, 35, 30),
+                 (25, 45, 30),
+                 (5, 45, 50),
+
+                 (85, 5, 10),
+                 (75, 15, 10),
+                 (45, 45, 10),
+                 (15, 75, 10),
+                 (5, 85, 10),
+
+                 (93, 5, 2),
+                 (83, 15, 2),
+                 (53, 53, 2),
+                 (15, 83, 2),
+                 (5, 93, 2),
+
+                 (95, 3, -8),
+                 (75, 23, -8),
+                 (49, 49, -8),
+                 (23, 75, -8),
+                 (3, 95, -8),
+
+                 (63, 7, -30),
+                 (50, 20, -30),
+                 (20, 50, -30),
+                 (7, 63, -30),
+                 (10, 10, -80)]
+
+    Offset = [(-30, 0),
+
+              (-30, 0),
+
+              (-20, 0),
+
+              (-70, 30),
+              (-50, 30),
+              (-30, 0),
+              (0, 0),
+              (30, 20),
+
+              (-70, 15),
+              (-10, 0),
+              (-40, 0),
+              (-50, -5),
+              (30, 15),
+
+              (-80, 5),
+              (0, 0),
+              (-40, 0),
+              (-50, -5),
+              (60, 5),
+
+              (-80, -15),
+              (-40, 0),
+              (-40, 0),
+              (-20, -15),
+              (50, -30),
+
+              (-80, 0),
+              (-40, 0),
+              (-40, 0),
+              (60, 0),
+              (-30, 0)]
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Q-F-L')
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            # print('DataFrame recieved to Tri')
+            # print('DataFrame recieved to DualTri')
 
+        self.raw = self._df
         self.create_main_frame()
         self.create_status_bar()
 
-        self.raw = self._df
-        for i in range(len(self.Labels)):
-            self.Tags.append(Tag(Label=self.Labels[i],
-                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
-                                                        self.Locations[i][2]),
-                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
+        TriLine(Points=[(100, 0, 0), (0, 0, 100), (0, 100, 0), (0, 0, -100), (100, 0, 0), (35, 65, 0)], Sort='',
+                Width=1, Color='black', Style='-',
+                Alpha=0.7, Label='')
+
+        for i in range(len(self.LabelPosition)):
+            plt.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
+                         textcoords='offset points',
+                         fontsize=16, )
 
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((8.0, 6.0), dpi=self.dpi)
+        self.fig = Figure((8, 12), dpi=self.dpi)
+        # 8 * np.sqrt(3)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+
+        self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
+        self.axes.set_xlim(-10, 110)
+        self.axes.set_ylim(-105 * np.sqrt(3) / 2, 105 * np.sqrt(3) / 2)
+
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
-        self.axes.axis('off')
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -3455,22 +3994,31 @@ class QFL(AppForm, Tool):
         self.save_button.clicked.connect(self.saveImgFile)
 
         self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Tri)
+        self.draw_button.clicked.connect(self.QAPF)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Tri)  # int
+        self.legend_cb.stateChanged.connect(self.QAPF)  # int
 
-        self.Tag_cb = QCheckBox('&Tag')
+        self.Tag_cb = QCheckBox('&Plutonic')
         self.Tag_cb.setChecked(True)
-        self.Tag_cb.stateChanged.connect(self.Tri)  # int
+        self.Tag_cb.stateChanged.connect(self.QAPF)  # int
+
+        if (self.Tag_cb.isChecked()):
+            self.Tag_cb.setText('&Plutonic')
+        else:
+            self.Tag_cb.setText('&Volcanic')
+
+        self.detail_cb = QCheckBox('&Detail')
+        self.detail_cb.setChecked(True)
+        self.detail_cb.stateChanged.connect(self.QAPF)  # int
 
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.legend_cb, self.Tag_cb]:
+        for w in [self.save_button, self.draw_button, self.Tag_cb, self.detail_cb, self.legend_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -3479,431 +4027,797 @@ class QFL(AppForm, Tool):
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
 
+        self.detailtext = QLineEdit(self)
+        self.detailtext.setText(self.infotext)
+        self.vbox.addWidget(self.detailtext)
+
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def Tri(self):
+    def QAPF(self):
 
         self.axes.clear()
         self.axes.axis('off')
-        self.axes.set_xlim(-10, 140)
-        self.axes.set_ylim(-10, 100)
+        self.Tags = []
 
-        # self.axes.spines['right'].set_color('none')
-        # self.axes.spines['top'].set_color('none')
-        # self.axes.spines['bottom'].set_color('none')
-        # self.axes.spines['left'].set_color('none')
+        self.axes.set_xlim(-10, 110)
+        self.axes.set_ylim(-105 * np.sqrt(3) / 2, 105 * np.sqrt(3) / 2)
 
-
-
-        s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
-                     Style='-',
+        s = [TriLine(Points=[(100, 0, 0), (0, 0, 100), (0, 100, 0), (0, 0, -100), (100, 0, 0), (0, 100, 0)], Sort='',
+                     Width=1, Color='black', Style='-',
                      Alpha=0.7, Label='')]
         for i in s:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
                            label=i.Label)
 
+        if (self.Tag_cb.isChecked()):
+
+            self.Labels = ['quartzolite',
+
+                           'quartz-rich\ngranitoid',
+
+                           'granite',
+
+                           'alkali\nfeldspar\ngranite',
+                           '(syeno\ngranite)',
+                           '(monzo\ngranite)',
+                           'granodiorite',
+                           'tonalite',
+
+                           'quartz\nalkali\nfeldspar\nsyenite',
+                           'quartz\nsyenite',
+                           'quartz\nmonzonite',
+                           'quartz\nmonzodiorite\nquartz\nmonzogabbro',
+                           'quartz\ndiorite\nquartz gabbro\n quartz\nanorthosite',
+
+                           'alkali\nfeldspar\nsyenite',
+                           'syenite',
+                           'monzonite',
+                           'monzodiorite\nmonzogabbro',
+                           'diorite\ngabbro\nanorthosite',
+
+                           'foid-bearing\nalkali\nfeldspar\nsyenite',
+                           'foid-bearing\nsyenite',
+                           'foid-bearing\nmonzonite',
+                           'foid-bearing\nmonzodiorite\nfoid-bearing\nmonzogabbro',
+                           'foid-bearing\ndiorite\nfoid-bearing gabbro\nfoid-bearing\nanorthosite',
+
+                           'foid\nsyenite',
+                           'foid\nmonzosyenite',
+                           'foid\nmonzodiorite\nfoid\nmonzogabbro',
+                           'foid\ndiorite\nfoid\ngabbro',
+                           'foidolite']
+
+            self.Locations = [(5, 5, 95),
+
+                              (10, 10, 80),
+
+                              (35, 15, 50),
+
+                              (45, 5, 50),
+                              (45, 25, 30),
+                              (35, 35, 30),
+                              (25, 45, 30),
+                              (5, 45, 50),
+
+                              (85, 5, 10),
+                              (75, 15, 10),
+                              (45, 45, 10),
+                              (15, 75, 10),
+                              (5, 85, 10),
+
+                              (93, 5, 2),
+                              (83, 15, 2),
+                              (53, 53, 2),
+                              (15, 83, 2),
+                              (5, 93, 2),
+
+                              (95, 3, -8),
+                              (75, 23, -8),
+                              (49, 49, -8),
+                              (23, 75, -8),
+                              (3, 95, -8),
+
+                              (63, 7, -30),
+                              (50, 20, -30),
+                              (20, 50, -30),
+                              (7, 63, -30),
+                              (10, 10, -80)]
+
+            self.Offset = [(-30, 0),
+
+                           (-30, 0),
+
+                           (-20, 0),
+
+                           (-70, 30),
+                           (-50, 30),
+                           (-30, 0),
+                           (0, 0),
+                           (30, 20),
+
+                           (-70, 15),
+                           (-10, 0),
+                           (-40, 0),
+                           (-50, -5),
+                           (30, 15),
+
+                           (-80, 5),
+                           (0, 0),
+                           (-40, 0),
+                           (-50, -5),
+                           (60, 5),
+
+                           (-80, -15),
+                           (-40, 0),
+                           (-40, 0),
+                           (-20, -15),
+                           (50, -30),
+
+                           (-80, 0),
+                           (-40, 0),
+                           (-40, 0),
+                           (60, 0),
+                           (-30, 0)]
+            self.Tag_cb.setText('&Plutonic')
+
+            self.setWindowTitle(
+                'QAPF modal classification of plutonic rocks (based on Streckeisen, 1976, Fig. 1a).')
+
+            D1 = (0, 0, 100)
+            L1 = [(10, 0, 90), (0, 10, 90)]
+            L2 = [(40, 0, 60), (0, 40, 60)]
+            L3 = [(80, 0, 20), (0, 80, 20)]
+
+            L4 = [(95, 0, 5), (0, 95, 5)]
+
+            SL1 = [D1, (90, 10, 0)]
+            SL2 = [D1, (65, 35, 0)]
+            SL3 = [D1, (35, 65, 0)]
+            SL4 = [D1, (10, 90, 0)]
+
+            CL1 = self.TriCross(SL1, L2)
+            CL21 = self.TriCross(SL2, L2)
+            CL22 = self.TriCross(SL2, L3)
+            CL3 = self.TriCross(SL3, L2)
+            CL41 = self.TriCross(SL4, L2)
+            CL42 = self.TriCross(SL4, L3)
+
+            NSL1 = [CL1, (90, 10, 0)]
+            NSL21 = [CL21, CL22]
+            NSL22 = [CL22, (65, 35, 0)]
+            NSL3 = [CL3, (35, 65, 0)]
+            NSL4 = [CL41, (10, 90, 0)]
+
+            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=L4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=NSL21, Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=NSL22, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label='')]
+
+            for i in s:
+                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                               label=i.Label)
+
+            D2 = (0, 0, -100)
+            L2 = [(40, 0, -60), (0, 40, -60)]
+            L3 = [(90, 0, -10), (0, 90, -10)]
+
+            SL1 = [D2, (90, 10, 0)]
+            SL2 = [D2, (65, 35, 0)]
+            SL3 = [D2, (35, 65, 0)]
+            SL4 = [D2, (10, 90, 0)]
+
+            SL5 = [(20, 20, -60), (45, 45, -10)]
+
+            CL1 = self.TriCross(SL1, L2)
+            CL2 = self.TriCross(SL2, L3)
+            CL3 = self.TriCross(SL3, L3)
+            CL41 = self.TriCross(SL4, L2)
+            CL42 = self.TriCross(SL4, L3)
+
+            NSL1 = [CL1, (90, 10, 0)]
+            NSL2 = [CL2, (65, 35, 0)]
+            NSL3 = [CL3, (35, 65, 0)]
+            NSL4 = [CL41, (10, 90, 0)]
+
+            s = [
+                TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                        Label=''),
+                TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                        Label=''),
+                TriLine(Points=SL5, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                        Label=''),
+                TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                        Label=''),
+                TriLine(Points=NSL2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                        Label=''),
+                TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                        Label=''),
+                TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                        Label='')]
+            for i in s:
+                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                               label=i.Label)
+
+
+        else:
+            self.Labels = ['rhyolite',
+
+                           'alkali\nfeldspar\rhyolite',
+
+                           'dacite',
+
+                           'quartz\nalkali\nfeldspar\ntrachyte',
+                           'quartz\ntrachyte',
+                           'quartz\nlatite',
+                           'basalt\nandesite',
+
+                           'alkali\nfeldspar\ntrachyte',
+                           'trachyte',
+                           'latite',
+
+                           'foid-bearing\nalkali\nfeldspar\ntrachyte',
+                           'foid-bearing\ntrachyte',
+                           'foid-bearing\nlatite',
+
+                           'phonolite',
+                           'tephritic\nphonolite',
+                           ' phonolitic\nbasanite\n(olivine > 10%)\nphonolitic\ntephrite\n(olivine < 10%)',
+                           ' basanite\n(olivine > 10%)\ntephrite\n(olivine < 10%)',
+                           'phonolitic\nfoidite',
+                           'tephritic\nfoidite',
+                           'foidoite']
+
+            self.Locations = [(35, 15, 50),
+
+                              (45, 5, 50),
+
+                              (20, 50, 30),
+
+                              (85, 5, 10),
+                              (75, 15, 10),
+                              (45, 45, 10),
+                              (15, 75, 10),
+
+                              (93, 5, 2),
+                              (83, 15, 2),
+                              (53, 53, 2),
+
+                              (95, 3, -8),
+                              (75, 23, -8),
+                              (49, 49, -8),
+
+                              (63, 7, -30),
+                              (50, 20, -30),
+                              (20, 50, -30),
+                              (7, 63, -30),
+                              (16, 8, -76),
+                              (8, 16, -76),
+                              (4, 4, -92)]
+
+            self.Offset = [(-20, 0),
+
+                           (-70, 30),
+
+                           (0, 0),
+
+                           (-70, 15),
+                           (-10, 0),
+                           (-40, 0),
+                           (-30, -5),
+
+                           (-80, 5),
+                           (0, 0),
+                           (-40, 0),
+
+                           (-80, -15),
+                           (-40, 0),
+                           (-40, 0),
+
+                           (-80, 0),
+                           (-40, 0),
+                           (-40, 0),
+                           (60, 0),
+                           (-40, 20),
+                           (0, 20),
+                           (-20, 0)]
+            self.Tag_cb.setText('&Volcanic')
+
+            self.setWindowTitle(
+                'QAPF modal classification of volcanic rocks (based on Streckeisen, 1978, Fig. 1).\nQ = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.')
+
+            D = (0, 0, 100)
+            L1 = [(10, 0, 90), (0, 10, 90)]
+            L2 = [(40, 0, 60), (0, 40, 60)]
+            L3 = [(80, 0, 20), (0, 80, 20)]
+
+            L4 = [(95, 0, 5), (0, 95, 5)]
+
+            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''), ]
+
+            for i in s:
+                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                               label=i.Label)
+
+            SL1 = [D, (90, 10, 0)]
+            SL2 = [D, (65, 35, 0)]
+            SL3 = [D, (35, 65, 0)]
+            SL4 = [D, (10, 90, 0)]
+
+            CL1 = self.TriCross(SL1, L2)
+            CL21 = self.TriCross(SL2, L2)
+            CL22 = self.TriCross(SL2, L3)
+            CL3 = self.TriCross(SL3, L2)
+            CL41 = self.TriCross(SL4, L2)
+            CL42 = self.TriCross(SL4, L3)
+
+            TL4 = self.TriCross(SL3, L4)
+
+            NL4 = [(95, 0, 5), TL4]
+
+            NSL1 = [CL1, (90, 10, 0)]
+            NSL21 = [CL21, CL22]
+            NSL22 = [CL22, (65, 35, 0)]
+            NSL3 = [CL3, (35, 65, 0)]
+            NSL4 = [CL41, CL42]
+
+            s = [TriLine(Points=NL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=NSL21, Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=NSL22, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
+                         Label='')]
+
+            for i in s:
+                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                               label=i.Label)
+
+            D = (0, 0, -100)
+            L1 = [(10, 0, -90), (0, 10, -90)]
+            L2 = [(40, 0, -60), (0, 40, -60)]
+            L3 = [(90, 0, -10), (0, 90, -10)]
+
+            SL5 = [(5, 5, -90), (45, 45, -10)]
+
+            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+                 TriLine(Points=SL5, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label='')]
+
+            for i in s:
+                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                               label=i.Label)
+
+            SL1 = [D, (90, 10, 0)]
+            SL2 = [D, (65, 35, 0)]
+            SL3 = [D, (35, 65, 0)]
+            SL4 = [D, (10, 90, 0)]
+
+            CL1 = self.TriCross(SL1, L2)
+            CL2 = self.TriCross(SL2, L3)
+            CL3 = self.TriCross(SL3, L3)
+            CL41 = self.TriCross(SL4, L2)
+            CL42 = self.TriCross(SL4, L3)
+
+            NSL1 = [CL1, (90, 10, 0)]
+            NSL2 = [CL2, (65, 35, 0)]
+            NSL3 = [CL3, (35, 65, 0)]
+            NSL4 = [CL41, CL42]
+
+            s = [TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=NSL2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label=''),
+
+                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                         Label='')]
+
+            for i in s:
+                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                               label=i.Label)
+
         for i in range(len(self.LabelPosition)):
             self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
                                textcoords='offset points',
-                               fontsize=16, )
+                               fontsize=8, )
 
-        a = [TriLine(Points=[(85, 15, 0), (0, 3, 97)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                     Label=''),
-             TriLine(Points=[(45, 0, 55), (0, 75, 25)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                     Label=''),
-             TriLine(Points=[(50, 50, 0), (0, 75, 25)], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                     Label='')]
-
-        for i in a:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        T0 = (85, 15, 0)
-        T1 = (0, 3, 97)
-        T2 = (87, 0, 13)
-        T3 = (0, 63, 37)
-        T4 = self.TriCross(A=[T0, T1], B=[T2, T3])
-
-        T2 = (87, 0, 13)
-        T3 = (0, 63, 37)
-        T5 = (45, 0, 55)
-        T6 = (0, 75, 25)
-
-        T7 = self.TriCross(A=[T2, T3], B=[T5, T6])
-
-        b = [TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                     Label=''),
-             TriLine(Points=[T7, (0, 63, 37)], Sort='', Width=1, Color='black', Style=':', Alpha=0.7,
-                     Label='')]
-
-        for i in b:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        y = 3 * np.sqrt(3) * (82 - 7.5 - np.sqrt(15)) / (18 * np.sqrt(3) - 1.5)
-        z = 82 - np.power(15, 0.5)
-        x = 100 - y - z
-
-        p0 = (85, 15, 0)
-        p1 = (0, 3, 97)
-        p2 = (18, 0, 82)
-        p3 = (0, 36, 64)
-
-        p4 = self.TriCross(A=[p0, p1], B=[p2, p3])
-
-        c = [TriLine(Points=[(18, 0, 82), p4], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                     Label='')]
-
-        for i in c:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        p, q = self.TriFill(P=[(100, 0, 0), (85, 15, 0), (0, 3, 97), (0, 0, 100)], Color='blue', Alpha=0.13)
-
-        self.axes.fill(p, q, Color='blue', Alpha=0.13, )
-
-        ap0 = (85, 15, 0)
-        ap1 = (0, 3, 97)
-        ap2 = (0, 75, 25)
-        ap3 = (45, 0, 55)
-
-        ap4 = self.TriCross(A=[ap0, ap1], B=[ap2, ap3])
-
-        m, n = self.TriFill(P=[(0, 75, 25), (0, 3, 97), ap4], Color='red', Alpha=0.13)
-
-        self.axes.fill(m, n, Color='red', Alpha=0.13, )
-
-        raw = self._df
-        PointLabels = []
-        TPoints = []
-        for i in range(len(raw)):
-            TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                TmpLabel = ''
-            else:
-                PointLabels.append(raw.at[i, 'Label'])
-                TmpLabel = raw.at[i, 'Label']
-            TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'L'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
-                                    Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
-                                    Label=TmpLabel))
-
-        for i in TPoints:
-            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
-                              label=i.Label, edgecolors='black')
-
-        if (self.Tag_cb.isChecked()):
-            for i in self.Tags:
-                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
-                                   textcoords='offset points',
-                                   fontsize=i.FontSize, color='grey', alpha=0.8)
-
-        if (self.legend_cb.isChecked()):
-            # a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
-            self.axes.legend(loc=4, prop=fontprop, bbox_to_anchor=(1.1, 0.5))
-
-        self.canvas.draw()
-
-
-class QmFLt(AppForm, Tool):
-    reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'
-    _df = pd.DataFrame()
-    _changed = False
-
-    xlabel = r''
-    ylabel = r''
-
-    Tags = []
-
-    Label = [u'Qm', u'F', u'Lt']
-    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
-                     (-6, -1),
-                     (104, -1)]
-
-    Labels = [u'Craton \n Interior',
-              u'Transitional \n Continental',
-              u'Basement \n Uplift',
-
-              u'Mixed',
-              u'Dissected \n Arc',
-              u'Transitional \n Arc',
-              u'Undissected \n Arc',
-
-              u'Quartzose \n Recycled',
-              u'Transitional \n Recycled',
-              u'Lithic \n Recycled']
-    Locations = [(15, 5, 90),
-                 (30, 8, 62),
-                 (60, 10, 30),
-
-                 (30, 25, 45),
-                 (40, 20, 40),
-                 (40, 40, 20),
-                 (20, 70, 10),
-
-                 (10, 3, 60),
-                 (10, 50, 40),
-                 (10, 80, 10)]
-
-    Offset = [(-66, 2),
-              (-108, 2),
-              (-95, 2),
-
-              (-10, +10),
-              (-10, -25),
-              (-40, -20),
-              (-30, -35),
-
-              (+68, -28),
-              (+50, -2),
-              (+52, -15)]
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Qm-F-lt')
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to Tri')
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-        self.raw = self._df
         for i in range(len(self.Labels)):
             self.Tags.append(Tag(Label=self.Labels[i],
                                  Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
                                                         self.Locations[i][2]),
                                  X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
 
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-        self.fig = Figure((8.0, 6.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        self.axes.axis('off')
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Tri)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Tri)  # int
-
-        self.Tag_cb = QCheckBox('&Tag')
-        self.Tag_cb.setChecked(True)
-        self.Tag_cb.stateChanged.connect(self.Tri)  # int
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button, self.legend_cb, self.Tag_cb]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def Tri(self):
-
-        self.axes.clear()
-        self.axes.axis('off')
-        self.axes.set_xlim(-10, 140)
-        self.axes.set_ylim(-10, 100)
-
-        # self.axes.spines['right'].set_color('none')
-        # self.axes.spines['top'].set_color('none')
-        # self.axes.spines['bottom'].set_color('none')
-        # self.axes.spines['left'].set_color('none')
-
-
-
-        s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
-                     Style='-',
-                     Alpha=0.7, Label='')]
-        for i in s:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        for i in range(len(self.LabelPosition)):
-            self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
-                               textcoords='offset points',
-                               fontsize=16, )
-
-        a = [TriLine(Points=[(77, 23, 0), (0, 11, 89)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                     Label='')]
-
-        for i in a:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        T0 = (77, 23, 0)
-        T1 = (0, 11, 89)
-        T2 = (43, 0, 57)
-        T3 = (0, 87, 13)
-
-        T4 = self.TriCross(A=[T0, T1], B=[T2, T3])
-
-        T2 = (43, 0, 57)
-        T3 = (0, 87, 13)
-
-        T5 = (82, 0, 18)
-        T6 = (0, 68, 32)
-
-        T7 = self.TriCross(A=[T2, T3], B=[T5, T6])
-
-        T0 = (77, 23, 0)
-        T1 = (0, 11, 89)
-
-        T5 = (82, 0, 18)
-        T6 = (0, 68, 32)
-
-        T8 = self.TriCross(A=[T0, T1], B=[T5, T6])
-
-        b = [TriLine(Points=[T4, T2], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                     Label=''),
-
-             TriLine(Points=[T4, T7], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                     Label=''),
-
-             TriLine(Points=[T7, T3], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                     Label=''),
-
-             TriLine(Points=[T8, T7], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                     Label=''),
-
-             TriLine(Points=[T7, (0, 68, 32)], Sort='', Width=1, Color='black', Style=':', Alpha=0.7,
-                     Label=''), ]
-
-        for i in b:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        T9 = (13, 87, 0)
-
-        T10 = (20, 0, 80)
-        T11 = (13, 87, 0)
-        T0 = (77, 23, 0)
-        T1 = (0, 11, 89)
-
-        T12 = self.TriCross(A=[T10, T11], B=[T0, T1])
-
-        c = [TriLine(Points=[T9, T12], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                     Label=''), ]
-
-        for i in c:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        p, q = self.TriFill(P=[(100, 0, 0), T0, T1, (0, 0, 100)], Color='blue', Alpha=0.13)
-
-        self.axes.fill(p, q, Color='blue', Alpha=0.13, )
-
-        m, n = self.TriFill(P=[T12, T11, (0, 100, 0), T1], Color='red', Alpha=0.13)
-
-        self.axes.fill(m, n, Color='red', Alpha=0.13, )
-
-        T10 = (20, 0, 80)
-        T11 = (13, 87, 0)
-        T13 = (47, 53, 0)
-        T14 = (0, 82, 18)
-
-        T15 = self.TriCross(A=[T10, T11], B=[T13, T14])
-
-        k = [TriLine(Points=[T15, T13], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                     Label=''),
-
-             TriLine(Points=[T15, T14], Sort='', Width=1, Color='black', Style=':', Alpha=0.7,
-                     Label=''), ]
-
-        for i in k:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        T10 = (20, 0, 80)
-        T16 = (0, 40, 60)
-
-        T17 = self.TriCross(A=[T10, T16], B=[T0, T1])
-
-        k = [TriLine(Points=[T17, T10], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                     Label=''), ]
-
-        for i in k:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        T10 = (20, 0, 80)
-        T11 = (13, 87, 0)
-        T18 = (0, 42, 59)
-        T19 = (84, 0, 16)
-
-        T20 = self.TriCross(A=[T10, T11], B=[T18, T19])
-
-        k = [TriLine(Points=[T18, T20], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                     Label=''), ]
-        for i in k:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        T21 = (0, 71, 29)
-        T22 = (58, 42, 0)
-
-        T23 = self.TriCross(A=[T10, T11], B=[T21, T22])
-
-        k = [TriLine(Points=[T23, T21], Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                     Label=''), ]
-        for i in k:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
+        if (self.detail_cb.isChecked()):
+            for i in self.Tags:
+                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
+                                   textcoords='offset points',
+                                   fontsize=8, color='grey', alpha=0.8)
 
         raw = self._df
         PointLabels = []
         TPoints = []
+
         for i in range(len(raw)):
+            q = raw.at[i, 'Q']
+            f = raw.at[i, 'F']
+            a = raw.at[i, 'A']
+            p = raw.at[i, 'P']
+
             TmpLabel = ''
             if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
                 TmpLabel = ''
             else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
-            TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'Lt'], raw.at[i, 'Qm']), Size=raw.at[i, 'Size'],
-                                    Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
-                                    Label=TmpLabel))
+
+            if (q != 0 and q != ''):
+                TPoints.append(TriPoint((a, p, q), Size=raw.at[i, 'Size'],
+                                        Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
+                                        Label=TmpLabel))
+            else:
+                TPoints.append(TriPoint((a, p, 0 - f), Size=raw.at[i, 'Size'],
+                                        Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
+                                        Label=TmpLabel))
 
         for i in TPoints:
             self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
                               label=i.Label, edgecolors='black')
 
-        if (self.Tag_cb.isChecked()):
-            for i in self.Tags:
-                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
-                                   textcoords='offset points',
-                                   fontsize=i.FontSize, color='grey', alpha=0.8)
-
         if (self.legend_cb.isChecked()):
             # a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
-            self.axes.legend(loc=4, prop=fontprop, bbox_to_anchor=(1.1, 0.5))
+            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(0, 0))
+            self.axes.legend(loc=3,prop=fontprop, bbox_to_anchor=(0, 0))
 
         self.canvas.draw()
 
+class TabelViewer(AppForm):
+    addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
+
+    Minerals = ['Quartz',
+                'Zircon',
+                'K2SiO3',
+                'Anorthite',
+                'Na2SiO3',
+                'Acmite',
+                'Diopside',
+                'Sphene',
+                'Hypersthene',
+                'Albite',
+                'Orthoclase',
+                'Wollastonite',
+                'Olivine',
+                'Perovskite',
+                'Nepheline',
+                'Leucite',
+                'Larnite',
+                'Kalsilite',
+                'Apatite',
+                'Halite',
+                'Fluorite',
+                'Anhydrite',
+                'Thenardite',
+                'Pyrite',
+                'Magnesiochromite',
+                'Chromite',
+                'Ilmenite',
+                'Calcite',
+                'Na2CO3',
+                'Corundum',
+                'Rutile',
+                'Magnetite',
+                'Hematite',
+                'Q',
+                'A',
+                'P',
+                'F', ]
+
+    Calced = ['Fe3+/(Total Fe) in rock',
+              'Mg/(Mg+Total Fe) in rock',
+              'Mg/(Mg+Fe2+) in rock',
+              'Mg/(Mg+Fe2+) in silicates',
+              'Ca/(Ca+Na) in rock',
+              'Plagioclase An content',
+              'Differentiation Index']
+    DataWeight = {}
+    DataVolume = {}
+    DataBase = {}
+    DataCalced = {}
+    raw = pd.DataFrame()
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Statistical Result')
+
+        self.df = df
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+
+        self.save_button = QPushButton('&Save Result')
+        self.save_button.clicked.connect(self.saveResult)
+
+        self.tableView = CustomQTableView(self.main_frame)
+        self.tableView.setObjectName('tableView')
+        self.tableView.setSortingEnabled(True)
+
+
+        self.vbox = QVBoxLayout()
+
+        self.vbox.addWidget(self.tableView)
+        self.vbox.addWidget(self.save_button)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+        self.model = PandasModel(self.df)
+        self.tableView.setModel(self.model)
+
+
+
+
+
+
+    def saveResult(self):
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ('csv' in DataFileOutput):
+                self.df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ('xls' in DataFileOutput):
+                self.df.to_excel(DataFileOutput, encoding='utf-8')
+
+class ZirconTiTemp(AppForm):
+    reference = 'Ferry J M, Watson E B. New thermodynamic models and revised calibrations for the Ti-in-zircon and Zr-[J]. Contributions to Mineralogy & Petrology, 2007, 154(4):429-437.'
+    Calced = ['Temperature']
+
+    DataCalced = {}
+    raw = pd.DataFrame()
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Zircon Ti Temperature Calculator')
+
+        self._df = df
+        self.raw = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved')
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+
+        self.save_button = QPushButton('&Save Result')
+        self.save_button.clicked.connect(self.saveResult)
+
+        self.tableView = CustomQTableView(self.main_frame)
+        self.tableView.setObjectName('tableView')
+        self.tableView.setSortingEnabled(True)
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, ]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+
+        self.vbox.addWidget(self.tableView)
+
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def ZirconTiTemp(self):
+
+        MaxTemps = []
+        MinTemps = []
+        MidTemps = []
+
+        for i in range(len(self.raw)):
+            Ti = self.raw.at[i, 'Ti']
+
+            try:
+                ASiO2 = self.raw.at[i, 'ASiO2']
+            except(KeyError):
+                ASiO2 = 1
+
+            try:
+                ATiO2 = self.raw.at[i, 'ATiO2']
+            except(KeyError):
+                ATiO2 = 1
+
+            TiTemp1 = (4800 + 86) / ((5.711 + 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
+
+            TiTemp2 = (4800 - 86) / ((5.711 + 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
+
+            TiTemp3 = (4800 + 86) / ((5.711 - 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
+
+            TiTemp4 = (4800 - 86) / ((5.711 - 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
+
+            TiTempBig, TiTempSmall = max([TiTemp1, TiTemp2, TiTemp3, TiTemp4]), min(
+                ([TiTemp1, TiTemp2, TiTemp3, TiTemp4]))
+
+            MaxTemps.append(TiTempBig)
+            MinTemps.append(TiTempSmall)
+            MidTemps.append((TiTempSmall + TiTempBig) / 2)
+
+        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps, 'Temp Mid': MidTemps, }
+
+        tmpdftoadd = pd.DataFrame(tmpdata)
+
+        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
+        self.model = PandasModel(self.newdf)
+        self.tableView.setModel(self.model)
+
+    def saveResult(self):
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ('csv' in DataFileOutput):
+                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ('xls' in DataFileOutput):
+                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+
+class RutileZrTemp(AppForm):
+    reference = 'Ferry J M, Watson E B. New thermodynamic models and revised calibrations for the Ti-in-zircon and Zr-[J]. Contributions to Mineralogy & Petrology, 2007, 154(4):429-437.'
+    Calced = ['Temperature']
+
+    DataCalced = {}
+    raw = pd.DataFrame()
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Rutile Zr Temperature Calculator')
+
+        self._df = df
+        self.raw = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved')
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+
+        self.save_button = QPushButton('&Save Result')
+        self.save_button.clicked.connect(self.saveResult)
+
+        self.tableView = CustomQTableView(self.main_frame)
+        self.tableView.setObjectName('tableView')
+        self.tableView.setSortingEnabled(True)
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, ]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+
+        self.vbox.addWidget(self.tableView)
+
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def RutileZrTemp(self):
+
+        MaxTemps = []
+        MinTemps = []
+        MidTemps = []
+
+        for i in range(len(self.raw)):
+            Zr = self.raw.at[i, 'Zr']
+
+            try:
+                ASiO2 = self.raw.at[i, 'ASiO2']
+            except(KeyError):
+                ASiO2 = 1
+
+            ZrTemp1 = (4530 + 111) / ((7.42 + 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
+
+            ZrTemp2 = (4530 - 111) / ((7.42 + 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
+
+            ZrTemp3 = (4530 + 111) / ((7.42 - 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
+
+            ZrTemp4 = (4530 - 111) / ((7.42 - 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
+
+            ZrTempBig, ZrTempSmall = max([ZrTemp1, ZrTemp2, ZrTemp3, ZrTemp4]), min(
+                ([ZrTemp1, ZrTemp2, ZrTemp3, ZrTemp4]))
+
+            MaxTemps.append(ZrTempBig)
+            MinTemps.append(ZrTempSmall)
+            MidTemps.append((ZrTempSmall + ZrTempBig) / 2)
+
+        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps, 'Temp Mid': MidTemps, }
+
+        tmpdftoadd = pd.DataFrame(tmpdata)
+
+        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
+        self.model = PandasModel(self.newdf)
+        self.tableView.setModel(self.model)
+
+    def saveResult(self):
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ('csv' in DataFileOutput):
+                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ('xls' in DataFileOutput):
+                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
 class CIPW(AppForm):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
@@ -3976,8 +4890,20 @@ class CIPW(AppForm):
         self.main_frame = QWidget()
         self.dpi = 128
 
-        self.save_button = QPushButton('&Save Result')
-        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.save_button = QPushButton('&Save Mole Result')
+        self.save_button.clicked.connect(self.saveResult)
+
+        self.save_button1 = QPushButton('&Save Weight Result')
+        self.save_button1.clicked.connect(self.saveResult1)
+
+
+        self.save_button2 = QPushButton('&Save VolumeResult')
+        self.save_button2.clicked.connect(self.saveResult2)
+
+
+        self.save_button3 = QPushButton('&Save Calced Result')
+        self.save_button3.clicked.connect(self.saveResult3)
 
         self.qapf_button = QPushButton('&QAPF')
         self.qapf_button.clicked.connect(self.QAPF)
@@ -3986,29 +4912,45 @@ class CIPW(AppForm):
         self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
 
-        self.ChooseItems = ['Mass', 'Volume', 'Mole', 'Index']
-        self.chooser_label = QLabel('Show Result of Mass')
-        self.chooser = QSlider(Qt.Horizontal)
-        self.chooser.setRange(1, 4)
-        self.chooser.setValue(1)
-        self.chooser.setTracking(True)
-        self.chooser.setTickPosition(QSlider.TicksBothSides)
-        self.chooser.valueChanged.connect(self.CIPW)  # int
 
-        self.chooser_label.setText('Show Result of ' + self.ChooseItems[self.chooser.value() - 1])
+        self.tableView1 = CustomQTableView(self.main_frame)
+        self.tableView1.setObjectName('tableView1')
+        self.tableView1.setSortingEnabled(True)
+
+
+        self.tableView2 = CustomQTableView(self.main_frame)
+        self.tableView2.setObjectName('tableView2')
+        self.tableView2.setSortingEnabled(True)
+
+        self.tableView3 = CustomQTableView(self.main_frame)
+        self.tableView3.setObjectName('tableView3')
+        self.tableView3.setSortingEnabled(True)
+
 
         #
         # Layout with box sizers
         #
+
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.qapf_button, self.chooser_label, self.chooser]:
+        for w in [self.qapf_button]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
         self.vbox = QVBoxLayout()
 
         self.vbox.addWidget(self.tableView)
+        self.vbox.addWidget(self.save_button)
+
+
+        self.vbox.addWidget(self.tableView1)
+        self.vbox.addWidget(self.save_button1)
+
+        self.vbox.addWidget(self.tableView2)
+        self.vbox.addWidget(self.save_button2)
+
+        self.vbox.addWidget(self.tableView3)
+        self.vbox.addWidget(self.save_button3)
 
         self.vbox.addLayout(self.hbox)
 
@@ -5199,7 +6141,6 @@ class CIPW(AppForm):
 
     def CIPW(self):
 
-        self.chooser_label.setText('Show Result of ' + self.ChooseItems[self.chooser.value() - 1])
         self.Calc()
         a = []
         a.append(self.WriteData(target='DataResult'))
@@ -5207,42 +6148,83 @@ class CIPW(AppForm):
         a.append(self.WriteData(target='DataVolume'))
         a.append(self.WriteCalced(target='DataCalced'))
 
-        tmp = a[self.chooser.value() - 1]
 
+
+        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
+
+        tmp = a[0]
         labels = tmp[0]
         newtmp = []
-
         for s in range(len(tmp)):
             if s != 0:
                 newtmp.append(tmp[s])
 
-        self.newdf = pd.DataFrame.from_records(newtmp, columns=labels)
-
-        ##print('\n',tmp,'\n')
-
-        # self.newdf = pd.DataFrame(tmp)
 
 
-
+        self.newdf=pd.DataFrame.from_records(newtmp, columns=labels)
+        for i in m:
+            if i in self.newdf.columns.values:
+                self.newdf = self.newdf.drop(i, 1)
         self.model = PandasModel(self.newdf)
         self.tableView.setModel(self.model)
 
-    def saveResult(self):
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          '文件保存',
-                                                          'C:/',
-                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
-        if (DataFileOutput != ''):
+        tmp1 = a[1]
+        labels1 = tmp1[0]
+        newtmp1 = []
+        for s in range(len(tmp1)):
+            if s != 0:
+                newtmp1.append(tmp1[s])
 
-            if ('csv' in DataFileOutput):
-                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+        self.newdf1 = pd.DataFrame.from_records(newtmp1, columns=labels1)
 
-            elif ('xls' in DataFileOutput):
-                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+        for i in m:
+            if i in self.newdf1.columns.values:
+                self.newdf1 = self.newdf1.drop(i, 1)
+
+
+        self.model1 = PandasModel(self.newdf1)
+        self.tableView1.setModel(self.model1)
+
+
+
+
+        tmp2 = a[2]
+        labels2 = tmp2[0]
+        newtmp2 = []
+        for s in range(len(tmp2)):
+            if s != 0:
+                newtmp2.append(tmp2[s])
+        self.useddf = pd.DataFrame.from_records(newtmp2, columns=labels2)
+        self.newdf2 = self.useddf
+        for i in m:
+            if i in self.newdf2.columns.values:
+                self.newdf2 = self.newdf2.drop(i, 1)
+
+        self.model2 = PandasModel(self.newdf2)
+        self.tableView2.setModel(self.model2)
+
+        tmp3 = a[3]
+        labels3 = tmp3[0]
+        newtmp3 = []
+        for s in range(len(tmp3)):
+            if s != 0:
+                newtmp3.append(tmp3[s])
+
+
+        self.newdf3 = pd.DataFrame.from_records(newtmp3, columns=labels3)
+
+        for i in m:
+            if i in self.newdf3.columns.values:
+                self.newdf3 = self.newdf3.drop(i, 1)
+
+
+        self.model3 = PandasModel(self.newdf3)
+        self.tableView3.setModel(self.model3)
+
 
     def QAPF(self):
-        self.qapfpop = QAPF(df=self.newdf)
+        self.qapfpop = QAPF(df=self.useddf)
         try:
             self.qapfpop.QAPF()
         except(TypeError):
@@ -5250,1313 +6232,6 @@ class CIPW(AppForm):
         self.qapfpop.show()
 
 
-class QAPF(AppForm, Tool):
-
-    infotext ='Q = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.'
-    reference = 'Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
-    _df = pd.DataFrame()
-    _changed = False
-
-    xlabel = r''
-    ylabel = r''
-
-    Tags = []
-
-    Label = [u'Q', u'A', u'P', u'F']
-    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
-                     (-6, -1),
-                     (104, -1),
-                     (49, -50 * np.sqrt(3) - 4)]
-
-    Labels = ['quartzolite',
-
-              'quartz-rich\ngranitoid',
-
-              'granite',
-
-              'alkali\nfeldspar\ngranite',
-              '(syeno\ngranite)',
-              '(monzo\ngranite)',
-              'granodiorite',
-              'tonalite',
-
-              'quartz\nalkali\nfeldspar\nsyenite',
-              'quartz\nsyenite',
-              'quartz\nmonzonite',
-              'quartz\nmonzodiorite\nquartz\nmonzogabbro',
-              'quartz\ndiorite\nquartz gabbro\n quartz\nanorthosite',
-
-              'alkali\nfeldspar\nsyenite',
-              'syenite',
-              'monzonite',
-              'monzodiorite\nmonzogabbro',
-              'diorite\ngabbro\nanorthosite',
-
-              'foid-bearing\nalkali\nfeldspar\nsyenite',
-              'foid-bearing\nsyenite',
-              'foid-bearing\nmonzonite',
-              'foid-bearing\nmonzodiorite\nfoid-bearing\nmonzogabbro',
-              'foid-bearing\ndiorite\nfoid-bearing gabbro\nfoid-bearing\nanorthosite',
-
-              'foid\nsyenite',
-              'foid\nmonzosyenite',
-              'foid\nmonzodiorite\nfoid\nmonzogabbro',
-              'foid\ndiorite\nfoid\ngabbro',
-              'foidolite']
-
-    Locations = [(5, 5, 95),
-
-                 (10, 10, 80),
-
-                 (35, 15, 50),
-
-                 (45, 5, 50),
-                 (45, 25, 30),
-                 (35, 35, 30),
-                 (25, 45, 30),
-                 (5, 45, 50),
-
-                 (85, 5, 10),
-                 (75, 15, 10),
-                 (45, 45, 10),
-                 (15, 75, 10),
-                 (5, 85, 10),
-
-                 (93, 5, 2),
-                 (83, 15, 2),
-                 (53, 53, 2),
-                 (15, 83, 2),
-                 (5, 93, 2),
-
-                 (95, 3, -8),
-                 (75, 23, -8),
-                 (49, 49, -8),
-                 (23, 75, -8),
-                 (3, 95, -8),
-
-                 (63, 7, -30),
-                 (50, 20, -30),
-                 (20, 50, -30),
-                 (7, 63, -30),
-                 (10, 10, -80)]
-
-    Offset = [(-30, 0),
-
-              (-30, 0),
-
-              (-20, 0),
-
-              (-70, 30),
-              (-50, 30),
-              (-30, 0),
-              (0, 0),
-              (30, 20),
-
-              (-70, 15),
-              (-10, 0),
-              (-40, 0),
-              (-50, -5),
-              (30, 15),
-
-              (-80, 5),
-              (0, 0),
-              (-40, 0),
-              (-50, -5),
-              (60, 5),
-
-              (-80, -15),
-              (-40, 0),
-              (-40, 0),
-              (-20, -15),
-              (50, -30),
-
-              (-80, 0),
-              (-40, 0),
-              (-40, 0),
-              (60, 0),
-              (-30, 0)]
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to DualTri')
-
-        self.raw = self._df
-        self.create_main_frame()
-        self.create_status_bar()
-
-        TriLine(Points=[(100, 0, 0), (0, 0, 100), (0, 100, 0), (0, 0, -100), (100, 0, 0), (35, 65, 0)], Sort='',
-                Width=1, Color='black', Style='-',
-                Alpha=0.7, Label='')
-
-        for i in range(len(self.LabelPosition)):
-            plt.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
-                         textcoords='offset points',
-                         fontsize=16, )
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-        self.fig = Figure((8, 12), dpi=self.dpi)
-        # 8 * np.sqrt(3)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-
-        self.axes = self.fig.add_subplot(111)
-        self.axes.axis('off')
-        self.axes.set_xlim(-10, 110)
-        self.axes.set_ylim(-105 * np.sqrt(3) / 2, 105 * np.sqrt(3) / 2)
-
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.QAPF)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.QAPF)  # int
-
-        self.Tag_cb = QCheckBox('&Plutonic')
-        self.Tag_cb.setChecked(True)
-        self.Tag_cb.stateChanged.connect(self.QAPF)  # int
-
-        if (self.Tag_cb.isChecked()):
-            self.Tag_cb.setText('&Plutonic')
-        else:
-            self.Tag_cb.setText('&Volcanic')
-
-        self.detail_cb = QCheckBox('&Detail')
-        self.detail_cb.setChecked(True)
-        self.detail_cb.stateChanged.connect(self.QAPF)  # int
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button, self.Tag_cb, self.detail_cb, self.legend_cb]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
-
-        self.detailtext = QLineEdit(self)
-        self.detailtext.setText(self.infotext)
-        self.vbox.addWidget(self.detailtext)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def QAPF(self):
-
-        self.axes.clear()
-        self.axes.axis('off')
-        self.Tags = []
-
-        self.axes.set_xlim(-10, 110)
-        self.axes.set_ylim(-105 * np.sqrt(3) / 2, 105 * np.sqrt(3) / 2)
-
-        s = [TriLine(Points=[(100, 0, 0), (0, 0, 100), (0, 100, 0), (0, 0, -100), (100, 0, 0), (0, 100, 0)], Sort='',
-                     Width=1, Color='black', Style='-',
-                     Alpha=0.7, Label='')]
-        for i in s:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        if (self.Tag_cb.isChecked()):
-
-            self.Labels = ['quartzolite',
-
-                           'quartz-rich\ngranitoid',
-
-                           'granite',
-
-                           'alkali\nfeldspar\ngranite',
-                           '(syeno\ngranite)',
-                           '(monzo\ngranite)',
-                           'granodiorite',
-                           'tonalite',
-
-                           'quartz\nalkali\nfeldspar\nsyenite',
-                           'quartz\nsyenite',
-                           'quartz\nmonzonite',
-                           'quartz\nmonzodiorite\nquartz\nmonzogabbro',
-                           'quartz\ndiorite\nquartz gabbro\n quartz\nanorthosite',
-
-                           'alkali\nfeldspar\nsyenite',
-                           'syenite',
-                           'monzonite',
-                           'monzodiorite\nmonzogabbro',
-                           'diorite\ngabbro\nanorthosite',
-
-                           'foid-bearing\nalkali\nfeldspar\nsyenite',
-                           'foid-bearing\nsyenite',
-                           'foid-bearing\nmonzonite',
-                           'foid-bearing\nmonzodiorite\nfoid-bearing\nmonzogabbro',
-                           'foid-bearing\ndiorite\nfoid-bearing gabbro\nfoid-bearing\nanorthosite',
-
-                           'foid\nsyenite',
-                           'foid\nmonzosyenite',
-                           'foid\nmonzodiorite\nfoid\nmonzogabbro',
-                           'foid\ndiorite\nfoid\ngabbro',
-                           'foidolite']
-
-            self.Locations = [(5, 5, 95),
-
-                              (10, 10, 80),
-
-                              (35, 15, 50),
-
-                              (45, 5, 50),
-                              (45, 25, 30),
-                              (35, 35, 30),
-                              (25, 45, 30),
-                              (5, 45, 50),
-
-                              (85, 5, 10),
-                              (75, 15, 10),
-                              (45, 45, 10),
-                              (15, 75, 10),
-                              (5, 85, 10),
-
-                              (93, 5, 2),
-                              (83, 15, 2),
-                              (53, 53, 2),
-                              (15, 83, 2),
-                              (5, 93, 2),
-
-                              (95, 3, -8),
-                              (75, 23, -8),
-                              (49, 49, -8),
-                              (23, 75, -8),
-                              (3, 95, -8),
-
-                              (63, 7, -30),
-                              (50, 20, -30),
-                              (20, 50, -30),
-                              (7, 63, -30),
-                              (10, 10, -80)]
-
-            self.Offset = [(-30, 0),
-
-                           (-30, 0),
-
-                           (-20, 0),
-
-                           (-70, 30),
-                           (-50, 30),
-                           (-30, 0),
-                           (0, 0),
-                           (30, 20),
-
-                           (-70, 15),
-                           (-10, 0),
-                           (-40, 0),
-                           (-50, -5),
-                           (30, 15),
-
-                           (-80, 5),
-                           (0, 0),
-                           (-40, 0),
-                           (-50, -5),
-                           (60, 5),
-
-                           (-80, -15),
-                           (-40, 0),
-                           (-40, 0),
-                           (-20, -15),
-                           (50, -30),
-
-                           (-80, 0),
-                           (-40, 0),
-                           (-40, 0),
-                           (60, 0),
-                           (-30, 0)]
-            self.Tag_cb.setText('&Plutonic')
-
-            self.setWindowTitle(
-                'QAPF modal classification of plutonic rocks (based on Streckeisen, 1976, Fig. 1a).')
-
-            D1 = (0, 0, 100)
-            L1 = [(10, 0, 90), (0, 10, 90)]
-            L2 = [(40, 0, 60), (0, 40, 60)]
-            L3 = [(80, 0, 20), (0, 80, 20)]
-
-            L4 = [(95, 0, 5), (0, 95, 5)]
-
-            SL1 = [D1, (90, 10, 0)]
-            SL2 = [D1, (65, 35, 0)]
-            SL3 = [D1, (35, 65, 0)]
-            SL4 = [D1, (10, 90, 0)]
-
-            CL1 = self.TriCross(SL1, L2)
-            CL21 = self.TriCross(SL2, L2)
-            CL22 = self.TriCross(SL2, L3)
-            CL3 = self.TriCross(SL3, L2)
-            CL41 = self.TriCross(SL4, L2)
-            CL42 = self.TriCross(SL4, L3)
-
-            NSL1 = [CL1, (90, 10, 0)]
-            NSL21 = [CL21, CL22]
-            NSL22 = [CL22, (65, 35, 0)]
-            NSL3 = [CL3, (35, 65, 0)]
-            NSL4 = [CL41, (10, 90, 0)]
-
-            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=L4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=NSL21, Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=NSL22, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label='')]
-
-            for i in s:
-                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                               label=i.Label)
-
-            D2 = (0, 0, -100)
-            L2 = [(40, 0, -60), (0, 40, -60)]
-            L3 = [(90, 0, -10), (0, 90, -10)]
-
-            SL1 = [D2, (90, 10, 0)]
-            SL2 = [D2, (65, 35, 0)]
-            SL3 = [D2, (35, 65, 0)]
-            SL4 = [D2, (10, 90, 0)]
-
-            SL5 = [(20, 20, -60), (45, 45, -10)]
-
-            CL1 = self.TriCross(SL1, L2)
-            CL2 = self.TriCross(SL2, L3)
-            CL3 = self.TriCross(SL3, L3)
-            CL41 = self.TriCross(SL4, L2)
-            CL42 = self.TriCross(SL4, L3)
-
-            NSL1 = [CL1, (90, 10, 0)]
-            NSL2 = [CL2, (65, 35, 0)]
-            NSL3 = [CL3, (35, 65, 0)]
-            NSL4 = [CL41, (10, 90, 0)]
-
-            s = [
-                TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                        Label=''),
-                TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                        Label=''),
-                TriLine(Points=SL5, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                        Label=''),
-                TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                        Label=''),
-                TriLine(Points=NSL2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                        Label=''),
-                TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                        Label=''),
-                TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                        Label='')]
-            for i in s:
-                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                               label=i.Label)
-
-
-        else:
-            self.Labels = ['rhyolite',
-
-                           'alkali\nfeldspar\rhyolite',
-
-                           'dacite',
-
-                           'quartz\nalkali\nfeldspar\ntrachyte',
-                           'quartz\ntrachyte',
-                           'quartz\nlatite',
-                           'basalt\nandesite',
-
-                           'alkali\nfeldspar\ntrachyte',
-                           'trachyte',
-                           'latite',
-
-                           'foid-bearing\nalkali\nfeldspar\ntrachyte',
-                           'foid-bearing\ntrachyte',
-                           'foid-bearing\nlatite',
-
-                           'phonolite',
-                           'tephritic\nphonolite',
-                           ' phonolitic\nbasanite\n(olivine > 10%)\nphonolitic\ntephrite\n(olivine < 10%)',
-                           ' basanite\n(olivine > 10%)\ntephrite\n(olivine < 10%)',
-                           'phonolitic\nfoidite',
-                           'tephritic\nfoidite',
-                           'foidoite']
-
-            self.Locations = [(35, 15, 50),
-
-                              (45, 5, 50),
-
-                              (20, 50, 30),
-
-                              (85, 5, 10),
-                              (75, 15, 10),
-                              (45, 45, 10),
-                              (15, 75, 10),
-
-                              (93, 5, 2),
-                              (83, 15, 2),
-                              (53, 53, 2),
-
-                              (95, 3, -8),
-                              (75, 23, -8),
-                              (49, 49, -8),
-
-                              (63, 7, -30),
-                              (50, 20, -30),
-                              (20, 50, -30),
-                              (7, 63, -30),
-                              (16, 8, -76),
-                              (8, 16, -76),
-                              (4, 4, -92)]
-
-            self.Offset = [(-20, 0),
-
-                           (-70, 30),
-
-                           (0, 0),
-
-                           (-70, 15),
-                           (-10, 0),
-                           (-40, 0),
-                           (-30, -5),
-
-                           (-80, 5),
-                           (0, 0),
-                           (-40, 0),
-
-                           (-80, -15),
-                           (-40, 0),
-                           (-40, 0),
-
-                           (-80, 0),
-                           (-40, 0),
-                           (-40, 0),
-                           (60, 0),
-                           (-40, 20),
-                           (0, 20),
-                           (-20, 0)]
-            self.Tag_cb.setText('&Volcanic')
-
-            self.setWindowTitle(
-                'QAPF modal classification of volcanic rocks (based on Streckeisen, 1978, Fig. 1).\nQ = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.')
-
-            D = (0, 0, 100)
-            L1 = [(10, 0, 90), (0, 10, 90)]
-            L2 = [(40, 0, 60), (0, 40, 60)]
-            L3 = [(80, 0, 20), (0, 80, 20)]
-
-            L4 = [(95, 0, 5), (0, 95, 5)]
-
-            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''), ]
-
-            for i in s:
-                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                               label=i.Label)
-
-            SL1 = [D, (90, 10, 0)]
-            SL2 = [D, (65, 35, 0)]
-            SL3 = [D, (35, 65, 0)]
-            SL4 = [D, (10, 90, 0)]
-
-            CL1 = self.TriCross(SL1, L2)
-            CL21 = self.TriCross(SL2, L2)
-            CL22 = self.TriCross(SL2, L3)
-            CL3 = self.TriCross(SL3, L2)
-            CL41 = self.TriCross(SL4, L2)
-            CL42 = self.TriCross(SL4, L3)
-
-            TL4 = self.TriCross(SL3, L4)
-
-            NL4 = [(95, 0, 5), TL4]
-
-            NSL1 = [CL1, (90, 10, 0)]
-            NSL21 = [CL21, CL22]
-            NSL22 = [CL22, (65, 35, 0)]
-            NSL3 = [CL3, (35, 65, 0)]
-            NSL4 = [CL41, CL42]
-
-            s = [TriLine(Points=NL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=NSL21, Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=NSL22, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='--', Alpha=0.7,
-                         Label='')]
-
-            for i in s:
-                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                               label=i.Label)
-
-            D = (0, 0, -100)
-            L1 = [(10, 0, -90), (0, 10, -90)]
-            L2 = [(40, 0, -60), (0, 40, -60)]
-            L3 = [(90, 0, -10), (0, 90, -10)]
-
-            SL5 = [(5, 5, -90), (45, 45, -10)]
-
-            s = [TriLine(Points=L1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=L2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=L3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-                 TriLine(Points=SL5, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label='')]
-
-            for i in s:
-                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                               label=i.Label)
-
-            SL1 = [D, (90, 10, 0)]
-            SL2 = [D, (65, 35, 0)]
-            SL3 = [D, (35, 65, 0)]
-            SL4 = [D, (10, 90, 0)]
-
-            CL1 = self.TriCross(SL1, L2)
-            CL2 = self.TriCross(SL2, L3)
-            CL3 = self.TriCross(SL3, L3)
-            CL41 = self.TriCross(SL4, L2)
-            CL42 = self.TriCross(SL4, L3)
-
-            NSL1 = [CL1, (90, 10, 0)]
-            NSL2 = [CL2, (65, 35, 0)]
-            NSL3 = [CL3, (35, 65, 0)]
-            NSL4 = [CL41, CL42]
-
-            s = [TriLine(Points=NSL1, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=NSL2, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=NSL3, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label=''),
-
-                 TriLine(Points=NSL4, Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
-                         Label='')]
-
-            for i in s:
-                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                               label=i.Label)
-
-        for i in range(len(self.LabelPosition)):
-            self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
-                               textcoords='offset points',
-                               fontsize=8, )
-
-        for i in range(len(self.Labels)):
-            self.Tags.append(Tag(Label=self.Labels[i],
-                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
-                                                        self.Locations[i][2]),
-                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
-
-        if (self.detail_cb.isChecked()):
-            for i in self.Tags:
-                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
-                                   textcoords='offset points',
-                                   fontsize=8, color='grey', alpha=0.8)
-
-        raw = self._df
-        PointLabels = []
-        TPoints = []
-
-        for i in range(len(raw)):
-            q = raw.at[i, 'Q']
-            f = raw.at[i, 'F']
-            a = raw.at[i, 'A']
-            p = raw.at[i, 'P']
-
-            TmpLabel = ''
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                TmpLabel = ''
-            else:
-                PointLabels.append(raw.at[i, 'Label'])
-                TmpLabel = raw.at[i, 'Label']
-
-            if (q != 0 and q != ''):
-                TPoints.append(TriPoint((a, p, q), Size=raw.at[i, 'Size'],
-                                        Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
-                                        Label=TmpLabel))
-            else:
-                TPoints.append(TriPoint((a, p, 0 - f), Size=raw.at[i, 'Size'],
-                                        Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
-                                        Label=TmpLabel))
-
-        for i in TPoints:
-            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
-                              label=i.Label, edgecolors='black')
-
-        if (self.legend_cb.isChecked()):
-            # a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(0, 0))
-            self.axes.legend(loc=3,prop=fontprop, bbox_to_anchor=(0, 0))
-
-        self.canvas.draw()
-
-
-class Pearce(AppForm):
-    reference = 'Pearce, J. A., Harris, N. B. W., and Tindle, A. G., 1984, Trace Element Discrimination Diagrams for the Tectonic Interpretation of Granitic Rocks: Journal of Petrology, v. 25, no. 4, p. 956-983.'
-    Lines = []
-    Tags = []
-    description = 'Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites '
-    text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
-
-    Condation0 = {'BaseLines': [[(2, 80), (55, 300)],
-                                [(55, 300), (400, 2000)],
-                                [(55, 300), (51.5, 8)],
-                                [(51.5, 8), (50, 1)],
-                                [(51.5, 8), (2000, 400)], ],
-                  'xLabel': r'Y+Nb (PPM)',
-                  'yLabel': r'Rb (PPM)',
-                  'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
-                  'Locations': [(1, 3), (1, 1), (2.4, 2.4), (3, 1)],
-                  'Frame': [[(0, 0), (0, 4)],
-                            [(0, 0), (4, 0)],],
-
-                  'BaseY': [[(0, 1), (-0.1, 1)],
-                            [(0, 2), (-0.1, 2)],
-                            [(0, 3), (-0.1, 3)],],
-
-                  'BaseX': [[(0, 0), (0, -0.1)],
-                            [(1, 0), (1, -0.1)],
-                            [(2, 0), (2, -0.1)],
-                            [(3, 0), (3, -0.1)], ]
-
-                  }
-
-    Condation1 = {'BaseLines': [[(0.5, 140), (6, 200)],
-                                [(6, 200), (50, 2000)],
-                                [(6, 200), (6, 8)],
-                                [(6, 8), (6, 1)],
-                                [(6, 8), (200, 400)], ],
-                  'xLabel': r'Yb+Ta (PPM)',
-                  'yLabel': r'Rb (PPM)',
-                  'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
-                  'Locations': [(0.5, 3), (0.5, 1), (1.5, 2.4), (2, 1)],
-                  'Frame': [[(-1, 0), (-1, 3)],
-                            [(-1, 0), (3, 0)],],
-
-                  'BaseY': [[(-1, 1), (-1.1, 1)],
-                            [(-1, 2), (-1.1, 2)],
-                            [(-1, 3), (-1.1, 3)],],
-
-                  'BaseX': [[(0, 0), (0, -0.1)],
-                            [(-1, 0), (-1, -0.1)],
-                            [(1, 0), (1, -0.1)],
-                            [(2, 0), (2, -0.1)], ]
-                  }
-
-    Condation2 = {'BaseLines': [[(1, 2000), (50, 10)],
-                                [(40, 1), (50, 10)],
-                                [(50, 10), (1000, 100)],
-                                [(25, 25), (1000, 400)], ],
-                  'xLabel': r'Y (PPM)',
-                  'yLabel': r'Nb (PPM)',
-                  'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
-                  'Locations': [(0.5, 1.5), (0.5, 2), (2, 2), (2, 1)],
-                  'Frame': [[(-0.5, 0), (-0.5, 3)],
-                            [(-0.5, 0), (3, 0)],],
-
-                  'BaseY': [[(-0.5, 1), (-0.6, 1)],
-                            [(-0.5, 2), (-0.6, 2)],
-                            [(-0.5, 3), (-0.6, 3)],],
-
-                  'BaseX': [[(0, 0), (0, -0.1)],
-                            [(1, 0), (1, -0.1)],
-                            [(2, 0), (2, -0.1)],]
-
-                  }
-
-    Condation3 = {'BaseLines': [[(0.55, 20), (3, 2)],
-                                [(0.1, 0.35), (3, 2)],
-                                [(3, 2), (5, 1)],
-                                [(5, 0.05), (5, 1)],
-                                [(5, 1), (100, 7)],
-                                [(3, 2), (100, 20)], ],
-                  'xLabel': r'Yb (PPM)',
-                  'yLabel': r'Ta (PPM)',
-                  'Labels': [u'syn-COLG', u'VAG', u'WPG', u'ORG'],
-                  'Locations': [(-0.5, 0.1), (-0.5, -1), (0.7, 1), (2, 0.5)],
-                  'Frame': [[(-1, -1.5), (-1, 2)],
-                            [(-1, -1.5), (2, -1.5)],],
-
-                  'BaseY': [[(-1, 0), (-1.1, 0)],
-                            [(-1, 1), (-1.1, 1)],
-                            [(-1, 2), (-1.1, 2)],],
-
-                  'BaseX': [[(-1, -1.5), (-1, -1.6)],
-                            [(0, -1.5), (0, -1.6)],
-                            [(1, -1.5), (1, -1.6)],
-                            [(2, -1.5), (2, -1.6)], ]
-                  }
-
-    condation = [Condation0, Condation1, Condation2, Condation3]
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle(
-            'Pearce diagram (after Julian A. Pearce et al., 1984).\n syn-COLG: syn-collision granites\n VAG: volcanic arc granites\n WPG: within plate granites\n ORG: ocean ridge granites ')
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to Pearce')
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-
-        self.axes.axis('off')
-
-        # self.axes.hold(False)
-
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Pearce)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Pearce)  # int
-
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Pearce)  # int
-
-        self.detail_cb = QCheckBox('&Detail')
-        self.detail_cb.setChecked(True)
-        self.detail_cb.stateChanged.connect(self.Pearce)  # int
-
-        self.standard = QSlider(Qt.Horizontal)
-        self.standard.setRange(0, 3)
-        self.standard.setValue(0)
-        self.standard.setTracking(True)
-        self.standard.setTickPosition(QSlider.TicksBothSides)
-        self.standard.valueChanged.connect(self.Pearce)  # int
-
-        self.standard_label = QLabel('Type')
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button,
-                  self.legend_cb, self.slider_label, self.slider, self.detail_cb, self.standard_label, self.standard]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def Pearce(self):
-
-        self.WholeData = []
-
-        raw = self._df
-
-        a = int(self.standard.value())
-
-        self.axes.clear()
-        self.axes.axis('off')
-
-        self.axes.set_xlabel(self.condation[a]['xLabel'])
-        self.axes.set_ylabel(self.condation[a]['yLabel'])
-
-
-        s=[]
-        for i in self.condation[a]['Frame']:
-            self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
-            s.append((i[1][0]/2,i[1][1]/2))
-
-
-        self.axes.annotate(self.condation[a]['xLabel'], s[1], xycoords='data', xytext=(-2, -50),
-                           textcoords='offset points',
-                           fontsize=9, color='grey', alpha=0.8)
-        self.axes.annotate(self.condation[a]['yLabel'], s[0], xycoords='data', xytext=(-50, -2),
-                           textcoords='offset points',rotation=90,
-                           fontsize=9, color='grey', alpha=0.8)
-
-
-
-        for i in self.condation[a]['BaseX']:
-            self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
-            if (type(i[0][0])== int):
-                self.axes.annotate(str(int(np.power(10, np.float32(i[0][0])))), i[1], xycoords='data', xytext=(-2,-10),
-                                   textcoords='offset points',
-                                   fontsize=9, color='grey', alpha=0.8)
-
-        for i in self.condation[a]['BaseY']:
-            self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
-            if (type(i[0][1]) == int):
-                self.axes.annotate(str(int(np.power(10, np.float32(i[0][1])))), i[1], xycoords='data', xytext=(-15,-10),
-                               textcoords='offset points',
-                               fontsize=9, color='grey', alpha=0.8)
-
-
-        BaseLines = self.condation[a]['BaseLines']
-
-        for i in BaseLines:
-            self.DrawLogLine(l=i)
-        PointLabels = []
-
-        self.Tags = []
-
-        for i in range(len(self.condation[a]['Labels'])):
-            self.Tags.append(Tag(Label=self.condation[a]['Labels'][i], Location=self.condation[a]['Locations'][i]))
-
-        for i in range(len(raw)):
-            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
-
-            TmpLabel = ''
-
-            #   self.WholeData.append(math.log(tmp, 10))
-
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                TmpLabel = ''
-            else:
-                PointLabels.append(raw.at[i, 'Label'])
-                TmpLabel = raw.at[i, 'Label']
-
-            x, y = 0, 0
-
-            if (a == 0):
-                x, y = (raw.at[i, 'Y'] + raw.at[i, 'Nb']), raw.at[i, 'Rb']
-            elif (a == 1):
-                x, y = (raw.at[i, 'Yb'] + raw.at[i, 'Ta']), raw.at[i, 'Rb']
-            elif (a == 2):
-                x, y = raw.at[i, 'Y'], raw.at[i, 'Nb']
-            elif (a == 3):
-                x, y = raw.at[i, 'Yb'], raw.at[i, 'Ta']
-
-            self.axes.scatter(math.log(x, 10), math.log(y, 10), marker=raw.at[i, 'Marker'],
-                              s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                              label=TmpLabel, edgecolors='black')
-
-        Tale = 0
-        Head = 0
-
-        if (len(self.WholeData) > 0):
-            Tale = min(self.WholeData)
-            Head = max(self.WholeData)
-
-        Location = round(Tale - (Head - Tale) / 5)
-
-        count = round((Head - Tale) / 5 * 7)
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, prop=fontprop)
-
-        if (self.detail_cb.isChecked()):
-            for i in self.Tags:
-                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
-                                   textcoords='offset points',
-                                   fontsize=8, color='grey', alpha=0.8)
-
-        self.canvas.draw()
-
-
-class Harker(AppForm):
-    Lines = []
-    Tags = []
-    description = 'Harker diagram'
-    usefulelements = ['SiO2',
-                      'TiO2',
-                      'Al2O3',
-                      'TFe2O3',
-                      'Fe2O3',
-                      'FeO',
-                      'TFe',
-                      'MnO',
-                      'MgO',
-                      'CaO',
-                      'Na2O',
-                      'K2O',
-                      'P2O5',
-                      'Loi',
-                      'DI',
-                      'Mg#',
-                      'Li',
-                      'Be',
-                      'Sc',
-                      'V',
-                      'Cr',
-                      'Co',
-                      'Ni',
-                      'Cu',
-                      'Zn',
-                      'Ga',
-                      'Ge',
-                      'Rb',
-                      'Sr',
-                      'Y',
-                      'Zr',
-                      'Nb',
-                      'Cs',
-                      'Ba',
-                      'La',
-                      'Ce',
-                      'Pr',
-                      'Nd',
-                      'Sm',
-                      'Eu',
-                      'Gd',
-                      'Tb',
-                      'Dy',
-                      'Ho',
-                      'Er',
-                      'Tm',
-                      'Yb',
-                      'Lu',
-                      'III',
-                      'Ta',
-                      'Pb',
-                      'Th',
-                      'U']
-    unuseful = ['Name',
-                'Author',
-                'DataType',
-                'Label',
-                'Marker',
-                'Color',
-                'Size',
-                'Alpha',
-                'Style',
-                'Width',
-                'Tag']
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Harker diagram')
-
-        self.items = []
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to Harker')
-
-        self.raw = df
-        self.rawitems = self.raw.columns.values.tolist()
-
-        for i in self.rawitems:
-            if i not in self.unuseful:
-                self.items.append(i)
-            else:
-                pass
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        # self.axes.hold(False)
-
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Harker)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Harker)  # int
-
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Harker)  # int
-
-        self.x_element = QSlider(Qt.Horizontal)
-        self.x_element.setRange(0, len(self.items) - 1)
-        self.x_element.setValue(0)
-        self.x_element.setTracking(True)
-        self.x_element.setTickPosition(QSlider.TicksBothSides)
-        self.x_element.valueChanged.connect(self.Harker)  # int
-
-        self.x_element_label = QLabel('X')
-
-        self.logx_cb = QCheckBox('&Log')
-        self.logx_cb.setChecked(False)
-        self.logx_cb.stateChanged.connect(self.Harker)  # int
-
-        self.y_element = QSlider(Qt.Horizontal)
-        self.y_element.setRange(0, len(self.items) - 1)
-        self.y_element.setValue(0)
-        self.y_element.setTracking(True)
-        self.y_element.setTickPosition(QSlider.TicksBothSides)
-        self.y_element.valueChanged.connect(self.Harker)  # int
-
-        self.y_element_label = QLabel('Y')
-
-        self.logy_cb = QCheckBox('&Log')
-        self.logy_cb.setChecked(False)
-        self.logy_cb.stateChanged.connect(self.Harker)  # int
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox1 = QHBoxLayout()
-        self.hbox2 = QHBoxLayout()
-        self.hbox3 = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button,
-                  self.legend_cb, self.slider_label, self.slider]:
-            self.hbox1.addWidget(w)
-            self.hbox1.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.logx_cb, self.x_element_label, self.x_element]:
-            self.hbox2.addWidget(w)
-            self.hbox2.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.logy_cb, self.y_element_label, self.y_element]:
-            self.hbox3.addWidget(w)
-            self.hbox3.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox1)
-        self.vbox.addLayout(self.hbox2)
-        self.vbox.addLayout(self.hbox3)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def Harker(self):
-
-        self.WholeData = []
-
-        raw = self._df
-
-        a = int(self.x_element.value())
-
-        b = int(self.y_element.value())
-
-        self.axes.clear()
-
-        self.axes.set_xlabel(self.items[a])
-        self.x_element_label.setText(self.items[a])
-
-        self.axes.set_ylabel(self.items[b])
-        self.y_element_label.setText(self.items[b])
-
-        PointLabels = []
-
-        for i in range(len(raw)):
-            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
-
-            TmpLabel = ''
-
-            #   self.WholeData.append(math.log(tmp, 10))
-
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                TmpLabel = ''
-            else:
-                PointLabels.append(raw.at[i, 'Label'])
-                TmpLabel = raw.at[i, 'Label']
-
-            x, y = 0, 0
-            xuse, yuse = 0, 0
-
-            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
-
-            try:
-                xuse = x
-                yuse = y
-
-                if (self.logx_cb.isChecked()):
-                    xuse = math.log(x, 10)
-
-                    self.axes.set_xlabel('$log10$ ' + self.items[a])
-
-                if (self.logy_cb.isChecked()):
-                    yuse = math.log(y, 10)
-
-                    self.axes.set_ylabel('$log10$ ' + self.items[b])
-
-                self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                  label=TmpLabel, edgecolors='black')
-            except(ValueError):
-                pass
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, prop=fontprop)
-
-        self.canvas.draw()
-
-
-class ZirconTiTemp(AppForm):
-    reference = 'Ferry J M, Watson E B. New thermodynamic models and revised calibrations for the Ti-in-zircon and Zr-[J]. Contributions to Mineralogy & Petrology, 2007, 154(4):429-437.'
-    Calced = ['Temperature']
-
-    DataCalced = {}
-    raw = pd.DataFrame()
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Zircon Ti Temperature Calculator')
-
-        self._df = df
-        self.raw = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved')
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-
-        self.save_button = QPushButton('&Save Result')
-        self.save_button.clicked.connect(self.saveResult)
-
-        self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName('tableView')
-        self.tableView.setSortingEnabled(True)
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, ]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-
-        self.vbox.addWidget(self.tableView)
-
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def ZirconTiTemp(self):
-
-        MaxTemps = []
-        MinTemps = []
-        MidTemps = []
-
-        for i in range(len(self.raw)):
-            Ti = self.raw.at[i, 'Ti']
-
-            try:
-                ASiO2 = self.raw.at[i, 'ASiO2']
-            except(KeyError):
-                ASiO2 = 1
-
-            try:
-                ATiO2 = self.raw.at[i, 'ATiO2']
-            except(KeyError):
-                ATiO2 = 1
-
-            TiTemp1 = (4800 + 86) / ((5.711 + 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
-
-            TiTemp2 = (4800 - 86) / ((5.711 + 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
-
-            TiTemp3 = (4800 + 86) / ((5.711 - 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
-
-            TiTemp4 = (4800 - 86) / ((5.711 - 0.072) - np.log10(Ti) - np.log10(ASiO2) + np.log10(ATiO2)) - 273.15
-
-            TiTempBig, TiTempSmall = max([TiTemp1, TiTemp2, TiTemp3, TiTemp4]), min(
-                ([TiTemp1, TiTemp2, TiTemp3, TiTemp4]))
-
-            MaxTemps.append(TiTempBig)
-            MinTemps.append(TiTempSmall)
-            MidTemps.append((TiTempSmall + TiTempBig) / 2)
-
-        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps, 'Temp Mid': MidTemps, }
-
-        tmpdftoadd = pd.DataFrame(tmpdata)
-
-        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
-        self.model = PandasModel(self.newdf)
-        self.tableView.setModel(self.model)
-
     def saveResult(self):
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',
@@ -6572,93 +6247,8 @@ class ZirconTiTemp(AppForm):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
 
-class RutileZrTemp(AppForm):
-    reference = 'Ferry J M, Watson E B. New thermodynamic models and revised calibrations for the Ti-in-zircon and Zr-[J]. Contributions to Mineralogy & Petrology, 2007, 154(4):429-437.'
-    Calced = ['Temperature']
 
-    DataCalced = {}
-    raw = pd.DataFrame()
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Rutile Zr Temperature Calculator')
-
-        self._df = df
-        self.raw = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved')
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-
-        self.save_button = QPushButton('&Save Result')
-        self.save_button.clicked.connect(self.saveResult)
-
-        self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName('tableView')
-        self.tableView.setSortingEnabled(True)
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox = QHBoxLayout()
-
-        for w in [self.save_button, ]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-
-        self.vbox.addWidget(self.tableView)
-
-        self.vbox.addLayout(self.hbox)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def RutileZrTemp(self):
-
-        MaxTemps = []
-        MinTemps = []
-        MidTemps = []
-
-        for i in range(len(self.raw)):
-            Zr = self.raw.at[i, 'Zr']
-
-            try:
-                ASiO2 = self.raw.at[i, 'ASiO2']
-            except(KeyError):
-                ASiO2 = 1
-
-            ZrTemp1 = (4530 + 111) / ((7.42 + 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
-
-            ZrTemp2 = (4530 - 111) / ((7.42 + 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
-
-            ZrTemp3 = (4530 + 111) / ((7.42 - 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
-
-            ZrTemp4 = (4530 - 111) / ((7.42 - 0.105) - np.log10(Zr) - np.log10(ASiO2)) - 273.15
-
-            ZrTempBig, ZrTempSmall = max([ZrTemp1, ZrTemp2, ZrTemp3, ZrTemp4]), min(
-                ([ZrTemp1, ZrTemp2, ZrTemp3, ZrTemp4]))
-
-            MaxTemps.append(ZrTempBig)
-            MinTemps.append(ZrTempSmall)
-            MidTemps.append((ZrTempSmall + ZrTempBig) / 2)
-
-        tmpdata = {'Temp Max': MaxTemps, 'Temp Min': MinTemps, 'Temp Mid': MidTemps, }
-
-        tmpdftoadd = pd.DataFrame(tmpdata)
-
-        self.newdf = pd.concat([tmpdftoadd, self.raw], axis=1)
-        self.model = PandasModel(self.newdf)
-        self.tableView.setModel(self.model)
-
-    def saveResult(self):
+    def saveResult1(self):
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',
                                                           'C:/',
@@ -6667,11 +6257,44 @@ class RutileZrTemp(AppForm):
         if (DataFileOutput != ''):
 
             if ('csv' in DataFileOutput):
-                self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                self.newdf1.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
             elif ('xls' in DataFileOutput):
-                self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+                self.newdf1.to_excel(DataFileOutput, encoding='utf-8')
 
+
+
+
+    def saveResult2(self):
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ('csv' in DataFileOutput):
+                self.newdf2.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ('xls' in DataFileOutput):
+                self.newdf2.to_excel(DataFileOutput, encoding='utf-8')
+
+
+
+
+    def saveResult3(self):
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ('csv' in DataFileOutput):
+                self.newdf3.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ('xls' in DataFileOutput):
+                self.newdf3.to_excel(DataFileOutput, encoding='utf-8')
 
 class Cluster(AppForm):
     Lines = []
@@ -6837,49 +6460,63 @@ class Cluster(AppForm):
                                         'Check Your Data and make sure it contains only numerical values.')
             pass
 
-
-class XY(AppForm):
-    Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
-               u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
-               u'Li',
-               u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
-
-    StandardsName = ['OIB', 'EMORB', 'C1', 'PM', 'NMORB']
-
-    NameChosen = 'OIB'
-    Standards = {
-        'OIB': {'Cs': 0.387, 'Tl': 0.077, 'Rb': 31, 'Ba': 350, 'W': 0.56, 'Th': 4, 'U': 1.02, 'Nb': 48, 'Ta': 2.7,
-                'K': 12000, 'La': 37, 'Ce': 80, 'Pb': 3.2, 'Pr': 9.7, 'Mo': 2.4, 'Sr': 660, 'P': 2700, 'Nd': 38.5,
-                'F': 1150, 'Sm': 10, 'Zr': 280, 'Hf': 7.8, 'Eu': 3, 'Sn': 2.7, 'Sb': 0.03, 'Ti': 17200, 'Gd': 7.62,
-                'Tb': 1.05, 'Dy': 5.6, 'Li': 5.6, 'Y': 29, 'Ho': 1.06, 'Er': 2.62, 'Tm': 0.35, 'Yb': 2.16, 'Lu': 0.3},
-        'EMORB': {'Cs': 0.063, 'Tl': 0.013, 'Rb': 5.04, 'Ba': 57, 'W': 0.092, 'Th': 0.6, 'U': 0.18, 'Nb': 8.3,
-                  'Ta': 0.47, 'K': 2100, 'La': 6.3, 'Ce': 15, 'Pb': 0.6, 'Pr': 2.05, 'Mo': 0.47, 'Sr': 155, 'P': 620,
-                  'Nd': 9, 'F': 250, 'Sm': 2.6, 'Zr': 73, 'Hf': 2.03, 'Eu': 0.91, 'Sn': 0.8, 'Sb': 0.01, 'Ti': 6000,
-                  'Gd': 2.97, 'Tb': 0.53, 'Dy': 3.55, 'Li': 3.5, 'Y': 22, 'Ho': 0.79, 'Er': 2.31, 'Tm': 0.356,
-                  'Yb': 2.37, 'Lu': 0.354},
-        'C1': {'Cs': 0.188, 'Tl': 0.14, 'Rb': 2.32, 'Ba': 2.41, 'W': 0.095, 'Th': 0.029, 'U': 0.008, 'Nb': 0.246,
-               'Ta': 0.014, 'K': 545, 'La': 0.237, 'Ce': 0.612, 'Pb': 2.47, 'Pr': 0.095, 'Mo': 0.92, 'Sr': 7.26,
-               'P': 1220, 'Nd': 0.467, 'F': 60.7, 'Sm': 0.153, 'Zr': 3.87, 'Hf': 0.1066, 'Eu': 0.058, 'Sn': 1.72,
-               'Sb': 0.16, 'Ti': 445, 'Gd': 0.2055, 'Tb': 0.0374, 'Dy': 0.254, 'Li': 1.57, 'Y': 1.57, 'Ho': 0.0566,
-               'Er': 0.1655, 'Tm': 0.0255, 'Yb': 0.17, 'Lu': 0.0254},
-        'PM': {'Cs': 0.032, 'Tl': 0.005, 'Rb': 0.635, 'Ba': 6.989, 'W': 0.02, 'Th': 0.085, 'U': 0.021, 'Nb': 0.713,
-               'Ta': 0.041, 'K': 250, 'La': 0.687, 'Ce': 1.775, 'Pb': 0.185, 'Pr': 0.276, 'Mo': 0.063, 'Sr': 21.1,
-               'P': 95, 'Nd': 1.354, 'F': 26, 'Sm': 0.444, 'Zr': 11.2, 'Hf': 0.309, 'Eu': 0.168, 'Sn': 0.17,
-               'Sb': 0.005, 'Ti': 1300, 'Gd': 0.596, 'Tb': 0.108, 'Dy': 0.737, 'Li': 1.6, 'Y': 4.55, 'Ho': 0.164,
-               'Er': 0.48, 'Tm': 0.074, 'Yb': 0.493, 'Lu': 0.074},
-        'NMORB': {'Cs': 0.007, 'Tl': 0.0014, 'Rb': 0.56, 'Ba': 6.3, 'W': 0.01, 'Th': 0.12, 'U': 0.047, 'Nb': 2.33,
-                  'Ta': 0.132, 'K': 600, 'La': 2.5, 'Ce': 7.5, 'Pb': 0.3, 'Pr': 1.32, 'Mo': 0.31, 'Sr': 90, 'P': 510,
-                  'Nd': 7.3, 'F': 210, 'Sm': 2.63, 'Zr': 74, 'Hf': 2.05, 'Eu': 1.02, 'Sn': 1.1, 'Sb': 0.01, 'Ti': 7600,
-                  'Gd': 3.68, 'Tb': 0.67, 'Dy': 4.55, 'Li': 4.3, 'Y': 28, 'Ho': 1.01, 'Er': 2.97, 'Tm': 0.456,
-                  'Yb': 3.05, 'Lu': 0.455}, }
-
+class Harker(AppForm):
     Lines = []
     Tags = []
-
-    xlabel = 'x'
-    ylabel = 'y'
-
-    description = 'X-Y diagram'
+    description = 'Harker diagram'
+    usefulelements = ['SiO2',
+                      'TiO2',
+                      'Al2O3',
+                      'TFe2O3',
+                      'Fe2O3',
+                      'FeO',
+                      'TFe',
+                      'MnO',
+                      'MgO',
+                      'CaO',
+                      'Na2O',
+                      'K2O',
+                      'P2O5',
+                      'Loi',
+                      'DI',
+                      'Mg#',
+                      'Li',
+                      'Be',
+                      'Sc',
+                      'V',
+                      'Cr',
+                      'Co',
+                      'Ni',
+                      'Cu',
+                      'Zn',
+                      'Ga',
+                      'Ge',
+                      'Rb',
+                      'Sr',
+                      'Y',
+                      'Zr',
+                      'Nb',
+                      'Cs',
+                      'Ba',
+                      'La',
+                      'Ce',
+                      'Pr',
+                      'Nd',
+                      'Sm',
+                      'Eu',
+                      'Gd',
+                      'Tb',
+                      'Dy',
+                      'Ho',
+                      'Er',
+                      'Tm',
+                      'Yb',
+                      'Lu',
+                      'III',
+                      'Ta',
+                      'Pb',
+                      'Th',
+                      'U']
     unuseful = ['Name',
                 'Author',
                 'DataType',
@@ -6892,37 +6529,16 @@ class XY(AppForm):
                 'Width',
                 'Tag']
 
-    width_plot = 100.0
-    height_plot = 100.0
-
-    width_load = width_plot
-    height_load = height_plot
-
-    polygon = []
-    polyline = []
-    line = []
-
-    strgons = []
-    strlines = []
-    strpolylines = []
-
-    extent = 0
-
-    Left = 0
-    Right = 0
-    Up = 0
-    Down = 0
-
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle('X-Y diagram')
+        self.setWindowTitle('Harker diagram')
 
         self.items = []
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            # print('DataFrame recieved to Magic')
+            # print('DataFrame recieved to Harker')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -6935,11 +6551,6 @@ class XY(AppForm):
 
         self.create_main_frame()
         self.create_status_bar()
-
-        self.polygon = 0
-        self.polyline = 0
-
-        self.flag = 0
 
     def create_main_frame(self):
         self.main_frame = QWidget()
@@ -6958,14 +6569,11 @@ class XY(AppForm):
         self.save_button.clicked.connect(self.saveImgFile)
 
         self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Reset)
-
-        self.load_button = QPushButton('&Load')
-        self.load_button.clicked.connect(self.Load)
+        self.draw_button.clicked.connect(self.Harker)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Magic)  # int
+        self.legend_cb.stateChanged.connect(self.Harker)  # int
 
         self.slider_label = QLabel('Location:')
         self.slider = QSlider(Qt.Horizontal)
@@ -6973,1000 +6581,43 @@ class XY(AppForm):
         self.slider.setValue(1)
         self.slider.setTracking(True)
         self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Magic)  # int
-
-        self.Normalize_cb = QCheckBox('&Normalize')
-        self.Normalize_cb.setChecked(False)
-        self.Normalize_cb.stateChanged.connect(self.Magic)  # int
-
-        self.norm_slider_label = QLabel('Standard:' + self.NameChosen)
-        self.norm_slider = QSlider(Qt.Horizontal)
-        self.norm_slider.setRange(0, 4)
-        self.norm_slider.setValue(0)
-        self.norm_slider.setTracking(True)
-        self.norm_slider.setTickPosition(QSlider.TicksBothSides)
-        self.norm_slider.valueChanged.connect(self.Magic)  # int
+        self.slider.valueChanged.connect(self.Harker)  # int
 
         self.x_element = QSlider(Qt.Horizontal)
         self.x_element.setRange(0, len(self.items) - 1)
         self.x_element.setValue(0)
         self.x_element.setTracking(True)
         self.x_element.setTickPosition(QSlider.TicksBothSides)
-        self.x_element.valueChanged.connect(self.Magic)  # int
-
-        self.x_element_label = QLabel('X')
-
-        #self.x_calculator = QLineEdit(self)
-
-
-
-        self.logx_cb = QCheckBox('&Log')
-        self.logx_cb.setChecked(False)
-        self.logx_cb.stateChanged.connect(self.Magic)  # int
-
-        self.y_element = QSlider(Qt.Horizontal)
-        self.y_element.setRange(0, len(self.items) - 1)
-        self.y_element.setValue(0)
-        self.y_element.setTracking(True)
-        self.y_element.setTickPosition(QSlider.TicksBothSides)
-        self.y_element.valueChanged.connect(self.Magic)  # int
-
-        self.y_element_label = QLabel('Y')
-
-        #self.y_calculator = QLineEdit(self)
-
-
-        self.logy_cb = QCheckBox('&Log')
-        self.logy_cb.setChecked(False)
-        self.logy_cb.stateChanged.connect(self.Magic)  # int
-
-        self.width_size_seter_label = QLabel('Width')
-        self.width_size_seter = QLineEdit(self)
-
-        self.width_size_seter.textChanged[str].connect(self.WChanged)
-
-        self.height_size_seter_label = QLabel('height')
-        self.height_size_seter = QLineEdit(self)
-
-        self.height_size_seter.textChanged[str].connect(self.HChanged)
-
-        self.Left_size_seter_label = QLabel('Left')
-        self.Left_size_seter = QLineEdit(self)
-
-        self.Left_size_seter.textChanged[str].connect(self.LeftChanged)
-
-        self.Right_size_seter_label = QLabel('Right')
-        self.Right_size_seter = QLineEdit(self)
-
-        self.Right_size_seter.textChanged[str].connect(self.RightChanged)
-
-        self.Up_size_seter_label = QLabel('Up')
-        self.Up_size_seter = QLineEdit(self)
-
-        self.Up_size_seter.textChanged[str].connect(self.UpChanged)
-
-        self.Down_size_seter_label = QLabel('Down')
-        self.Down_size_seter = QLineEdit(self)
-
-        self.Down_size_seter.textChanged[str].connect(self.DownChanged)
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox0 = QHBoxLayout()
-        self.hbox1 = QHBoxLayout()
-        self.hbox2 = QHBoxLayout()
-        self.hbox3 = QHBoxLayout()
-        self.hbox4 = QHBoxLayout()
-        self.hbox5 = QHBoxLayout()
-        self.hbox6 = QHBoxLayout()
-        self.hbox7 = QHBoxLayout()
-
-        for w in [self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
-            self.hbox0.addWidget(w)
-            self.hbox0.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.save_button, self.draw_button, self.load_button,
-                  self.legend_cb, self.slider_label, self.slider]:
-            self.hbox1.addWidget(w)
-            self.hbox1.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.logx_cb, self.x_element_label, self.x_element]:
-            self.hbox2.addWidget(w)
-            self.hbox2.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.logy_cb, self.y_element_label, self.y_element]:
-            self.hbox3.addWidget(w)
-            self.hbox3.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.width_size_seter_label, self.width_size_seter]:
-            self.hbox4.addWidget(w)
-            self.hbox4.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.height_size_seter_label, self.height_size_seter]:
-            self.hbox5.addWidget(w)
-            self.hbox5.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.Left_size_seter, self.Left_size_seter_label, self.Right_size_seter, self.Right_size_seter_label]:
-            self.hbox6.addWidget(w)
-            self.hbox6.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.Down_size_seter, self.Down_size_seter_label, self.Up_size_seter, self.Up_size_seter_label]:
-            self.hbox7.addWidget(w)
-            self.hbox7.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox0)
-        self.vbox.addLayout(self.hbox1)
-        self.vbox.addLayout(self.hbox2)
-        self.vbox.addLayout(self.hbox3)
-        self.vbox.addLayout(self.hbox4)
-        self.vbox.addLayout(self.hbox5)
-        self.vbox.addLayout(self.hbox6)
-        self.vbox.addLayout(self.hbox7)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def Read(self, inpoints):
-        points = []
-        for i in inpoints:
-            points.append(i.split())
-
-        result = []
-        for i in points:
-            for l in range(len(i)):
-                a = float((i[l].split(','))[0])
-                a = a * self.x_scale
-
-                b = float((i[l].split(','))[1])
-                b = (self.height_load - b) * self.y_scale
-
-                result.append((a, b))
-        return (result)
-
-    def Load(self):
-        fileName, filetype = QFileDialog.getOpenFileName(self,
-                                                         '选取文件',
-                                                         '~/',
-                                                         'PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
-
-        print(fileName, '\t', filetype)
-
-        if ('svg' in fileName):
-            doc = minidom.parse(fileName)  # parseString also exists
-            polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
-            polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
-
-            svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
-            svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
-
-            # print(svg_width)
-            # print(svg_height)
-
-            digit = '01234567890.-'
-            width = svg_width[0].replace('px', '').replace('pt', '')
-            height = svg_height[0].replace('px', '').replace('pt', '')
-
-            self.width_load = float(width)
-            self.height_load = float(height)
-
-            soup = BeautifulSoup(open(fileName), 'lxml')
-
-            tmpgon = soup.find_all('polygon')
-            tmppolyline = soup.find_all('polyline')
-            tmptext = soup.find_all('text')
-            tmpline = soup.find_all('line')
-
-            tmppath = soup.find_all('path')
-
-            self.strgons = []
-            for i in tmpgon:
-                a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, 'lxml')
-                k = m.polygon.attrs
-                self.strgons.append(k['points'].split())
-
-            self.strpolylines = []
-            for i in tmppolyline:
-                a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, 'lxml')
-                k = m.polyline.attrs
-                self.strpolylines.append(k['points'].split())
-
-            self.strlines = []
-            for i in tmpline:
-                a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, 'lxml')
-                k = m.line.attrs
-                a = str(k['x1']) + ',' + str(k['y1']) + ' ' + str(k['x2']) + ',' + str(k['y2'])
-                self.strlines.append(a.split())
-
-            self.strpath = []
-            for i in tmppath:
-                a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, 'lxml')
-                k = m.path.attrs
-                self.strpath.append(k['d'].split())
-
-            # print(self.strpath)
-
-
-
-            self.polygon = []
-            for i in self.strgons:
-                m = self.Read(i)
-                m.append(m[0])
-                self.polygon.append(m)
-
-            self.polyline = []
-            for i in self.strpolylines:
-                m = self.Read(i)
-                # print('i: ',i,'\n m:',m)
-                self.polyline.append(m)
-
-            self.line = []
-            for i in self.strlines:
-                m = self.Read(i)
-                # print('i: ',i,'\n m:',m)
-                self.line.append(m)
-
-
-        elif ('png' in fileName or 'jpg' in fileName):
-
-            self.img = mpimg.imread(fileName)
-            self.flag = 1
-
-        self.Magic()
-
-    def Reset(self):
-        self.flag = 0
-        self.Magic()
-
-    def WChanged(self, text):
-        w = 'width ' + text
-        self.width_size_seter_label.setText(w)
-        self.width_size_seter_label.adjustSize()
-
-        try:
-            self.width_plot = float(text)
-        except:
-            pass
-
-        self.x_scale = self.width_plot / self.width_load
-
-        self.polygon = []
-        for i in self.strgons:
-            m = self.Read(i)
-            m.append(m[0])
-            self.polygon.append(m)
-
-        self.polyline = []
-        for i in self.strpolylines:
-            m = self.Read(i)
-            # print('i: ',i,'\n m:',m)
-            self.polyline.append(m)
-
-        self.line = []
-        for i in self.strlines:
-            m = self.Read(i)
-            # print('i: ',i,'\n m:',m)
-            self.line.append(m)
-
-        self.Magic()
-
-    def HChanged(self, text):
-        h = 'height ' + text
-        self.height_size_seter_label.setText(h)
-        self.height_size_seter_label.adjustSize()
-
-        try:
-            self.height_plot = float(text)
-        except:
-            pass
-
-        self.y_scale = self.height_plot / self.height_load
-
-        self.polygon = []
-        for i in self.strgons:
-            m = self.Read(i)
-            m.append(m[0])
-            self.polygon.append(m)
-
-        self.polyline = []
-        for i in self.strpolylines:
-            m = self.Read(i)
-            # print('i: ',i,'\n m:',m)
-            self.polyline.append(m)
-
-        self.line = []
-        for i in self.strlines:
-            m = self.Read(i)
-            # print('i: ',i,'\n m:',m)
-            self.line.append(m)
-
-        self.Magic()
-
-    # text_location= [path.getAttribute('transform') for path in doc.getElementsByTagName('text')]
-    '''
-    tmppolygon_points=[]
-    for i in polygon_points:
-        tmppolygon_points.append(i.split())
-
-    polygon=[]
-    for i in tmppolygon_points:
-        for l in range(len(i)):
-            a=float((i[l].split(','))[0])
-            b=float((i[l].split(','))[1])
-
-            polygon.append([a,b])
-    '''
-
-    def LeftChanged(self, text):
-        w = 'Left ' + text
-        self.Left_size_seter_label.setText(w)
-        self.Left_size_seter_label.adjustSize()
-
-        try:
-            self.Left = float(text)
-        except:
-            pass
-
-        self.Magic()
-
-    def RightChanged(self, text):
-        w = 'Right ' + text
-        self.Right_size_seter_label.setText(w)
-        self.Right_size_seter_label.adjustSize()
-
-        try:
-            self.Right = float(text)
-        except:
-            pass
-
-        self.Magic()
-
-    def UpChanged(self, text):
-        w = 'Up ' + text
-        self.Up_size_seter_label.setText(w)
-        self.Up_size_seter_label.adjustSize()
-
-        try:
-            self.Up = float(text)
-        except:
-            pass
-
-        self.Magic()
-
-    def DownChanged(self, text):
-        w = 'Down ' + text
-        self.Down_size_seter_label.setText(w)
-        self.Down_size_seter_label.adjustSize()
-
-        try:
-            self.Down = float(text)
-        except:
-            pass
-
-        self.Magic()
-
-    def Magic(self):
-
-        self.WholeData = []
-
-        self.x_scale = self.width_plot / self.width_load
-
-        self.y_scale = self.height_plot / self.height_load
-
-        # print(self.x_scale,' and ',self.x_scale)
-
-        raw = self._df
-
-        a = int(self.x_element.value())
-
-        b = int(self.y_element.value())
-
-        self.axes.clear()
-
-        if (self.Left != self.Right) and (self.Down != self.Up) and abs(self.Left) + abs(self.Right) + abs(
-                self.Down) + abs(self.Up) != 0:
-            self.extent = [self.Left, self.Right, self.Down, self.Up]
-        elif (self.Left == self.Right and abs(self.Left) + abs(self.Right) != 0):
-            reply = QMessageBox.warning(self, 'Warning', 'You set same value to Left and Right limits.')
-            self.extent = 0
-
-        elif (self.Down == self.Up and abs(self.Down) + abs(self.Up) != 0):
-            reply = QMessageBox.warning(self, 'Warning', 'You set same value to Up and Down limits.')
-            self.extent = 0
-        else:
-            self.extent = 0
-
-        standardnamechosen = self.StandardsName[int(self.norm_slider.value())]
-        standardchosen = self.Standards[standardnamechosen]
-
-        self.norm_slider_label.setText(standardnamechosen)
-
-        if self.flag != 0:
-            if self.extent != 0:
-                self.axes.imshow(self.img, interpolation='nearest', aspect='auto', extent=self.extent)
-            else:
-                self.axes.imshow(self.img, interpolation='nearest', aspect='auto')
-
-        self.axes.set_xlabel(self.items[a])
-        self.x_element_label.setText(self.items[a])
-
-        self.axes.set_ylabel(self.items[b])
-        self.y_element_label.setText(self.items[b])
-
-        PointLabels = []
-
-        for i in range(len(raw)):
-            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
-
-            TmpLabel = ''
-
-            #   self.WholeData.append(math.log(tmp, 10))
-
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                TmpLabel = ''
-            else:
-                PointLabels.append(raw.at[i, 'Label'])
-                TmpLabel = raw.at[i, 'Label']
-
-            x, y = 0, 0
-            xuse, yuse = 0, 0
-
-            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
-
-            try:
-                xuse = x
-                yuse = y
-
-                self.xlabel = self.items[a]
-                self.ylabel = self.items[b]
-
-                if (self.Normalize_cb.isChecked()):
-
-                    self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
-
-                    self.axes.set_xlabel(self.xlabel)
-                    self.x_element_label.setText(self.xlabel)
-
-                    self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
-
-                    self.axes.set_ylabel(self.ylabel)
-                    self.y_element_label.setText(self.ylabel)
-
-                    if self.items[a] in self.Element:
-                        xuse = xuse / standardchosen[self.items[a]]
-
-                    if self.items[b] in self.Element:
-                        yuse = yuse / standardchosen[self.items[b]]
-
-                if (self.logx_cb.isChecked()):
-                    xuse = math.log(x, 10)
-                    self.xlabel = '$log10$ ' + self.xlabel
-
-                    self.axes.set_xlabel(self.xlabel)
-
-                if (self.logy_cb.isChecked()):
-                    yuse = math.log(y, 10)
-
-                    self.ylabel = '$log10$ ' + self.ylabel
-
-                    self.axes.set_ylabel(self.ylabel)
-
-                self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                  label=TmpLabel, edgecolors='black')
-            except(ValueError):
-                pass
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a,prop=fontprop)
-
-        if self.polygon != 0 and self.polyline != 0 and self.line != 0:
-
-            # print('gon: ',self.polygon,' \n line:',self.polyline)
-
-            for i in self.polygon:
-                self.DrawLine(i)
-
-            for i in self.polyline:
-                self.DrawLine(i)
-
-            for i in self.line:
-                self.DrawLine(i)
-
-
-
-                # self.DrawLine(self.polygon)
-                # self.DrawLine(self.polyline)
-
-        self.canvas.draw()
-
-
-class XYZ(AppForm):
-    Lines = []
-    Tags = []
-    description = 'X-Y-Z diagram'
-    unuseful = ['Name',
-                'Author',
-                'DataType',
-                'Label',
-                'Marker',
-                'Color',
-                'Size',
-                'Alpha',
-                'Style',
-                'Width',
-                'Tag']
-
-    polygon = []
-    polyline = []
-    line = []
-    flag = 0
-
-    strgons = []
-    strlines = []
-    strpolylines = []
-
-    width_plot = 100.0
-    height_plot = 50 * math.sqrt(3)
-
-    width_load = width_plot
-    height_load = height_plot
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Triangular diagram')
-
-        self.items = []
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to Magic')
-
-        self.raw = df
-        self.rawitems = self.raw.columns.values.tolist()
-
-        for i in self.rawitems:
-            if i not in self.unuseful:
-                self.items.append(i)
-            else:
-                pass
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-        self.polygon = 0
-        self.polyline = 0
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        self.axes.axis('off')
-
-        # self.axes.hold(False)
-
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Reset)
-
-        self.load_button = QPushButton('&Load')
-        self.load_button.clicked.connect(self.Load)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Magic)  # int
-
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Magic)  # int
-
-        self.x_element = QSlider(Qt.Horizontal)
-        self.x_element.setRange(0, len(self.items) - 1)
-        self.x_element.setValue(0)
-        self.x_element.setTracking(True)
-        self.x_element.setTickPosition(QSlider.TicksBothSides)
-        self.x_element.valueChanged.connect(self.Magic)  # int
-
-        self.x_element_label = QLabel('X')
-
-        self.y_element = QSlider(Qt.Horizontal)
-        self.y_element.setRange(0, len(self.items) - 1)
-        self.y_element.setValue(0)
-        self.y_element.setTracking(True)
-        self.y_element.setTickPosition(QSlider.TicksBothSides)
-        self.y_element.valueChanged.connect(self.Magic)  # int
-
-        self.y_element_label = QLabel('Y')
-
-        self.z_element = QSlider(Qt.Horizontal)
-        self.z_element.setRange(0, len(self.items) - 1)
-        self.z_element.setValue(0)
-        self.z_element.setTracking(True)
-        self.z_element.setTickPosition(QSlider.TicksBothSides)
-        self.z_element.valueChanged.connect(self.Magic)  # int
-
-        self.z_element_label = QLabel('Z')
-
-        #
-        # Layout with box sizers
-        #
-        self.hbox1 = QHBoxLayout()
-        self.hbox2 = QHBoxLayout()
-        self.hbox3 = QHBoxLayout()
-        self.hbox4 = QHBoxLayout()
-
-        for w in [self.save_button, self.draw_button, self.load_button,
-                  self.legend_cb, self.slider_label, self.slider]:
-            self.hbox1.addWidget(w)
-            self.hbox1.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.x_element_label, self.x_element]:
-            self.hbox2.addWidget(w)
-            self.hbox2.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.y_element_label, self.y_element]:
-            self.hbox3.addWidget(w)
-            self.hbox3.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.z_element_label, self.z_element]:
-            self.hbox4.addWidget(w)
-            self.hbox4.setAlignment(w, Qt.AlignVCenter)
-
-        self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox1)
-        self.vbox.addLayout(self.hbox2)
-        self.vbox.addLayout(self.hbox3)
-        self.vbox.addLayout(self.hbox4)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-    def Read(self, inpoints):
-        points = []
-        for i in inpoints:
-            points.append(i.split())
-
-        result = []
-        for i in points:
-            for l in range(len(i)):
-                a = float((i[l].split(','))[0])
-                a = a * self.x_scale
-
-                b = float((i[l].split(','))[1])
-                b = (self.height_load - b) * self.y_scale
-
-                result.append((a, b))
-        return (result)
-
-    def Load(self):
-        fileName, filetype = QFileDialog.getOpenFileName(self,
-                                                         '选取文件',
-                                                         '~/',
-                                                         'PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
-
-        print(fileName, '\t', filetype)
-
-        if ('svg' in fileName):
-            doc = minidom.parse(fileName)  # parseString also exists
-            polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
-            polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
-
-            svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
-            svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
-
-            # print(svg_width)
-            # print(svg_height)
-
-            digit = '01234567890.-'
-            width = svg_width[0].replace('px', '').replace('pt', '')
-            height = svg_height[0].replace('px', '').replace('pt', '')
-
-            '''
-            width=''
-            for letter in svg_width[0]:
-                if letter in digit:
-                    width = width + letter
-
-            #print(width)
-
-
-
-            height=''
-            for letter in svg_height[0]:
-                if letter in digit:
-                    height = height + letter
-
-            #print(height)
-            '''
-
-            self.width_load = float(width)
-            self.height_load = float(height)
-
-            self.x_scale = 100.0 / float(width)
-            self.y_scale = 50.0 * math.sqrt(3) / float(height)
-
-            # print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
-
-            soup = BeautifulSoup(open(fileName), 'lxml')
-
-            tmpgon = soup.find_all('polygon')
-            tmpline = soup.find_all('polyline')
-            tmptext = soup.find_all('text')
-
-            strgons = []
-            for i in tmpgon:
-                a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, 'lxml')
-                k = m.polygon.attrs
-                strgons.append(k['points'].split())
-            gons = []
-            for i in strgons:
-                m = self.Read(i)
-                m.append(m[0])
-                gons.append(m)
-
-            strlines = []
-            for i in tmpline:
-                a = (str(i)).replace('\n', '').replace('\t', '')
-                m = BeautifulSoup(a, 'lxml')
-                k = m.polyline.attrs
-                strlines.append(k['points'].split())
-            lines = []
-            for i in strlines:
-                m = self.Read(i)
-                # print('i: ',i,'\n m:',m)
-                lines.append(m)
-
-            self.polygon = gons
-            self.polyline = lines
-
-            # print(self.polygon,'\n',self.polyline)
-
-
-        elif ('png' in fileName or 'jpg' in fileName):
-
-            self.img = mpimg.imread(fileName)
-            self.flag = 1
-
-        self.Magic()
-
-    def Reset(self):
-        self.flag = 0
-        self.Magic()
-
-    def Magic(self):
-
-        self.WholeData = []
-
-        raw = self._df
-
-        a = int(self.x_element.value())
-
-        b = int(self.y_element.value())
-
-        c = int(self.z_element.value())
-
-        self.axes.clear()
-        self.axes.axis('off')
-
-        s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
-                     Style='-',
-                     Alpha=0.3, Label='')]
-        for i in s:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
-
-        x = [0, 100]
-        y = [0, 50 * np.sqrt(3)]
-
-        extent = [min(x), max(x), min(y), max(y)]
-
-        if self.flag != 0:
-            self.axes.imshow(self.img, interpolation='nearest', aspect='auto', extent=extent)
-
-        # self.x_element_label.setText(self.items[a])
-        # self.y_element_label.setText(self.items[b])
-        # self.z_element_label.setText(self.items[c])
-
-        self.axes.annotate(self.items[a], (2, 15))
-        self.axes.annotate(self.items[b], (97, 15))
-        self.axes.annotate(self.items[c], (40, 85))
-
-        PointLabels = []
-        TPoints = []
-
-        for i in range(len(raw)):
-            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
-
-            TmpLabel = ''
-
-            #   self.WholeData.append(math.log(tmp, 10))
-
-            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                TmpLabel = ''
-            else:
-                PointLabels.append(raw.at[i, 'Label'])
-                TmpLabel = raw.at[i, 'Label']
-
-            x, y, z = 0, 0, 0
-            xuse, yuse, zuse = 0, 0, 0
-
-            x, y, z = raw.at[i, self.items[a]], raw.at[i, self.items[b]], raw.at[i, self.items[c]]
-
-            # print(a,x,'\n',b,y,'\n',c,z,'\n')
-
-            try:
-                xuse = float(x)
-                yuse = float(y)
-                zuse = float(z)
-
-                TPoints.append(TriPoint((xuse, yuse, zuse), Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'],
-                                        Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel))
-
-
-            except:
-                pass
-
-        for i in TPoints:
-            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
-                              label=i.Label, edgecolors='black')
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, prop=fontprop)
-
-        if self.polygon != 0 and self.polyline != 0:
-
-            # print('gon: ',self.polygon,' \n line:',self.polyline)
-
-            for i in self.polygon:
-                self.DrawLine(i)
-
-            for i in self.polyline:
-                self.DrawLine(i)
-
-
-
-                # self.DrawLine(self.polygon)
-                # self.DrawLine(self.polyline)
-
-        self.canvas.draw()
-
-
-class oldMagic(AppForm):
-    Lines = []
-    Tags = []
-    description = 'Magic diagram'
-    unuseful = ['Name',
-                'Author',
-                'DataType',
-                'Label',
-                'Marker',
-                'Color',
-                'Size',
-                'Alpha',
-                'Style',
-                'Width',
-                'Tag']
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Magic diagram')
-
-        self.items = []
-
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to Magic')
-
-        self.raw = df
-        self.rawitems = self.raw.columns.values.tolist()
-
-        for i in self.rawitems:
-            if i not in self.unuseful:
-                self.items.append(i)
-            else:
-                pass
-
-        self.create_main_frame()
-        self.create_status_bar()
-
-        self.polygon = 0
-        self.polyline = 0
-
-    def create_main_frame(self):
-        self.main_frame = QWidget()
-        self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        # self.axes.hold(False)
-
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
-        # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
-
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Magic)
-
-        self.load_button = QPushButton('&Load')
-        self.load_button.clicked.connect(self.Load)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Magic)  # int
-
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Magic)  # int
-
-        self.x_element = QSlider(Qt.Horizontal)
-        self.x_element.setRange(0, len(self.items) - 1)
-        self.x_element.setValue(0)
-        self.x_element.setTracking(True)
-        self.x_element.setTickPosition(QSlider.TicksBothSides)
-        self.x_element.valueChanged.connect(self.Magic)  # int
+        self.x_element.valueChanged.connect(self.Harker)  # int
 
         self.x_element_label = QLabel('X')
 
         self.logx_cb = QCheckBox('&Log')
         self.logx_cb.setChecked(False)
-        self.logx_cb.stateChanged.connect(self.Magic)  # int
+        self.logx_cb.stateChanged.connect(self.Harker)  # int
 
         self.y_element = QSlider(Qt.Horizontal)
         self.y_element.setRange(0, len(self.items) - 1)
         self.y_element.setValue(0)
         self.y_element.setTracking(True)
         self.y_element.setTickPosition(QSlider.TicksBothSides)
-        self.y_element.valueChanged.connect(self.Magic)  # int
+        self.y_element.valueChanged.connect(self.Harker)  # int
 
         self.y_element_label = QLabel('Y')
 
         self.logy_cb = QCheckBox('&Log')
         self.logy_cb.setChecked(False)
-        self.logy_cb.stateChanged.connect(self.Magic)  # int
+        self.logy_cb.stateChanged.connect(self.Harker)  # int
 
         #
         # Layout with box sizers
+
         #
         self.hbox1 = QHBoxLayout()
         self.hbox2 = QHBoxLayout()
         self.hbox3 = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.load_button,
+        for w in [self.save_button, self.draw_button,
                   self.legend_cb, self.slider_label, self.slider]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
@@ -7989,125 +6640,7 @@ class oldMagic(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def Read(self, inpoints):
-        points = []
-        for i in inpoints:
-            points.append(i.split())
-
-        result = []
-        for i in points:
-            for l in range(len(i)):
-                a = float((i[l].split(','))[0])
-                a = a * self.x_scale
-
-                b = float((i[l].split(','))[1])
-                b = (self.height_load - b) * self.y_scale
-
-                result.append((a, b))
-        return (result)
-
-    def Load(self):
-        fileName, filetype = QFileDialog.getOpenFileName(self,
-                                                         '选取文件',
-                                                         '~/',
-                                                         'SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
-
-        # #print(fileName)
-
-        doc = minidom.parse(fileName)  # parseString also exists
-        polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
-        polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
-
-        svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
-        svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
-
-        # print(svg_width)
-        # print(svg_height)
-
-        digit = '01234567890.-'
-        width = svg_width[0].replace('px', '').replace('pt', '')
-        height = svg_height[0].replace('px', '').replace('pt', '')
-
-        '''
-        width=''
-        for letter in svg_width[0]:
-            if letter in digit:
-                width = width + letter
-
-        #print(width)
-
-
-
-        height=''
-        for letter in svg_height[0]:
-            if letter in digit:
-                height = height + letter
-
-        #print(height)
-        '''
-
-        self.width_load = float(width)
-        self.height_load = float(height)
-
-        self.x_scale = 100.0 / float(width)
-        self.y_scale = 50.0 * math.sqrt(3) / float(height)
-
-        # print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
-
-        soup = BeautifulSoup(open(fileName), 'lxml')
-
-        tmpgon = soup.find_all('polygon')
-        tmpline = soup.find_all('polyline')
-        tmptext = soup.find_all('text')
-
-        strgons = []
-        for i in tmpgon:
-            a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, 'lxml')
-            k = m.polygon.attrs
-            strgons.append(k['points'].split())
-        gons = []
-        for i in strgons:
-            m = self.Read(i)
-            m.append(m[0])
-            gons.append(m)
-
-        strlines = []
-        for i in tmpline:
-            a = (str(i)).replace('\n', '').replace('\t', '')
-            m = BeautifulSoup(a, 'lxml')
-            k = m.polyline.attrs
-            strlines.append(k['points'].split())
-        lines = []
-        for i in strlines:
-            m = self.Read(i)
-            # print('i: ',i,'\n m:',m)
-            lines.append(m)
-
-        self.polygon = gons
-        self.polyline = lines
-
-        # print(self.polygon,'\n',self.polyline)
-
-
-        self.Magic()
-
-    # text_location= [path.getAttribute('transform') for path in doc.getElementsByTagName('text')]
-    '''
-    tmppolygon_points=[]
-    for i in polygon_points:
-        tmppolygon_points.append(i.split())
-
-    polygon=[]
-    for i in tmppolygon_points:
-        for l in range(len(i)):
-            a=float((i[l].split(','))[0])
-            b=float((i[l].split(','))[1])
-
-            polygon.append([a,b])
-    '''
-
-    def Magic(self):
+    def Harker(self):
 
         self.WholeData = []
 
@@ -8169,23 +6702,7 @@ class oldMagic(AppForm):
             a = int(self.slider.value())
             self.axes.legend(loc=a, prop=fontprop)
 
-        if self.polygon != 0 and self.polyline != 0:
-
-            # print('gon: ',self.polygon,' \n line:',self.polyline)
-
-            for i in self.polygon:
-                self.DrawLine(i)
-
-            for i in self.polyline:
-                self.DrawLine(i)
-
-
-
-                # self.DrawLine(self.polygon)
-                # self.DrawLine(self.polyline)
-
         self.canvas.draw()
-
 
 class Magic(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
@@ -9114,4 +7631,1998 @@ class Magic(AppForm):
                 # self.DrawLine(self.polyline)
 
         self.canvas.draw()
+
+class MudStone(AppForm, Tool):
+    _df = pd.DataFrame()
+    _changed = False
+
+    xlabel = r''
+    ylabel = r''
+
+    Tags = []
+
+    Label = [u'Clay', u'Sand', u'Silt']
+    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
+                     (-13, -2),
+                     (104, -1)]
+
+    Labels = [u'Y',
+              u'SY',
+              u'TY',
+              u'YS',
+              u'STY',
+              u'YT',
+              u'S',
+              u'TS',
+              u'ST',
+              u'T',
+              '20',
+              '40',
+              '60',
+              '80',
+
+              '80',
+              '60',
+              '40',
+              '20',
+
+              '80',
+              '60',
+              '40',
+              '20', ]
+
+    Locations = [(10, 10, 80),
+                 (40, 10, 50),
+                 (10, 40, 50),
+                 (50, 10, 40),
+                 (30, 30, 30),
+                 (10, 50, 40),
+                 (80, 10, 10),
+                 (60, 30, 10),
+                 (40, 50, 10),
+                 (10, 80, 10),
+
+                 (20, 0, 80),
+                 (40, 0, 60),
+                 (60, 0, 40),
+                 (80, 0, 20),
+
+                 (20, 80, 0),
+                 (40, 60, 0),
+                 (60, 40, 0),
+                 (80, 20, 0),
+
+                 (0, 20, 80),
+                 (0, 40, 60),
+                 (0, 60, 40),
+                 (0, 80, 20),
+                 ]
+    Offset = [(0, 0),
+              (0, 0),
+              (0, 0),
+              (0, 0),
+              (0, 0),
+              (0, 0),
+              (0, 0),
+              (0, 0),
+              (0, 0),
+              (0, 0),
+
+              (-18, 0),
+              (-18, 0),
+              (-18, 0),
+              (-18, 0),
+
+              (0, -18),
+              (0, -18),
+              (0, -18),
+              (0, -18),
+
+              (0, 0),
+              (0, 0),
+              (0, 0),
+              (0, 0), ]
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Sand-Silt-Clay')
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved to Tri')
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+        self.raw = self._df
+        for i in range(len(self.Labels)):
+            self.Tags.append(Tag(Label=self.Labels[i],
+                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
+                                                        self.Locations[i][2]),
+                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+        self.fig = Figure((15.0, 9.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton('&Save')
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton('&Reset')
+        self.draw_button.clicked.connect(self.Tri)
+
+        self.legend_cb = QCheckBox('&Legend')
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Tri)  # int
+
+        self.Tag_cb = QCheckBox('&Tag')
+        self.Tag_cb.setChecked(True)
+        self.Tag_cb.stateChanged.connect(self.Tri)  # int
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button, self.legend_cb, self.Tag_cb]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Tri(self):
+
+        self.axes.clear()
+        self.axes.axis('off')
+        self.axes.set_xlim(-15, 140)
+        self.axes.set_ylim(-10, 100)
+
+        s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
+                     Style='-',
+                     Alpha=0.7, Label='')]
+        for i in s:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        for i in range(len(self.LabelPosition)):
+            self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
+                               textcoords='offset points',
+                               fontsize=16, )
+        # 20间隔点坐标：
+        Gap20 = [(20, 0, 80),
+                 (40, 0, 60),
+                 (60, 0, 40),
+                 (80, 0, 20),
+
+                 (20, 80, 0),
+                 (40, 60, 0),
+                 (60, 40, 0),
+                 (80, 20, 0),
+
+                 (0, 80, 20),
+                 (0, 60, 40),
+                 (0, 40, 60),
+                 (0, 20, 80)]
+
+        # 二等分点坐标：
+        Gap50 = [(50, 0, 50),
+                 (40, 20, 40),
+
+                 (0, 50, 50),
+                 (20, 40, 40),
+
+                 (50, 50, 0),
+                 (40, 40, 20), ]
+
+        # 四等分点坐标：
+        Gap25 = [(25, 0, 75),
+                 (0, 25, 75),
+
+                 (75, 0, 25),
+                 (75, 25, 0),
+
+                 (25, 75, 0),
+                 (0, 75, 25), ]
+
+        # 中心三角坐标：
+        Middle = [(20, 20, 60),
+                  (60, 20, 20),
+                  (20, 60, 20), ]
+
+        # 中心三角垂直链接四等分线坐标：
+        Other = [(12.5, 12.5, 75),
+                 (75, 12.5, 12.5),
+                 (12.5, 75, 12.5), ]
+
+        tmp = []
+        # 中心三角绘制
+        tmp.append(
+            TriLine(Points=[Middle[0], Middle[1], Middle[2], Middle[0]], Sort='', Width=1, Color='black', Style='-',
+                    Alpha=0.7,
+                    Label=''))
+
+        # 二等分和四等分线条绘制
+        for i in range(len(Gap50)):
+
+            if i % 2 == 0:
+                tmp.append(
+                    TriLine(Points=[Gap50[i], Gap50[i + 1]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                            Label=''))
+                tmp.append(
+                    TriLine(Points=[Gap25[i], Gap25[i + 1]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                            Label=''))
+
+        # 中心外延线条绘制
+        for i in range(len(Middle)):
+            tmp.append(TriLine(Points=[Middle[i], Other[i]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
+                               Label=''))
+
+        # 20网格线条绘制
+        for i in range(len(Gap20)):
+            if i <= len(Gap20) - 5:
+                tmp.append(
+                    TriLine(Points=[Gap20[i], Gap20[i + 4]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
+                            Label=''))
+            else:
+                tmp.append(
+                    TriLine(Points=[Gap20[i], Gap20[-1 - i]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
+                            Label=''))
+
+        for i in tmp:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        raw = self._df
+        PointLabels = []
+        TPoints = []
+        for i in range(len(raw)):
+            TmpLabel = ''
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+
+            TPoints.append(TriPoint((raw.at[i, 'sand'], raw.at[i, 'silt'], raw.at[i, 'clay']), Size=raw.at[i, 'Size'],
+                                    Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
+                                    Label=TmpLabel))
+
+
+            # TPoints.append(TriPoint((raw.at[i, 'X'], raw.at[i, 'Y'], raw.at[i, 'Z']), Size=raw.at[i, 'Size'],
+            #         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
+            #         Label=TmpLabel))
+
+        for i in TPoints:
+            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
+                              label=i.Label, edgecolors='black')
+
+        if (self.Tag_cb.isChecked()):
+            for i in self.Tags:
+                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
+                                   textcoords='offset points',
+                                   fontsize=i.FontSize, color='grey', alpha=0.8)
+
+        if (self.legend_cb.isChecked()):
+            # a = int(self.slider.value())
+            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
+            self.axes.legend(loc=4, prop=fontprop, bbox_to_anchor=(1.1, 0.5))
+
+        self.canvas.draw()
+
+        self.canvas.draw()
+
+class XY(AppForm):
+    Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
+               u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
+               u'Li',
+               u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
+
+    StandardsName = ['OIB', 'EMORB', 'C1', 'PM', 'NMORB']
+
+    NameChosen = 'OIB'
+    Standards = {
+        'OIB': {'Cs': 0.387, 'Tl': 0.077, 'Rb': 31, 'Ba': 350, 'W': 0.56, 'Th': 4, 'U': 1.02, 'Nb': 48, 'Ta': 2.7,
+                'K': 12000, 'La': 37, 'Ce': 80, 'Pb': 3.2, 'Pr': 9.7, 'Mo': 2.4, 'Sr': 660, 'P': 2700, 'Nd': 38.5,
+                'F': 1150, 'Sm': 10, 'Zr': 280, 'Hf': 7.8, 'Eu': 3, 'Sn': 2.7, 'Sb': 0.03, 'Ti': 17200, 'Gd': 7.62,
+                'Tb': 1.05, 'Dy': 5.6, 'Li': 5.6, 'Y': 29, 'Ho': 1.06, 'Er': 2.62, 'Tm': 0.35, 'Yb': 2.16, 'Lu': 0.3},
+        'EMORB': {'Cs': 0.063, 'Tl': 0.013, 'Rb': 5.04, 'Ba': 57, 'W': 0.092, 'Th': 0.6, 'U': 0.18, 'Nb': 8.3,
+                  'Ta': 0.47, 'K': 2100, 'La': 6.3, 'Ce': 15, 'Pb': 0.6, 'Pr': 2.05, 'Mo': 0.47, 'Sr': 155, 'P': 620,
+                  'Nd': 9, 'F': 250, 'Sm': 2.6, 'Zr': 73, 'Hf': 2.03, 'Eu': 0.91, 'Sn': 0.8, 'Sb': 0.01, 'Ti': 6000,
+                  'Gd': 2.97, 'Tb': 0.53, 'Dy': 3.55, 'Li': 3.5, 'Y': 22, 'Ho': 0.79, 'Er': 2.31, 'Tm': 0.356,
+                  'Yb': 2.37, 'Lu': 0.354},
+        'C1': {'Cs': 0.188, 'Tl': 0.14, 'Rb': 2.32, 'Ba': 2.41, 'W': 0.095, 'Th': 0.029, 'U': 0.008, 'Nb': 0.246,
+               'Ta': 0.014, 'K': 545, 'La': 0.237, 'Ce': 0.612, 'Pb': 2.47, 'Pr': 0.095, 'Mo': 0.92, 'Sr': 7.26,
+               'P': 1220, 'Nd': 0.467, 'F': 60.7, 'Sm': 0.153, 'Zr': 3.87, 'Hf': 0.1066, 'Eu': 0.058, 'Sn': 1.72,
+               'Sb': 0.16, 'Ti': 445, 'Gd': 0.2055, 'Tb': 0.0374, 'Dy': 0.254, 'Li': 1.57, 'Y': 1.57, 'Ho': 0.0566,
+               'Er': 0.1655, 'Tm': 0.0255, 'Yb': 0.17, 'Lu': 0.0254},
+        'PM': {'Cs': 0.032, 'Tl': 0.005, 'Rb': 0.635, 'Ba': 6.989, 'W': 0.02, 'Th': 0.085, 'U': 0.021, 'Nb': 0.713,
+               'Ta': 0.041, 'K': 250, 'La': 0.687, 'Ce': 1.775, 'Pb': 0.185, 'Pr': 0.276, 'Mo': 0.063, 'Sr': 21.1,
+               'P': 95, 'Nd': 1.354, 'F': 26, 'Sm': 0.444, 'Zr': 11.2, 'Hf': 0.309, 'Eu': 0.168, 'Sn': 0.17,
+               'Sb': 0.005, 'Ti': 1300, 'Gd': 0.596, 'Tb': 0.108, 'Dy': 0.737, 'Li': 1.6, 'Y': 4.55, 'Ho': 0.164,
+               'Er': 0.48, 'Tm': 0.074, 'Yb': 0.493, 'Lu': 0.074},
+        'NMORB': {'Cs': 0.007, 'Tl': 0.0014, 'Rb': 0.56, 'Ba': 6.3, 'W': 0.01, 'Th': 0.12, 'U': 0.047, 'Nb': 2.33,
+                  'Ta': 0.132, 'K': 600, 'La': 2.5, 'Ce': 7.5, 'Pb': 0.3, 'Pr': 1.32, 'Mo': 0.31, 'Sr': 90, 'P': 510,
+                  'Nd': 7.3, 'F': 210, 'Sm': 2.63, 'Zr': 74, 'Hf': 2.05, 'Eu': 1.02, 'Sn': 1.1, 'Sb': 0.01, 'Ti': 7600,
+                  'Gd': 3.68, 'Tb': 0.67, 'Dy': 4.55, 'Li': 4.3, 'Y': 28, 'Ho': 1.01, 'Er': 2.97, 'Tm': 0.456,
+                  'Yb': 3.05, 'Lu': 0.455}, }
+
+    Lines = []
+    Tags = []
+
+    xlabel = 'x'
+    ylabel = 'y'
+
+    description = 'X-Y diagram'
+    unuseful = ['Name',
+                'Author',
+                'DataType',
+                'Label',
+                'Marker',
+                'Color',
+                'Size',
+                'Alpha',
+                'Style',
+                'Width',
+                'Tag']
+
+    width_plot = 100.0
+    height_plot = 100.0
+
+    width_load = width_plot
+    height_load = height_plot
+
+    polygon = []
+    polyline = []
+    line = []
+
+    strgons = []
+    strlines = []
+    strpolylines = []
+
+    extent = 0
+
+    Left = 0
+    Right = 0
+    Up = 0
+    Down = 0
+
+    FitLevel=3
+    FadeGroups=100
+    ShapeGroups=200
+
+    Xleft,Xright,Ydown,Yup=0,0,0,0
+
+    LimSet= False
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle(self.description)
+
+        self.items = []
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved to Magic')
+
+        self.raw = df
+        self.rawitems = self.raw.columns.values.tolist()
+
+        for i in self.rawitems:
+            if i not in self.unuseful:
+                self.items.append(i)
+            else:
+                pass
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+        self.polygon = 0
+        self.polyline = 0
+
+        self.flag = 0
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        # self.axes.hold(False)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton('&Save')
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton('&Reset')
+        self.draw_button.clicked.connect(self.Reset)
+
+        self.load_button = QPushButton('&Load')
+        self.load_button.clicked.connect(self.Load)
+
+        self.legend_cb = QCheckBox('&Legend')
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Magic)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Magic)  # int
+
+        self.fit_cb= QCheckBox('&PolyFit')
+        self.fit_cb.setChecked(False)
+        self.fit_cb.stateChanged.connect(self.Magic)  # int
+
+        self.fit_label = QLabel('Exp')
+        self.fit_seter = QLineEdit(self)
+        self.fit_seter.textChanged[str].connect(self.FitChanged)
+
+
+        self.xlim_seter_left_label = QLabel('Xleft')
+        self.xlim_seter_left = QLineEdit(self)
+        self.xlim_seter_left.textChanged[str].connect(self.XleftChanged)
+
+        self.xlim_seter_right_label = QLabel('Xright')
+        self.xlim_seter_right = QLineEdit(self)
+        self.xlim_seter_right.textChanged[str].connect(self.XrightChanged)
+
+
+        self.ylim_seter_down_label = QLabel('Ydown')
+        self.ylim_seter_down = QLineEdit(self)
+        self.ylim_seter_down.textChanged[str].connect(self.YdownChanged)
+
+
+        self.ylim_seter_up_label = QLabel('Yup')
+        self.ylim_seter_up = QLineEdit(self)
+        self.ylim_seter_up.textChanged[str].connect(self.YupChanged)
+
+
+
+
+        self.fade_cb= QCheckBox('&Fade')
+        self.fade_cb.setChecked(False)
+        self.fade_cb.stateChanged.connect(self.Magic)  # int
+
+        self.fade_label = QLabel('Groups')
+        self.fade_seter = QLineEdit(self)
+        self.fade_seter.textChanged[str].connect(self.FadeChanged)
+
+
+        self.shape_cb= QCheckBox('&Shape')
+        self.shape_cb.setChecked(False)
+        self.shape_cb.stateChanged.connect(self.Magic)  # int
+
+        self.shape_label = QLabel('Step')
+        self.shape_seter = QLineEdit(self)
+        self.shape_seter.textChanged[str].connect(self.ShapeChanged)
+
+
+
+        self.Normalize_cb = QCheckBox('&Normalize')
+        self.Normalize_cb.setChecked(False)
+        self.Normalize_cb.stateChanged.connect(self.Magic)  # int
+
+        self.norm_slider_label = QLabel('Standard:' + self.NameChosen)
+        self.norm_slider = QSlider(Qt.Horizontal)
+        self.norm_slider.setRange(0, 4)
+        self.norm_slider.setValue(0)
+        self.norm_slider.setTracking(True)
+        self.norm_slider.setTickPosition(QSlider.TicksBothSides)
+        self.norm_slider.valueChanged.connect(self.Magic)  # int
+
+        self.x_element = QSlider(Qt.Horizontal)
+        self.x_element.setRange(0, len(self.items) - 1)
+        self.x_element.setValue(0)
+        self.x_element.setTracking(True)
+        self.x_element.setTickPosition(QSlider.TicksBothSides)
+        self.x_element.valueChanged.connect(self.Magic)  # int
+
+        self.x_element_label = QLabel('X')
+
+        #self.x_calculator = QLineEdit(self)
+
+
+
+        self.logx_cb = QCheckBox('&Log')
+        self.logx_cb.setChecked(False)
+        self.logx_cb.stateChanged.connect(self.Magic)  # int
+
+        self.y_element = QSlider(Qt.Horizontal)
+        self.y_element.setRange(0, len(self.items) - 1)
+        self.y_element.setValue(0)
+        self.y_element.setTracking(True)
+        self.y_element.setTickPosition(QSlider.TicksBothSides)
+        self.y_element.valueChanged.connect(self.Magic)  # int
+
+        self.y_element_label = QLabel('Y')
+
+        #self.y_calculator = QLineEdit(self)
+
+
+        self.logy_cb = QCheckBox('&Log')
+        self.logy_cb.setChecked(False)
+        self.logy_cb.stateChanged.connect(self.Magic)  # int
+
+        self.width_size_seter_label = QLabel('Width')
+        self.width_size_seter = QLineEdit(self)
+
+        self.width_size_seter.textChanged[str].connect(self.WChanged)
+
+        self.height_size_seter_label = QLabel('height')
+        self.height_size_seter = QLineEdit(self)
+
+        self.height_size_seter.textChanged[str].connect(self.HChanged)
+
+        self.Left_size_seter_label = QLabel('Left')
+        self.Left_size_seter = QLineEdit(self)
+
+        self.Left_size_seter.textChanged[str].connect(self.LeftChanged)
+
+        self.Right_size_seter_label = QLabel('Right')
+        self.Right_size_seter = QLineEdit(self)
+
+        self.Right_size_seter.textChanged[str].connect(self.RightChanged)
+
+        self.Up_size_seter_label = QLabel('Up')
+        self.Up_size_seter = QLineEdit(self)
+
+        self.Up_size_seter.textChanged[str].connect(self.UpChanged)
+
+        self.Down_size_seter_label = QLabel('Down')
+        self.Down_size_seter = QLineEdit(self)
+
+        self.Down_size_seter.textChanged[str].connect(self.DownChanged)
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox0 = QHBoxLayout()
+        self.hbox1 = QHBoxLayout()
+        self.hbox2 = QHBoxLayout()
+        self.hbox3 = QHBoxLayout()
+        self.hbox4 = QHBoxLayout()
+        self.hbox5 = QHBoxLayout()
+        self.hbox6 = QHBoxLayout()
+        self.hbox7 = QHBoxLayout()
+
+        for w in [self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.fade_cb,self.fade_label,self.fade_seter,self.shape_cb,self.shape_label,self.shape_seter]:
+            self.hbox0.addWidget(w)
+            self.hbox0.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.save_button, self.draw_button, self.load_button,
+                  self.legend_cb, self.slider_label, self.slider,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logx_cb, self.x_element_label, self.x_element]:
+            self.hbox2.addWidget(w)
+            self.hbox2.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logy_cb, self.y_element_label, self.y_element]:
+            self.hbox3.addWidget(w)
+            self.hbox3.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.width_size_seter_label, self.width_size_seter]:
+            self.hbox4.addWidget(w)
+            self.hbox4.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.height_size_seter_label, self.height_size_seter]:
+            self.hbox5.addWidget(w)
+            self.hbox5.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.Left_size_seter, self.Left_size_seter_label, self.Right_size_seter, self.Right_size_seter_label]:
+            self.hbox6.addWidget(w)
+            self.hbox6.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.Down_size_seter, self.Down_size_seter_label, self.Up_size_seter, self.Up_size_seter_label]:
+            self.hbox7.addWidget(w)
+            self.hbox7.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox0)
+        self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
+        self.vbox.addLayout(self.hbox4)
+        self.vbox.addLayout(self.hbox5)
+        self.vbox.addLayout(self.hbox6)
+        self.vbox.addLayout(self.hbox7)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Read(self, inpoints):
+        points = []
+        for i in inpoints:
+            points.append(i.split())
+
+        result = []
+        for i in points:
+            for l in range(len(i)):
+                a = float((i[l].split(','))[0])
+                a = a * self.x_scale
+
+                b = float((i[l].split(','))[1])
+                b = (self.height_load - b) * self.y_scale
+
+                result.append((a, b))
+        return (result)
+
+    def Load(self):
+        fileName, filetype = QFileDialog.getOpenFileName(self,
+                                                         '选取文件',
+                                                         '~/',
+                                                         'PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
+
+        print(fileName, '\t', filetype)
+
+        if ('svg' in fileName):
+            doc = minidom.parse(fileName)  # parseString also exists
+            polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
+            polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
+
+            svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
+            svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
+
+            # print(svg_width)
+            # print(svg_height)
+
+            digit = '01234567890.-'
+            width = svg_width[0].replace('px', '').replace('pt', '')
+            height = svg_height[0].replace('px', '').replace('pt', '')
+
+            self.width_load = float(width)
+            self.height_load = float(height)
+
+            soup = BeautifulSoup(open(fileName), 'lxml')
+
+            tmpgon = soup.find_all('polygon')
+            tmppolyline = soup.find_all('polyline')
+            tmptext = soup.find_all('text')
+            tmpline = soup.find_all('line')
+
+            tmppath = soup.find_all('path')
+
+            self.strgons = []
+            for i in tmpgon:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, 'lxml')
+                k = m.polygon.attrs
+                self.strgons.append(k['points'].split())
+
+            self.strpolylines = []
+            for i in tmppolyline:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, 'lxml')
+                k = m.polyline.attrs
+                self.strpolylines.append(k['points'].split())
+
+            self.strlines = []
+            for i in tmpline:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, 'lxml')
+                k = m.line.attrs
+                a = str(k['x1']) + ',' + str(k['y1']) + ' ' + str(k['x2']) + ',' + str(k['y2'])
+                self.strlines.append(a.split())
+
+            self.strpath = []
+            for i in tmppath:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, 'lxml')
+                k = m.path.attrs
+                self.strpath.append(k['d'].split())
+
+            # print(self.strpath)
+
+
+
+            self.polygon = []
+            for i in self.strgons:
+                m = self.Read(i)
+                m.append(m[0])
+                self.polygon.append(m)
+
+            self.polyline = []
+            for i in self.strpolylines:
+                m = self.Read(i)
+                # print('i: ',i,'\n m:',m)
+                self.polyline.append(m)
+
+            self.line = []
+            for i in self.strlines:
+                m = self.Read(i)
+                # print('i: ',i,'\n m:',m)
+                self.line.append(m)
+
+
+        elif ('png' in fileName or 'jpg' in fileName):
+
+            self.img = mpimg.imread(fileName)
+            self.flag = 1
+
+        self.Magic()
+
+    def Reset(self):
+        self.flag = 0
+        self.Magic()
+
+    def WChanged(self, text):
+        w = 'width ' + text
+        self.width_size_seter_label.setText(w)
+        self.width_size_seter_label.adjustSize()
+
+        try:
+            self.width_plot = float(text)
+        except:
+            pass
+
+        self.x_scale = self.width_plot / self.width_load
+
+        self.polygon = []
+        for i in self.strgons:
+            m = self.Read(i)
+            m.append(m[0])
+            self.polygon.append(m)
+
+        self.polyline = []
+        for i in self.strpolylines:
+            m = self.Read(i)
+            # print('i: ',i,'\n m:',m)
+            self.polyline.append(m)
+
+        self.line = []
+        for i in self.strlines:
+            m = self.Read(i)
+            # print('i: ',i,'\n m:',m)
+            self.line.append(m)
+
+        self.Magic()
+
+    def HChanged(self, text):
+        h = 'height ' + text
+        self.height_size_seter_label.setText(h)
+        self.height_size_seter_label.adjustSize()
+
+        try:
+            self.height_plot = float(text)
+        except:
+            pass
+
+        self.y_scale = self.height_plot / self.height_load
+
+        self.polygon = []
+        for i in self.strgons:
+            m = self.Read(i)
+            m.append(m[0])
+            self.polygon.append(m)
+
+        self.polyline = []
+        for i in self.strpolylines:
+            m = self.Read(i)
+            # print('i: ',i,'\n m:',m)
+            self.polyline.append(m)
+
+        self.line = []
+        for i in self.strlines:
+            m = self.Read(i)
+            # print('i: ',i,'\n m:',m)
+            self.line.append(m)
+
+        self.Magic()
+
+    # text_location= [path.getAttribute('transform') for path in doc.getElementsByTagName('text')]
+    '''
+    tmppolygon_points=[]
+    for i in polygon_points:
+        tmppolygon_points.append(i.split())
+
+    polygon=[]
+    for i in tmppolygon_points:
+        for l in range(len(i)):
+            a=float((i[l].split(','))[0])
+            b=float((i[l].split(','))[1])
+
+            polygon.append([a,b])
+    '''
+
+    def LeftChanged(self, text):
+        w = 'Left ' + text
+        self.Left_size_seter_label.setText(w)
+        self.Left_size_seter_label.adjustSize()
+
+        try:
+            self.Left = float(text)
+        except:
+            pass
+
+        self.Magic()
+
+    def RightChanged(self, text):
+        w = 'Right ' + text
+        self.Right_size_seter_label.setText(w)
+        self.Right_size_seter_label.adjustSize()
+
+        try:
+            self.Right = float(text)
+        except:
+            pass
+
+        self.Magic()
+
+    def UpChanged(self, text):
+        w = 'Up ' + text
+        self.Up_size_seter_label.setText(w)
+        self.Up_size_seter_label.adjustSize()
+
+        try:
+            self.Up = float(text)
+        except:
+            pass
+
+        self.Magic()
+
+    def DownChanged(self, text):
+        w = 'Down ' + text
+        self.Down_size_seter_label.setText(w)
+        self.Down_size_seter_label.adjustSize()
+
+        try:
+            self.Down = float(text)
+        except:
+            pass
+
+        self.Magic()
+
+    def FitChanged(self, text):
+        w = 'Fit' + text
+        self.fit_label.setText(w)
+        self.fit_label.adjustSize()
+
+        try:
+            self.FitLevel = float(text)
+        except:
+            pass
+
+        self.Magic()
+
+    def FadeChanged(self, text):
+        w = 'Fade' + text
+        self.fade_label.setText(w)
+        self.fade_label.adjustSize()
+
+        try:
+            self.FadeGroups = float(text)
+        except:
+            pass
+
+        self.Magic()
+
+    def ShapeChanged(self, text):
+        w = 'Shape' + text
+        self.shape_label.setText(w)
+        self.shape_label.adjustSize()
+
+        try:
+            self.ShapeGroups = int(text)
+        except:
+            pass
+
+        self.Magic()
+
+    def XleftChanged(self,text):
+        if len(text)<1:
+            self.LimSet = False
+        else:
+            self.LimSet = True
+            w = 'Left ' + text
+            self.xlim_seter_left_label.setText(w)
+            self.xlim_seter_left_label.adjustSize()
+
+            try:
+                self.Xleft = float(text)
+            except:
+                pass
+
+            self.Magic()
+
+    def XrightChanged(self,text):
+        if len(text)<1:
+            self.LimSet = False
+        else:
+            self.LimSet = True
+            w = 'Right ' + text
+            self.xlim_seter_right_label.setText(w)
+            self.xlim_seter_right_label.adjustSize()
+
+            try:
+                self.Xright = float(text)
+            except:
+                pass
+
+            self.Magic()
+
+    def YdownChanged(self,text):
+        if len(text)<1:
+            self.LimSet = False
+        else:
+            self.LimSet = True
+            w = 'Down ' + text
+            self.ylim_seter_down_label.setText(w)
+            self.ylim_seter_down_label.adjustSize()
+
+            try:
+                self.Ydown = float(text)
+            except:
+                pass
+
+            self.Magic()
+
+    def YupChanged(self,text):
+        if len(text)<1:
+            self.LimSet = False
+        else:
+            self.LimSet =True
+            w = 'Up ' + text
+            self.ylim_seter_up_label.setText(w)
+            self.ylim_seter_up_label.adjustSize()
+
+            try:
+                self.Yup = float(text)
+            except:
+                pass
+
+            self.Magic()
+
+
+    def Magic(self):
+
+        self.WholeData = []
+
+        self.x_scale = self.width_plot / self.width_load
+
+        self.y_scale = self.height_plot / self.height_load
+
+        # print(self.x_scale,' and ',self.x_scale)
+
+        raw = self._df
+
+        a = int(self.x_element.value())
+
+        b = int(self.y_element.value())
+
+        self.axes.clear()
+
+        if (self.Left != self.Right) and (self.Down != self.Up) and abs(self.Left) + abs(self.Right) + abs(
+                self.Down) + abs(self.Up) != 0:
+            self.extent = [self.Left, self.Right, self.Down, self.Up]
+        elif (self.Left == self.Right and abs(self.Left) + abs(self.Right) != 0):
+            reply = QMessageBox.warning(self, 'Warning', 'You set same value to Left and Right limits.')
+            self.extent = 0
+
+        elif (self.Down == self.Up and abs(self.Down) + abs(self.Up) != 0):
+            reply = QMessageBox.warning(self, 'Warning', 'You set same value to Up and Down limits.')
+            self.extent = 0
+        else:
+            self.extent = 0
+
+        standardnamechosen = self.StandardsName[int(self.norm_slider.value())]
+        standardchosen = self.Standards[standardnamechosen]
+
+        self.norm_slider_label.setText(standardnamechosen)
+
+        if self.flag != 0:
+            if self.extent != 0:
+                self.axes.imshow(self.img, interpolation='nearest', aspect='auto', extent=self.extent)
+            else:
+                self.axes.imshow(self.img, interpolation='nearest', aspect='auto')
+
+        self.axes.set_xlabel(self.items[a])
+        self.x_element_label.setText(self.items[a])
+
+        self.axes.set_ylabel(self.items[b])
+        self.y_element_label.setText(self.items[b])
+
+        PointLabels = []
+
+        XtoFit = []
+        YtoFit = []
+
+
+
+        for i in range(len(raw)):
+            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+            XtoFit.append(x)
+            YtoFit.append(y)
+
+
+
+
+        if self.LimSet==False:
+            self.Xleft, self.Xright, self.Ydown, self.Yup = min(XtoFit), max(XtoFit), min(YtoFit), max(YtoFit)
+
+
+
+        z = np.polyfit(YtoFit, XtoFit,self.FitLevel)
+
+        #Yline = np.linspace(min(YtoFit), max(YtoFit), 30)
+
+        Yline = np.linspace(self.Ydown,self.Yup, 30)
+
+        p = np.poly1d(z)
+        Xline = p(Yline)
+
+
+        print(z)
+        self.reference=str(z)
+
+        self.textbox.setText('x=f(y) Polyfitting parameter：' + '\n' + self.reference)
+
+
+
+        alphatouse = []
+
+        for i in range(len(XtoFit)):
+            tmp = abs(p(YtoFit[i]) - XtoFit[i])
+            alphatouse.append(tmp)
+
+        alist = []
+
+        step = abs(min(alphatouse) - max(alphatouse)) / self.FadeGroups
+
+        if self.FadeGroups>4:
+            for i in alphatouse:
+                if min(alphatouse) <= i < min(alphatouse) + step:
+                    alist.append(0.8)
+                elif min(alphatouse) + step <= i < min(alphatouse) + 2 * step:
+                    alist.append(0.6)
+                elif min(alphatouse) + 2 * step <= i < min(alphatouse) + 3 * step:
+                    alist.append(0.4)
+                elif min(alphatouse) + 3 * step <= i < min(alphatouse) + 4 * step:
+                    alist.append(0.2)
+                else:
+                    alist.append(0.05)
+        else:
+            for i in alphatouse:
+                if min(alphatouse) <= i < min(alphatouse) + step:
+                    alist.append(0.8)
+                else:
+                    alist.append(0.2)
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+
+            x, y = 0, 0
+            xuse, yuse = 0, 0
+
+            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+
+
+            try:
+                xuse = x
+                yuse = y
+
+                self.xlabel = self.items[a]
+                self.ylabel = self.items[b]
+
+                if (self.Normalize_cb.isChecked()):
+
+                    self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+
+                    self.axes.set_xlabel(self.xlabel)
+                    self.x_element_label.setText(self.xlabel)
+
+                    self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+
+                    self.axes.set_ylabel(self.ylabel)
+                    self.y_element_label.setText(self.ylabel)
+
+                    if self.items[a] in self.Element:
+                        xuse = xuse / standardchosen[self.items[a]]
+
+                    if self.items[b] in self.Element:
+                        yuse = yuse / standardchosen[self.items[b]]
+
+                if (self.logx_cb.isChecked()):
+                    xuse = math.log(x, 10)
+                    self.xlabel = '$log10$ ' + self.xlabel
+
+                    self.axes.set_xlabel(self.xlabel)
+
+                if (self.logy_cb.isChecked()):
+                    yuse = math.log(y, 10)
+
+                    self.ylabel = '$log10$ ' + self.ylabel
+
+                    self.axes.set_ylabel(self.ylabel)
+
+
+
+                if (self.fade_cb.isChecked()==False):
+
+                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel, edgecolors='black')
+
+                elif (self.fade_cb.isChecked()==True):
+                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=alist[i],
+                                      label=TmpLabel, edgecolors='black')
+
+
+
+
+            except(ValueError):
+                pass
+
+
+
+
+
+        if (self.fit_cb.isChecked()):
+            self.axes.plot(Xline, Yline, 'b-')
+
+
+        if (self.shape_cb.isChecked()):
+            xmin, xmax = min(XtoFit), max(XtoFit)
+            ymin, ymax = min(YtoFit), max(YtoFit)
+
+            DensityColorMap = 'Blues'
+            DensityAlpha = 0.3
+
+            DensityLineColor = 'grey'
+            DensityLineAlpha = 0.3
+
+            # Peform the kernel density estimate
+            xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+
+
+            command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
+            exec(command)
+
+
+            positions = np.vstack([xx.ravel(), yy.ravel()])
+            values = np.vstack([raw[self.items[a]], raw[self.items[b]]])
+            kernel = st.gaussian_kde(values)
+            f = np.reshape(kernel(positions).T, xx.shape)
+
+
+            # Contourf plot
+            cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
+            ## Or kernel density estimate plot instead of the contourf plot
+            #self.axes.imshow(np.rot90(f), cmap='Blues', extent=[xmin, xmax, ymin, ymax])
+            # Contour plot
+            cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
+            # Label plot
+            self.axes.clabel(cset, inline=1, fontsize=10)
+
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a,prop=fontprop)
+
+        if self.polygon != 0 and self.polyline != 0 and self.line != 0:
+
+            # print('gon: ',self.polygon,' \n line:',self.polyline)
+
+            for i in self.polygon:
+                self.DrawLine(i)
+
+            for i in self.polyline:
+                self.DrawLine(i)
+
+            for i in self.line:
+                self.DrawLine(i)
+
+
+
+                # self.DrawLine(self.polygon)
+                # self.DrawLine(self.polyline)
+
+        self.canvas.draw()
+
+class XYZ(AppForm):
+    Lines = []
+    Tags = []
+    description = 'X-Y-Z diagram'
+    unuseful = ['Name',
+                'Author',
+                'DataType',
+                'Label',
+                'Marker',
+                'Color',
+                'Size',
+                'Alpha',
+                'Style',
+                'Width',
+                'Tag']
+
+    polygon = []
+    polyline = []
+    line = []
+    flag = 0
+
+    strgons = []
+    strlines = []
+    strpolylines = []
+
+    width_plot = 100.0
+    height_plot = 50 * math.sqrt(3)
+
+    width_load = width_plot
+    height_load = height_plot
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Triangular diagram')
+
+        self.items = []
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved to Magic')
+
+        self.raw = df
+        self.rawitems = self.raw.columns.values.tolist()
+
+        for i in self.rawitems:
+            if i not in self.unuseful:
+                self.items.append(i)
+            else:
+                pass
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+        self.polygon = 0
+        self.polyline = 0
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+        self.axes = self.fig.add_subplot(111)
+        self.axes.axis('off')
+
+        # self.axes.hold(False)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton('&Save')
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.draw_button = QPushButton('&Reset')
+        self.draw_button.clicked.connect(self.Reset)
+
+        self.load_button = QPushButton('&Load')
+        self.load_button.clicked.connect(self.Load)
+
+        self.legend_cb = QCheckBox('&Legend')
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Magic)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Magic)  # int
+
+        self.x_element = QSlider(Qt.Horizontal)
+        self.x_element.setRange(0, len(self.items) - 1)
+        self.x_element.setValue(0)
+        self.x_element.setTracking(True)
+        self.x_element.setTickPosition(QSlider.TicksBothSides)
+        self.x_element.valueChanged.connect(self.Magic)  # int
+
+        self.x_element_label = QLabel('X')
+
+        self.y_element = QSlider(Qt.Horizontal)
+        self.y_element.setRange(0, len(self.items) - 1)
+        self.y_element.setValue(1)
+        self.y_element.setTracking(True)
+        self.y_element.setTickPosition(QSlider.TicksBothSides)
+        self.y_element.valueChanged.connect(self.Magic)  # int
+
+        self.y_element_label = QLabel('Y')
+
+        self.z_element = QSlider(Qt.Horizontal)
+        self.z_element.setRange(0, len(self.items) - 1)
+        self.z_element.setValue(2)
+        self.z_element.setTracking(True)
+        self.z_element.setTickPosition(QSlider.TicksBothSides)
+        self.z_element.valueChanged.connect(self.Magic)  # int
+
+        self.z_element_label = QLabel('Z')
+
+        #
+        # Layout with box sizers
+        #
+        self.hbox1 = QHBoxLayout()
+        self.hbox2 = QHBoxLayout()
+        self.hbox3 = QHBoxLayout()
+        self.hbox4 = QHBoxLayout()
+
+        for w in [self.save_button, self.draw_button, self.load_button,
+                  self.legend_cb, self.slider_label, self.slider]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.x_element_label, self.x_element]:
+            self.hbox2.addWidget(w)
+            self.hbox2.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.y_element_label, self.y_element]:
+            self.hbox3.addWidget(w)
+            self.hbox3.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.z_element_label, self.z_element]:
+            self.hbox4.addWidget(w)
+            self.hbox4.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+        self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
+        self.vbox.addLayout(self.hbox4)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Read(self, inpoints):
+        points = []
+        for i in inpoints:
+            points.append(i.split())
+
+        result = []
+        for i in points:
+            for l in range(len(i)):
+                a = float((i[l].split(','))[0])
+                a = a * self.x_scale
+
+                b = float((i[l].split(','))[1])
+                b = (self.height_load - b) * self.y_scale
+
+                result.append((a, b))
+        return (result)
+
+    def Load(self):
+        fileName, filetype = QFileDialog.getOpenFileName(self,
+                                                         '选取文件',
+                                                         '~/',
+                                                         'PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
+
+        print(fileName, '\t', filetype)
+
+        if ('svg' in fileName):
+            doc = minidom.parse(fileName)  # parseString also exists
+            polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
+            polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
+
+            svg_width = [path.getAttribute('width') for path in doc.getElementsByTagName('svg')]
+            svg_height = [path.getAttribute('height') for path in doc.getElementsByTagName('svg')]
+
+            # print(svg_width)
+            # print(svg_height)
+
+            digit = '01234567890.-'
+            width = svg_width[0].replace('px', '').replace('pt', '')
+            height = svg_height[0].replace('px', '').replace('pt', '')
+
+            '''
+            width=''
+            for letter in svg_width[0]:
+                if letter in digit:
+                    width = width + letter
+
+            #print(width)
+
+
+
+            height=''
+            for letter in svg_height[0]:
+                if letter in digit:
+                    height = height + letter
+
+            #print(height)
+            '''
+
+            self.width_load = float(width)
+            self.height_load = float(height)
+
+            self.x_scale = 100.0 / float(width)
+            self.y_scale = 50.0 * math.sqrt(3) / float(height)
+
+            # print('x_scale' , self.x_scale , ' y_scale' , self.y_scale)
+
+            soup = BeautifulSoup(open(fileName), 'lxml')
+
+            tmpgon = soup.find_all('polygon')
+            tmpline = soup.find_all('polyline')
+            tmptext = soup.find_all('text')
+
+            strgons = []
+            for i in tmpgon:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, 'lxml')
+                k = m.polygon.attrs
+                strgons.append(k['points'].split())
+            gons = []
+            for i in strgons:
+                m = self.Read(i)
+                m.append(m[0])
+                gons.append(m)
+
+            strlines = []
+            for i in tmpline:
+                a = (str(i)).replace('\n', '').replace('\t', '')
+                m = BeautifulSoup(a, 'lxml')
+                k = m.polyline.attrs
+                strlines.append(k['points'].split())
+            lines = []
+            for i in strlines:
+                m = self.Read(i)
+                # print('i: ',i,'\n m:',m)
+                lines.append(m)
+
+            self.polygon = gons
+            self.polyline = lines
+
+            # print(self.polygon,'\n',self.polyline)
+
+
+        elif ('png' in fileName or 'jpg' in fileName):
+
+            self.img = mpimg.imread(fileName)
+            self.flag = 1
+
+        self.Magic()
+
+    def Reset(self):
+        self.flag = 0
+        self.Magic()
+
+    def Magic(self):
+
+        self.WholeData = []
+
+        raw = self._df
+
+        a = int(self.x_element.value())
+
+        b = int(self.y_element.value())
+
+        c = int(self.z_element.value())
+
+        self.axes.clear()
+        self.axes.axis('off')
+
+        s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
+                     Style='-',
+                     Alpha=0.3, Label='')]
+        for i in s:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
+
+        x = [0, 100]
+        y = [0, 50 * np.sqrt(3)]
+
+        extent = [min(x), max(x), min(y), max(y)]
+
+        if self.flag != 0:
+            self.axes.imshow(self.img, interpolation='nearest', aspect='auto', extent=extent)
+
+        # self.x_element_label.setText(self.items[a])
+        # self.y_element_label.setText(self.items[b])
+        # self.z_element_label.setText(self.items[c])
+
+        self.axes.annotate(self.items[a], (2, 15))
+        self.axes.annotate(self.items[b], (97, 15))
+        self.axes.annotate(self.items[c], (40, 85))
+
+        PointLabels = []
+        TPoints = []
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+
+            x, y, z = 0, 0, 0
+            xuse, yuse, zuse = 0, 0, 0
+
+            x, y, z = raw.at[i, self.items[a]], raw.at[i, self.items[b]], raw.at[i, self.items[c]]
+
+            # print(a,x,'\n',b,y,'\n',c,z,'\n')
+
+            try:
+                xuse = float(x)
+                yuse = float(y)
+                zuse = float(z)
+
+                TPoints.append(TriPoint((xuse, yuse, zuse), Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'],
+                                        Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel))
+
+
+            except:
+                pass
+
+        for i in TPoints:
+            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
+                              label=i.Label, edgecolors='black')
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a, prop=fontprop)
+
+        if self.polygon != 0 and self.polyline != 0:
+
+            # print('gon: ',self.polygon,' \n line:',self.polyline)
+
+            for i in self.polygon:
+                self.DrawLine(i)
+
+            for i in self.polyline:
+                self.DrawLine(i)
+
+
+
+                # self.DrawLine(self.polygon)
+                # self.DrawLine(self.polyline)
+
+        self.canvas.draw()
+
+class MultiDimension(AppForm):
+    
+    Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
+               u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
+               u'Li',
+               u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
+
+    StandardsName = ['OIB', 'EMORB', 'C1', 'PM', 'NMORB']
+
+    NameChosen = 'OIB'
+    Standards = {
+        'OIB': {'Cs': 0.387, 'Tl': 0.077, 'Rb': 31, 'Ba': 350, 'W': 0.56, 'Th': 4, 'U': 1.02, 'Nb': 48, 'Ta': 2.7,
+                'K': 12000, 'La': 37, 'Ce': 80, 'Pb': 3.2, 'Pr': 9.7, 'Mo': 2.4, 'Sr': 660, 'P': 2700, 'Nd': 38.5,
+                'F': 1150, 'Sm': 10, 'Zr': 280, 'Hf': 7.8, 'Eu': 3, 'Sn': 2.7, 'Sb': 0.03, 'Ti': 17200, 'Gd': 7.62,
+                'Tb': 1.05, 'Dy': 5.6, 'Li': 5.6, 'Y': 29, 'Ho': 1.06, 'Er': 2.62, 'Tm': 0.35, 'Yb': 2.16, 'Lu': 0.3},
+        'EMORB': {'Cs': 0.063, 'Tl': 0.013, 'Rb': 5.04, 'Ba': 57, 'W': 0.092, 'Th': 0.6, 'U': 0.18, 'Nb': 8.3,
+                  'Ta': 0.47, 'K': 2100, 'La': 6.3, 'Ce': 15, 'Pb': 0.6, 'Pr': 2.05, 'Mo': 0.47, 'Sr': 155, 'P': 620,
+                  'Nd': 9, 'F': 250, 'Sm': 2.6, 'Zr': 73, 'Hf': 2.03, 'Eu': 0.91, 'Sn': 0.8, 'Sb': 0.01, 'Ti': 6000,
+                  'Gd': 2.97, 'Tb': 0.53, 'Dy': 3.55, 'Li': 3.5, 'Y': 22, 'Ho': 0.79, 'Er': 2.31, 'Tm': 0.356,
+                  'Yb': 2.37, 'Lu': 0.354},
+        'C1': {'Cs': 0.188, 'Tl': 0.14, 'Rb': 2.32, 'Ba': 2.41, 'W': 0.095, 'Th': 0.029, 'U': 0.008, 'Nb': 0.246,
+               'Ta': 0.014, 'K': 545, 'La': 0.237, 'Ce': 0.612, 'Pb': 2.47, 'Pr': 0.095, 'Mo': 0.92, 'Sr': 7.26,
+               'P': 1220, 'Nd': 0.467, 'F': 60.7, 'Sm': 0.153, 'Zr': 3.87, 'Hf': 0.1066, 'Eu': 0.058, 'Sn': 1.72,
+               'Sb': 0.16, 'Ti': 445, 'Gd': 0.2055, 'Tb': 0.0374, 'Dy': 0.254, 'Li': 1.57, 'Y': 1.57, 'Ho': 0.0566,
+               'Er': 0.1655, 'Tm': 0.0255, 'Yb': 0.17, 'Lu': 0.0254},
+        'PM': {'Cs': 0.032, 'Tl': 0.005, 'Rb': 0.635, 'Ba': 6.989, 'W': 0.02, 'Th': 0.085, 'U': 0.021, 'Nb': 0.713,
+               'Ta': 0.041, 'K': 250, 'La': 0.687, 'Ce': 1.775, 'Pb': 0.185, 'Pr': 0.276, 'Mo': 0.063, 'Sr': 21.1,
+               'P': 95, 'Nd': 1.354, 'F': 26, 'Sm': 0.444, 'Zr': 11.2, 'Hf': 0.309, 'Eu': 0.168, 'Sn': 0.17,
+               'Sb': 0.005, 'Ti': 1300, 'Gd': 0.596, 'Tb': 0.108, 'Dy': 0.737, 'Li': 1.6, 'Y': 4.55, 'Ho': 0.164,
+               'Er': 0.48, 'Tm': 0.074, 'Yb': 0.493, 'Lu': 0.074},
+        'NMORB': {'Cs': 0.007, 'Tl': 0.0014, 'Rb': 0.56, 'Ba': 6.3, 'W': 0.01, 'Th': 0.12, 'U': 0.047, 'Nb': 2.33,
+                  'Ta': 0.132, 'K': 600, 'La': 2.5, 'Ce': 7.5, 'Pb': 0.3, 'Pr': 1.32, 'Mo': 0.31, 'Sr': 90, 'P': 510,
+                  'Nd': 7.3, 'F': 210, 'Sm': 2.63, 'Zr': 74, 'Hf': 2.05, 'Eu': 1.02, 'Sn': 1.1, 'Sb': 0.01, 'Ti': 7600,
+                  'Gd': 3.68, 'Tb': 0.67, 'Dy': 4.55, 'Li': 4.3, 'Y': 28, 'Ho': 1.01, 'Er': 2.97, 'Tm': 0.456,
+                  'Yb': 3.05, 'Lu': 0.455}, }
+
+    Lines = []
+    Tags = []
+
+    xlabel = 'x'
+    ylabel = 'y'
+    zlabel = 'z'
+
+    description = 'MultiDimension diagram'
+    unuseful = ['Name',
+                'Author',
+                'DataType',
+                'Label',
+                'Marker',
+                'Color',
+                'Size',
+                'Alpha',
+                'Style',
+                'Width',
+                'Tag']
+
+
+    def __init__(self, parent=None, df=pd.DataFrame()):
+        QMainWindow.__init__(self, parent)
+        self.setWindowTitle(self.description)
+
+        self.items = []
+
+        self._df = df
+        if (len(df) > 0):
+            self._changed = True
+            # print('DataFrame recieved to Magic')
+
+        self.raw = df
+        self.rawitems = self.raw.columns.values.tolist()
+
+        for i in self.rawitems:
+            if i not in self.unuseful:
+                self.items.append(i)
+            else:
+                pass
+
+        self.create_main_frame()
+        self.create_status_bar()
+
+        self.polygon = 0
+        self.polyline = 0
+
+        self.flag = 0
+
+    def create_main_frame(self):
+        self.main_frame = QWidget()
+        self.dpi = 128
+        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setParent(self.main_frame)
+
+        self.axes = Axes3D(self.fig, elev=-150, azim=110)
+
+        # Create the navigation toolbar, tied to the canvas
+        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        # Other GUI controls
+        self.save_button = QPushButton('&Save')
+        self.save_button.clicked.connect(self.saveImgFile)
+
+        self.stat_button = QPushButton('&Stat')
+        self.stat_button.clicked.connect(self.Stat)
+
+
+        self.legend_cb = QCheckBox('&Legend')
+        self.legend_cb.setChecked(True)
+        self.legend_cb.stateChanged.connect(self.Magic)  # int
+
+        self.slider_label = QLabel('Location:')
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(1, 5)
+        self.slider.setValue(1)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Magic)  # int
+
+        self.Normalize_cb = QCheckBox('&Normalize')
+        self.Normalize_cb.setChecked(False)
+        self.Normalize_cb.stateChanged.connect(self.Magic)  # int
+
+        self.norm_slider_label = QLabel('Standard:' + self.NameChosen)
+        self.norm_slider = QSlider(Qt.Horizontal)
+        self.norm_slider.setRange(0, 4)
+        self.norm_slider.setValue(0)
+        self.norm_slider.setTracking(True)
+        self.norm_slider.setTickPosition(QSlider.TicksBothSides)
+        self.norm_slider.valueChanged.connect(self.Magic)  # int
+
+        self.x_element = QSlider(Qt.Horizontal)
+        self.x_element.setRange(0, len(self.items) - 1)
+        self.x_element.setValue(0)
+        self.x_element.setTracking(True)
+        self.x_element.setTickPosition(QSlider.TicksBothSides)
+        self.x_element.valueChanged.connect(self.Magic)  # int
+        self.x_element_label = QLabel('X')
+        self.logx_cb = QCheckBox('&Log')
+        self.logx_cb.setChecked(False)
+        self.logx_cb.stateChanged.connect(self.Magic)  # int
+
+        self.y_element = QSlider(Qt.Horizontal)
+        self.y_element.setRange(0, len(self.items) - 1)
+        self.y_element.setValue(1)
+        self.y_element.setTracking(True)
+        self.y_element.setTickPosition(QSlider.TicksBothSides)
+        self.y_element.valueChanged.connect(self.Magic)  # int
+        self.y_element_label = QLabel('Y')
+        self.logy_cb = QCheckBox('&Log')
+        self.logy_cb.setChecked(False)
+        self.logy_cb.stateChanged.connect(self.Magic)  # int
+
+        self.z_element = QSlider(Qt.Horizontal)
+        self.z_element.setRange(0, len(self.items) - 1)
+        self.z_element.setValue(2)
+        self.z_element.setTracking(True)
+        self.z_element.setTickPosition(QSlider.TicksBothSides)
+        self.z_element.valueChanged.connect(self.Magic)  # int
+        self.z_element_label = QLabel('Z')
+        self.logz_cb = QCheckBox('&Log')
+        self.logz_cb.setChecked(False)
+        self.logz_cb.stateChanged.connect(self.Magic)  # int
+        #
+        # Layout with box sizers
+        #
+        self.hbox = QHBoxLayout()
+
+        self.hbox.addWidget(self.canvas)
+
+        self.hbox0 = QHBoxLayout()
+        self.hbox1 = QHBoxLayout()
+        self.hbox2 = QHBoxLayout()
+        self.hbox3 = QHBoxLayout()
+        self.hbox4 = QHBoxLayout()
+
+        for w in [self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
+            self.hbox0.addWidget(w)
+            self.hbox0.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.save_button, self.stat_button, self.legend_cb, self.slider_label, self.slider]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logx_cb, self.x_element_label, self.x_element]:
+            self.hbox2.addWidget(w)
+            self.hbox2.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logy_cb, self.y_element_label, self.y_element]:
+            self.hbox3.addWidget(w)
+            self.hbox3.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logz_cb, self.z_element_label, self.z_element]:
+            self.hbox4.addWidget(w)
+            self.hbox4.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(self.mpl_toolbar)
+
+        self.vbox.addLayout(self.hbox)
+        self.vbox.addLayout(self.hbox0)
+        self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
+        self.vbox.addLayout(self.hbox4)
+
+        self.main_frame.setLayout(self.vbox)
+        self.setCentralWidget(self.main_frame)
+
+    def Read(self, inpoints):
+        points = []
+        for i in inpoints:
+            points.append(i.split())
+
+        result = []
+        for i in points:
+            for l in range(len(i)):
+                a = float((i[l].split(','))[0])
+                a = a * self.x_scale
+
+                b = float((i[l].split(','))[1])
+                b = (self.height_load - b) * self.y_scale
+
+                result.append((a, b))
+        return (result)
+
+
+    def Magic(self):
+
+        self.WholeData = []
+
+
+        raw = self._df
+
+        a = int(self.x_element.value())
+
+        b = int(self.y_element.value())
+
+        c = int(self.z_element.value())
+
+        self.axes.clear()
+
+
+        standardnamechosen = self.StandardsName[int(self.norm_slider.value())]
+        standardchosen = self.Standards[standardnamechosen]
+
+        self.norm_slider_label.setText(standardnamechosen)
+
+        if self.flag != 0:
+            if self.extent != 0:
+                self.axes.imshow(self.img, interpolation='nearest', aspect='auto', extent=self.extent)
+            else:
+                self.axes.imshow(self.img, interpolation='nearest', aspect='auto')
+
+        self.axes.set_xlabel(self.items[a])
+        self.x_element_label.setText(self.items[a])
+
+        self.axes.set_ylabel(self.items[b])
+        self.y_element_label.setText(self.items[b])
+
+
+        self.axes.set_zlabel(self.items[c])
+        self.z_element_label.setText(self.items[c])
+
+        PointLabels = []
+
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            TmpLabel = ''
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                TmpLabel = ''
+            else:
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
+
+            x, y , z= 0, 0, 0
+            xuse, yuse,zuse = 0, 0, 0
+
+            x, y , z= raw.at[i, self.items[a]], raw.at[i, self.items[b]],raw.at[i, self.items[c]]
+
+            try:
+                xuse = x
+                yuse = y
+                zuse = z
+
+                self.xlabel = self.items[a]
+                self.ylabel = self.items[b]
+                self.zlabel = self.items[c]
+
+                if (self.Normalize_cb.isChecked()):
+
+                    self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+
+                    self.axes.set_xlabel(self.xlabel)
+                    self.x_element_label.setText(self.xlabel)
+
+                    self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+
+                    self.axes.set_ylabel(self.ylabel)
+                    self.y_element_label.setText(self.ylabel)
+
+
+                    self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
+
+                    self.axes.set_zlabel(self.zlabel)
+                    self.z_element_label.setText(self.zlabel)
+
+                    if self.items[a] in self.Element:
+                        xuse = xuse / standardchosen[self.items[a]]
+
+                    if self.items[b] in self.Element:
+                        yuse = yuse / standardchosen[self.items[b]]
+
+                    if self.items[c] in self.Element:
+                        zuse = zuse / standardchosen[self.items[c]]
+
+
+                if (self.logx_cb.isChecked()):
+                    xuse = math.log(x, 10)
+                    self.xlabel = '$log10$ ' + self.xlabel
+
+                    self.axes.set_xlabel(self.xlabel)
+
+                if (self.logy_cb.isChecked()):
+                    yuse = math.log(y, 10)
+
+                    self.ylabel = '$log10$ ' + self.ylabel
+
+                    self.axes.set_ylabel(self.ylabel)
+
+                if (self.logz_cb.isChecked()):
+                    zuse = math.log(z, 10)
+
+                    self.zlabel = '$log10$ ' + self.zlabel
+
+                    self.axes.set_zlabel(self.zlabel)
+
+                self.axes.scatter(xuse, yuse, zuse, marker=raw.at[i, 'Marker'],
+                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                  label=TmpLabel, edgecolors='None')
+            except(ValueError):
+                pass
+
+        if (self.legend_cb.isChecked()):
+            a = int(self.slider.value())
+            self.axes.legend(loc=a,prop=fontprop)
+
+
+
+        self.canvas.draw()
+
+
+
+    def stateval(self,data=np.ndarray):
+        dict={'mean':mean(data),'ptp':ptp(data),'var':var(data),'std':std(data),'cv':mean(data)/std(data)}
+
+        return(dict)
+
+    def relation(self,data1=np.ndarray,data2=np.ndarray):
+        data=array([data1,data2])
+        dict={'cov':cov(data,bias=1),'corrcoef':corrcoef(data)}
+        return(dict)
+
+    def Stat(self):
+
+        df=self._df
+
+
+        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
+        for i in m:
+            if i in df.columns.values:
+                df = df.drop(i, 1)
+        df.set_index('Label', inplace=True)
+
+        items = df.columns.values
+        index = df.index.values
+
+        StatResultDict = {}
+
+        for i in items:
+            StatResultDict[i] = self.stateval(df[i])
+
+        StdSortedList = sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std'])
+
+        StdSortedList.reverse()
+
+        for k in sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std']):
+            print("%s=%s" % (k, StatResultDict[k]))
+
+        StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
+
+        #StatResultDf.index.values
+
+
+
+        StatResultDf['Items']=StatResultDf.index.tolist()
+
+
+
+
+        self.tablepop = TabelViewer(df=StatResultDf)
+        self.tablepop.show()
 

@@ -29,6 +29,8 @@ include version.png
 include web.png
 include website.png
 include xy.png
+include magic.png
+imclude multiple.png
 
 include config.ini
 
@@ -37,3 +39,27 @@ include *.png
 include cns.qm
 include cnt.qm
 include wqy.ttf
+
+include *.py
+
+
+include CustomClass.py
+include IMP.py
+include ZirconCe.py
+include TAS.py
+include REE.py
+include Trace.py
+include Pearce.py
+include Harker.py
+include Stereo.py
+include Rose.py
+include CIPW.py
+include QAPF.py
+include QFL.py
+include QmFLt.py
+include MudStone.py
+include Temp.py
+include Cluster.py
+include XY.py
+include XYZ.py
+include Magic.py

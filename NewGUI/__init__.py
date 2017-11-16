@@ -1,16 +1,58 @@
 ﻿#!/usr/bin/python3
 # coding:utf-8
-# -*- coding: utf-8 -*-
-# Form implementation generated from reading ui file 'interface.ui'#
-# Created by: PyQt5 UI code generator 5.8.1#
-# WARNING! All changes made in this file will be lost!
 
+import sys
 import os
+import matplotlib
+matplotlib.use('Qt5Agg')
 import requests
+import math
+import csv
+import random
+import webbrowser
+import re
+
+import numpy as np
+import pandas as pd
+import sklearn as sk
+import scipy.stats as st
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import matplotlib.font_manager as font_manager
+
+from xml.dom import minidom
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer, Binarizer, OneHotEncoder, Imputer, \
+    PolynomialFeatures, FunctionTransformer
+from sklearn.neighbors import NearestNeighbors
+
+from sklearn.feature_selection import VarianceThreshold, SelectKBest, chi2
+from sklearn.decomposition import PCA, FastICA
+from sklearn import datasets
+from scipy.stats import mode
+from scipy.spatial.distance import *
+from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.cluster import hierarchy as hc
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QMainWindow, QMenu, QSizePolicy, QMessageBox, QWidget, QFileDialog, QAction, QLineEdit, \
+    QApplication, QPushButton, QSlider, QLabel, QHBoxLayout, QVBoxLayout,QProxyStyle,QStyle,qApp,QCheckBox
+
+from numpy import vstack, array, nan, mean, median, ptp, var, std, cov, corrcoef, arange, sin, pi
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.font_manager import ttfFontProperty
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
+from matplotlib import ft2font
+from bs4 import BeautifulSoup
 
 LocationOfMySelf=os.path.dirname(__file__)
 
-print(LocationOfMySelf)
+print(LocationOfMySelf,' init')
 
 import CustomClass
 
@@ -34,64 +76,8 @@ a tool set for daily geology related task.
 
 t = 'You are using GeoPython ' + version + ', released on' + date + '\n' + sign
 
-from CustomClass import PandasModel
-from CustomClass import CustomQTableView
 
-from CustomClass import PlotModel
-from CustomClass import AppForm
-
-from CustomClass import CIPW
-from CustomClass import TAS
-from CustomClass import Trace
-from CustomClass import REE
-from CustomClass import Pearce
-from CustomClass import Harker
-
-from CustomClass import Stereo
-from CustomClass import Rose
-
-from CustomClass import QFL
-from CustomClass import QmFLt
-from CustomClass import QAPF
-
-from CustomClass import MudStone
-
-from CustomClass import Zircon
-from CustomClass import ZirconTiTemp
-from CustomClass import RutileZrTemp
-
-from CustomClass import Cluster
-
-from CustomClass import Magic
-
-from CustomClass import XY
-from CustomClass import XYZ
-
-import webbrowser
-
-from CustomClass import MyPopup
-
-import re
-import math
-import sys
-import csv
-import random
-import matplotlib
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-
-from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
-
-import pandas as pd
-import numpy as np
-from numpy import arange, sin, pi
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt,pyqtSignal
-from PyQt5.QtGui import QPixmap, QIcon, QKeySequence
-from PyQt5.QtWidgets import (QWidget, QMessageBox, qApp, QShortcut, QLabel, QMainWindow, QMenu, QHBoxLayout,
-                             QVBoxLayout,
-                             QApplication, QPushButton, QSlider,
-                             QFileDialog, QAction,QProxyStyle,QStyle)
+from CustomClass import *
 
 
 _translate = QtCore.QCoreApplication.translate
@@ -133,7 +119,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         super(Ui_MainWindow, self).__init__()
         self.setObjectName('MainWindow')
-        self.resize(800, 480)
+        self.resize(800, 600)
 
 
         _translate = QtCore.QCoreApplication.translate
@@ -312,6 +298,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCluster = QtWidgets.QAction(QIcon(LocationOfMySelf+'/cluster.png'),u'Cluster',self)
         self.actionCluster.setObjectName('actionCluster')
 
+        self.actionMultiDimention = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'MultiDimention',self)
+        self.actionMultiDimention.setObjectName('actionMultiDimention')
+
+
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
@@ -324,7 +314,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'Triangular',self)
         self.actionXYZ.setObjectName('actionXYZ')
 
-        self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'Magic',self)
+        self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Magic',self)
         self.actionMagic.setObjectName('actionMagic')
 
         self.menuFile.addAction(self.actionOpen)
@@ -347,6 +337,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuCalc.addAction(self.actionRutileZrTemp)
 
         self.menuStat.addAction(self.actionCluster)
+        self.menuStat.addAction(self.actionMultiDimention)
+
 
         self.menuMore.addAction(self.actionMudStone)
         self.menuMore.addAction(self.actionQAPF)
@@ -406,10 +398,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQmFLt.triggered.connect(self.QmFLt)
 
         self.actionCIPW.triggered.connect(self.CIPW)
-        self.actionZirconCe.triggered.connect(self.Zircon)
+        self.actionZirconCe.triggered.connect(self.ZirconCe)
         self.actionZirconTiTemp.triggered.connect(self.ZirconTiTemp)
         self.actionRutileZrTemp.triggered.connect(self.RutileZrTemp)
         self.actionCluster.triggered.connect(self.Cluster)
+        self.actionMultiDimention.triggered.connect(self.MultiDimension)
 
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
@@ -499,6 +492,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconTiTemp.setText(_translate('MainWindow',u'ZirconTiTemp'))
         self.actionRutileZrTemp.setText(_translate('MainWindow',u'RutileZrTemp'))
         self.actionCluster.setText(_translate('MainWindow',u'Cluster'))
+        self.actionMultiDimention.setText(_translate('MainWindow',u'MultiDimention'))
 
         self.actionXY.setText(_translate('MainWindow',u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow',u'X-Y-Z plot'))
@@ -581,6 +575,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconTiTemp.setText(_translate('MainWindow', u'ZirconTiTemp'))
         self.actionRutileZrTemp.setText(_translate('MainWindow', u'RutileZrTemp'))
         self.actionCluster.setText(_translate('MainWindow', u'Cluster'))
+        self.actionMultiDimention.setText(_translate('MainWindow',u'MultiDimention'))
 
         self.actionXY.setText(_translate('MainWindow', u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
@@ -719,7 +714,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             try:
                 with open('config.ini', 'rt') as f:
-                    data = f.read()
+                    try:
+                        data = f.read()
+                    except:
+                        data = 'Language = \'en\''
+                        pass
+
                     print(data)
                     try:
                         print("self." + data)
@@ -1006,9 +1006,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-    def Zircon(self):
+    def ZirconCe(self):
         # print('Opening a new popup window...')
-        self.zirconpop = Zircon(df=self.model._df)
+        self.zirconpop = ZirconCe(df=self.model._df)
         try:
             self.zirconpop.MultiBallard()
             self.zirconpop.show()
@@ -1039,6 +1039,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
+
+    def MultiDimension(self):
+        self.mdpop = MultiDimension(df=self.model._df)
+        try:
+            self.mdpop.Magic()
+            self.mdpop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
     def Tri(self):
         pass
 
@@ -1064,24 +1073,3 @@ if __name__ == '__main__':
     sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
     sys.exit(main())
 
-'''
-
-
-
-
-if __name__ == '__main__':
-    print(sign)
-
-
-
-if __name__ == '__main__':
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    trans = QtCore.QTranslator()
-    # trans.load('cn')  # 没有后缀.qm
-    app.installTranslator(trans)
-    mainWin = Ui_MainWindow()
-    mainWin.show()
-    sys.exit(app.exec_())
-'''
