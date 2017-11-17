@@ -1,4 +1,4 @@
-version = '0.7.24'
+version = '0.7.25'
 
 date = '2017-11-16'
 
@@ -14,7 +14,57 @@ import csv
 import random
 import webbrowser
 import re
+#!/usr/bin/python3
+# coding:utf-8
 
+import sys
+import os
+import matplotlib
+matplotlib.use('Qt5Agg')
+import requests
+import math
+import csv
+import random
+import webbrowser
+import re
+
+import numpy as np
+import pandas as pd
+import sklearn as sk
+import scipy.stats as st
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import matplotlib.font_manager as font_manager
+
+from xml.dom import minidom
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer, Binarizer, OneHotEncoder, Imputer, \
+    PolynomialFeatures, FunctionTransformer
+from sklearn.neighbors import NearestNeighbors
+
+from sklearn.feature_selection import VarianceThreshold, SelectKBest, chi2
+from sklearn.decomposition import PCA, FastICA
+from sklearn import datasets
+from scipy.stats import mode
+from scipy.spatial.distance import *
+from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.cluster import hierarchy as hc
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QMainWindow, QMenu, QSizePolicy, QMessageBox, QWidget, QFileDialog, QAction, QLineEdit, \
+    QApplication, QPushButton, QSlider, QLabel, QHBoxLayout, QVBoxLayout,QProxyStyle,QStyle,qApp,QCheckBox
+
+from numpy import vstack, array, nan, mean, median, ptp, var, std, cov, corrcoef, arange, sin, pi
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.font_manager import ttfFontProperty
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
+from matplotlib import ft2font
+from bs4 import BeautifulSoup
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
