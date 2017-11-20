@@ -11,7 +11,7 @@
 # https://github.com/chinageology/GeoPython/wiki
 
 
-
+#### IF you want to run GeoPython, just take a look at the [Installation Document](https://github.com/chinageology/GeoPython/wiki/Installation).DO NOT Download this repo and try to run directly, because that is not how it works!!!!!
 
 
 
@@ -40,6 +40,11 @@ GeoPython contains both traditional routines and newly developed methods, which 
 [Demonstration](https://github.com/chinageology/GeoPython/wiki/Demonstration)
 
 # GeoPython, 用于地质学日常研究的一站式跨平台解决方案
+
+
+#### 如果你要运行 GeoPython, 一定要仔细看 [安装指南](https://github.com/chinageology/GeoPython/wiki/%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97)。而不要下载这个 repo 里面的内容来直接运行，那样是行不通的。这里只是放了代码而已，不是直接可执行的文件！！！！！
+
+
 
 
 ## 简介
