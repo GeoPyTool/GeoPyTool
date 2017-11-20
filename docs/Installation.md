@@ -23,7 +23,7 @@ On macOS, everything is extremely easy to use GeoPython. Just download and unzip
 
 #### Windows 8/8.1/10 Users
 
-On these modern Windows platforms, everything is also extremely easy to use GeoPython. Just download and unzip the file, then double click on the GeoPython.exe file, and make sure that you don't delete any file form the unziped folder because they are all required by the program, then you will find the APP available as the following picture shows.
+On these modern Windows platforms, everything is also extremely easy to use GeoPython. Just download and unzip the file, then double click on the **RunGeoPython.bat** file, and make sure that you don't delete any file form the unziped folder because they are all required by the program, then you will find the APP available as the following picture shows.
 
 ![User Interface of the EXE on Windows.](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/ScreenShot.png)
 
