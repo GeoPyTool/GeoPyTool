@@ -14,3 +14,11 @@
 [Baidu Download 百度网盘](http://pan.baidu.com/s/1bGeVTk)
 
 [Googel Drive](https://drive.google.com/open?id=1M-HiiDD3r7cdUTC5anxnryIx386MvtL9)
+
+
+
+
+# 捐助支持
+
+如果你希望支持 GeoPython 的开发，可以扫描下面的二维码进行捐助。
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/WeChatQrCode.png)

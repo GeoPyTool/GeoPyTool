@@ -71,3 +71,10 @@ GeoPython 包含了一些常用的传统方法，也实现了一些近年来新�
 
 
 [操作演示](https://github.com/chinageology/GeoPython/wiki/%E4%BD%BF%E7%94%A8%E6%BC%94%E7%A4%BA)
+
+
+
+# 捐助支持
+
+如果你希望支持 GeoPython 的开发，可以扫描下面的二维码进行捐助。
+![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/WeChatQrCode.png)
