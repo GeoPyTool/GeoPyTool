@@ -10,7 +10,7 @@ Packed up executable files are temporarily only provided for Windows and MacOS p
 
 
 
-[Click here to get Download links.](https://github.com/chinageology/GeoPython/wiki/Download)
+[Click here to get Download links.](http://doc.geopython.com/Download/)
 
 ### Mac APP
 

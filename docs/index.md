@@ -12,7 +12,7 @@ GeoPython is an application based on Python and designed as a solution for geolo
 
 It is a **free software**: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-GeoPython contains both traditional routines and newly developed methods, which are shown in the table [here](https://github.com/chinageology/GeoPython/wiki/Functions).
+GeoPython contains both traditional routines and newly developed methods, which are shown in the table [here](http://doc.geopython.com/01%20Functions/).
 
 
 
@@ -26,7 +26,7 @@ GeoPython 不需依赖任何其他软件，不像 GeoKit 那样依赖特定版�
 
 GeoPython 是一个自由软件:您可以根据自由软件基金会发布的GNU通用公共许可证的条款重新发布或者对其进行修改，但必须也基于同样的 GPLV3（GNU通用公共许可证第三版 ） ，或者更新版本的 GNU General Public License。
 
-GeoPython 包含了一些常用的传统方法，也实现了一些近年来新诞生的研究成果，主要功能如[表格所示](https://github.com/chinageology/GeoPython/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8)。
+GeoPython 包含了一些常用的传统方法，也实现了一些近年来新诞生的研究成果，主要功能如[表格所示](http://doc.geopython.com/11%20%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8/)。
 
 
 
