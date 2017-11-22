@@ -103,6 +103,7 @@ pip install pyqt5
 pip install scipy
 pip install scikit-learn
 pip install sympy
+pip install requests
 ```
 
 After the installation of those packages above, you can use this similar command also in the **terminal** to install the GeoPython.
