@@ -27,11 +27,6 @@ newdf = pd.concat([df.SiO2 ,df.Ratio, df.CaO], axis=1)
 
 X= newdf.as_matrix()
 
-
-
-
-
-
 pos = newdf.as_matrix()
 
 xmin= min(df.SiO2)
@@ -50,18 +45,11 @@ ymean=np.mean(df.Ratio)
 zmean=np.mean(df.CaO)
 
 
-
-
 ThreeDimView = gl.GLScatterPlotItem(pos=pos, color=(100, 255, 255, 88), size=0.1,pxMode=False)
-
-
-
 
 x= df.SiO2.values
 y= df.Ratio.values
 z= df.CaO.values
-
-
 
 x= [min(df.SiO2),max(df.SiO2)]
 
