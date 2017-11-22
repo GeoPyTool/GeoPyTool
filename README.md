@@ -28,10 +28,10 @@ GeoPython contains both traditional routines and newly developed methods, which 
 
 [Milestones](http://doc.geopython.com/02%20Milestones/)
 
-[Installation Guide](https://github.com/chinageology/GeoPython/wiki/Installation)
+[Installation Guide](http://doc.geopython.com/03%20Installation/)
 
 
-[Demonstration](http://doc.geopython.com/03%20Installation/)
+[Demonstration](http://doc.geopython.com/04%20Demonstration/)
 
 # GeoPython, 用于地质学日常研究的一站式跨平台解决方案
 
