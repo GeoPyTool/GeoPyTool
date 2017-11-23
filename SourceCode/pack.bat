@@ -1,1 +1,0 @@
-pyinstaller gui.spec
