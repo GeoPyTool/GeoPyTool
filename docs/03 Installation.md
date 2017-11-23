@@ -19,9 +19,10 @@ On macOS, everything is extremely easy to use GeoPython. Just download and unzip
 ![User Interface of the APP on macOS.](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/MacOSScreenShot.png)
 
 
-#### Mac APP Update
+### Mac APP Update
 
 Drag the **UpdateGeoPython.sh** file into your terminal and hit the Enter key to run it. It will update the GeoPython inside your GeoPython.app file. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
+
 ![Update the APP on macOS.](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/OSXUpdate.png)
 
 ### Windows EXE
@@ -49,9 +50,11 @@ So if you encounter any `api-ms-win-crt`related errors, please check those insta
 I failed many times on both XP and Vista, and I think there might not be a lot users of these two antique systems.
 If you are using one or both of them, please be good to yourself to update you old PC to at least Windows 7 SP1 or try Linux on your antique computers. My advice is that we should not waste our life on those systems that are not even supported by their developers and manufacturer. So, if you still want to run GeoPython on those two old systems, good luck and good bye.
 
-#### Windows EXE Update
+### Windows EXE Update
 
 Double click on the  **Update.bat** file to run update. It will update the GeoPython inside your GeoPython folder. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
+
+
 ![Update the EXE on Windows.](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/WinUpdate.png)
 
 
