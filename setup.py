@@ -34,5 +34,6 @@ setup(name='geopython',
                         'PyQt5',
                         'scikit-image',
                         'scikit-learn',
+                        'pyqtgraph',
                          ],
      )
