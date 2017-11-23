@@ -51,7 +51,8 @@ data = f
 
 view = pg.PlotWidget()
 view.addLegend()
-
+ax=view.getAxis('bottom')
+ay=view.getAxis('left')
 
 img = pg.ImageItem(data)
 
@@ -110,6 +111,42 @@ for i in range(len(XtoFit)):
 for i in range(len(Xline)):
     XlineUsed.append((Xline[i] - xmin) * xscale)
     YlineUsed.append((Yline[i] - ymin) * yscale)
+
+
+
+Xoriginal = np.arange(xmin,xmax,(xmax-xmin)/10)
+Yoriginal = np.arange(ymin,ymax,(ymax-ymin)/10)
+
+
+
+
+
+
+
+def GetASequence(head=0,tail=200,count=10):
+    if count >0:
+        result=np.arange(head, tail, (tail - head) / count)
+    else:
+        result = np.arange(head, tail, (tail - head) / 10)
+
+    return(result)
+
+
+
+XonPlot = GetASequence()
+YonPlot = GetASequence()
+
+
+XonStick=[]
+YonStick=[]
+
+for i in range(len(XonPlot)):
+    XonStick.append([XonPlot[i],Xoriginal[i]])
+    YonStick.append([YonPlot[i],Yoriginal[i]])
+    pass
+
+ax.setTicks([XonStick])
+ay.setTicks([YonStick])
 
 view.addItem(img)
 #view.plot(XtoFit, YtoFit, pen=None, symbol='o', symbolPen=None, symbolSize=3, symbolBrush=(100, 255, 255, 48), name=y[0])
