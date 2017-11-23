@@ -7,7 +7,6 @@ dpi = 128
 
 from geopython.ImportDependence import *
 
-
 class Tool():
     def TriToBin(self, x, y, z):
 
@@ -946,7 +945,6 @@ class PlotModel(FigureCanvas):
             # self.axes.xlabel(xLabel, fontsize=12)
 
             self.draw()
-
 
 LocationOfMySelf=os.path.dirname(__file__)
 

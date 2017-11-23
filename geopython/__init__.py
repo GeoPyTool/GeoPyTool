@@ -481,8 +481,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
-
-
     def retranslateUi(self):
 
 
@@ -592,9 +590,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButtonQuit.setGeometry(QtCore.QRect(5*w/100+step*4, h*40/48, step, foot))
 
 
-
-
-
     def getfile(self):
         _translate = QtCore.QCoreApplication.translate
         fileName, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
@@ -609,7 +604,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def goEnBBS(self):
         webbrowser.open('http://bbs.geopython.com/English-Forum-f3.html')
-
 
     def checkVersion(self):
 
@@ -671,7 +665,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def Update(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/wiki/Download')
 
-
     def ReadConfig(self):
         if(os.path.isfile('config.ini')):
 
@@ -695,14 +688,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             except():
                 pass
 
-
     def WriteConfig(self,text=LocationOfMySelf+'/en'):
         try:
             with open('config.ini', 'wt') as f:
                 f.write(text)
         except():
             pass
-
 
     def to_ChineseS(self):
 
@@ -711,9 +702,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.retranslateUi()
 
         self.WriteConfig('Language = \'cns\'')
-
-
-
 
     def to_ChineseT(self):
 
@@ -730,8 +718,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.WriteConfig('Language = \'en\'')
 
-
-
     def to_LoadLanguage(self):
 
 
@@ -746,12 +732,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
-
     def ErrorEvent(self):
 
         reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Plot.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
-
-
 
     def SetUpDataFile(self):
 
@@ -805,7 +788,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             reply = QMessageBox.information(self,  _translate('MainWindow','Ready'),
                                          _translate('MainWindow','Items added, Modify in the Table to set up details.'))
 
-
     def getDataFile(self):
         _translate = QtCore.QCoreApplication.translate
         DataFileInput, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
@@ -840,6 +822,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             elif ('xls' in DataFileOutput):
                 self.model._df.to_excel(DataFileOutput, encoding='utf-8')
+
 
     def CIPW(self):
         self.cipwpop = CIPW(df=self.model._df)
@@ -911,7 +894,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.pearcepop.show()
         except(KeyError):
             self.ErrorEvent()
-
 
     def Harker(self):
         self.harkerpop = Harker(df=self.model._df)
@@ -1002,7 +984,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-
     def MultiDimension(self):
         self.mdpop = MultiDimension(df=self.model._df)
         try:
@@ -1029,7 +1010,6 @@ def main():
     mainWin.retranslateUi()
     mainWin.show()
     sys.exit(app.exec_())
-
 
 
 if __name__ == '__main__':
