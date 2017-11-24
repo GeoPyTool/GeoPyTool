@@ -237,7 +237,7 @@ class Magic(AppForm):
         self.hbox7 = QHBoxLayout()
 
 
-        for w in [self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.shape_cb,self.shape_seter]:
+        for w in [self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.shape_cb]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
