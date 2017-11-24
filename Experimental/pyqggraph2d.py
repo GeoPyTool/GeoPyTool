@@ -25,13 +25,19 @@ newdf = pd.concat([df.SiO2 ,df.Ratio, df.CaO], axis=1)
 X= newdf.as_matrix()
 XtoFit=X[:, 0]
 YtoFit=X[:, 1]
+
+
+
 z = np.polyfit(YtoFit, XtoFit, 4)
 Yline = np.linspace(min(YtoFit), max(YtoFit), 30)
 p = np.poly1d(z)
 Xline = p(Yline)
 
-xmin, xmax = min(XtoFit)*0.9, max(XtoFit)*1.1
-ymin, ymax = min(YtoFit)*0.9, max(YtoFit)*1.1
+xmin, xmax = min(XtoFit), max(XtoFit)
+ymin, ymax = min(YtoFit), max(YtoFit)
+
+
+
 DensityColorMap = 'Blues'
 DensityAlpha = 0.3
 DensityLineColor = 'grey'

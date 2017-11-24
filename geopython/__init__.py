@@ -46,6 +46,7 @@ from geopython.Trace import Trace
 from geopython.XY import XY
 from geopython.XYZ import XYZ
 from geopython.ZirconCe import ZirconCe
+from geopython.Testing import Testing
 
 # Create a custom "QProxyStyle" to enlarge the QMenu icons
 #-----------------------------------------------------------
@@ -280,6 +281,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Magic',self)
         self.actionMagic.setObjectName('actionMagic')
 
+        self.actionTesting = QtWidgets.QAction(QIcon(LocationOfMySelf+'/Testing.png'),u'Testing',self)
+        self.actionTesting.setObjectName('actionTesting')
+
+
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
 
@@ -309,6 +314,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuMore.addAction(self.actionXY)
         self.menuMore.addAction(self.actionXYZ)
         self.menuMore.addAction(self.actionMagic)
+        self.menuMore.addAction(self.actionTesting)
+
 
         self.menuHelp.addAction(self.actionCnWeb)
         self.menuHelp.addAction(self.actionEnWeb)
@@ -384,6 +391,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
         self.actionMagic.triggered.connect(self.Magic)
+        self.actionTesting.triggered.connect(self.Testing)
         self.actionMudStone.triggered.connect(self.Mud)
 
         self.pushButtonOpen.clicked.connect(self.getDataFile)
@@ -461,6 +469,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ.setText(_translate('MainWindow',u'X-Y-Z plot'))
 
         self.actionMagic.setText(_translate('MainWindow',u'Magic'))
+        self.actionTesting.setText(_translate('MainWindow',u'Testing'))
 
         self.actionMudStone.setText(_translate('MainWindow',u'Sand-Silt-Mud'))
 
@@ -542,6 +551,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
 
         self.actionMagic.setText(_translate('MainWindow', u'Magic'))
+        self.actionTesting.setText(_translate('MainWindow', u'Testing'))
 
         self.actionMudStone.setText(_translate('MainWindow', u'Sand-Silt-Mud'))
 
@@ -981,6 +991,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         try:
             self.magicpop.Magic()
             self.magicpop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
+
+    def Testing(self):
+        self.twodpop = Testing(df=self.model._df)
+        try:
+            self.twodpop.Magic()
+            self.twodpop.show()
         except(KeyError):
             self.ErrorEvent()
 

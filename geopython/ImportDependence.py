@@ -12,6 +12,7 @@ import pandas as pd
 import os
 import os
 import numpy as np
+import pyqtgraph as pg
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.font_manager as font_manager
