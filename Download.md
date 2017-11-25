@@ -5,7 +5,7 @@
 # GeoPython exe for Windows:
 [Baidu Download 百度网盘](http://pan.baidu.com/s/1jIb3Joy)
 
-[Google Drive]()
+[Google Drive](https://drive.google.com/open?id=16TR6mO2jJlDgPZM_whc8I6rjR_-KeFKZ)
 
 
 
@@ -13,7 +13,7 @@
 # GeoPython app for macOS:
 [Baidu Download 百度网盘](http://pan.baidu.com/s/1c1UUopE)
 
-[Googel Drive]()
+[Googel Drive](https://drive.google.com/open?id=1YxOMIx1Qda8SI8P41rs0p5zAt3L5BM2J)
 
 
 
