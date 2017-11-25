@@ -1,3 +1,8 @@
+Title: Installation
+Date: 2017-11-15 0:00
+Category: Doc
+Tags: Doc,English,Chinese
+
 ## Installation
 
 GeoPython can be used as a module inside Python, and can also run as a standalone application.
