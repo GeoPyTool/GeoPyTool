@@ -1,4 +1,4 @@
-version = '0.7.31'
+version = '0.7.32'
 
 date = '2017-11-26'
 
@@ -8,9 +8,6 @@ dpi = 128
 from geopython.ImportDependence import *
 
 
-from shapely.geometry import Point as BasePoint
-from shapely.geometry import LineString
-from shapely.geometry import Polygon
 
 class Tool():
     def TriToBin(self, x, y, z):
@@ -173,7 +170,7 @@ class Tool():
         return (a, b)
         # plt.fill(a, b, Color=Color, Alpha=Alpha, )
 
-class Point(BasePoint):
+class Point():
     '''
     a Point class
     :param X,Y: the values of its x-y coord
