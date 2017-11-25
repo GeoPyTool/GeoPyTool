@@ -12,6 +12,7 @@ import pandas as pd
 import os
 import os
 import numpy as np
+import pyqtgraph as pg
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.font_manager as font_manager
@@ -40,7 +41,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 from matplotlib import ft2font
 from bs4 import BeautifulSoup
-
 
 LocationOfMySelf=os.path.dirname(__file__)
 

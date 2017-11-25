@@ -1,12 +1,16 @@
-version = '0.7.26'
+version = '0.7.31'
 
-date = '2017-11-22'
+date = '2017-11-26'
 
 dpi = 128
 #coding:utf-8
 
 from geopython.ImportDependence import *
 
+
+from shapely.geometry import Point as BasePoint
+from shapely.geometry import LineString
+from shapely.geometry import Polygon
 
 class Tool():
     def TriToBin(self, x, y, z):
@@ -169,7 +173,7 @@ class Tool():
         return (a, b)
         # plt.fill(a, b, Color=Color, Alpha=Alpha, )
 
-class Point():
+class Point(BasePoint):
     '''
     a Point class
     :param X,Y: the values of its x-y coord
@@ -650,6 +654,13 @@ class AppForm(QMainWindow):
             self.canvas.print_figure(path, dpi=self.dpi)
             self.statusBar().showMessage('Saved to %s' % path, 2000)
 
+    def save_plot_quitely(self,path= '~/',name='Target'):
+        self.canvas.print_figure(path + name + '.pdf', dpi=self.dpi)
+        self.canvas.print_figure(path + name + '.png', dpi=self.dpi)
+
+
+
+
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 128
@@ -946,7 +957,6 @@ class PlotModel(FigureCanvas):
             # self.axes.xlabel(xLabel, fontsize=12)
 
             self.draw()
-
 
 LocationOfMySelf=os.path.dirname(__file__)
 

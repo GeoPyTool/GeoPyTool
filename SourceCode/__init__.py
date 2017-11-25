@@ -152,7 +152,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menubar = QtWidgets.QMenuBar(self)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 22))
-        self.menubar.setNativeMenuBar(True)
+        self.menubar.setNativeMenuBar(False)
         self.menubar.setObjectName('menubar')
 
 

@@ -42,7 +42,6 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationTo
 from matplotlib import ft2font
 from bs4 import BeautifulSoup
 
-
 LocationOfMySelf=os.path.dirname(__file__)
 
 print(LocationOfMySelf,'Import Denpendence')

@@ -786,18 +786,6 @@ class XY(AppForm):
                     self.axes.set_ylabel(self.ylabel)
 
 
-
-                if (self.fade_cb.isChecked()==False):
-
-                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
-
-                elif (self.fade_cb.isChecked()==True):
-                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=alist[i],
-                                      label=TmpLabel, edgecolors='black')
-
                 XtoFit.append(xuse)
                 YtoFit.append(yuse)
 
@@ -857,6 +845,21 @@ class XY(AppForm):
                     alist.append(0.8)
                 else:
                     alist.append(0.2)
+
+        print("Plotted")
+
+        for i in range(len(XtoFit)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+            if (self.fade_cb.isChecked()==False):
+                self.axes.scatter(XtoFit[i], YtoFit[i], marker=raw.at[i, 'Marker'],
+                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                  label=TmpLabel, edgecolors='black')
+
+            elif (self.fade_cb.isChecked()==True):
+                self.axes.scatter(XtoFit[i], YtoFit[i], marker=raw.at[i, 'Marker'],
+                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=alist[i],
+                                  label=TmpLabel, edgecolors='black')
 
 
 

@@ -46,7 +46,6 @@ from geopython.Trace import Trace
 from geopython.XY import XY
 from geopython.XYZ import XYZ
 from geopython.ZirconCe import ZirconCe
-from geopython.Testing import Testing
 
 # Create a custom "QProxyStyle" to enlarge the QMenu icons
 #-----------------------------------------------------------
@@ -153,7 +152,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menubar = QtWidgets.QMenuBar(self)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 22))
-        self.menubar.setNativeMenuBar(True)
+        self.menubar.setNativeMenuBar(False)
         self.menubar.setObjectName('menubar')
 
 
@@ -281,10 +280,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Magic',self)
         self.actionMagic.setObjectName('actionMagic')
 
-        self.actionTesting = QtWidgets.QAction(QIcon(LocationOfMySelf+'/Testing.png'),u'Testing',self)
-        self.actionTesting.setObjectName('actionTesting')
-
-
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
 
@@ -314,8 +309,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuMore.addAction(self.actionXY)
         self.menuMore.addAction(self.actionXYZ)
         self.menuMore.addAction(self.actionMagic)
-        self.menuMore.addAction(self.actionTesting)
-
 
         self.menuHelp.addAction(self.actionCnWeb)
         self.menuHelp.addAction(self.actionEnWeb)
@@ -391,7 +384,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
         self.actionMagic.triggered.connect(self.Magic)
-        self.actionTesting.triggered.connect(self.Testing)
         self.actionMudStone.triggered.connect(self.Mud)
 
         self.pushButtonOpen.clicked.connect(self.getDataFile)
@@ -469,7 +461,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ.setText(_translate('MainWindow',u'X-Y-Z plot'))
 
         self.actionMagic.setText(_translate('MainWindow',u'Magic'))
-        self.actionTesting.setText(_translate('MainWindow',u'Testing'))
 
         self.actionMudStone.setText(_translate('MainWindow',u'Sand-Silt-Mud'))
 
@@ -489,6 +480,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.trans.load(LocationOfMySelf+'/'+self.Language)
         self.app.installTranslator(self.trans)
         self.retranslateUi()
+
+
 
     def retranslateUi(self):
 
@@ -551,7 +544,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
 
         self.actionMagic.setText(_translate('MainWindow', u'Magic'))
-        self.actionTesting.setText(_translate('MainWindow', u'Testing'))
 
         self.actionMudStone.setText(_translate('MainWindow', u'Sand-Silt-Mud'))
 
@@ -600,6 +592,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButtonQuit.setGeometry(QtCore.QRect(5*w/100+step*4, h*40/48, step, foot))
 
 
+
+
+
     def getfile(self):
         _translate = QtCore.QCoreApplication.translate
         fileName, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
@@ -614,6 +609,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def goEnBBS(self):
         webbrowser.open('http://bbs.geopython.com/English-Forum-f3.html')
+
 
     def checkVersion(self):
 
@@ -675,6 +671,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def Update(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/wiki/Download')
 
+
     def ReadConfig(self):
         if(os.path.isfile('config.ini')):
 
@@ -698,12 +695,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             except():
                 pass
 
+
     def WriteConfig(self,text=LocationOfMySelf+'/en'):
         try:
             with open('config.ini', 'wt') as f:
                 f.write(text)
         except():
             pass
+
 
     def to_ChineseS(self):
 
@@ -712,6 +711,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.retranslateUi()
 
         self.WriteConfig('Language = \'cns\'')
+
+
+
 
     def to_ChineseT(self):
 
@@ -728,6 +730,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.WriteConfig('Language = \'en\'')
 
+
+
     def to_LoadLanguage(self):
 
 
@@ -742,9 +746,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
+
     def ErrorEvent(self):
 
         reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Plot.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
+
+
 
     def SetUpDataFile(self):
 
@@ -798,6 +805,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             reply = QMessageBox.information(self,  _translate('MainWindow','Ready'),
                                          _translate('MainWindow','Items added, Modify in the Table to set up details.'))
 
+
     def getDataFile(self):
         _translate = QtCore.QCoreApplication.translate
         DataFileInput, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
@@ -832,7 +840,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             elif ('xls' in DataFileOutput):
                 self.model._df.to_excel(DataFileOutput, encoding='utf-8')
-
 
     def CIPW(self):
         self.cipwpop = CIPW(df=self.model._df)
@@ -904,6 +911,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.pearcepop.show()
         except(KeyError):
             self.ErrorEvent()
+
 
     def Harker(self):
         self.harkerpop = Harker(df=self.model._df)
@@ -995,14 +1003,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
 
-    def Testing(self):
-        self.twodpop = Testing(df=self.model._df)
-        try:
-            self.twodpop.Magic()
-            self.twodpop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
     def MultiDimension(self):
         self.mdpop = MultiDimension(df=self.model._df)
         try:
@@ -1029,6 +1029,7 @@ def main():
     mainWin.retranslateUi()
     mainWin.show()
     sys.exit(app.exec_())
+
 
 
 if __name__ == '__main__':

@@ -2,7 +2,6 @@ from geopython.ImportDependence import *
 from geopython.CustomClass import *
 
 
-
 class Magic(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
                u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
@@ -88,7 +87,7 @@ class Magic(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Magic diagram')
+        self.setWindowTitle(self.description)
 
         self.items = []
 
@@ -117,14 +116,12 @@ class Magic(AppForm):
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        # self.axes.hold(False)
+        self.ShapeGroups =200
+        self.view = pg.PlotWidget()
 
-        # Create the navigation toolbar, tied to the canvas
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
+
+        self.view.setParent(self.main_frame)
+
 
         # Other GUI controls
         self.save_button = QPushButton('&Save')
@@ -134,19 +131,8 @@ class Magic(AppForm):
         self.draw_button.clicked.connect(self.Reset)
 
         self.load_button = QPushButton('&Load')
-        self.load_button.clicked.connect(self.Load)
+        #self.load_button.clicked.connect(self.Load)
 
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.Magic)  # int
-
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Magic)  # int
 
         self.fit_cb= QCheckBox('&PolyFit')
         self.fit_cb.setChecked(False)
@@ -157,43 +143,15 @@ class Magic(AppForm):
         self.fit_seter.textChanged[str].connect(self.FitChanged)
 
 
-        self.xlim_seter_left_label = QLabel('Xleft')
-        self.xlim_seter_left = QLineEdit(self)
-        self.xlim_seter_left.textChanged[str].connect(self.XleftChanged)
-
-        self.xlim_seter_right_label = QLabel('Xright')
-        self.xlim_seter_right = QLineEdit(self)
-        self.xlim_seter_right.textChanged[str].connect(self.XrightChanged)
-
-
-        self.ylim_seter_down_label = QLabel('Ydown')
-        self.ylim_seter_down = QLineEdit(self)
-        self.ylim_seter_down.textChanged[str].connect(self.YdownChanged)
-
-
-        self.ylim_seter_up_label = QLabel('Yup')
-        self.ylim_seter_up = QLineEdit(self)
-        self.ylim_seter_up.textChanged[str].connect(self.YupChanged)
-
-
-
-
-        self.fade_cb= QCheckBox('&Fade')
-        self.fade_cb.setChecked(False)
-        self.fade_cb.stateChanged.connect(self.Magic)  # int
-
-        self.fade_label = QLabel('Groups')
-        self.fade_seter = QLineEdit(self)
-        self.fade_seter.textChanged[str].connect(self.FadeChanged)
-
-
         self.shape_cb= QCheckBox('&Shape')
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.Magic)  # int
 
+        '''
         self.shape_label = QLabel('Step')
         self.shape_seter = QLineEdit(self)
         self.shape_seter.textChanged[str].connect(self.ShapeChanged)
+        '''
 
 
 
@@ -228,7 +186,7 @@ class Magic(AppForm):
 
         self.y_element = QSlider(Qt.Horizontal)
         self.y_element.setRange(0, len(self.items) - 1)
-        self.y_element.setValue(0)
+        self.y_element.setValue(1)
         self.y_element.setTracking(True)
         self.y_element.setTickPosition(QSlider.TicksBothSides)
         self.y_element.valueChanged.connect(self.Magic)  # int
@@ -242,35 +200,29 @@ class Magic(AppForm):
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Magic)  # int
 
-        self.width_size_seter_label = QLabel('Width')
-        self.width_size_seter = QLineEdit(self)
 
-        self.width_size_seter.textChanged[str].connect(self.WChanged)
 
-        self.height_size_seter_label = QLabel('height')
-        self.height_size_seter = QLineEdit(self)
+        self.xlim_seter_left_label = QLabel('Xleft')
+        self.xlim_seter_left = QLineEdit(self)
+        self.xlim_seter_left.textChanged[str].connect(self.XleftChanged)
 
-        self.height_size_seter.textChanged[str].connect(self.HChanged)
+        self.xlim_seter_right_label = QLabel('Xright')
+        self.xlim_seter_right = QLineEdit(self)
+        self.xlim_seter_right.textChanged[str].connect(self.XrightChanged)
 
-        self.Left_size_seter_label = QLabel('Left')
-        self.Left_size_seter = QLineEdit(self)
 
-        self.Left_size_seter.textChanged[str].connect(self.LeftChanged)
+        self.ylim_seter_down_label = QLabel('Ydown')
+        self.ylim_seter_down = QLineEdit(self)
+        self.ylim_seter_down.textChanged[str].connect(self.YdownChanged)
 
-        self.Right_size_seter_label = QLabel('Right')
-        self.Right_size_seter = QLineEdit(self)
 
-        self.Right_size_seter.textChanged[str].connect(self.RightChanged)
+        self.ylim_seter_up_label = QLabel('Yup')
+        self.ylim_seter_up = QLineEdit(self)
+        self.ylim_seter_up.textChanged[str].connect(self.YupChanged)
 
-        self.Up_size_seter_label = QLabel('Up')
-        self.Up_size_seter = QLineEdit(self)
 
-        self.Up_size_seter.textChanged[str].connect(self.UpChanged)
 
-        self.Down_size_seter_label = QLabel('Down')
-        self.Down_size_seter = QLineEdit(self)
 
-        self.Down_size_seter.textChanged[str].connect(self.DownChanged)
 
         #
         # Layout with box sizers
@@ -284,12 +236,12 @@ class Magic(AppForm):
         self.hbox6 = QHBoxLayout()
         self.hbox7 = QHBoxLayout()
 
-        for w in [self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.fade_cb,self.fade_label,self.fade_seter,self.shape_cb,self.shape_label,self.shape_seter]:
+
+        for w in [self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.shape_cb]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.save_button, self.draw_button, self.load_button,
-                  self.legend_cb, self.slider_label, self.slider,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
+        for w in [self.save_button, self.draw_button, self.load_button,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -301,33 +253,16 @@ class Magic(AppForm):
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.width_size_seter_label, self.width_size_seter]:
-            self.hbox4.addWidget(w)
-            self.hbox4.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.height_size_seter_label, self.height_size_seter]:
-            self.hbox5.addWidget(w)
-            self.hbox5.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.Left_size_seter, self.Left_size_seter_label, self.Right_size_seter, self.Right_size_seter_label]:
-            self.hbox6.addWidget(w)
-            self.hbox6.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.Down_size_seter, self.Down_size_seter_label, self.Up_size_seter, self.Up_size_seter_label]:
-            self.hbox7.addWidget(w)
-            self.hbox7.setAlignment(w, Qt.AlignVCenter)
 
         self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.mpl_toolbar)
-        self.vbox.addWidget(self.canvas)
+        self.vbox.addWidget(self.view)
         self.vbox.addLayout(self.hbox0)
         self.vbox.addLayout(self.hbox1)
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
-        self.vbox.addLayout(self.hbox4)
-        self.vbox.addLayout(self.hbox5)
-        self.vbox.addLayout(self.hbox6)
-        self.vbox.addLayout(self.hbox7)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -447,133 +382,6 @@ class Magic(AppForm):
         self.flag = 0
         self.Magic()
 
-    def WChanged(self, text):
-        w = 'width ' + text
-        self.width_size_seter_label.setText(w)
-        self.width_size_seter_label.adjustSize()
-
-        try:
-            self.width_plot = float(text)
-        except:
-            pass
-
-        self.x_scale = self.width_plot / self.width_load
-
-        self.polygon = []
-        for i in self.strgons:
-            m = self.Read(i)
-            m.append(m[0])
-            self.polygon.append(m)
-
-        self.polyline = []
-        for i in self.strpolylines:
-            m = self.Read(i)
-            # print('i: ',i,'\n m:',m)
-            self.polyline.append(m)
-
-        self.line = []
-        for i in self.strlines:
-            m = self.Read(i)
-            # print('i: ',i,'\n m:',m)
-            self.line.append(m)
-
-        self.Magic()
-
-    def HChanged(self, text):
-        h = 'height ' + text
-        self.height_size_seter_label.setText(h)
-        self.height_size_seter_label.adjustSize()
-
-        try:
-            self.height_plot = float(text)
-        except:
-            pass
-
-        self.y_scale = self.height_plot / self.height_load
-
-        self.polygon = []
-        for i in self.strgons:
-            m = self.Read(i)
-            m.append(m[0])
-            self.polygon.append(m)
-
-        self.polyline = []
-        for i in self.strpolylines:
-            m = self.Read(i)
-            # print('i: ',i,'\n m:',m)
-            self.polyline.append(m)
-
-        self.line = []
-        for i in self.strlines:
-            m = self.Read(i)
-            # print('i: ',i,'\n m:',m)
-            self.line.append(m)
-
-        self.Magic()
-
-    # text_location= [path.getAttribute('transform') for path in doc.getElementsByTagName('text')]
-    '''
-    tmppolygon_points=[]
-    for i in polygon_points:
-        tmppolygon_points.append(i.split())
-
-    polygon=[]
-    for i in tmppolygon_points:
-        for l in range(len(i)):
-            a=float((i[l].split(','))[0])
-            b=float((i[l].split(','))[1])
-
-            polygon.append([a,b])
-    '''
-
-    def LeftChanged(self, text):
-        w = 'Left ' + text
-        self.Left_size_seter_label.setText(w)
-        self.Left_size_seter_label.adjustSize()
-
-        try:
-            self.Left = float(text)
-        except:
-            pass
-
-        self.Magic()
-
-    def RightChanged(self, text):
-        w = 'Right ' + text
-        self.Right_size_seter_label.setText(w)
-        self.Right_size_seter_label.adjustSize()
-
-        try:
-            self.Right = float(text)
-        except:
-            pass
-
-        self.Magic()
-
-    def UpChanged(self, text):
-        w = 'Up ' + text
-        self.Up_size_seter_label.setText(w)
-        self.Up_size_seter_label.adjustSize()
-
-        try:
-            self.Up = float(text)
-        except:
-            pass
-
-        self.Magic()
-
-    def DownChanged(self, text):
-        w = 'Down ' + text
-        self.Down_size_seter_label.setText(w)
-        self.Down_size_seter_label.adjustSize()
-
-        try:
-            self.Down = float(text)
-        except:
-            pass
-
-        self.Magic()
-
     def FitChanged(self, text):
         w = 'Fit' + text
         self.fit_label.setText(w)
@@ -586,29 +394,6 @@ class Magic(AppForm):
 
         self.Magic()
 
-    def FadeChanged(self, text):
-        w = 'Fade' + text
-        self.fade_label.setText(w)
-        self.fade_label.adjustSize()
-
-        try:
-            self.FadeGroups = float(text)
-        except:
-            pass
-
-        self.Magic()
-
-    def ShapeChanged(self, text):
-        w = 'Shape' + text
-        self.shape_label.setText(w)
-        self.shape_label.adjustSize()
-
-        try:
-            self.ShapeGroups = int(text)
-        except:
-            pass
-
-        self.Magic()
 
     def XleftChanged(self,text):
         if len(text)<1:
@@ -675,8 +460,34 @@ class Magic(AppForm):
             self.Magic()
 
 
+    def ShapeChanged(self, text):
+        w = 'Shape' + text
+        #self.shape_label.setText(w)
+        #self.shape_label.adjustSize()
+
+        try:
+            self.ShapeGroups = int(text)
+        except:
+            pass
+
+        self.Magic()
+
+    def GetASequence(self, head=0, tail= 200, count=10):
+
+        if count > 0:
+            result = np.arange(head, tail, (tail - head) / count)
+        else:
+            result = np.arange(head, tail, (tail - head) / 10)
+
+        return (result)
+
     def Magic(self):
 
+
+        self.view.clear()
+        self.view.addLegend()
+        self.ax = self.view.getAxis('bottom')
+        self.ay = self.view.getAxis('left')
         self.WholeData = []
 
         self.x_scale = self.width_plot / self.width_load
@@ -691,7 +502,9 @@ class Magic(AppForm):
 
         b = int(self.y_element.value())
 
-        self.axes.clear()
+        self.x_element_label.setText(self.items[a])
+        self.y_element_label.setText(self.items[b])
+
 
         if (self.Left != self.Right) and (self.Down != self.Up) and abs(self.Left) + abs(self.Right) + abs(
                 self.Down) + abs(self.Up) != 0:
@@ -711,83 +524,14 @@ class Magic(AppForm):
 
         self.norm_slider_label.setText(standardnamechosen)
 
-        if self.flag != 0:
-            if self.extent != 0:
-                self.axes.imshow(self.img, interpolation='nearest', aspect='auto', extent=self.extent)
-            else:
-                self.axes.imshow(self.img, interpolation='nearest', aspect='auto')
-
-        self.axes.set_xlabel(self.items[a])
-        self.x_element_label.setText(self.items[a])
-
-        self.axes.set_ylabel(self.items[b])
-        self.y_element_label.setText(self.items[b])
 
         PointLabels = []
-
         XtoFit = []
         YtoFit = []
-
-
-
-        for i in range(len(raw)):
-            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
-            XtoFit.append(x)
-            YtoFit.append(y)
-
-
-
-
-        if self.LimSet==False:
-            self.Xleft, self.Xright, self.Ydown, self.Yup = min(XtoFit), max(XtoFit), min(YtoFit), max(YtoFit)
-
-
-
-        z = np.polyfit(YtoFit, XtoFit,self.FitLevel)
-
-        #Yline = np.linspace(min(YtoFit), max(YtoFit), 30)
-
-        Yline = np.linspace(self.Ydown,self.Yup, 30)
-
-        p = np.poly1d(z)
-        Xline = p(Yline)
-
-
-        print(z)
-        self.reference=str(z)
-
-        self.textbox.setText('x=f(y) Polyfitting parameter：' + '\n' + self.reference)
-
-
-
-        alphatouse = []
-
-        for i in range(len(XtoFit)):
-            tmp = abs(p(YtoFit[i]) - XtoFit[i])
-            alphatouse.append(tmp)
-
-        alist = []
-
-        step = abs(min(alphatouse) - max(alphatouse)) / self.FadeGroups
-
-        if self.FadeGroups>4:
-            for i in alphatouse:
-                if min(alphatouse) <= i < min(alphatouse) + step:
-                    alist.append(0.8)
-                elif min(alphatouse) + step <= i < min(alphatouse) + 2 * step:
-                    alist.append(0.6)
-                elif min(alphatouse) + 2 * step <= i < min(alphatouse) + 3 * step:
-                    alist.append(0.4)
-                elif min(alphatouse) + 3 * step <= i < min(alphatouse) + 4 * step:
-                    alist.append(0.2)
-                else:
-                    alist.append(0.05)
-        else:
-            for i in alphatouse:
-                if min(alphatouse) <= i < min(alphatouse) + step:
-                    alist.append(0.8)
-                else:
-                    alist.append(0.2)
+        Colors=[]
+        Alphas=[]
+        Markers=[]
+        Names=[]
 
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
@@ -819,12 +563,12 @@ class Magic(AppForm):
 
                     self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
 
-                    self.axes.set_xlabel(self.xlabel)
+
                     self.x_element_label.setText(self.xlabel)
 
                     self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
 
-                    self.axes.set_ylabel(self.ylabel)
+
                     self.y_element_label.setText(self.ylabel)
 
                     if self.items[a] in self.Element:
@@ -837,97 +581,136 @@ class Magic(AppForm):
                     xuse = math.log(x, 10)
                     self.xlabel = '$log10$ ' + self.xlabel
 
-                    self.axes.set_xlabel(self.xlabel)
 
                 if (self.logy_cb.isChecked()):
                     yuse = math.log(y, 10)
 
                     self.ylabel = '$log10$ ' + self.ylabel
 
-                    self.axes.set_ylabel(self.ylabel)
-
-
-
-                if (self.fade_cb.isChecked()==False):
-
-                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
-
-                elif (self.fade_cb.isChecked()==True):
-                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=alist[i],
-                                      label=TmpLabel, edgecolors='black')
-
-
+                XtoFit.append(xuse)
+                YtoFit.append(yuse)
+                Colors.append(raw.at[i, 'Color'])
+                Alphas.append(raw.at[i, 'Alpha'])
+                Names.append(raw.at[i, 'Label'])
+                Markers.append(raw.at[i, 'Marker'])
 
 
             except(ValueError):
                 pass
 
 
+        if self.LimSet==False:
+            self.Xleft, self.Xright, self.Ydown, self.Yup = min(XtoFit), max(XtoFit), min(YtoFit), max(YtoFit)
+
+
+        z = np.polyfit(YtoFit, XtoFit,self.FitLevel)
+
+        #Yline = np.linspace(min(YtoFit), max(YtoFit), 30)
+
+        Yline = np.linspace(self.Ydown,self.Yup, 30)
+
+        p = np.poly1d(z)
+        Xline = p(Yline)
+
+        print(z)
+        self.reference=str(z)
+        self.textbox.setText('x=f(y) Polyfitting parameter：' + '\n' + self.reference)
+
+
+        xmin, xmax = min(XtoFit), max(XtoFit)
+        ymin, ymax = min(YtoFit), max(YtoFit)
+
+        xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+
+
+        xx = xx * (self.ShapeGroups / 200)
+        yy = yy * (self.ShapeGroups / 200)
+
+        positions = np.vstack([xx.ravel(), yy.ravel()])
+        values = np.vstack([raw[self.items[a]], raw[self.items[b]]])
+        kernel = st.gaussian_kde(values)
+        f = np.reshape(kernel(positions).T, xx.shape)
+        data = f
+        img = pg.ImageItem(data)
+
+        TargetWidth = img.width()
+        TargetHeight = img.height()
+
+        OriginalWidth = abs(xmax - xmin)
+        OriginalHeight = abs(ymax - ymin)
+
+        xscale = TargetWidth / OriginalWidth
+        yscale = TargetHeight / OriginalHeight
+
+        XtoFitUsed = []
+        YtoFitUsed = []
+
+        XlineUsed = []
+        YlineUsed = []
+
+        for i in range(len(XtoFit)):
+            XtoFitUsed.append((XtoFit[i] - xmin) * xscale)
+            YtoFitUsed.append((YtoFit[i] - ymin) * yscale)
+
+        for i in range(len(Xline)):
+            XlineUsed.append((Xline[i] - xmin) * xscale)
+            YlineUsed.append((Yline[i] - ymin) * yscale)
+
+        Xoriginal = np.arange(xmin, xmax, (xmax - xmin) / 10)
+        Yoriginal = np.arange(ymin, ymax, (ymax - ymin) / 10)
+
+        XonPlot = self.GetASequence(tail=self.ShapeGroups)
+        YonPlot = self.GetASequence(tail=self.ShapeGroups)
+
+        XonStick = []
+        YonStick = []
+
+        for i in range(len(XonPlot)):
+            XonStick.append([XonPlot[i], Xoriginal[i]])
+            YonStick.append([YonPlot[i], Yoriginal[i]])
+            pass
+
+        self.ax.setTicks([XonStick])
+        self.ay.setTicks([YonStick])
 
 
 
-        if (self.fit_cb.isChecked()):
-            self.axes.plot(Xline, Yline, 'b-')
 
 
         if (self.shape_cb.isChecked()):
-            xmin, xmax = min(XtoFit), max(XtoFit)
-            ymin, ymax = min(YtoFit), max(YtoFit)
 
-            DensityColorMap = 'Blues'
-            DensityAlpha = 0.3
+            ## generate empty curves
+            curves = []
 
-            DensityLineColor = 'grey'
-            DensityLineAlpha = 0.3
+            levels = np.linspace(data.min(), data.max(), 10)
+            for i in range(len(levels)):
+                v = levels[i]
+                ## generate isocurve with automatic color selection
+                c = pg.IsocurveItem(level=v, pen=(i, len(levels) * 1.5))
+                c.setParentItem(img)  ## make sure isocurve is always correctly displayed over image
+                c.setZValue(10)
+                curves.append(c)
 
-            # Peform the kernel density estimate
-            xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+            imgLevels = (data.min(), data.max() * 2)
 
+            img.setImage(data, levels=imgLevels)
 
-            command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
-            exec(command)
+            img.setScaledMode()
 
+            for c in curves:
+                c.setData(data)
 
-            positions = np.vstack([xx.ravel(), yy.ravel()])
-            values = np.vstack([raw[self.items[a]], raw[self.items[b]]])
-            kernel = st.gaussian_kde(values)
-            f = np.reshape(kernel(positions).T, xx.shape)
-
-
-            # Contourf plot
-            cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
-            ## Or kernel density estimate plot instead of the contourf plot
-            #self.axes.imshow(np.rot90(f), cmap='Blues', extent=[xmin, xmax, ymin, ymax])
-            # Contour plot
-            cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
-            # Label plot
-            self.axes.clabel(cset, inline=1, fontsize=10)
-
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a,prop=fontprop)
-
-        if self.polygon != 0 and self.polyline != 0 and self.line != 0:
-
-            # print('gon: ',self.polygon,' \n line:',self.polyline)
-
-            for i in self.polygon:
-                self.DrawLine(i)
-
-            for i in self.polyline:
-                self.DrawLine(i)
-
-            for i in self.line:
-                self.DrawLine(i)
+            self.view.addItem(img)
+            pass
 
 
 
-                # self.DrawLine(self.polygon)
-                # self.DrawLine(self.polyline)
 
-        self.canvas.draw()
+        self.view.plot(XtoFitUsed, YtoFitUsed, pen=None, symbol=Markers[i], symbolPen=None, symbolSize=3,
+                  symbolBrush=(100, 255, 255, 48), name= PointLabels)
 
+        if (self.fit_cb.isChecked()):
+            #self.axes.plot(Xline, Yline, 'b-')
+            self.view.plot(XlineUsed, YlineUsed, pen='b')
+
+            pass
