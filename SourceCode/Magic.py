@@ -2,6 +2,7 @@ from geopython.ImportDependence import *
 from geopython.CustomClass import *
 
 
+
 class Magic(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
                u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
@@ -241,7 +242,7 @@ class Magic(AppForm):
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.save_button, self.draw_button, self.load_button,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
+        for w in [self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
