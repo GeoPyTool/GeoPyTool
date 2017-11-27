@@ -85,6 +85,9 @@ class XY(AppForm):
 
     LimSet= False
 
+    LabelSetted = False
+    ValueChoosed = True
+
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.description)
@@ -213,9 +216,12 @@ class XY(AppForm):
         self.x_element.setValue(0)
         self.x_element.setTracking(True)
         self.x_element.setTickPosition(QSlider.TicksBothSides)
-        self.x_element.valueChanged.connect(self.Magic)  # int
+        self.x_element.valueChanged.connect(self.ValueChooser)  # int
 
         self.x_element_label = QLabel('X')
+
+        self.x_seter = QLineEdit(self)
+        self.x_seter.textChanged[str].connect(self.LabelSeter)
 
         #self.x_calculator = QLineEdit(self)
 
@@ -230,9 +236,12 @@ class XY(AppForm):
         self.y_element.setValue(1)
         self.y_element.setTracking(True)
         self.y_element.setTickPosition(QSlider.TicksBothSides)
-        self.y_element.valueChanged.connect(self.Magic)  # int
+        self.y_element.valueChanged.connect(self.ValueChooser)  # int
 
         self.y_element_label = QLabel('Y')
+
+        self.y_seter = QLineEdit(self)
+        self.y_seter.textChanged[str].connect(self.LabelSeter)
 
         #self.y_calculator = QLineEdit(self)
 
@@ -292,11 +301,11 @@ class XY(AppForm):
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logx_cb, self.x_element_label, self.x_element]:
+        for w in [self.logx_cb, self.x_element_label,self.x_seter, self.x_element]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logy_cb, self.y_element_label, self.y_element]:
+        for w in [self.logy_cb, self.y_element_label,self.y_seter, self.y_element]:
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
@@ -673,6 +682,23 @@ class XY(AppForm):
 
             self.Magic()
 
+    def LabelSeter(self):
+
+        self.LabelSetted = True
+        self.ValueChoosed = False
+        self.Magic()
+
+    def ValueChooser(self):
+
+        self.LabelSetted = False
+        self.ValueChoosed = True
+        self.Magic()
+
+
+
+
+
+
     def Magic(self):
 
         self.WholeData = []
@@ -685,9 +711,28 @@ class XY(AppForm):
 
         raw = self._df
 
-        a = int(self.x_element.value())
 
-        b = int(self.y_element.value())
+
+        if self.LabelSetted == True:
+            if(self.x_seter.text()!=''):
+                a = int(self.x_seter.text())
+            else:
+                a = int(self.x_element.value())
+
+
+            if (self.y_seter.text() != ''):
+                b = int(self.y_seter.text())
+            else:
+                b = int(self.y_element.value())
+
+        if self.ValueChoosed == True:
+            a = int(self.x_element.value())
+            b = int(self.y_element.value())
+
+
+
+
+
 
         self.axes.clear()
 
