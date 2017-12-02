@@ -27,6 +27,7 @@ a tool set for daily geology related task.
 t = 'You are using GeoPython ' + version + ', released on' + date + '\n' + sign
 _translate = QtCore.QCoreApplication.translate
 
+from geopython.TabelViewer import TabelViewer
 from geopython.CIPW import CIPW
 from geopython.Cluster import Cluster
 from geopython.Harker import Harker

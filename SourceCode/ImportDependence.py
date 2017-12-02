@@ -14,6 +14,8 @@ import os
 import numpy as np
 import pyqtgraph as pg
 import matplotlib.pyplot as plt
+from matplotlib import path
+import matplotlib.patches as patches
 import matplotlib.image as mpimg
 import matplotlib.font_manager as font_manager
 import math
@@ -41,6 +43,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 from matplotlib import ft2font
 from bs4 import BeautifulSoup
+from geopython.TabelViewer import TabelViewer
+
 
 LocationOfMySelf=os.path.dirname(__file__)
 

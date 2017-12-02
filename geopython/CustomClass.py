@@ -1,6 +1,6 @@
-version = '0.7.34'
+version = '0.7.40'
 
-date = '2017-11-27'
+date = '2017-12-01'
 
 dpi = 128
 #coding:utf-8
@@ -606,6 +606,53 @@ class AppForm(QMainWindow):
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
     reference = 'Print the reference here.'
+    WholeResult=[]
+
+    ItemNames = ['Foidolite',
+                 'Peridotgabbro',
+                 'Foid Gabbro',
+                 'Foid Monzodiorite',
+                 'Foid Monzosyenite',
+                 'Foid Syenite',
+                 'Gabbro Bs',
+                 'Gabbro Ba',
+                 'Monzogabbro',
+                 'Monzodiorite',
+                 'Monzonite',
+                 'Syenite',
+                 'Quartz Monzonite',
+                 'Gabbroic Diorite',
+                 'Diorite',
+                 'Granodiorite',
+                 'Granite',
+                 'Quartzolite',
+                 ]
+
+    LocationAreas = [[[41, 3], [37, 3], [35, 9], [37, 14], [52.5, 18], [52.5, 14], [48.4, 11.5], [45, 9.4], [41, 7]],
+                     [[41, 0], [41, 3], [45, 3], [45, 0]],
+                     [[41, 3], [41, 7], [45, 9.4], [49.4, 7.3], [45, 5], [45, 3]],
+                     [[45, 9.4], [48.4, 11.5], [53, 9.3], [49.4, 7.3]],
+                     [[48.4, 11.5], [52.5, 14], [57.6, 11.7], [53, 9.3]],
+                     [[52.5, 14], [52.5, 18], [57, 18], [63, 16.2], [61, 13.5], [57.6, 11.7]],
+                     [[45, 0], [45, 2], [52, 5], [52, 0]],
+                     [[45, 2], [45, 5], [52, 5]],
+                     [[45, 5], [49.4, 7.3], [52, 5]],
+                     [[49.4, 7.3], [53, 9.3], [57, 5.9], [52, 5]],
+                     [[53, 9.3], [57.6, 11.7], [61, 8.6], [63, 7], [57, 5.9]],
+                     [[57.6, 11.7], [61, 13.5], [63, 16.2], [71.8, 13.5], [61, 8.6]],
+                     [[61, 8.6], [71.8, 13.5], [69, 8], [63, 7]],
+                     [[52, 0], [52, 5], [57, 5.9], [57, 0]],
+                     [[57, 0], [57, 5.9], [63, 7], [63, 0]],
+                     [[63, 0], [63, 7], [69, 8], [77.3, 0]],
+                     [[77.3, 0], [69, 8], [71.8, 13.5], [85.9, 6.8], [87.5, 4.7]],
+                     [[77.3, 0], [87.5, 4.7], [90, 4.7], [90, 0]],
+                     ]
+
+    AreasHeadClosed = []
+
+    SelectDic = {}
+
+
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -615,6 +662,14 @@ class AppForm(QMainWindow):
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to AppForm')
+
+        for i in range(len(self.LocationAreas)):
+            tmpi = self.LocationAreas[i] + [self.LocationAreas[i][0]]
+            tmppath = path.Path(tmpi)
+            self.AreasHeadClosed.append(tmpi)
+            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
+
+            self.SelectDic[self.ItemNames[i]] = tmppath
 
         self.create_main_frame()
         self.create_status_bar()
@@ -654,8 +709,6 @@ class AppForm(QMainWindow):
     def save_plot_quitely(self,path= '~/',name='Target'):
         self.canvas.print_figure(path + name + '.pdf', dpi=self.dpi)
         self.canvas.print_figure(path + name + '.png', dpi=self.dpi)
-
-
 
 
     def create_main_frame(self):
@@ -773,6 +826,11 @@ class AppForm(QMainWindow):
         if checkable:
             action.setCheckable(True)
         return action
+
+    def GetResult(self):
+        return(self.WholeResult)
+
+
 
 class PlotModel(FigureCanvas):
     _df = pd.DataFrame()

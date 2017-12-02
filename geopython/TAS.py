@@ -1,5 +1,7 @@
 from geopython.ImportDependence import *
 from geopython.CustomClass import *
+from geopython.TabelViewer import TabelViewer
+
 
 class TAS(AppForm):
     _df = pd.DataFrame()
@@ -10,17 +12,51 @@ class TAS(AppForm):
 
     reference = 'Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
 
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
-        self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
+    ItemNames = ['Foidolite',
+                 'Peridotgabbro',
+                 'Foid Gabbro',
+                 'Foid Monzodiorite',
+                 'Foid Monzosyenite',
+                 'Foid Syenite',
+                 'Gabbro Bs',
+                 'Gabbro Ba',
+                 'Monzogabbro',
+                 'Monzodiorite',
+                 'Monzonite',
+                 'Syenite',
+                 'Quartz Monzonite',
+                 'Gabbroic Diorite',
+                 'Diorite',
+                 'Granodiorite',
+                 'Granite',
+                 'Quartzolite',
+                 ]
 
-        self._df = df
-        if (len(df) > 0):
-            self._changed = True
-            # print('DataFrame recieved to TAS')
+    LocationAreas = [[[41, 3], [37, 3], [35, 9], [37, 14], [52.5, 18], [52.5, 14], [48.4, 11.5], [45, 9.4], [41, 7]],
+                     [[41, 0], [41, 3], [45, 3], [45, 0]],
+                     [[41, 3], [41, 7], [45, 9.4], [49.4, 7.3], [45, 5], [45, 3]],
+                     [[45, 9.4], [48.4, 11.5], [53, 9.3], [49.4, 7.3]],
+                     [[48.4, 11.5], [52.5, 14], [57.6, 11.7], [53, 9.3]],
+                     [[52.5, 14], [52.5, 18], [57, 18], [63, 16.2], [61, 13.5], [57.6, 11.7]],
+                     [[45, 0], [45, 2], [52, 5], [52, 0]],
+                     [[45, 2], [45, 5], [52, 5]],
+                     [[45, 5], [49.4, 7.3], [52, 5]],
+                     [[49.4, 7.3], [53, 9.3], [57, 5.9], [52, 5]],
+                     [[53, 9.3], [57.6, 11.7], [61, 8.6], [63, 7], [57, 5.9]],
+                     [[57.6, 11.7], [61, 13.5], [63, 16.2], [71.8, 13.5], [61, 8.6]],
+                     [[61, 8.6], [71.8, 13.5], [69, 8], [63, 7]],
+                     [[52, 0], [52, 5], [57, 5.9], [57, 0]],
+                     [[57, 0], [57, 5.9], [63, 7], [63, 0]],
+                     [[63, 0], [63, 7], [69, 8], [77.3, 0]],
+                     [[77.3, 0], [69, 8], [71.8, 13.5], [85.9, 6.8], [87.5, 4.7]],
+                     [[77.3, 0], [87.5, 4.7], [90, 4.7], [90, 0]],
+                     ]
 
-        self.create_main_frame()
-        self.create_status_bar()
+    AreasHeadClosed = []
+    SelectDic = {}
+
+
+
 
     def create_main_frame(self):
         self.main_frame = QWidget()
@@ -81,7 +117,7 @@ class TAS(AppForm):
     def TAS(self, Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
             Top=19, Y0=1, Y1=19, Y_Gap=19, FontSize=12, xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', width=12,
             height=12, dpi=300):
-
+        self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
         self.axes.clear()
         self.axes.axis('off')
         self.axes.set_xlabel(self.xlabel)
@@ -166,7 +202,16 @@ class TAS(AppForm):
 
                 Alpha = df.at[i, 'Alpha']
                 Marker = df.at[i, 'Marker']
-                Label = TmpLabel
+                Label = df.at[i, 'Label']
+
+                xtest=df.at[i, 'SiO2']
+                ytest=df.at[i, 'Na2O'] + df.at[i, 'K2O']
+
+                for j in self.ItemNames:
+                    if self.SelectDic[j].contains_point([xtest,ytest]):
+                        self.WholeResult.append([Label,j])
+                        break
+                    pass
 
                 self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
                                   s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
@@ -174,9 +219,6 @@ class TAS(AppForm):
 
             if (self.legend_cb.isChecked()):
                 a = int(self.slider.value())
-                #self.axes.legend(loc=a, fontsize=9)
-                #fontproperties=fontprop
-                #self.axes.legend(loc=a, prop = {'family': LocationOfMySelf + '/wqy.ttf', 'size': 9})
                 self.axes.legend(loc=a, prop=fontprop)
 
 
@@ -220,3 +262,12 @@ class TAS(AppForm):
 
             self.canvas.draw()
 
+
+        self.Explain()
+
+    def Explain(self):
+
+        self.Intro = pd.DataFrame.from_records(self.WholeResult)
+
+        self.tablepop = TabelViewer(df=self.Intro)
+        self.tablepop.show()

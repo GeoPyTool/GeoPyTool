@@ -1406,6 +1406,11 @@ class CIPW(AppForm):
         self.tableView3.setModel(self.model3)
 
 
+        self.WholeResult.append(self.newdf)
+        self.WholeResult.append(self.newdf1)
+        self.WholeResult.append(self.newdf2)
+        self.WholeResult.append(self.newdf3)
+
     def QAPF(self):
         self.qapfpop = QAPF(df=self.useddf)
         try:
