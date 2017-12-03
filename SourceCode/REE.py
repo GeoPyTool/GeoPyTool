@@ -7,6 +7,10 @@ class REE(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
 
+    LREE = ['La', 'Ce', 'Pr', 'Nd']
+    MREE = ['Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho']
+    HREE = [ 'Er', 'Tm', 'Yb', 'Lu']
+
     StandardsName = ['C1 Chondrite Sun and McDonough,1989', 'Chondrite Taylor and McLennan,1985',
                      'Chondrite Haskin et al.,1966', 'Chondrite Nakamura,1977', 'MORB Sun and McDonough,1989']
 
@@ -30,6 +34,12 @@ class REE(AppForm):
         'MORB Sun and McDonough,1989': {'La': 2.5, 'Ce': 7.5, 'Pr': 1.32, 'Nd': 7.3, 'Sm': 2.63, 'Eu': 1.02, 'Gd': 3.68,
                                         'Tb': 0.67, 'Dy': 4.55, 'Ho': 1.052, 'Er': 2.97, 'Tm': 0.46, 'Yb': 3.05,
                                         'Lu': 0.46}}
+
+    DeltaEu = []
+    LREEResult=[]
+    MREEResult=[]
+    HREEResult=[]
+    WholeREEResult=[]
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -120,6 +130,9 @@ class REE(AppForm):
 
         self.WholeData = []
 
+
+
+
         raw = self._df
 
         self.FontSize = FontSize
@@ -137,6 +150,65 @@ class REE(AppForm):
 
             LinesX = []
             LinesY = []
+
+            TmpEu = raw.at[i, 'Eu'] / standardchosen['Eu']
+            TmpSm = raw.at[i, 'Sm'] / standardchosen['Sm']
+            TmpGd = raw.at[i, 'Gd'] / standardchosen['Gd']
+
+            algebraEu = 2*TmpEu/(TmpSm+TmpGd)
+            geometricEu = TmpEu/np.power((TmpSm+TmpGd),0.5)
+
+
+            self.DeltaEu.append({'algebraDeltaEu':algebraEu,'geometricDeltaEu':geometricEu})
+
+
+            '''
+            tmpLREEResult=0
+            for j in self.LREE:
+                tmpLREEResult+= raw.at[i, j]
+            self.LREEResult.append([raw.at[i, 'Label'] , tmpLREEResult])
+
+
+            tmpMREEResult=0
+            for j in self.MREE:
+                tmpMREEResult+= raw.at[i, j]
+            self.MREEResult.append([raw.at[i, 'Label'] , tmpMREEResult])
+
+
+            tmpHREEResult=0
+            for j in self.HREE:
+                tmpHREEResult+= raw.at[i, j]
+            self.HREEResult.append([raw.at[i, 'Label'] , tmpHREEResult])
+
+
+            self.WholeREEResult.append([raw.at[i, 'Label'] , tmpHREEResult])
+            '''
+
+            tmpLREEResult = 0
+            tmpMREEResult = 0
+            tmpHREEResult = 0
+            tmpWholeResult = 0
+
+            for j in self.Element:
+
+                if j in self.LREE:
+                    tmpLREEResult += raw.at[i, j]
+                elif j in self.MREE:
+                    tmpMREEResult += raw.at[i, j]
+                elif j in self.HREE:
+                    tmpHREEResult += raw.at[i, j]
+
+                tmpWholeResult+= raw.at[i, j]
+
+
+            self.LREEResult.append( {'LREE':tmpLREEResult} )
+            self.MREEResult.append( {'MREE':tmpMREEResult} )
+            self.HREEResult.append( {'HREE':tmpHREEResult} )
+            self.WholeREEResult.append( {'WholeREE':tmpWholeResult} )
+
+
+            self.WholeResult.append([raw.at[i, 'Label'],self.DeltaEu,self.LREEResult,self.MREEResult,self.HREEResult])
+
             for j in range(len(self.Element)):
                 tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
 
@@ -205,4 +277,16 @@ class REE(AppForm):
                                textcoords='offset points',
                                fontsize=8, color='black', alpha=0.8)
 
+
+
         self.canvas.draw()
+
+        #self.Explain()
+
+
+    def Explain(self):
+
+        self.Intro = pd.DataFrame.from_records(self.WholeResult)
+
+        self.tablepop = TabelViewer(df=self.Intro)
+        self.tablepop.show()

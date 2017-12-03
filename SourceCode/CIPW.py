@@ -1217,7 +1217,6 @@ class CIPW(AppForm):
             WholeVolume=0
 
             for i in self.Minerals:# Calculate the Weight Pecentage of Minerals
-
                 exec('self.DataResult[k].update({\'' + i + '\':' + i + '}) ')
 
                 if i == 'Q':
@@ -1233,7 +1232,8 @@ class CIPW(AppForm):
                 elif i == 'P':
                     a = 'Anorthite'
                     b = 'Albite'
-                    tmpcmdW='self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) '
+                    tmpcmdW='self.DataWeight[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]+' + b + '*self.DataBase[\'' + b + '\'][0]}) '
+                    print(tmpcmdW, '\n')
                     exec(tmpcmdW)
 
                 elif i == 'F':
@@ -1253,9 +1253,12 @@ class CIPW(AppForm):
                 tmpcmdAccV='self.tmpVolume  =  '+ i + '*self.DataBase[\'' + i + '\'][0]/self.DataBase[\'' + i + '\'][1]'
                 if i not in ['Q', 'A', 'P', 'F', ]:
                     exec(tmpcmdAccV)
-                    print(tmpcmdAccV, '\t', self.tmpVolume)
+                    if self.tmpVolume != 0:
+                        print(tmpcmdAccV, '\t', self.tmpVolume)
 
                 WholeVolume= WholeVolume+ self.tmpVolume
+
+                print(WholeVolume)
 
             for i in self.Minerals:# Calculate the Volume Pecentage of Minerals
 
@@ -1272,15 +1275,22 @@ class CIPW(AppForm):
                 elif i == 'P':
                     a = 'Anorthite'
                     b = 'Albite'
-                    tmpcmdV='self.DataVolume[k].update({\'' + i + '\':' + i + '*100* self.DataBase[\'' + m + '\'][0]/(self.DataBase[\'' + m + '\'][1]*WholeVolume)}) '
+                    tmpcmdV = (
+                            'self.DataVolume[k].update({\'' + i + '\':100/WholeVolume*(' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+' + b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1])}) ')
+                    print(tmpcmdV,'\n')
                     exec(tmpcmdV)
 
                 elif i == 'F':
                     a = 'Nepheline'
                     b = 'Leucite'
                     c = 'Kalsilite'
-                    exec(
+
+                    tmpcmdV= (
                         'self.DataVolume[k].update({\'' + i + '\':100/WholeVolume*(' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+' + b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]+' + c + '*self.DataBase[\'' + c + '\'][0]/self.DataBase[\'' + c + '\'][1])}) ')
+                    print(tmpcmdV,'\n')
+                    exec(tmpcmdV)
+
+
 
                 if i not in ['Q', 'A', 'P', 'F', ]:
                     exec(

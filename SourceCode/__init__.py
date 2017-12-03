@@ -881,10 +881,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def TAS(self):
 
-        self.pop = TAS(df=self.model._df)
+        self.taspop = TAS(df=self.model._df)
         try:
-            self.pop.TAS()
-            self.pop.show()
+            self.taspop.TAS()
+            self.taspop.show()
         except(KeyError):
             self.ErrorEvent()
 
