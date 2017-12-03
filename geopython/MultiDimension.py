@@ -406,5 +406,5 @@ class MultiDimension(AppForm):
 
 
 
-        self.tablepop = TabelViewer(df=StatResultDf)
+        self.tablepop = TabelViewer(df=StatResultDf,title='MultiDimensional Statistical Result')
         self.tablepop.show()

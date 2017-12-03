@@ -1,4 +1,4 @@
-version = '0.7.43'
+version = '0.7.44'
 
 date = '2017-12-03'
 
@@ -584,8 +584,18 @@ class PandasModel(QtCore.QAbstractTableModel):
 
         index = self._df.index.tolist()
         self.layoutAboutToBeChanged.emit()
-        self._df.sort_values(colname, ascending=order == QtCore.Qt.AscendingOrder, inplace=True)
-        self._df.reset_index(inplace=True, drop=True)
+
+        #self._df.sort_values(colname, ascending=order == QtCore.Qt.AscendingOrder, inplace=True)
+        #self._df.reset_index(inplace=True, drop=True)
+
+        try:
+            self._df.sort_values(colname, ascending=order == QtCore.Qt.AscendingOrder, inplace=True)
+        except:
+            pass
+        try:
+            self._df.reset_index(inplace=True, drop=True)
+        except:
+            pass
 
         self.layoutChanged.emit()
 
@@ -606,7 +616,7 @@ class AppForm(QMainWindow):
     ylabel = r'$Na_2O + K_2O wt\%$'
     reference = 'Print the reference here.'
     WholeResult=[]
-
+    LabelList=[]
     ItemNames = ['Foidolite',
                  'Peridotgabbro',
                  'Foid Gabbro',
@@ -650,7 +660,6 @@ class AppForm(QMainWindow):
     AreasHeadClosed = []
 
     SelectDic = {}
-
 
 
     def __init__(self, parent=None, df=pd.DataFrame()):

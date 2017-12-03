@@ -56,9 +56,9 @@ class TabelViewer(AppForm):
     DataCalced = {}
     raw = pd.DataFrame()
 
-    def __init__(self, parent=None, df=pd.DataFrame()):
+    def __init__(self, parent=None, df=pd.DataFrame(),title='Statistical Result'):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Statistical Result')
+        self.setWindowTitle(title)
 
         self.df = df
 

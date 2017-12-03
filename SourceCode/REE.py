@@ -35,11 +35,13 @@ class REE(AppForm):
                                         'Tb': 0.67, 'Dy': 4.55, 'Ho': 1.052, 'Er': 2.97, 'Tm': 0.46, 'Yb': 3.05,
                                         'Lu': 0.46}}
 
-    DeltaEu = []
-    LREEResult=[]
-    MREEResult=[]
-    HREEResult=[]
-    WholeREEResult=[]
+    LabelList=[]
+    algebraDeltaEuList = []
+    geometricDeltaEuList = []
+    LREEList=[]
+    MREEList=[]
+    HREEList=[]
+    ALLREEList=[]
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -130,9 +132,6 @@ class REE(AppForm):
 
         self.WholeData = []
 
-
-
-
         raw = self._df
 
         self.FontSize = FontSize
@@ -156,33 +155,8 @@ class REE(AppForm):
             TmpGd = raw.at[i, 'Gd'] / standardchosen['Gd']
 
             algebraEu = 2*TmpEu/(TmpSm+TmpGd)
-            geometricEu = TmpEu/np.power((TmpSm+TmpGd),0.5)
+            geometricEu = TmpEu/np.power((TmpSm*TmpGd),0.5)
 
-
-            self.DeltaEu.append({'algebraDeltaEu':algebraEu,'geometricDeltaEu':geometricEu})
-
-
-            '''
-            tmpLREEResult=0
-            for j in self.LREE:
-                tmpLREEResult+= raw.at[i, j]
-            self.LREEResult.append([raw.at[i, 'Label'] , tmpLREEResult])
-
-
-            tmpMREEResult=0
-            for j in self.MREE:
-                tmpMREEResult+= raw.at[i, j]
-            self.MREEResult.append([raw.at[i, 'Label'] , tmpMREEResult])
-
-
-            tmpHREEResult=0
-            for j in self.HREE:
-                tmpHREEResult+= raw.at[i, j]
-            self.HREEResult.append([raw.at[i, 'Label'] , tmpHREEResult])
-
-
-            self.WholeREEResult.append([raw.at[i, 'Label'] , tmpHREEResult])
-            '''
 
             tmpLREEResult = 0
             tmpMREEResult = 0
@@ -201,13 +175,16 @@ class REE(AppForm):
                 tmpWholeResult+= raw.at[i, j]
 
 
-            self.LREEResult.append( {'LREE':tmpLREEResult} )
-            self.MREEResult.append( {'MREE':tmpMREEResult} )
-            self.HREEResult.append( {'HREE':tmpHREEResult} )
-            self.WholeREEResult.append( {'WholeREE':tmpWholeResult} )
+
+            self.LabelList.append(raw.at[i, 'Label'])
+            self.algebraDeltaEuList.append( algebraEu )
+            self.geometricDeltaEuList.append( geometricEu )
+            self.LREEList.append( tmpLREEResult )
+            self.MREEList.append( tmpMREEResult )
+            self.HREEList.append( tmpHREEResult )
+            self.ALLREEList.append( tmpWholeResult )
 
 
-            self.WholeResult.append([raw.at[i, 'Label'],self.DeltaEu,self.LREEResult,self.MREEResult,self.HREEResult])
 
             for j in range(len(self.Element)):
                 tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
@@ -281,12 +258,20 @@ class REE(AppForm):
 
         self.canvas.draw()
 
-        #self.Explain()
+
+        self.Explain()
 
 
     def Explain(self):
+        self.Intro = pd.DataFrame(
+            {'Label': self.LabelList,
+             'algebraDeltaEu': self.algebraDeltaEuList,
+             'geometricDeltaEu': self.geometricDeltaEuList,
+             'LREE': self.LREEList,
+             'MREE': self.MREEList,
+             'HREE': self.HREEList,
+             'ALLREE': self.ALLREEList
+             })
 
-        self.Intro = pd.DataFrame.from_records(self.WholeResult)
-
-        self.tablepop = TabelViewer(df=self.Intro)
+        self.tablepop = TabelViewer(df=self.Intro,title='REE Result')
         self.tablepop.show()

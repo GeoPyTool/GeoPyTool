@@ -55,7 +55,7 @@ class TAS(AppForm):
     AreasHeadClosed = []
     SelectDic = {}
 
-
+    TypeList=[]
 
 
     def create_main_frame(self):
@@ -122,6 +122,7 @@ class TAS(AppForm):
         self.axes.axis('off')
         self.axes.set_xlabel(self.xlabel)
         self.axes.set_ylabel(self.ylabel)
+
 
         PointLabels = []
         x = []
@@ -209,7 +210,10 @@ class TAS(AppForm):
 
                 for j in self.ItemNames:
                     if self.SelectDic[j].contains_point([xtest,ytest]):
-                        self.WholeResult.append([Label,j])
+
+                        self.LabelList.append(Label)
+                        self.TypeList.append(j)
+
                         break
                     pass
 
@@ -263,11 +267,18 @@ class TAS(AppForm):
             self.canvas.draw()
 
 
+
+
+
         self.Explain()
 
+
+
+
     def Explain(self):
-
-        self.Intro = pd.DataFrame.from_records(self.WholeResult)
-
-        self.tablepop = TabelViewer(df=self.Intro)
+        self.Intro = pd.DataFrame(
+            {'Label': self.LabelList,
+             'RockType': self.TypeList
+             })
+        self.tablepop = TabelViewer(df=self.Intro,title='TAS Result')
         self.tablepop.show()
