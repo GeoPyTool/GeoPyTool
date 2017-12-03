@@ -74,19 +74,10 @@ class CIPW(AppForm):
         self.dpi = 128
 
 
-        self.save_button = QPushButton('&Save Mole Result')
+        self.save_button = QPushButton('&Save Result')
         self.save_button.clicked.connect(self.saveResult)
 
-        self.save_button1 = QPushButton('&Save Weight Result')
-        self.save_button1.clicked.connect(self.saveResult1)
 
-
-        self.save_button2 = QPushButton('&Save VolumeResult')
-        self.save_button2.clicked.connect(self.saveResult2)
-
-
-        self.save_button3 = QPushButton('&Save Calced Result')
-        self.save_button3.clicked.connect(self.saveResult3)
 
         self.qapf_button = QPushButton('&QAPF')
         self.qapf_button.clicked.connect(self.QAPF)
@@ -96,18 +87,6 @@ class CIPW(AppForm):
         self.tableView.setSortingEnabled(True)
 
 
-        self.tableView1 = CustomQTableView(self.main_frame)
-        self.tableView1.setObjectName('tableView1')
-        self.tableView1.setSortingEnabled(True)
-
-
-        self.tableView2 = CustomQTableView(self.main_frame)
-        self.tableView2.setObjectName('tableView2')
-        self.tableView2.setSortingEnabled(True)
-
-        self.tableView3 = CustomQTableView(self.main_frame)
-        self.tableView3.setObjectName('tableView3')
-        self.tableView3.setSortingEnabled(True)
 
 
         #
@@ -124,16 +103,6 @@ class CIPW(AppForm):
 
         self.vbox.addWidget(self.tableView)
         self.vbox.addWidget(self.save_button)
-
-
-        self.vbox.addWidget(self.tableView1)
-        self.vbox.addWidget(self.save_button1)
-
-        self.vbox.addWidget(self.tableView2)
-        self.vbox.addWidget(self.save_button2)
-
-        self.vbox.addWidget(self.tableView3)
-        self.vbox.addWidget(self.save_button3)
 
         self.vbox.addLayout(self.hbox)
 
@@ -1393,9 +1362,7 @@ class CIPW(AppForm):
 
 
         self.newdf=self.ReduceSize(pd.DataFrame.from_records(newtmp, columns=labels))
-
-        self.model = PandasModel(self.newdf)
-        self.tableView.setModel(self.model)
+        self.newdf.rename(columns= lambda x: x if x in ['Label'] else x[0:]+' (Mole)', inplace=True)
 
 
         tmp1 = a[1]
@@ -1406,10 +1373,8 @@ class CIPW(AppForm):
                 newtmp1.append(tmp1[s])
 
         self.newdf1 = self.ReduceSize(pd.DataFrame.from_records(newtmp1, columns=labels1))
+        self.newdf1.rename(columns= lambda x: x if x in ['Label'] else x[0:]+' (Mass)', inplace=True)
 
-
-        self.model1 = PandasModel(self.newdf1)
-        self.tableView1.setModel(self.model1)
 
 
 
@@ -1423,8 +1388,9 @@ class CIPW(AppForm):
         self.useddf = pd.DataFrame.from_records(newtmp2, columns=labels2)
         self.newdf2 = self.ReduceSize(self.useddf)
 
-        self.model2 = PandasModel(self.newdf2)
-        self.tableView2.setModel(self.model2)
+        self.newdf2.rename(columns= lambda x: x if x in ['Label','Q','A','P','F'] else x[0:]+' (Volume)', inplace=True)
+
+
 
         tmp3 = a[3]
         labels3 = tmp3[0]
@@ -1433,19 +1399,32 @@ class CIPW(AppForm):
             if s != 0:
                 newtmp3.append(tmp3[s])
 
-
         self.newdf3 = self.ReduceSize(pd.DataFrame.from_records(newtmp3, columns=labels3))
 
+        self.newdf = self.DropUseless(self.newdf)
+
+        self.newdf1 = self.DropUseless(self.newdf1)
 
 
-        self.model3 = PandasModel(self.newdf3)
-        self.tableView3.setModel(self.model3)
+        self.WholeResult = pd.concat([self.newdf,self.newdf1,self.newdf2,self.newdf3], axis=1)
+
+        self.WholeResult = self.WholeResult.T.groupby(level=0).first().T
+
+        self.model = PandasModel(self.WholeResult)
+        self.tableView.setModel(self.model)
+
+        self.Intro = self.WholeResult
 
 
-        self.WholeResult.append(self.newdf)
-        self.WholeResult.append(self.newdf1)
-        self.WholeResult.append(self.newdf2)
-        self.WholeResult.append(self.newdf3)
+    def DropUseless(self,df= pd.DataFrame()):
+        droplist = ['Q (Mole)', 'A (Mole)', 'P (Mole)', 'F (Mole)',
+                    'Q (Mass)', 'A (Mass)', 'P (Mass)', 'F (Mass)']
+
+        for t in droplist:
+            if t in df.columns.values:
+                df = df.drop(t, 1)
+        return(df)
+
 
     def QAPF(self):
         self.qapfpop = QAPF(df=self.useddf)

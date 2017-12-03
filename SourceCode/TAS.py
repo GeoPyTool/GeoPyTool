@@ -280,5 +280,8 @@ class TAS(AppForm):
             {'Label': self.LabelList,
              'RockType': self.TypeList
              })
+
+        #self.Intro = self.Intro.set_index('Label')
+
         self.tablepop = TabelViewer(df=self.Intro,title='TAS Result')
         self.tablepop.show()

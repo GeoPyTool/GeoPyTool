@@ -1,4 +1,4 @@
-version = '0.7.44'
+version = '0.7.45'
 
 date = '2017-12-03'
 
@@ -615,7 +615,7 @@ class AppForm(QMainWindow):
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
     reference = 'Print the reference here.'
-    WholeResult=[]
+    WholeResult=pd.DataFrame()
     LabelList=[]
     ItemNames = ['Foidolite',
                  'Peridotgabbro',

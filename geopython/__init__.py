@@ -78,6 +78,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     targetversion = '0'
 
+    ChemResult=pd.DataFrame()
+
     def __init__(self):
 
 
@@ -592,10 +594,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.pushButtonQuit.setGeometry(QtCore.QRect(5*w/100+step*4, h*40/48, step, foot))
 
-
-
-
-
     def getfile(self):
         _translate = QtCore.QCoreApplication.translate
         fileName, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
@@ -610,7 +608,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def goEnBBS(self):
         webbrowser.open('http://bbs.geopython.com/English-Forum-f3.html')
-
 
     def checkVersion(self):
 
@@ -671,7 +668,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def Update(self):
         webbrowser.open('https://github.com/chinageology/GeoPython/wiki/Download')
-
+        cmd = 'pip3 install geopython --upgrade'
+        try:
+            os.system(cmd)
+        except:
+            pass
 
     def ReadConfig(self):
         if(os.path.isfile('config.ini')):
@@ -850,6 +851,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
+        self.ChemResult = pd.concat([self.cipwpop.Intro, self.ChemResult], axis=1)
+
+        self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
+
     def ZirconTiTemp(self):
         self.ztpop = ZirconTiTemp(df=self.model._df)
         try:
@@ -888,6 +893,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
+
+        self.ChemResult = pd.concat([self.taspop.Intro, self.ChemResult], axis=1)
+
+        self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
+
+
     def REE(self):
         self.reepop = REE(df=self.model._df)
         try:
@@ -895,6 +906,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.reepop.show()
         except(KeyError):
             self.ErrorEvent()
+
+        self.ChemResult=pd.concat([self.reepop.Intro, self.ChemResult], axis=1)
+        self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
+
+        print(self.ChemResult)
 
     def Trace(self):
         self.tracepop = Trace(df=self.model._df)
@@ -912,7 +928,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.pearcepop.show()
         except(KeyError):
             self.ErrorEvent()
-
 
     def Harker(self):
         self.harkerpop = Harker(df=self.model._df)

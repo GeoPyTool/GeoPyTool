@@ -679,10 +679,20 @@ class QAPF(AppForm, Tool):
         TPoints = []
 
         for i in range(len(raw)):
-            q = raw.at[i, 'Q']
-            f = raw.at[i, 'F']
-            a = raw.at[i, 'A']
-            p = raw.at[i, 'P']
+
+
+
+            if 'A (Volume)' in raw.columns.values:
+                q = raw.at[i, 'Q (Volume)']
+                f = raw.at[i, 'F (Volume)']
+                a = raw.at[i, 'A (Volume)']
+                p = raw.at[i, 'P (Volume)']
+            elif 'A' in raw.columns.values:
+                q = raw.at[i, 'Q']
+                f = raw.at[i, 'F']
+                a = raw.at[i, 'A']
+                p = raw.at[i, 'P']
+
 
             TmpLabel = ''
             if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):

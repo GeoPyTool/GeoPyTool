@@ -273,5 +273,7 @@ class REE(AppForm):
              'ALLREE': self.ALLREEList
              })
 
+        #self.Intro = self.Intro.set_index('Label')
+
         self.tablepop = TabelViewer(df=self.Intro,title='REE Result')
         self.tablepop.show()
