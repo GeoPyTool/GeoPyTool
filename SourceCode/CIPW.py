@@ -1212,36 +1212,29 @@ class CIPW(AppForm):
             P = Anorthite + Albite
             F = Nepheline + Leucite + Kalsilite
 
-            for i in self.Minerals:
+
+
+            WholeVolume=0
+
+            for i in self.Minerals:# Calculate the Weight Pecentage of Minerals
+
                 exec('self.DataResult[k].update({\'' + i + '\':' + i + '}) ')
 
                 if i == 'Q':
                     m = 'Quartz'
-
-                    exec('self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) ')
-
-                    exec(
-                        'self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]/self.DataBase[\'' + m + '\'][1]}) ')
-
-
+                    tmpcmdW='self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) '
+                    exec(tmpcmdW)
 
                 elif i == 'A':
                     m = 'Orthoclase'
-
-                    exec('self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) ')
-                    exec(
-                        'self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]/self.DataBase[\'' + m + '\'][1]}) ')
-
+                    tmpcmdW='self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) '
+                    exec(tmpcmdW)
 
                 elif i == 'P':
                     a = 'Anorthite'
                     b = 'Albite'
-
-                    exec(
-                        'self.DataWeight[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]+' + b + '*self.DataBase[\'' + b + '\'][0]}) ')
-                    exec(
-                        'self.DataVolume[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+' + b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]}) ')
-
+                    tmpcmdW='self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + m + '\'][0]}) '
+                    exec(tmpcmdW)
 
                 elif i == 'F':
                     a = 'Nepheline'
@@ -1250,13 +1243,48 @@ class CIPW(AppForm):
 
                     exec(
                         'self.DataWeight[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]+' + b + '*self.DataBase[\'' + b + '\'][0]+' + c + '*self.DataBase[\'' + c + '\'][0]}) ')
-                    exec(
-                        'self.DataVolume[k].update({\'' + i + '\':' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+' + b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]+' + c + '*self.DataBase[\'' + c + '\'][0]/self.DataBase[\'' + c + '\'][1]}) ')
 
                 if i not in ['Q', 'A', 'P', 'F', ]:
                     exec('self.DataWeight[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + i + '\'][0]}) ')
+
+            for i in self.Minerals:# Calculate the Whole Volume of Minerals
+
+                self.tmpVolume = 0
+                tmpcmdAccV='self.tmpVolume  =  '+ i + '*self.DataBase[\'' + i + '\'][0]/self.DataBase[\'' + i + '\'][1]'
+                if i not in ['Q', 'A', 'P', 'F', ]:
+                    exec(tmpcmdAccV)
+                    print(tmpcmdAccV, '\t', self.tmpVolume)
+
+                WholeVolume= WholeVolume+ self.tmpVolume
+
+            for i in self.Minerals:# Calculate the Volume Pecentage of Minerals
+
+                if i == 'Q':
+                    m = 'Quartz'
+                    tmpcmdV='self.DataVolume[k].update({\'' + i + '\':' + i + '*100* self.DataBase[\'' + m + '\'][0]/(self.DataBase[\'' + m + '\'][1]*WholeVolume)}) '
+                    exec(tmpcmdV)
+
+                elif i == 'A':
+                    m = 'Orthoclase'
+                    tmpcmdV='self.DataVolume[k].update({\'' + i + '\':' + i + '*100* self.DataBase[\'' + m + '\'][0]/(self.DataBase[\'' + m + '\'][1]*WholeVolume)}) '
+                    exec(tmpcmdV)
+
+                elif i == 'P':
+                    a = 'Anorthite'
+                    b = 'Albite'
+                    tmpcmdV='self.DataVolume[k].update({\'' + i + '\':' + i + '*100* self.DataBase[\'' + m + '\'][0]/(self.DataBase[\'' + m + '\'][1]*WholeVolume)}) '
+                    exec(tmpcmdV)
+
+                elif i == 'F':
+                    a = 'Nepheline'
+                    b = 'Leucite'
+                    c = 'Kalsilite'
                     exec(
-                        'self.DataVolume[k].update({\'' + i + '\':' + i + '*self.DataBase[\'' + i + '\'][0]/self.DataBase[\'' + i + '\'][1]}) ')
+                        'self.DataVolume[k].update({\'' + i + '\':100/WholeVolume*(' + a + '*self.DataBase[\'' + a + '\'][0]/self.DataBase[\'' + a + '\'][1]+' + b + '*self.DataBase[\'' + b + '\'][0]/self.DataBase[\'' + b + '\'][1]+' + c + '*self.DataBase[\'' + c + '\'][0]/self.DataBase[\'' + c + '\'][1])}) ')
+
+                if i not in ['Q', 'A', 'P', 'F', ]:
+                    exec(
+                        'self.DataVolume[k].update({\'' + i + '\':' + i + '* 100 *self.DataBase[\'' + i + '\'][0]/(self.DataBase[\'' + i + '\'][1]*WholeVolume)}) ')
 
             self.DI = 0
             # for i in ['Quartz', 'Anorthite', 'Albite', 'Orthoclase', 'Nepheline', 'Leucite', 'Kalsilite']:
@@ -1322,6 +1350,17 @@ class CIPW(AppForm):
         # print('\n',DataToWrite,'\n')
         return (DataToWrite)
 
+    def ReduceSize(self,df=pd.DataFrame):
+
+        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
+
+        for i in m:
+            if i in df.columns.values:
+                df = df.drop(i, 1)
+        df = df.loc[:, (df != 0).any(axis=0)]
+        return(df)
+
+
     def CIPW(self):
 
         self.Calc()
@@ -1333,7 +1372,6 @@ class CIPW(AppForm):
 
 
 
-        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
 
         tmp = a[0]
         labels = tmp[0]
@@ -1344,10 +1382,8 @@ class CIPW(AppForm):
 
 
 
-        self.newdf=pd.DataFrame.from_records(newtmp, columns=labels)
-        for i in m:
-            if i in self.newdf.columns.values:
-                self.newdf = self.newdf.drop(i, 1)
+        self.newdf=self.ReduceSize(pd.DataFrame.from_records(newtmp, columns=labels))
+
         self.model = PandasModel(self.newdf)
         self.tableView.setModel(self.model)
 
@@ -1359,11 +1395,7 @@ class CIPW(AppForm):
             if s != 0:
                 newtmp1.append(tmp1[s])
 
-        self.newdf1 = pd.DataFrame.from_records(newtmp1, columns=labels1)
-
-        for i in m:
-            if i in self.newdf1.columns.values:
-                self.newdf1 = self.newdf1.drop(i, 1)
+        self.newdf1 = self.ReduceSize(pd.DataFrame.from_records(newtmp1, columns=labels1))
 
 
         self.model1 = PandasModel(self.newdf1)
@@ -1379,10 +1411,7 @@ class CIPW(AppForm):
             if s != 0:
                 newtmp2.append(tmp2[s])
         self.useddf = pd.DataFrame.from_records(newtmp2, columns=labels2)
-        self.newdf2 = self.useddf
-        for i in m:
-            if i in self.newdf2.columns.values:
-                self.newdf2 = self.newdf2.drop(i, 1)
+        self.newdf2 = self.ReduceSize(self.useddf)
 
         self.model2 = PandasModel(self.newdf2)
         self.tableView2.setModel(self.model2)
@@ -1395,11 +1424,8 @@ class CIPW(AppForm):
                 newtmp3.append(tmp3[s])
 
 
-        self.newdf3 = pd.DataFrame.from_records(newtmp3, columns=labels3)
+        self.newdf3 = self.ReduceSize(pd.DataFrame.from_records(newtmp3, columns=labels3))
 
-        for i in m:
-            if i in self.newdf3.columns.values:
-                self.newdf3 = self.newdf3.drop(i, 1)
 
 
         self.model3 = PandasModel(self.newdf3)
