@@ -36,7 +36,7 @@ GeoPython contains both traditional routines and newly developed methods, which 
 # GeoPython, 用于地质学日常研究的一站式跨平台解决方案
 
 
-#### 如果你要运行 GeoPython, 一定要仔细看 [安装指南](http://doc.geopython.com/installation.html)。而不要下载这个 repo 里面的内容来直接运行，那样是行不通的。这里只是放了代码而已，不是直接可执行的文件！！！！！
+#### 如果你要运行 GeoPython, 一定要仔细看 [安装指南](http://doc.geopython.com/an-zhuang-zhi-nan.html)。而不要下载这个 repo 里面的内容来直接运行，那样是行不通的。这里只是放了代码而已，不是直接可执行的文件！！！！！
 
 
 
@@ -61,8 +61,7 @@ GeoPython 包含了一些常用的传统方法，也实现了一些近年来新�
 
 [开发记录](http://doc.geopython.com/kai-fa-ji-lu.html)
 
-[安装指南](http://doc.geopython.com/installation.html)
-
+[安装指南](http://doc.geopython.com/an-zhuang-zhi-nan.html)
 
 [操作演示](http://doc.geopython.com/yan-shi-shi-pin.html)
 
