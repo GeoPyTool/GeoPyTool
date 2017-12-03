@@ -1,6 +1,28 @@
 from geopython.ImportDependence import *
 from geopython.CustomClass import *
 
+LocationOfMySelf=os.path.dirname(__file__)
+
+print(LocationOfMySelf,'Import Denpendence')
+
+fpath = LocationOfMySelf+('/wqy.ttf')
+
+font = ft2font.FT2Font(fpath)
+fprop = font_manager.FontProperties(fname=fpath)
+
+ttfFontProp = ttfFontProperty(font)
+fontprop = font_manager.FontProperties(family='sans-serif',
+                            #name=ap.fontprop.name,
+                            size=9,
+                            fname=ttfFontProp.fname,
+                            stretch=ttfFontProp.stretch,
+                            style=ttfFontProp.style,
+                            variant=ttfFontProp.variant,
+                            weight=ttfFontProp.weight)
+
+plt.rcParams['svg.fonttype'] = 'none'
+plt.rcParams['pdf.fonttype'] = 'truetype'
+plt.rcParams['axes.unicode_minus']=False
 
 class QAPF(AppForm, Tool):
 

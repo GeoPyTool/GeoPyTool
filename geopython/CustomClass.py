@@ -1,4 +1,4 @@
-version = '0.7.41'
+version = '0.7.42'
 
 date = '2017-12-03'
 
@@ -599,7 +599,6 @@ class CustomQTableView(QtWidgets.QTableView):
         return
 
 class AppForm(QMainWindow):
-
     _df = pd.DataFrame()
     _changed = False
 
