@@ -105,10 +105,6 @@ class MultiDimension(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.stat_button = QPushButton('&Stat')
-        self.stat_button.clicked.connect(self.Stat)
-
-
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
@@ -182,7 +178,7 @@ class MultiDimension(AppForm):
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.save_button, self.stat_button, self.legend_cb, self.slider_label, self.slider]:
+        for w in [self.save_button, self.legend_cb, self.slider_label, self.slider]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -353,8 +349,7 @@ class MultiDimension(AppForm):
             a = int(self.slider.value())
             self.axes.legend(loc=a,prop=fontprop)
 
-
-
+        self.Intro = self.Stat()
         self.canvas.draw()
 
 
@@ -396,15 +391,8 @@ class MultiDimension(AppForm):
             print("%s=%s" % (k, StatResultDict[k]))
 
         StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
-
-        #StatResultDf.index.values
-
-
-
         StatResultDf['Items']=StatResultDf.index.tolist()
-
-
-
 
         self.tablepop = TabelViewer(df=StatResultDf,title='MultiDimensional Statistical Result')
         self.tablepop.show()
+        return(StatResultDf)

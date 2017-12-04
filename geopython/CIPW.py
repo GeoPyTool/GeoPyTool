@@ -58,7 +58,7 @@ class CIPW(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle('CIPW Norm)')
+        self.setWindowTitle('CIPW Norm Result')
 
         self._df = df
         self.raw = df
@@ -1416,9 +1416,8 @@ class CIPW(AppForm):
         self.Intro = self.WholeResult
 
 
-    def DropUseless(self,df= pd.DataFrame()):
-        droplist = ['Q (Mole)', 'A (Mole)', 'P (Mole)', 'F (Mole)',
-                    'Q (Mass)', 'A (Mass)', 'P (Mass)', 'F (Mass)']
+    def DropUseless(self,df= pd.DataFrame(),droplist = ['Q (Mole)', 'A (Mole)', 'P (Mole)', 'F (Mole)',
+                    'Q (Mass)', 'A (Mass)', 'P (Mass)', 'F (Mass)']):
 
         for t in droplist:
             if t in df.columns.values:
@@ -1449,53 +1448,4 @@ class CIPW(AppForm):
             elif ('xls' in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
-
-
-    def saveResult1(self):
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          '文件保存',
-                                                          'C:/',
-                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ('csv' in DataFileOutput):
-                self.newdf1.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-
-            elif ('xls' in DataFileOutput):
-                self.newdf1.to_excel(DataFileOutput, encoding='utf-8')
-
-
-
-
-    def saveResult2(self):
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          '文件保存',
-                                                          'C:/',
-                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ('csv' in DataFileOutput):
-                self.newdf2.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-
-            elif ('xls' in DataFileOutput):
-                self.newdf2.to_excel(DataFileOutput, encoding='utf-8')
-
-
-
-
-    def saveResult3(self):
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          '文件保存',
-                                                          'C:/',
-                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ('csv' in DataFileOutput):
-                self.newdf3.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-
-            elif ('xls' in DataFileOutput):
-                self.newdf3.to_excel(DataFileOutput, encoding='utf-8')
 

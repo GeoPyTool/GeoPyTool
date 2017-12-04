@@ -259,7 +259,7 @@ class REE(AppForm):
         self.canvas.draw()
 
 
-        self.Explain()
+        self.WholeResult = self.Explain()
 
 
     def Explain(self):
@@ -277,3 +277,5 @@ class REE(AppForm):
 
         self.tablepop = TabelViewer(df=self.Intro,title='REE Result')
         self.tablepop.show()
+
+        return(self.Intro)

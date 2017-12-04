@@ -472,9 +472,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionEnWeb.setText(_translate('MainWindow',u'English Forum'))
         self.actionGoGithub.setText(_translate('MainWindow',u'Github'))
 
+
+        '''
         self.actionCnS.setText(_translate('MainWindow',u'Simplified Chinese'))
         self.actionCnT.setText(_translate('MainWindow', u'Traditional Chinese'))
         self.actionEn.setText(_translate('MainWindow',u'English'))
+        '''
+
+        self.actionCnS.setText(u'简体中文')
+        self.actionCnT.setText(u'繁體中文')
+        self.actionEn.setText(u'English')
         self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
 
 
@@ -556,10 +563,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionGoGithub.setText(_translate('MainWindow', u'Github'))
 
 
-
+        '''
         self.actionCnS.setText(_translate('MainWindow',u'Simplified Chinese'))
         self.actionCnT.setText(_translate('MainWindow', u'Traditional Chinese'))
         self.actionEn.setText(_translate('MainWindow',u'English'))
+        '''
+
+
+
+        self.actionCnS.setText(u'简体中文')
+        self.actionCnT.setText(u'繁體中文')
+        self.actionEn.setText(u'English')
         self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
 
     def resizeEvent(self, evt=None):
@@ -910,7 +924,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.ChemResult=pd.concat([self.reepop.Intro, self.ChemResult], axis=1)
         self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
 
-        print(self.ChemResult)
+
 
     def Trace(self):
         self.tracepop = Trace(df=self.model._df)
@@ -1018,7 +1032,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-
     def MultiDimension(self):
         self.mdpop = MultiDimension(df=self.model._df)
         try:
@@ -1031,8 +1044,32 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         pass
 
     def Auto(self):
-        pass
 
+        TasDone= True
+        self.taspop = TAS(df=self.model._df)
+        try:
+            self.taspop.TAS()
+        except(KeyError):
+            TasDone = False
+            pass
+
+        if TasDone==True:
+            self.ChemResult = pd.concat([self.taspop.Intro, self.ChemResult], axis=1)
+
+        ReeDone = True
+        self.reepop = REE(df=self.model._df)
+        try:
+            self.reepop.REE()
+        except(KeyError):
+            ReeDone = False
+            pass
+
+        if ReeDone == True:
+            self.ChemResult=pd.concat([self.reepop.Intro, self.ChemResult], axis=1)
+
+        self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
+
+        print(self.ChemResult)
 
 def main():
     import sys

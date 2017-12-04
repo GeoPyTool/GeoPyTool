@@ -270,8 +270,8 @@ class TAS(AppForm):
 
 
 
-        self.Explain()
 
+        self.WholeResult=self.Explain()
 
 
 
@@ -285,3 +285,4 @@ class TAS(AppForm):
 
         self.tablepop = TabelViewer(df=self.Intro,title='TAS Result')
         self.tablepop.show()
+        return(self.Intro)

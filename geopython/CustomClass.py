@@ -1,6 +1,6 @@
-version = '0.7.45'
+version = '0.7.46'
 
-date = '2017-12-03'
+date = '2017-12-04'
 
 dpi = 128
 #coding:utf-8
@@ -838,6 +838,13 @@ class AppForm(QMainWindow):
     def GetResult(self):
         return(self.WholeResult)
 
+    def DropUseless(self,df= pd.DataFrame(),droplist = ['Q (Mole)', 'A (Mole)', 'P (Mole)', 'F (Mole)',
+                    'Q (Mass)', 'A (Mass)', 'P (Mass)', 'F (Mass)']):
+
+        for t in droplist:
+            if t in df.columns.values:
+                df = df.drop(t, 1)
+        return(df)
 
 
 class PlotModel(FigureCanvas):

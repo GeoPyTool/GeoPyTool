@@ -801,32 +801,28 @@ class XY(AppForm):
 
                 if (self.Normalize_cb.isChecked()):
 
-                    self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
 
-                    self.axes.set_xlabel(self.xlabel)
-                    self.x_element_label.setText(self.xlabel)
 
-                    self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
 
-                    self.axes.set_ylabel(self.ylabel)
-                    self.y_element_label.setText(self.ylabel)
 
                     if self.items[a] in self.Element:
+                        self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
                         xuse = xuse / standardchosen[self.items[a]]
 
                     if self.items[b] in self.Element:
+                        self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
                         yuse = yuse / standardchosen[self.items[b]]
 
                 if (self.logx_cb.isChecked()):
                     xuse = math.log(x, 10)
-                    self.xlabel = '$log10$ ' + self.xlabel
+                    self.xlabel = 'log10 ' + self.xlabel
 
                     self.axes.set_xlabel(self.xlabel)
 
                 if (self.logy_cb.isChecked()):
                     yuse = math.log(y, 10)
 
-                    self.ylabel = '$log10$ ' + self.ylabel
+                    self.ylabel = 'log10 ' + self.ylabel
 
                     self.axes.set_ylabel(self.ylabel)
 
@@ -837,7 +833,11 @@ class XY(AppForm):
             except(ValueError):
                 pass
 
+        self.axes.set_xlabel(self.xlabel)
+        self.axes.set_ylabel(self.ylabel)
 
+        self.x_element_label.setText(self.xlabel)
+        self.y_element_label.setText(self.ylabel)
 
 
         if self.LimSet==False:
@@ -969,5 +969,52 @@ class XY(AppForm):
                 # self.DrawLine(self.polygon)
                 # self.DrawLine(self.polyline)
 
+        self.Intro = self.Stat()
         self.canvas.draw()
+
+
+
+    def stateval(self,data=np.ndarray):
+        dict={'mean':mean(data),'ptp':ptp(data),'var':var(data),'std':std(data),'cv':mean(data)/std(data)}
+
+        return(dict)
+
+    def relation(self,data1=np.ndarray,data2=np.ndarray):
+        data=array([data1,data2])
+        dict={'cov':cov(data,bias=1),'corrcoef':corrcoef(data)}
+        return(dict)
+
+    def Stat(self):
+
+        df=self._df
+
+
+        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
+        for i in m:
+            if i in df.columns.values:
+                df = df.drop(i, 1)
+        df.set_index('Label', inplace=True)
+
+        items = df.columns.values
+        index = df.index.values
+
+        StatResultDict = {}
+
+        for i in items:
+            StatResultDict[i] = self.stateval(df[i])
+
+        StdSortedList = sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std'])
+
+        StdSortedList.reverse()
+
+        for k in sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std']):
+            print("%s=%s" % (k, StatResultDict[k]))
+
+        StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
+        StatResultDf['Items']=StatResultDf.index.tolist()
+
+        self.tablepop = TabelViewer(df=StatResultDf,title='X-Y Statistical Result')
+        self.tablepop.show()
+        return(StatResultDf)
+
 
