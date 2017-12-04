@@ -1,5 +1,5 @@
 Title: Download
-Date: 2017-11-15 0:00
+Date: 2017-12-05 0:00
 Category: Doc
 Tags: Doc,English,Chinese
 
@@ -8,17 +8,17 @@ Tags: Doc,English,Chinese
 
 
 # GeoPython exe for Windows:
-[Baidu Download 百度网盘](http://pan.baidu.com/s/1jIb3Joy)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1o8ywExk)
 
-[Google Drive](https://drive.google.com/open?id=16TR6mO2jJlDgPZM_whc8I6rjR_-KeFKZ)
+[Google Drive](https://drive.google.com/open?id=1AjMrDvkktTpb5wzGGUBTJbEAzUO8mPs9)
 
 
 
 
 # GeoPython app for macOS:
-[Baidu Download 百度网盘](http://pan.baidu.com/s/1c1UUopE)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1hsamypA)
 
-[Googel Drive](https://drive.google.com/open?id=1YxOMIx1Qda8SI8P41rs0p5zAt3L5BM2J)
+[Googel Drive](https://drive.google.com/open?id=1dPv3yZTWnqz_yWPFfGSKJQMbW77StdaA)
 
 
 
