@@ -57,6 +57,9 @@ class MultiDimension(AppForm):
                 'Width',
                 'Tag']
 
+    LabelSetted = False
+    ValueChoosed = True
+
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -139,6 +142,10 @@ class MultiDimension(AppForm):
         self.logx_cb = QCheckBox('&Log')
         self.logx_cb.setChecked(False)
         self.logx_cb.stateChanged.connect(self.Magic)  # int
+        self.x_seter = QLineEdit(self)
+        self.x_seter.textChanged[str].connect(self.LabelSeter)
+
+
 
         self.y_element = QSlider(Qt.Horizontal)
         self.y_element.setRange(0, len(self.items) - 1)
@@ -150,6 +157,10 @@ class MultiDimension(AppForm):
         self.logy_cb = QCheckBox('&Log')
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Magic)  # int
+        self.y_seter = QLineEdit(self)
+        self.y_seter.textChanged[str].connect(self.LabelSeter)
+
+
 
         self.z_element = QSlider(Qt.Horizontal)
         self.z_element.setRange(0, len(self.items) - 1)
@@ -161,6 +172,10 @@ class MultiDimension(AppForm):
         self.logz_cb = QCheckBox('&Log')
         self.logz_cb.setChecked(False)
         self.logz_cb.stateChanged.connect(self.Magic)  # int
+        self.z_seter = QLineEdit(self)
+        self.z_seter.textChanged[str].connect(self.LabelSeter)
+
+
         #
         # Layout with box sizers
         #
@@ -174,6 +189,10 @@ class MultiDimension(AppForm):
         self.hbox3 = QHBoxLayout()
         self.hbox4 = QHBoxLayout()
 
+
+
+
+
         for w in [self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
@@ -182,17 +201,22 @@ class MultiDimension(AppForm):
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logx_cb, self.x_element_label, self.x_element]:
+
+
+        for w in [self.logx_cb, self.x_element_label,self.x_seter, self.x_element]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logy_cb, self.y_element_label, self.y_element]:
+        for w in [self.logy_cb, self.y_element_label,self.y_seter, self.y_element]:
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logz_cb, self.z_element_label, self.z_element]:
+        for w in [self.logz_cb, self.z_element_label,self.z_seter, self.z_element]:
             self.hbox4.addWidget(w)
             self.hbox4.setAlignment(w, Qt.AlignVCenter)
+
+
+
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
@@ -224,6 +248,16 @@ class MultiDimension(AppForm):
                 result.append((a, b))
         return (result)
 
+    def LabelSeter(self):
+        self.LabelSetted = True
+        self.ValueChoosed = False
+        self.Magic()
+
+    def ValueChooser(self):
+        self.LabelSetted = False
+        self.ValueChoosed = True
+        self.Magic()
+
 
     def Magic(self):
 
@@ -232,11 +266,31 @@ class MultiDimension(AppForm):
 
         raw = self._df
 
-        a = int(self.x_element.value())
 
-        b = int(self.y_element.value())
 
-        c = int(self.z_element.value())
+        if self.LabelSetted == True:
+            if(self.x_seter.text()!=''):
+                a = int(self.x_seter.text())
+            else:
+                a = int(self.x_element.value())
+
+
+            if (self.y_seter.text() != ''):
+                b = int(self.y_seter.text())
+            else:
+                b = int(self.y_element.value())
+
+            if (self.z_seter.text() != ''):
+                c = int(self.z_seter.text())
+            else:
+                c = int(self.z_element.value())
+
+        if self.ValueChoosed == True:
+            a = int(self.x_element.value())
+            b = int(self.y_element.value())
+            c = int(self.z_element.value())
+
+
 
         self.axes.clear()
 
