@@ -63,6 +63,10 @@ Double click on the  **Update.bat** file to run update. It will update the GeoPy
 ![Update the EXE on Windows.](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/WinUpdate.png)
 
 
+
+# Attention！ If you already download the packed up APP, just egnore the parts below and READ CAREFULLY PLEASE!!!!!!
+
+
 ## Use as a Python Module
 
 
