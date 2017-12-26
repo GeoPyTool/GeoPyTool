@@ -1,6 +1,6 @@
 from geopython.ImportDependence import *
 from geopython.CustomClass import *
-
+from geopython.TabelViewer import TabelViewer
 
 class XY(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
@@ -897,15 +897,21 @@ class XY(AppForm):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
 
             if (self.fade_cb.isChecked()==False):
-                self.axes.scatter(XtoFit[i], YtoFit[i], marker=raw.at[i, 'Marker'],
-                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                  label=TmpLabel, edgecolors='black')
+                UsedAlpha=raw.at[i, 'Alpha']
 
             elif (self.fade_cb.isChecked()==True):
-                self.axes.scatter(XtoFit[i], YtoFit[i], marker=raw.at[i, 'Marker'],
-                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=alist[i],
-                                  label=TmpLabel, edgecolors='black')
+                UsedAlpha=alist[i]
 
+            self.axes.scatter(XtoFit[i], YtoFit[i], marker=raw.at[i, 'Marker'],
+                              s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=UsedAlpha,
+                              label=raw.at[i, 'Label'], edgecolors='black')
+
+        '''                
+        if (self.legend_cb.isChecked()):
+            lgloc = int(self.slider.value())
+            self.axes.legend(loc=lgloc, prop=fontprop)
+            #self.axes.legend(loc=lgloc, prop=fontprop)
+        '''
 
 
 
@@ -947,9 +953,7 @@ class XY(AppForm):
             self.axes.clabel(cset, inline=1, fontsize=10)
 
 
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a,prop=fontprop)
+
 
         if self.polygon != 0 and self.polyline != 0 and self.line != 0:
 

@@ -57,13 +57,23 @@ fprop = font_manager.FontProperties(fname=fpath)
 
 ttfFontProp = ttfFontProperty(font)
 fontprop = font_manager.FontProperties(family='sans-serif',
-                            #name=ap.fontprop.name,
                             size=9,
                             fname=ttfFontProp.fname,
                             stretch=ttfFontProp.stretch,
                             style=ttfFontProp.style,
                             variant=ttfFontProp.variant,
                             weight=ttfFontProp.weight)
+
+
+'''
+fontprop = font_manager.FontProperties(family='sans-serif',
+                            size=9,
+                            fname=ttfFontProp.fname,
+                            stretch=ttfFontProp.stretch,
+                            style=ttfFontProp.style,
+                            variant=ttfFontProp.variant,
+                            weight=ttfFontProp.weight)
+'''
 
 plt.rcParams['svg.fonttype'] = 'none'
 plt.rcParams['pdf.fonttype'] = 'truetype'
