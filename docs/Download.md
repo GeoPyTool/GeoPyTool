@@ -7,10 +7,10 @@ Tags: Doc,English,Chinese
 ># GeoPython 打包的可执行程序下载链接
 
 
-# GeoPython exe for Windows:
+# GeoPython pack for Windows:
 [Baidu Download 百度网盘](https://pan.baidu.com/s/1skTjFdz)
 
-[Google Drive](https://drive.google.com/open?id=1AjMrDvkktTpb5wzGGUBTJbEAzUO8mPs9)
+[Google Drive](https://drive.google.com/open?id=1YZabaer8LLa7qw5F6GFKMySJghJVKQh3)
 
 
 
@@ -18,7 +18,7 @@ Tags: Doc,English,Chinese
 # GeoPython app for macOS:
 [Baidu Download 百度网盘](https://pan.baidu.com/s/1jIgpmtC)
 
-[Googel Drive](https://drive.google.com/open?id=1dPv3yZTWnqz_yWPFfGSKJQMbW77StdaA)
+[Googel Drive](https://drive.google.com/open?id=1XqzqRmaxlth7WmjsjooUw6DvAfHXO6OP)
 
 
 
