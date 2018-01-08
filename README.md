@@ -22,7 +22,7 @@ It is a **free software**: you can redistribute it and/or modify it under the te
 
 GeoPython contains both traditional routines and newly developed methods, which are shown in the table [here](http://doc.geopython.com/functions.html).
 
-[Official BBS](http://bbs.geopython.com/)
+[Official BBS](https://github.com/chinageology/GeoPython/issues)
 
 [Download](http://doc.geopython.com/download.html)
 
@@ -55,7 +55,7 @@ GeoPython 包含了一些常用的传统方法，也实现了一些近年来新�
 大家有各种问题交流，除了在[知乎这里](https://zhuanlan.zhihu.com/p/30651165?group_id=910460052293672960)留言外，还可以去注册一下[咱们的论坛](bbs.geopython.com)，或者加入咱们的QQ群： 560675626 （为避免无关人员骚扰，加群申请填写暗号 大胖是个好家伙 来通过验证）。
 
 
-[官方 BBS](http://bbs.geopython.com/)
+[官方 BBS](https://github.com/chinageology/GeoPython/issues)
 
 [下载链接](http://doc.geopython.com/download.html)
 

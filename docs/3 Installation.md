@@ -186,7 +186,7 @@ Here is a picture of Line Styles and Point Markers form [nrougier](http://www.la
 
 ## Need Further Help?
 
-Visit our BBS http://bbs.geopython.com/ and write a post to describe your problems in detail. We will response as soon as we can.
+Visit our BBS https://github.com/chinageology/GeoPython/issues and write a post to describe your problems in detail. We will response as soon as we can.
 
 
 ## Appendix

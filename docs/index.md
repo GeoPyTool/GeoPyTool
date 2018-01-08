@@ -5,7 +5,7 @@ Tags: Doc,English,Chinese
 
 # Welcome to GeoPython
 
-[BBS 论坛](http://bbs.geopython.com/)
+[BBS 论坛](https://github.com/chinageology/GeoPython/issues)
 
 ## Introduction
 
