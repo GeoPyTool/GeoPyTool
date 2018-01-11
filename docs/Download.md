@@ -8,9 +8,9 @@ Tags: Doc,English,Chinese
 
 
 # GeoPython pack for Windows:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1skTjFdz)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1snsj0pJ)
 
-[Google Drive](https://drive.google.com/open?id=1YZabaer8LLa7qw5F6GFKMySJghJVKQh3)
+[Google Drive](https://drive.google.com/open?id=1rac6UXOReNPQB0Vwtn8EiOPWov8HVuW_)
 
 
 
