@@ -1,5 +1,5 @@
-from geopython.ImportDependence import *
-from geopython.CustomClass import *
+from geopytool.ImportDependence import *
+from geopytool.CustomClass import *
 
 
 class XYZ(AppForm):
@@ -42,6 +42,7 @@ class XYZ(AppForm):
 
     xlabel = 'x'
     ylabel = 'y'
+    zlabel = 'z'
 
     description = 'X-Y-Z diagram'
     unuseful = ['Name',

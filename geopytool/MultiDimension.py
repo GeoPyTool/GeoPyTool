@@ -1,5 +1,5 @@
-from geopython.ImportDependence import *
-from geopython.CustomClass import *
+from geopytool.ImportDependence import *
+from geopytool.CustomClass import *
 
 
 class MultiDimension(AppForm):
@@ -423,7 +423,8 @@ class MultiDimension(AppForm):
         df=self._df
 
 
-        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
+        # m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
+        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author','Name','Type','Ref']
         for i in m:
             if i in df.columns.values:
                 df = df.drop(i, 1)

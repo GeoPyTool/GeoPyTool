@@ -43,7 +43,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 from matplotlib import ft2font
 from bs4 import BeautifulSoup
-from geopython.TabelViewer import TabelViewer
+from geopytool.TabelViewer import TabelViewer
 
 
 LocationOfMySelf=os.path.dirname(__file__)

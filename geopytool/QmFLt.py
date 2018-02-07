@@ -1,5 +1,5 @@
-from geopython.ImportDependence import *
-from geopython.CustomClass import *
+from geopytool.ImportDependence import *
+from geopytool.CustomClass import *
 
 class QmFLt(AppForm, Tool):
     reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'

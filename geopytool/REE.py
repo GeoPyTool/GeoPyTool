@@ -1,5 +1,5 @@
-from geopython.ImportDependence import *
-from geopython.CustomClass import *
+from geopytool.ImportDependence import *
+from geopytool.CustomClass import *
 
 class REE(AppForm):
     reference = 'Print the reference here.'

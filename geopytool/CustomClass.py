@@ -1,11 +1,11 @@
-version = '0.7.50'
+version = '0.7.51'
 
 date = '2017-12-25'
 
 dpi = 128
 #coding:utf-8
 
-from geopython.ImportDependence import *
+from geopytool.ImportDependence import *
 
 
 

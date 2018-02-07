@@ -1,9 +1,13 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
+from PyQt5 import QtGui  # (the example applies equally well to PySide)
+import pyqtgraph as pg
+import pandas as pd
+import pyqtgraph.opengl as gl
+import numpy as np
 
 
-
-class Magic(AppForm):
+class GLMultiDimension(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
                u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
                u'Li',
@@ -43,8 +47,9 @@ class Magic(AppForm):
 
     xlabel = 'x'
     ylabel = 'y'
+    zlabel = 'z'
 
-    description = 'X-Y diagram'
+    description = 'X-Y- diagram'
     unuseful = ['Name',
                 'Author',
                 'DataType',
@@ -55,13 +60,16 @@ class Magic(AppForm):
                 'Alpha',
                 'Style',
                 'Width',
+                'Type',
                 'Tag']
 
     width_plot = 100.0
     height_plot = 100.0
+    depth_plot= 100.0
 
     width_load = width_plot
     height_load = height_plot
+    depth_load = depth_plot
 
     polygon = []
     polyline = []
@@ -82,7 +90,7 @@ class Magic(AppForm):
     FadeGroups=100
     ShapeGroups=200
 
-    Xleft,Xright,Ydown,Yup=0,0,0,0
+    Xleft,Xright,Ydown,Yup,Ztail,Zhead=0,0,0,0,0,0
 
     LimSet= False
 
@@ -95,7 +103,7 @@ class Magic(AppForm):
         self._df = df
         if (len(df) > 0):
             self._changed = True
-            # print('DataFrame recieved to Magic')
+            # print('DataFrame recieved to GLMultiDimension')
 
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
@@ -116,10 +124,18 @@ class Magic(AppForm):
 
     def create_main_frame(self):
         self.main_frame = QWidget()
+
+        #self.main_frame.setFixedSize(self.width(), self.width())
+
         self.dpi = 128
         self.ShapeGroups =200
-        self.view = pg.PlotWidget()
+        self.view = gl.GLViewWidget()
 
+        #self.view = pg.PlotWidget()
+
+        #self.view.setFixedSize(self.width(),self.height())
+
+        self.view.setFixedSize(self.width(), self.width())
 
         self.view.setParent(self.main_frame)
 
@@ -148,13 +164,6 @@ class Magic(AppForm):
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.Magic)  # int
 
-        '''
-        self.shape_label = QLabel('Step')
-        self.shape_seter = QLineEdit(self)
-        self.shape_seter.textChanged[str].connect(self.ShapeChanged)
-        '''
-
-
 
         self.Normalize_cb = QCheckBox('&Normalize')
         self.Normalize_cb.setChecked(False)
@@ -177,10 +186,6 @@ class Magic(AppForm):
 
         self.x_element_label = QLabel('X')
 
-        #self.x_calculator = QLineEdit(self)
-
-
-
         self.logx_cb = QCheckBox('&Log')
         self.logx_cb.setChecked(False)
         self.logx_cb.stateChanged.connect(self.Magic)  # int
@@ -194,12 +199,23 @@ class Magic(AppForm):
 
         self.y_element_label = QLabel('Y')
 
-        #self.y_calculator = QLineEdit(self)
-
-
         self.logy_cb = QCheckBox('&Log')
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Magic)  # int
+
+        self.z_element = QSlider(Qt.Horizontal)
+        self.z_element.setRange(0, len(self.items) - 1)
+        self.z_element.setValue(2)
+        self.z_element.setTracking(True)
+        self.z_element.setTickPosition(QSlider.TicksBothSides)
+        self.z_element.valueChanged.connect(self.Magic)  # int
+
+        self.z_element_label = QLabel('Z')
+
+        self.logz_cb = QCheckBox('&Log')
+        self.logz_cb.setChecked(False)
+        self.logz_cb.stateChanged.connect(self.Magic)  # int
+
 
 
 
@@ -223,11 +239,6 @@ class Magic(AppForm):
 
 
 
-
-
-        #
-        # Layout with box sizers
-        #
         self.hbox0 = QHBoxLayout()
         self.hbox1 = QHBoxLayout()
         self.hbox2 = QHBoxLayout()
@@ -238,9 +249,17 @@ class Magic(AppForm):
         self.hbox7 = QHBoxLayout()
 
 
+
+        '''
         for w in [self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.shape_cb]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
+        '''
+
+        for w in [self.view]:
+            self.hbox0.addWidget(w)
+            self.hbox0.setAlignment(w, Qt.AlignVCenter)
+
 
         for w in [self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox1.addWidget(w)
@@ -254,16 +273,19 @@ class Magic(AppForm):
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
-
+        for w in [self.logz_cb, self.z_element_label, self.z_element]:
+            self.hbox4.addWidget(w)
+            self.hbox4.setAlignment(w, Qt.AlignVCenter)
 
 
 
         self.vbox = QVBoxLayout()
-        self.vbox.addWidget(self.view)
+        #self.vbox.addWidget(self.view)
         self.vbox.addLayout(self.hbox0)
         self.vbox.addLayout(self.hbox1)
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
+        self.vbox.addLayout(self.hbox4)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -484,16 +506,16 @@ class Magic(AppForm):
 
     def Magic(self):
 
+        #self.view.setFixedSize(self.width(), self.width())
 
-        self.view.clear()
-        self.view.addLegend()
-        self.ax = self.view.getAxis('bottom')
-        self.ay = self.view.getAxis('left')
         self.WholeData = []
 
         self.x_scale = self.width_plot / self.width_load
 
         self.y_scale = self.height_plot / self.height_load
+
+        self.z_scale = self.depth_plot / self.depth_load
+
 
         # print(self.x_scale,' and ',self.x_scale)
 
@@ -503,8 +525,11 @@ class Magic(AppForm):
 
         b = int(self.y_element.value())
 
+        c = int(self.z_element.value())
+
         self.x_element_label.setText(self.items[a])
         self.y_element_label.setText(self.items[b])
+        self.z_element_label.setText(self.items[c])
 
 
         if (self.Left != self.Right) and (self.Down != self.Up) and abs(self.Left) + abs(self.Right) + abs(
@@ -527,8 +552,9 @@ class Magic(AppForm):
 
 
         PointLabels = []
-        XtoFit = []
-        YtoFit = []
+        XtoDraw = []
+        YtoDraw = []
+        ZtoDraw = []
         Colors=[]
         Alphas=[]
         Markers=[]
@@ -547,36 +573,41 @@ class Magic(AppForm):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
 
-            x, y = 0, 0
-            xuse, yuse = 0, 0
+            x, y ,z = 0, 0, 0
+            xuse, yuse,zuse = 0, 0, 0
 
-            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+            x, y,z = raw.at[i, self.items[a]], raw.at[i, self.items[b]],raw.at[i, self.items[c]]
 
 
             try:
                 xuse = x
                 yuse = y
+                zuse = z
 
                 self.xlabel = self.items[a]
                 self.ylabel = self.items[b]
+                self.zlabel = self.items[c]
 
                 if (self.Normalize_cb.isChecked()):
 
                     self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
-
-
                     self.x_element_label.setText(self.xlabel)
 
                     self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
-
-
                     self.y_element_label.setText(self.ylabel)
+
+                    self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
+                    self.z_element_label.setText(self.zlabel)
+
 
                     if self.items[a] in self.Element:
                         xuse = xuse / standardchosen[self.items[a]]
 
                     if self.items[b] in self.Element:
                         yuse = yuse / standardchosen[self.items[b]]
+
+                    if self.items[c] in self.Element:
+                        zuse = zuse / standardchosen[self.items[c]]
 
                 if (self.logx_cb.isChecked()):
                     xuse = math.log(x, 10)
@@ -588,8 +619,14 @@ class Magic(AppForm):
 
                     self.ylabel = '$log10$ ' + self.ylabel
 
-                XtoFit.append(xuse)
-                YtoFit.append(yuse)
+                if (self.logz_cb.isChecked()):
+                    zuse = math.log(z, 10)
+
+                    self.zlabel = '$log10$ ' + self.zlabel
+
+                XtoDraw.append(xuse)
+                YtoDraw.append(yuse)
+                ZtoDraw.append(zuse)
                 Colors.append(raw.at[i, 'Color'])
                 Alphas.append(raw.at[i, 'Alpha'])
                 Names.append(raw.at[i, 'Label'])
@@ -601,117 +638,90 @@ class Magic(AppForm):
 
 
         if self.LimSet==False:
-            self.Xleft, self.Xright, self.Ydown, self.Yup = min(XtoFit), max(XtoFit), min(YtoFit), max(YtoFit)
+            self.Xleft, self.Xright, self.Ydown, self.Yup, self.Tail, self.Head = min(XtoDraw), max(XtoDraw), min(YtoDraw), max(YtoDraw), min(ZtoDraw), max(ZtoDraw)
 
 
-        z = np.polyfit(YtoFit, XtoFit,self.FitLevel)
-
-        #Yline = np.linspace(min(YtoFit), max(YtoFit), 30)
-
-        Yline = np.linspace(self.Ydown,self.Yup, 30)
-
-        p = np.poly1d(z)
-        Xline = p(Yline)
-
-        print(z)
-        self.reference=str(z)
-        self.textbox.setText('x=f(y) Polyfitting parameter：' + '\n' + self.reference)
 
 
-        xmin, xmax = min(XtoFit), max(XtoFit)
-        ymin, ymax = min(YtoFit), max(YtoFit)
 
-        xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+        xmin, xmax = min(XtoDraw), max(XtoDraw)
+        ymin, ymax = min(YtoDraw), max(YtoDraw)
+        zmin, zmax = min(ZtoDraw), max(ZtoDraw)
 
-
-        xx = xx * (self.ShapeGroups / 200)
-        yy = yy * (self.ShapeGroups / 200)
-
-        positions = np.vstack([xx.ravel(), yy.ravel()])
-        values = np.vstack([raw[self.items[a]], raw[self.items[b]]])
-        kernel = st.gaussian_kde(values)
-        f = np.reshape(kernel(positions).T, xx.shape)
-        data = f
-        img = pg.ImageItem(data)
-
-        TargetWidth = img.width()
-        TargetHeight = img.height()
-
-        OriginalWidth = abs(xmax - xmin)
-        OriginalHeight = abs(ymax - ymin)
-
-        xscale = TargetWidth / OriginalWidth
-        yscale = TargetHeight / OriginalHeight
-
-        XtoFitUsed = []
-        YtoFitUsed = []
-
-        XlineUsed = []
-        YlineUsed = []
-
-        for i in range(len(XtoFit)):
-            XtoFitUsed.append((XtoFit[i] - xmin) * xscale)
-            YtoFitUsed.append((YtoFit[i] - ymin) * yscale)
-
-        for i in range(len(Xline)):
-            XlineUsed.append((Xline[i] - xmin) * xscale)
-            YlineUsed.append((Yline[i] - ymin) * yscale)
+        xmean = np.mean(XtoDraw)
+        ymean = np.mean(YtoDraw)
+        zmean = np.mean(ZtoDraw)
 
         Xoriginal = np.arange(xmin, xmax, (xmax - xmin) / 10)
         Yoriginal = np.arange(ymin, ymax, (ymax - ymin) / 10)
+        Zoriginal = np.arange(zmin, zmax, (zmax - zmin) / 10)
 
         XonPlot = self.GetASequence(tail=self.ShapeGroups)
         YonPlot = self.GetASequence(tail=self.ShapeGroups)
+        ZonPlot = self.GetASequence(tail=self.ShapeGroups)
 
         XonStick = []
         YonStick = []
+        ZonStick = []
 
         for i in range(len(XonPlot)):
             XonStick.append([XonPlot[i], Xoriginal[i]])
             YonStick.append([YonPlot[i], Yoriginal[i]])
-            pass
-
-        self.ax.setTicks([XonStick])
-        self.ay.setTicks([YonStick])
-
-
-
-
-
-        if (self.shape_cb.isChecked()):
-
-            ## generate empty curves
-            curves = []
-
-            levels = np.linspace(data.min(), data.max(), 10)
-            for i in range(len(levels)):
-                v = levels[i]
-                ## generate isocurve with automatic color selection
-                c = pg.IsocurveItem(level=v, pen=(i, len(levels) * 1.5))
-                c.setParentItem(img)  ## make sure isocurve is always correctly displayed over image
-                c.setZValue(10)
-                curves.append(c)
-
-            imgLevels = (data.min(), data.max() * 2)
-
-            img.setImage(data, levels=imgLevels)
-
-            img.setScaledMode()
-
-            for c in curves:
-                c.setData(data)
-
-            self.view.addItem(img)
+            ZonStick.append([ZonPlot[i], Zoriginal[i]])
             pass
 
 
 
 
-        self.view.plot(XtoFitUsed, YtoFitUsed, pen=None, symbol=Markers[i], symbolPen=None, symbolSize=3,
-                  symbolBrush=(100, 255, 255, 48), name= PointLabels)
+        #print(XtoDraw,'\n', YtoDraw,'\n', ZtoDraw)
 
-        if (self.fit_cb.isChecked()):
-            #self.axes.plot(Xline, Yline, 'b-')
-            self.view.plot(XlineUsed, YlineUsed, pen='b')
+        toDf = {self.xlabel:XtoDraw,
+                self.ylabel:YtoDraw,
+                self.zlabel:ZtoDraw}
 
-            pass
+
+
+
+        newdf = pd.DataFrame(toDf)
+
+        pos = newdf.as_matrix()
+
+        print(pos)
+
+        ThreeDimView = gl.GLScatterPlotItem(pos=pos, color=(100, 255, 255, 88), size=0.1, pxMode=False)
+
+
+        print(xmean,'\n', ymean,'\n', zmean,'\n')
+
+        self.view.pan(xmean, ymean, zmean)
+
+
+        xgrid = gl.GLGridItem(size=QtGui.QVector3D(10, 10, 1), color=1)
+        ygrid = gl.GLGridItem(size=QtGui.QVector3D(20, 20, 2), color=2)
+        zgrid = gl.GLGridItem(size=QtGui.QVector3D(30, 30, 3), color=3)
+
+        ## rotate x and y grids to face the correct direction
+        xgrid.rotate(90, 0, 1, 0)
+        ygrid.rotate(90, 1, 0, 0)
+
+
+
+        xgrid.translate(xmean, ymean, zmean)
+        ygrid.translate(xmean, ymean, zmean)
+        zgrid.translate(xmean, ymean, zmean)
+
+
+        ## scale each grid differently
+
+        '''
+        xgrid.scale(12.8, 12.8, 12.8)
+        ygrid.scale(12.8, 12.8, 12.8)
+        zgrid.scale(12.8, 12.8, 12.8)
+        '''
+
+        # xgrid.setTransform(xmean,ymean,zmean)
+
+        self.view.addItem(xgrid)
+        self.view.addItem(ygrid)
+        self.view.addItem(zgrid)
+        self.view.addItem(ThreeDimView)
