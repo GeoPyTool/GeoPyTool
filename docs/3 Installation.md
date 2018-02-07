@@ -26,7 +26,7 @@ On macOS, everything is extremely easy to use GeoPyTool. Just download and unzip
 
 ### Mac APP Update
 
-Drag the **UpdateGeoPython.sh** file into your terminal and hit the Enter key to run it. It will update the GeoPyTool inside your GeoPyTool.app file. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
+Go to the location inside the app file, `GeoPyTool.app/Contents/Resources/UpDateGeoPytool`.Double click on this file neamed UpDateGeoPytool at `GeoPyTool.app/Contents/Resources/`. It will update the GeoPyTool inside your GeoPyTool.app file. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
 
 ![Update the APP on macOS.](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/OSXUpdate.png)
 
@@ -34,7 +34,7 @@ Drag the **UpdateGeoPython.sh** file into your terminal and hit the Enter key to
 
 #### Windows 8/8.1/10 Users
 
-On these modern Windows platforms, everything is also extremely easy to use GeoPyTool. Just download and unzip the file, then double click on the **RunGeoPython.bat** file, and make sure that you don't delete any file form the unziped folder because they are all required by the program, then you will find the APP available as the following picture shows.
+On these modern Windows platforms, everything is also extremely easy to use GeoPyTool. Just download and unzip the file, then double click on the **Rungeopytool.bat** file, and make sure that you don't delete any file form the unziped folder because they are all required by the program, then you will find the APP available as the following picture shows.
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/RunWin.jpg)
 
@@ -129,9 +129,23 @@ pip install requests
 pip install pyqtgraph
 ```
 
+The installation of scikit-learn might require [Microsoft Visual C++ Build Tools](http://landinghub.visualstudio.com/visual-cpp-build-tools), another solution is to use conda to install scipy and scikit-learn.
+
+We install conda with pip first:
+
+```Bash
+pip install requests
+pip install pyqtgraph
+pip install conda
+```
+Then we use conda to install some other packages:
+```Bash
+python3 -m conda install cython numpy pandas scipy scikit-learn sympy
+```
+
 After the installation of those packages above, you can use this similar command also in the **terminal** to install the GeoPyTool.
 ```Bash
-pip install geopython
+pip install geopytool
 ```
 
 If there comes no error message, everything should have been done successfully.
@@ -140,7 +154,7 @@ If there comes no error message, everything should have been done successfully.
 
 If you installed GeoPyTool as a module in Python, you can use this similar command also in the **terminal** to update to the latest version of GeoPyTool.
 ```Bash
-pip install geopython --update --no-cache-dir
+pip install geopytool --update --no-cache-dir
 ```
 
 ### Launch GeoPyTool form a Python interpreter
@@ -158,7 +172,7 @@ ipython
 Then you can simply use **GeoPyTool** by type the following commands in your Python interpreter:
 
 ```Python
-import geopython as gp
+import geopytool as gp
 gp.main()
 ```
 
@@ -166,7 +180,7 @@ gp.main()
 You would see the GUI of **GeoPyTool**, which is under development for now. So it is a good idea to update **GeoPyTool** with pip everytime before you use it:
 
 ```Bash
-pip install --upgrade geopython
+pip install --upgrade geopytool
 ```
 
 ## Marker/Color/Style
