@@ -1,9 +1,9 @@
-Title: Temperary API Ref of GeoPython
+Title: Temperary API Ref of GeoPyTool
 Date: 2017-3-18 16:20
 Category: Python
 
 
-# API Ref of GeoPython
+# API Ref of GeoPyTool
 
 
 
@@ -40,7 +40,7 @@ a tool set for daily geology related task.
 
 # Other
 
-Any issues or improvements please open an issue at [here](https://github.com/chinageology/GeoPython/issues)
+Any issues or improvements please open an issue at [here](https://github.com/GeoPyTool/GeoPyTool/issues)
 or leave a message to [our website](http://geopython.com)
 
 

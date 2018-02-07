@@ -5,7 +5,7 @@ Tags: Doc,English,Chinese
 
 ## Installation
 
-GeoPython can be used as a module inside Python, and can also run as a standalone application.
+GeoPyTool can be used as a module inside Python, and can also run as a standalone application.
 
 
 
@@ -15,54 +15,54 @@ Packed up executable files are temporarily only provided for Windows and MacOS p
 
 
 
-[Click here to get Download links.](http://doc.geopython.com/Download/)
+[Click here to get Download links.](https://github.com/GeoPyTool/GeoPyTool/blob/master/Download.md)
 
 ### Mac APP
 
-On macOS, everything is extremely easy to use GeoPython. Just download and unzip the file, then double click on the GeoPython.app file, you will find the APP available as the following picture shows.
+On macOS, everything is extremely easy to use GeoPyTool. Just download and unzip the file, then double click on the GeoPyTool.app file, you will find the APP available as the following picture shows.
 
-![User Interface of the APP on macOS.](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/MacOSScreenShot.png)
+![User Interface of the APP on macOS.](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/MacOSScreenShot.png)
 
 
 ### Mac APP Update
 
-Drag the **UpdateGeoPython.sh** file into your terminal and hit the Enter key to run it. It will update the GeoPython inside your GeoPython.app file. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
+Drag the **UpdateGeoPython.sh** file into your terminal and hit the Enter key to run it. It will update the GeoPyTool inside your GeoPyTool.app file. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
 
-![Update the APP on macOS.](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/OSXUpdate.png)
+![Update the APP on macOS.](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/OSXUpdate.png)
 
 ### Windows Pack
 
 #### Windows 8/8.1/10 Users
 
-On these modern Windows platforms, everything is also extremely easy to use GeoPython. Just download and unzip the file, then double click on the **RunGeoPython.bat** file, and make sure that you don't delete any file form the unziped folder because they are all required by the program, then you will find the APP available as the following picture shows.
+On these modern Windows platforms, everything is also extremely easy to use GeoPyTool. Just download and unzip the file, then double click on the **RunGeoPython.bat** file, and make sure that you don't delete any file form the unziped folder because they are all required by the program, then you will find the APP available as the following picture shows.
 
-![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/RunWin.jpg)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/RunWin.jpg)
 
-![User Interface of the EXE on Windows.](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/ScreenShot.png)
+![User Interface of the EXE on Windows.](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/ScreenShot.png)
 
 #### Windows 7 Users
 
 Of corse, you must find that the screen shot above is actrually from a Windows 7  virtual machine.
 
-That's right, you can obviously use GeoPython on Windows 7, on which some system patches need to be installed. You need to install the SP1 of Windows and then install KB2999226 and the `Visual C++ Redistributable 2015`. If you are using Windows 7 without the SP1 package installed, there might comes an`api-ms-win-crt`related error. So believe me my friend, just install these patched below, they won't harm you after all.
+That's right, you can obviously use GeoPyTool on Windows 7, on which some system patches need to be installed. You need to install the SP1 of Windows and then install KB2999226 and the `Visual C++ Redistributable 2015`. If you are using Windows 7 without the SP1 package installed, there might comes an`api-ms-win-crt`related error. So believe me my friend, just install these patched below, they won't harm you after all.
 
 The SP1 package of Windows 7 can be found at [here, the official website of MicroSoft](https://support.microsoft.com/en-us/help/15090/windows-7-install-service-pack-1-sp1).
 
-The installation packages of KB2999226 and the `Visual C++ Redistributable 2015` are already contained in the Zip file of GeoPython for Windows, and can also be found here: [32 bit Windows7 ](https://pan.baidu.com/s/1kVwSQ95)，[64 bit WInodws7 ](https://pan.baidu.com/s/1qY34ocW).
+The installation packages of KB2999226 and the `Visual C++ Redistributable 2015` are already contained in the Zip file of GeoPyTool for Windows, and can also be found here: [32 bit Windows7 ](https://pan.baidu.com/s/1kVwSQ95)，[64 bit WInodws7 ](https://pan.baidu.com/s/1qY34ocW).
 I am really a sweet guy, isn't it?
 So if you encounter any `api-ms-win-crt`related errors, please check those installations first.
 
 #### Windows XP or Vista Users
 
 I failed many times on both XP and Vista, and I think there might not be a lot users of these two antique systems.
-If you are using one or both of them, please be good to yourself to update you old PC to at least Windows 7 SP1 or try Linux on your antique computers. My advice is that we should not waste our life on those systems that are not even supported by their developers and manufacturer. So, if you still want to run GeoPython on those two old systems, good luck and good bye.
+If you are using one or both of them, please be good to yourself to update you old PC to at least Windows 7 SP1 or try Linux on your antique computers. My advice is that we should not waste our life on those systems that are not even supported by their developers and manufacturer. So, if you still want to run GeoPyTool on those two old systems, good luck and good bye.
 
 ### Windows EXE Update
 
-Double click on the  **Update.bat** file to run update. It will update the GeoPython inside your GeoPython folder. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
+Double click on the  **Update.bat** file to run update. It will update the GeoPyTool inside your GeoPyTool folder. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
 
 
-![Update the EXE on Windows.](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/WinUpdate.png)
+![Update the EXE on Windows.](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WinUpdate.png)
 
 
 
@@ -72,7 +72,7 @@ Double click on the  **Update.bat** file to run update. It will update the GeoPy
 ## Use as a Python Module
 
 
-Users of other Operating Systems, such as Debian Linux, Ubuntu Linux, Fedora Linux, FreeBSD or GNU/Hurd, please try to use GeoPython in Python, which is also recommended to all the users including those who use macOS or Windows 10, because the latest version of GeoPython can be installed with pip easilier and faster than using standalone executable files.
+Users of other Operating Systems, such as Debian Linux, Ubuntu Linux, Fedora Linux, FreeBSD or GNU/Hurd, please try to use GeoPyTool in Python, which is also recommended to all the users including those who use macOS or Windows 10, because the latest version of GeoPyTool can be installed with pip easilier and faster than using standalone executable files.
 
 ### Install Python First
 
@@ -81,7 +81,7 @@ The first thing to do is to install Python, newer than 3.5, which can be downloa
 Anaconda3-4.0.0 and other newer versions of Anaconda3 are recommended. Because they already contain useful modules such as cython, numpy, pandas, matplotlib, and the powerful ipython.
 
 
-##### Useful links for Windows users to install GeoPython with PIP:
+##### Useful links for Windows users to install GeoPyTool with PIP:
 
 In fact, you guys can easily find instructions on how to install Python and PIP on the Internet. So I will just cast some links for newbie using Python on Windows.
 
@@ -97,12 +97,12 @@ In fact, you guys can easily find instructions on how to install Python and PIP 
 |--|--|
 |Anaconda|https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-4.4.0-Windows-x86_64.exe|
 
-### Install GeoPython with PIP
+### Install GeoPyTool with PIP
 
 
-After installation of Python, you might think that finally you can install GeoPython.
+After installation of Python, you might think that finally you can install GeoPyTool.
 
-**NO!** In fact you need to install some used packages first, even you are using Anaconda. Because some packages used to build the Graphic User Interface of GeoPython still need to be installed, and this is also a good chance for you to update all the modules to the latest version (OR not).
+**NO!** In fact you need to install some used packages first, even you are using Anaconda. Because some packages used to build the Graphic User Interface of GeoPyTool still need to be installed, and this is also a good chance for you to update all the modules to the latest version (OR not).
 
 So use the following commands in your **terminal** to install these modules.
 
@@ -129,23 +129,23 @@ pip install requests
 pip install pyqtgraph
 ```
 
-After the installation of those packages above, you can use this similar command also in the **terminal** to install the GeoPython.
+After the installation of those packages above, you can use this similar command also in the **terminal** to install the GeoPyTool.
 ```Bash
 pip install geopython
 ```
 
 If there comes no error message, everything should have been done successfully.
 
-### Update an existing GeoPython
+### Update an existing GeoPyTool
 
-If you installed GeoPython as a module in Python, you can use this similar command also in the **terminal** to update to the latest version of GeoPython.
+If you installed GeoPyTool as a module in Python, you can use this similar command also in the **terminal** to update to the latest version of GeoPyTool.
 ```Bash
 pip install geopython --update --no-cache-dir
 ```
 
-### Launch GeoPython form a Python interpreter
+### Launch GeoPyTool form a Python interpreter
 
-After the installation step above, GeoPython now becomes available in Python interpreter. The **IPython** interpreter is recommended because it is much friendly than the buildin interpreter of Python. **IPython** can be also installed with pip:
+After the installation step above, GeoPyTool now becomes available in Python interpreter. The **IPython** interpreter is recommended because it is much friendly than the buildin interpreter of Python. **IPython** can be also installed with pip:
 ```Bash
 pip install ipython
 ```
@@ -155,7 +155,7 @@ Then you can run ipython in **terminal** with the following command:
 ipython
 ```
 
-Then you can simply use **GeoPython** by type the following commands in your Python interpreter:
+Then you can simply use **GeoPyTool** by type the following commands in your Python interpreter:
 
 ```Python
 import geopython as gp
@@ -163,7 +163,7 @@ gp.main()
 ```
 
 
-You would see the GUI of **GeoPython**, which is under development for now. So it is a good idea to update **GeoPython** with pip everytime before you use it:
+You would see the GUI of **GeoPyTool**, which is under development for now. So it is a good idea to update **GeoPyTool** with pip everytime before you use it:
 
 ```Bash
 pip install --upgrade geopython
@@ -171,7 +171,7 @@ pip install --upgrade geopython
 
 ## Marker/Color/Style
 
-All these details in GeoPython are the same as those in Matplotlib becasue that is what GeoPython used to visualize data.
+All these details in GeoPyTool are the same as those in Matplotlib becasue that is what GeoPyTool used to visualize data.
 
 Markers of Points can be reffered from here:
 http://matplotlib.org/api/markers_api.html
@@ -181,33 +181,33 @@ http://matplotlib.org/api/colors_api.html
 
 Here is a picture of Line Styles and Point Markers form [nrougier](http://www.labri.fr/perso/nrougier/teaching/matplotlib/):
 
-![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/LIneStylesMarkers.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/LIneStylesMarkers.png)
 
 
 ## Need Further Help?
 
-Visit our BBS https://github.com/chinageology/GeoPython/issues and write a post to describe your problems in detail. We will response as soon as we can.
+Visit our BBS https://github.com/GeoPyTool/GeoPyTool/issues and write a post to describe your problems in detail. We will response as soon as we can.
 
 
 ## Appendix
 
 
-The New Zircon Ce function need Data template file named as [ZirconCe.xlsx](https://github.com/chinageology/GeoPython/blob/master/DataFileSamples/ZirconCe.xlsx)
+The New Zircon Ce function need Data template file named as [ZirconCe.xlsx](https://github.com/GeoPyTool/GeoPyTool/blob/master/DataFileSamples/ZirconCe.xlsx)
 
-![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewZirconCe.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/NewZirconCe.png)
 
 
 The New  TAS, REE and Trace Elements functions share a same Data template files:
-[Data.xlsx](https://github.com/chinageology/GeoPython/blob/master/DataFileSamples/Data.xlsx)
+[Data.xlsx](https://github.com/GeoPyTool/GeoPyTool/blob/master/DataFileSamples/Data.xlsx)
 
 
-![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTAS.png)
-![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/NewTrace.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/NewTAS.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/NewTrace.png)
 
 
-The New StereoNet Projection and the RoseMap function need Data template file named as [Structure.xlsx](https://github.com/chinageology/GeoPython/blob/master/DataFileSamples/Structure.xlsx)
+The New StereoNet Projection and the RoseMap function need Data template file named as [Structure.xlsx](https://github.com/GeoPyTool/GeoPyTool/blob/master/DataFileSamples/Structure.xlsx)
 
-![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/Rose.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/Rose.png)
 
-![](https://raw.githubusercontent.com/chinageology/GeoPython/master/img/LoadPNG.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/LoadPNG.png)
 

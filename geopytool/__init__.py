@@ -1,8 +1,8 @@
 ﻿#!/usr/bin/python3
 # coding:utf-8
 
-from geopython.ImportDependence import *
-from geopython.CustomClass import *
+from geopytool.ImportDependence import *
+from geopytool.CustomClass import *
 
 
 LocationOfMySelf=os.path.dirname(__file__)
@@ -20,33 +20,34 @@ a tool set for daily geology related task.
 #   based on Python 3.x
 #   need math,numpy,pandas,matplotlib,xlrd,pyqt5,BeautifulSoup4
     Any issues or improvements please contact cycleuser@cycleuser.org
-    or Open An Issue at GitHub:https://github.com/chinageology/GeoPython/issues     
+    or Open An Issue at GitHub:https://github.com/GeoPyTool/GeoPyTool/issues     
     Website For Chinese Users：https://zhuanlan.zhihu.com/p/28908475
 '''
 
-t = 'You are using GeoPython ' + version + ', released on' + date + '\n' + sign
+t = 'You are using GeoPyTool ' + version + ', released on' + date + '\n' + sign
 _translate = QtCore.QCoreApplication.translate
 
-from geopython.TabelViewer import TabelViewer
-from geopython.CIPW import CIPW
-from geopython.Cluster import Cluster
-from geopython.Harker import Harker
-from geopython.Magic import Magic
-from geopython.MudStone import MudStone
-from geopython.MultiDimension import MultiDimension
-from geopython.Pearce import Pearce
-from geopython.QAPF import QAPF
-from geopython.QFL import QFL
-from geopython.QmFLt import QmFLt
-from geopython.REE import REE
-from geopython.Rose import Rose
-from geopython.Stereo import Stereo
-from geopython.TAS import TAS
-from geopython.Temp import *
-from geopython.Trace import Trace
-from geopython.XY import XY
-from geopython.XYZ import XYZ
-from geopython.ZirconCe import ZirconCe
+from geopytool.TabelViewer import TabelViewer
+from geopytool.CIPW import CIPW
+from geopytool.Cluster import Cluster
+from geopytool.Harker import Harker
+from geopytool.Magic import Magic
+from geopytool.MudStone import MudStone
+from geopytool.MultiDimension import MultiDimension
+from geopytool.GLMultiDimension import GLMultiDimension
+from geopytool.Pearce import Pearce
+from geopytool.QAPF import QAPF
+from geopytool.QFL import QFL
+from geopytool.QmFLt import QmFLt
+from geopytool.REE import REE
+from geopytool.Rose import Rose
+from geopytool.Stereo import Stereo
+from geopytool.TAS import TAS
+from geopytool.Temp import *
+from geopytool.Trace import Trace
+from geopytool.XY import XY
+from geopytool.XYZ import XYZ
+from geopytool.ZirconCe import ZirconCe
 
 # Create a custom "QProxyStyle" to enlarge the QMenu icons
 #-----------------------------------------------------------
@@ -89,9 +90,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate('MainWindow', u'GeoPython'))
-        self.setWindowIcon(QIcon(LocationOfMySelf+'/geopython.png'))
-        self.talk=  _translate('MainWindow','You are using GeoPython ') + version +'\n'+  _translate('MainWindow','released on ') + date
+        self.setWindowTitle(_translate('MainWindow', u'GeoPyTool'))
+        self.setWindowIcon(QIcon(LocationOfMySelf+'/geopytool.png'))
+        self.talk=  _translate('MainWindow','You are using GeoPyTool ') + version +'\n'+  _translate('MainWindow','released on ') + date
 
         self.model = PandasModel(self.raw)
 
@@ -264,9 +265,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCluster = QtWidgets.QAction(QIcon(LocationOfMySelf+'/cluster.png'),u'Cluster',self)
         self.actionCluster.setObjectName('actionCluster')
 
-        self.actionMultiDimention = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'MultiDimention',self)
-        self.actionMultiDimention.setObjectName('actionMultiDimention')
+        self.actionMultiDimension = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'MultiDimension',self)
+        self.actionMultiDimension.setObjectName('actionMultiDimension')
 
+        self.actionGLMultiDimension = QtWidgets.QAction(QIcon(LocationOfMySelf+'/power.png'),u'MultiDimension',self)
+        self.actionGLMultiDimension.setObjectName('actionGLMultiDimension')
 
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
@@ -303,7 +306,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuCalc.addAction(self.actionRutileZrTemp)
 
         self.menuStat.addAction(self.actionCluster)
-        self.menuStat.addAction(self.actionMultiDimention)
+        self.menuStat.addAction(self.actionMultiDimension)
+        self.menuStat.addAction(self.actionGLMultiDimension)
 
 
         self.menuMore.addAction(self.actionMudStone)
@@ -368,7 +372,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconTiTemp.triggered.connect(self.ZirconTiTemp)
         self.actionRutileZrTemp.triggered.connect(self.RutileZrTemp)
         self.actionCluster.triggered.connect(self.Cluster)
-        self.actionMultiDimention.triggered.connect(self.MultiDimension)
+        self.actionMultiDimension.triggered.connect(self.MultiDimension)
+        self.actionGLMultiDimension.triggered.connect(self.GLMultiDimension)
 
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
@@ -458,7 +463,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconTiTemp.setText(_translate('MainWindow',u'ZirconTiTemp'))
         self.actionRutileZrTemp.setText(_translate('MainWindow',u'RutileZrTemp'))
         self.actionCluster.setText(_translate('MainWindow',u'Cluster'))
-        self.actionMultiDimention.setText(_translate('MainWindow',u'MultiDimention'))
+        self.actionMultiDimension.setText(_translate('MainWindow',u'MultiDimension'))
+        self.actionGLMultiDimension.setText(_translate('MainWindow',u'GLMultiDimension'))
 
         self.actionXY.setText(_translate('MainWindow',u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow',u'X-Y-Z plot'))
@@ -500,7 +506,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         _translate = QtCore.QCoreApplication.translate
 
-        self.talk=  _translate('MainWindow','You are using GeoPython ') + version +'\n'+ _translate('MainWindow','released on ') + date + '\n'
+        self.talk=  _translate('MainWindow','You are using GeoPyTool ') + version +'\n'+ _translate('MainWindow','released on ') + date + '\n'
 
 
 
@@ -548,7 +554,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconTiTemp.setText(_translate('MainWindow', u'ZirconTiTemp'))
         self.actionRutileZrTemp.setText(_translate('MainWindow', u'RutileZrTemp'))
         self.actionCluster.setText(_translate('MainWindow', u'Cluster'))
-        self.actionMultiDimention.setText(_translate('MainWindow',u'MultiDimention'))
+        self.actionMultiDimension.setText(_translate('MainWindow',u'MultiDimension'))
+        self.actionGLMultiDimension.setText(_translate('MainWindow',u'GLMultiDimension'))
 
         self.actionXY.setText(_translate('MainWindow', u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
@@ -615,13 +622,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                          'All Files (*);;Text Files (*.txt)')  # 设置文件扩展名过滤,注意用双分号间隔
 
     def goGitHub(self):
-        webbrowser.open('https://github.com/chinageology/GeoPython/wiki')
+        webbrowser.open('https://github.com/GeoPyTool/GeoPyTool/wiki')
 
     def goCnBBS(self):
-        webbrowser.open('http://bbs.geopython.com/-f2.html')
+        webbrowser.open('https://zhuanlan.zhihu.com/p/30651165')
 
     def goEnBBS(self):
-        webbrowser.open('http://bbs.geopython.com/English-Forum-f3.html')
+        webbrowser.open('https://github.com/GeoPyTool/GeoPyTool/issues')
 
     def checkVersion(self):
 
@@ -629,7 +636,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         _translate = QtCore.QCoreApplication.translate
 
-        url = 'https://raw.githubusercontent.com/chinageology/GeoPython/master/geopython/CustomClass.py'
+        url = 'https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/geopytool/CustomClass.py'
 
 
         r= 0
@@ -656,7 +663,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print(NewVersion)
 
 
-        self.talk=  _translate('MainWindow','Version Online is ') + self.targetversion +'\n'+_translate('MainWindow','You are using GeoPython ') + version +'\n'+ _translate('MainWindow','released on ') + date + '\n'
+        self.talk=  _translate('MainWindow','Version Online is ') + self.targetversion +'\n'+_translate('MainWindow','You are using GeoPyTool ') + version +'\n'+ _translate('MainWindow','released on ') + date + '\n'
 
 
 
@@ -672,7 +679,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if buttonReply == QMessageBox.Yes:
                     print('Yes clicked.')
-                    webbrowser.open('https://github.com/chinageology/GeoPython/blob/master/Download.md')
+                    webbrowser.open('https://github.com/chinageology/GeoPyTool/blob/master/Download.md')
                 else:
                     print('No clicked.')
             else:
@@ -681,8 +688,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                                              'This is the latest version.'))
 
     def Update(self):
-        webbrowser.open('https://github.com/chinageology/GeoPython/wiki/Download')
-        cmd = 'pip3 install geopython --upgrade'
+        webbrowser.open('https://github.com/chinageology/GeoPyTool/wiki/Download')
+        cmd = 'pip3 install geopytool --upgrade'
         try:
             os.system(cmd)
         except:
@@ -1037,6 +1044,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         try:
             self.mdpop.Magic()
             self.mdpop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
+
+
+    def GLMultiDimension(self):
+        self.GLmdpop = GLMultiDimension(df=self.model._df)
+        try:
+            self.GLmdpop.Magic()
+            self.GLmdpop.show()
         except(KeyError):
             self.ErrorEvent()
 
