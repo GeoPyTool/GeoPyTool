@@ -7,7 +7,7 @@ from geopytool.CustomClass import *
 
 setup(name='geopytool',
       version=version,
-      description='a tool for daily geology related task. visit bbs.geopytool.com for further information',
+      description='a tool for daily geology related task. visit geopytool.com for further information',
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',
       url='https://github.com/GeoPyTool/GeoPyTool',

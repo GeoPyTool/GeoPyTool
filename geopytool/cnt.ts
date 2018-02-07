@@ -190,8 +190,8 @@
     </message>
     <message>
         <location filename="Test.py" line="667"/>
-        <source>You are using GeoPython </source>
-        <translation>你正在使用的是 GeoPython</translation>
+        <source>You are using GeoPyTool </source>
+        <translation>你正在使用的是 GeoPyTool</translation>
     </message>
     <message>
         <location filename="Test.py" line="667"/>
@@ -210,13 +210,13 @@
     </message>
     <message>
         <location filename="Test.py" line="663"/>
-        <source>GeoPython, a one-stop cross-platform APP for daily geology research.</source>
-        <translation type="obsolete">GeoPython，一站式跨平臺的地質學日常工作解決方案。</translation>
+        <source>GeoPyTool, a one-stop cross-platform APP for daily geology research.</source>
+        <translation type="obsolete">GeoPyTool，一站式跨平臺的地質學日常工作解決方案。</translation>
     </message>
     <message>
         <location filename="Test.py" line="109"/>
-        <source>GeoPython</source>
-        <translation>GeoPython</translation>
+        <source>GeoPyTool</source>
+        <translation>GeoPyTool</translation>
     </message>
     <message>
         <location filename="Test.py" line="138"/>

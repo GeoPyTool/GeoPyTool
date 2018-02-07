@@ -4,12 +4,12 @@
     <name>MainWindow</name>
     <message>
         <location filename="Test.py" line="140"/>
-        <source>GeoPython</source>
+        <source>GeoPyTool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Test.py" line="681"/>
-        <source>You are using GeoPython </source>
+        <source>You are using GeoPyTool </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
