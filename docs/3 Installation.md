@@ -126,6 +126,7 @@ pip install scipy
 pip install scikit-learn
 pip install sympy
 pip install requests
+pip install pyopengl
 pip install pyqtgraph
 ```
 
@@ -135,6 +136,7 @@ We install conda with pip first:
 
 ```Bash
 pip install requests
+pip install pyopengl
 pip install pyqtgraph
 pip install conda
 ```
