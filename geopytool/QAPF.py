@@ -27,6 +27,41 @@ plt.rcParams['axes.unicode_minus']=False
 class QAPF(AppForm, Tool):
 
     infotext ='Q = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.'
+
+    exptext='''
+            1a: quartzolite,
+            1b: quartz-rich granitoid,		
+            2: alkali feldspar granite,
+            3a: (syeno granite),
+            3b: (monzo granite),
+            4: granodiorite,
+            5: tonalite,		
+            6*: quartz alkali feldspar syenite,
+            7*: quartz syenite,
+            8*: quartz monzonite,
+            9*: quartz monzodiorite quartz monzogabbro,
+            10*: quartz diorite quartz gabbro  quartz anorthosite,		
+            6: alkali feldspar syenite,
+            7: syenite,
+            8: monzonite,
+            9: monzodiorite monzogabbro,
+            10: diorite gabbro anorthosite,		
+            6\': foid-bearing alkali feldspar syenite,
+            7\': foid-bearing syenite,
+            8\': foid-bearing monzonite,
+            9\': foid-bearing monzodiorite foid-bearing monzogabbro,
+            10\': foid-bearing diorite foid-bearing gabbro foid-bearing anorthosite,		
+            11: foid syenite,
+            12: foid monzosyenite,
+            13: foid monzodiorite foid monzogabbro,
+            14: foid diorite foid gabbro,
+            15: foidolite
+            '''
+
+
+    #infotext = infotext + exptext
+
+
     reference = 'Reference: Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
     _df = pd.DataFrame()
     _changed = False
@@ -37,7 +72,7 @@ class QAPF(AppForm, Tool):
     Tags = []
 
     Label = [u'Q', u'A', u'P', u'F']
-    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
+    LabelPosition = [(48, 50 * np.sqrt(3) + 1),
                      (-6, -1),
                      (104, -1),
                      (49, -50 * np.sqrt(3) - 4)]
@@ -96,11 +131,11 @@ class QAPF(AppForm, Tool):
                  (15, 75, 10),
                  (5, 85, 10),
 
-                 (93, 5, 2),
-                 (83, 15, 2),
-                 (53, 53, 2),
-                 (15, 83, 2),
-                 (5, 93, 2),
+                 (93, 5, 1),
+                 (83, 15, 1),
+                 (53, 53, 1),
+                 (15, 83, 1),
+                 (5, 93, 1),
 
                  (95, 3, -8),
                  (75, 23, -8),
@@ -175,7 +210,7 @@ class QAPF(AppForm, Tool):
         self.resize(600, 800)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((12, 12), dpi=self.dpi)
+        self.fig = Figure((12, 11), dpi=self.dpi)
 
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
 
@@ -248,7 +283,6 @@ class QAPF(AppForm, Tool):
 
 
         self.textbox = GrowingTextEdit(self)
-        self.textbox.setText(self.reference+'\n'+self.infotext)
 
         self.vbox.addWidget(self.textbox)
 
@@ -264,124 +298,118 @@ class QAPF(AppForm, Tool):
         self.axes.set_xlim(-10, 110)
         self.axes.set_ylim(-105 * np.sqrt(3) / 2, 105 * np.sqrt(3) / 2)
 
-        s = [TriLine(Points=[(100, 0, 0), (0, 0, 100), (0, 100, 0), (0, 0, -100), (100, 0, 0), (0, 100, 0)], Sort='',
-                     Width=1, Color='black', Style='-',
-                     Alpha=0.7, Label='')]
-        for i in s:
-            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
-                           label=i.Label)
+
 
         if (int(self.slider.value()) == 0):
+            s = [
+                TriLine(Points=[(100, 0, 0), (0, 0, 100), (0, 100, 0), (0, 0, -100), (100, 0, 0), (0, 100, 0)], Sort='',
+                        Width=1, Color='black', Style='-',
+                        Alpha=0.7, Label='')]
+            for i in s:
+                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                               label=i.Label)
+            self.Labels = ['1a',
 
-            self.Labels = ['quartzolite',
+                           '1b',
 
-                           'quartz-rich\ngranitoid',
+                           '2',
+                           '3a',
+                           '3b',
+                           '4',
+                           '5',
 
-                           'granite',
+                           '6*',
+                           '7*',
+                           '8*',
+                           '9*',
+                           '10*',
 
-                           'alkali\nfeldspar\ngranite',
-                           '(syeno\ngranite)',
-                           '(monzo\ngranite)',
-                           'granodiorite',
-                           'tonalite',
+                           '6',
+                           '7',
+                           '8',
+                           '9',
+                           '10',
 
-                           'quartz\nalkali\nfeldspar\nsyenite',
-                           'quartz\nsyenite',
-                           'quartz\nmonzonite',
-                           'quartz\nmonzodiorite\nquartz\nmonzogabbro',
-                           'quartz\ndiorite\nquartz gabbro\n quartz\nanorthosite',
+                           '6\'',
+                           '7\'',
+                           '8\'',
+                           '9\'',
+                           '10\'',
 
-                           'alkali\nfeldspar\nsyenite',
-                           'syenite',
-                           'monzonite',
-                           'monzodiorite\nmonzogabbro',
-                           'diorite\ngabbro\nanorthosite',
+                           '11',
+                           '12',
+                           '13',
+                           '14',
+                           '15']
+            self.Locations = [(50,80),
 
-                           'foid-bearing\nalkali\nfeldspar\nsyenite',
-                           'foid-bearing\nsyenite',
-                           'foid-bearing\nmonzonite',
-                           'foid-bearing\nmonzodiorite\nfoid-bearing\nmonzogabbro',
-                           'foid-bearing\ndiorite\nfoid-bearing gabbro\nfoid-bearing\nanorthosite',
+                              (50,65),
 
-                           'foid\nsyenite',
-                           'foid\nmonzosyenite',
-                           'foid\nmonzodiorite\nfoid\nmonzogabbro',
-                           'foid\ndiorite\nfoid\ngabbro',
-                           'foidolite']
+                              (22,33),
+                              (32,33),
+                              (50,33),
+                              (66,33),
+                              (76,33),
 
-            self.Locations = [(5, 5, 95),
+                              (10, 10),
+                              (26, 10),
+                              (50, 10),
+                              (74, 10),
+                              (88, 10),
 
-                              (10, 10, 80),
+                              (6, 1),
+                              (24, 1),
+                              (50, 1),
+                              (76, 1),
+                              (90, 1),
 
-                              (35, 15, 50),
+                              (6, -5),
+                              (24, -5),
+                              (50, -5),
+                              (76, -5),
+                              (90, -5),
 
-                              (45, 5, 50),
-                              (45, 25, 30),
-                              (35, 35, 30),
-                              (25, 45, 30),
-                              (5, 45, 50),
+                              (18, -30),
+                              (40, -30),
+                              (60, -30),
+                              (78, -30),
+                              (50, -60)]
 
-                              (85, 5, 10),
-                              (75, 15, 10),
-                              (45, 45, 10),
-                              (15, 75, 10),
-                              (5, 85, 10),
-
-                              (93, 5, 2),
-                              (83, 15, 2),
-                              (53, 53, 2),
-                              (15, 83, 2),
-                              (5, 93, 2),
-
-                              (95, 3, -8),
-                              (75, 23, -8),
-                              (49, 49, -8),
-                              (23, 75, -8),
-                              (3, 95, -8),
-
-                              (63, 7, -30),
-                              (50, 20, -30),
-                              (20, 50, -30),
-                              (7, 63, -30),
-                              (10, 10, -80)]
-
-            self.Offset = [(-30, 0),
-
-                           (-30, 0),
-
-                           (-20, 0),
-
-                           (-70, 30),
-                           (-50, 30),
-                           (-30, 0),
-                           (0, 0),
-                           (30, 20),
-
-                           (-70, 15),
-                           (-10, 0),
-                           (-40, 0),
-                           (-50, -5),
-                           (30, 15),
-
-                           (-80, 5),
-                           (0, 0),
-                           (-40, 0),
-                           (-50, -5),
-                           (60, 5),
-
-                           (-80, -15),
-                           (-40, 0),
-                           (-40, 0),
-                           (-20, -15),
-                           (50, -30),
-
-                           (-80, 0),
-                           (-40, 0),
-                           (-40, 0),
-                           (60, 0),
-                           (-30, 0)]
             self.slider_label.setText('Plutonic')
             self.setWindowTitle('QAPF modal classification of plutonic rocks')
+
+            self.exptext='''
+                1a: quartzolite,
+                1b: quartz-rich granitoid,		
+                2: alkali feldspar granite,
+                3a: (syeno granite),
+                3b: (monzo granite),
+                4: granodiorite,
+                5: tonalite,		
+                6*: quartz alkali feldspar syenite,
+                7*: quartz syenite,
+                8*: quartz monzonite,
+                9*: quartz monzodiorite quartz monzogabbro,
+                10*: quartz diorite quartz gabbro  quartz anorthosite,		
+                6: alkali feldspar syenite,
+                7: syenite,
+                8: monzonite,
+                9: monzodiorite monzogabbro,
+                10: diorite gabbro anorthosite,		
+                6\': foid-bearing alkali feldspar syenite,
+                7\': foid-bearing syenite,
+                8\': foid-bearing monzonite,
+                9\': foid-bearing monzodiorite foid-bearing monzogabbro,
+                10\': foid-bearing diorite foid-bearing gabbro foid-bearing anorthosite,		
+                11: foid syenite,
+                12: foid monzosyenite,
+                13: foid monzodiorite foid monzogabbro,
+                14: foid diorite foid gabbro,
+                15: foidolite
+                '''
+
+            self.textbox.setText(self.reference + '\n' + self.infotext+ '\n' + self.exptext)
+
 
             D1 = (0, 0, 100)
             L1 = [(10, 0, 90), (0, 10, 90)]
@@ -474,89 +502,99 @@ class QAPF(AppForm, Tool):
 
 
         else:
-            self.Labels = ['rhyolite',
 
-                           'alkali\nfeldspar\rhyolite',
+            s = [
+                TriLine(Points=[ (35, 65, 0),(100, 0, 0), (0, 0, 100), (0, 100, 0),(0, 0, -100), (100, 0, 0)], Sort='',
+                        Width=1, Color='black', Style='-',
+                        Alpha=0.7, Label='')]
+            for i in s:
+                self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                               label=i.Label)
 
-                           'dacite',
 
-                           'quartz\nalkali\nfeldspar\ntrachyte',
-                           'quartz\ntrachyte',
-                           'quartz\nlatite',
-                           'basalt\nandesite',
+            self.Labels = ['1',
+                           '2',
+                           '3',
 
-                           'alkali\nfeldspar\ntrachyte',
-                           'trachyte',
-                           'latite',
+                           '4',
+                           '5',
+                           '6',
+                           '7',
 
-                           'foid-bearing\nalkali\nfeldspar\ntrachyte',
-                           'foid-bearing\ntrachyte',
-                           'foid-bearing\nlatite',
+                           '8',
+                           '9',
+                           '10',
 
-                           'phonolite',
-                           'tephritic\nphonolite',
-                           ' phonolitic\nbasanite\n(olivine > 10%)\nphonolitic\ntephrite\n(olivine < 10%)',
-                           ' basanite\n(olivine > 10%)\ntephrite\n(olivine < 10%)',
-                           'phonolitic\nfoidite',
-                           'tephritic\nfoidite',
-                           'foidoite']
+                           '11',
+                           '12',
+                           '13',
 
-            self.Locations = [(35, 15, 50),
+                           '14',
+                           '15',
+                           '16',
+                           '17',
 
-                              (45, 5, 50),
+                           '18',
+                           '19',
+                           '20']
 
-                              (20, 50, 30),
+            self.Locations = [(22,33),
+                              (42,33),
+                              (65,33),
 
-                              (85, 5, 10),
-                              (75, 15, 10),
-                              (45, 45, 10),
-                              (15, 75, 10),
+                              (10, 10),
+                              (25, 10),
+                              (50, 10),
+                              (80, 10),
 
-                              (93, 5, 2),
-                              (83, 15, 2),
-                              (53, 53, 2),
+                              (6, 1),
+                              (24, 1),
+                              (50, 1),
 
-                              (95, 3, -8),
-                              (75, 23, -8),
-                              (49, 49, -8),
+                              (6, -5),
+                              (24, -5),
+                              (50, -5),
 
-                              (63, 7, -30),
-                              (50, 20, -30),
-                              (20, 50, -30),
-                              (7, 63, -30),
-                              (16, 8, -76),
-                              (8, 16, -76),
-                              (4, 4, -92)]
+                              (18, -30),
+                              (40, -30),
+                              (60, -30),
+                              (78, -30),
 
-            self.Offset = [(-20, 0),
 
-                           (-70, 30),
+                              (40, -63),
+                              (55, -63),
+                              (48, -82)]
 
-                           (0, 0),
-
-                           (-70, 15),
-                           (-10, 0),
-                           (-40, 0),
-                           (-30, -5),
-
-                           (-80, 5),
-                           (0, 0),
-                           (-40, 0),
-
-                           (-80, -15),
-                           (-40, 0),
-                           (-40, 0),
-
-                           (-80, 0),
-                           (-40, 0),
-                           (-40, 0),
-                           (60, 0),
-                           (-40, 20),
-                           (0, 20),
-                           (-20, 0)]
             self.slider_label.setText('Volcanic')
 
             self.setWindowTitle('QAPF modal classification of volcanic rocks')
+
+
+
+            self.exptext='''
+                1:alkali feldspar rhyolite,
+                2:rhyolite,
+                3:dacite,
+                4:quartz alkali feldspar trachyte,
+                5:quartz trachyte,
+                6:quartz latite,
+                7:basalt andesite,
+                8:alkali feldspar trachyte,
+                9:trachyte,
+                10:latite,
+                11:foid-bearing alkali feldspar trachyte,
+                12:foid-bearing trachyte,
+                13:foid-bearing latite,
+                14:phonolite,
+                15:tephritic phonolite,
+                16:phonolitic basanite (olivine > 10%) phonolitic tephrite (olivine < 10%),
+                17:basanite (olivine > 10%) tephrite (olivine < 10%),
+                18:phonolitic foidite,
+                19:tephritic foidite,
+                20:foidoite,         
+                '''
+
+            self.textbox.setText(self.reference + '\n' + self.infotext+ '\n' + self.exptext)
 
 
             D = (0, 0, 100)
@@ -680,17 +718,18 @@ class QAPF(AppForm, Tool):
                                textcoords='offset points',
                                fontsize=8, )
 
+
+
+
         for i in range(len(self.Labels)):
             self.Tags.append(Tag(Label=self.Labels[i],
-                                 Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
-                                                        self.Locations[i][2]),
-                                 X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
+                                 Location=(self.Locations[i][0], self.Locations[i][1]),
+                                 ))
 
         if (self.detail_cb.isChecked()):
             for i in self.Tags:
-                self.axes.annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
-                                   textcoords='offset points',
-                                   fontsize=8, color='grey', alpha=0.8)
+                self.axes.annotate(i.Label, xy=i.Location,
+                                   fontsize=6, color='grey', alpha=0.8)
 
         raw = self._df
         PointLabels = []
