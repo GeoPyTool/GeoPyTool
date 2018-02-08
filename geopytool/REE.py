@@ -2,7 +2,7 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
 class REE(AppForm):
-    reference = 'Print the reference here.'
+    reference = 'Reference: Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
 
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
@@ -62,14 +62,16 @@ class REE(AppForm):
         self.create_status_bar()
 
     def create_main_frame(self):
+        self.resize(800, 600)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig = Figure((12.0, 12.0), dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
 
-        self.axes.axis('off')
+        #self.axes.axis('off')
 
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
@@ -78,20 +80,14 @@ class REE(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.REE)
+        self.result_button = QPushButton('&Result')
+        self.result_button.clicked.connect(self.Explain)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.REE)  # int
 
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.REE)  # int
+
 
         self.standard = QSlider(Qt.Horizontal)
         self.standard.setRange(0, 4)
@@ -101,15 +97,13 @@ class REE(AppForm):
         self.standard.valueChanged.connect(self.REE)  # int
 
         self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
-        self.reference = self.StandardsName[int(self.standard.value())]+'Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
-
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button,
-                  self.legend_cb, self.slider_label, self.slider, self.standard_label, self.standard]:
+        for w in [self.save_button, self.result_button,
+                  self.legend_cb, self.standard_label, self.standard]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -117,6 +111,10 @@ class REE(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
+        self.textbox = GrowingTextEdit(self)
+        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard.value())])
+        self.vbox.addWidget(self.textbox)
+
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -128,7 +126,15 @@ class REE(AppForm):
 
         self.axes.clear()
 
-        self.axes.axis('off')
+        #self.axes.axis('off')
+
+
+
+        self.axes.spines['right'].set_color('none')
+        self.axes.spines['top'].set_color('none')
+
+
+
 
         self.WholeData = []
 
@@ -141,6 +147,7 @@ class REE(AppForm):
 
         standardnamechosen = self.StandardsName[int(self.standard.value())]
         standardchosen = self.Standards[standardnamechosen]
+        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard.value())])
 
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
@@ -228,41 +235,30 @@ class REE(AppForm):
 
         count = round((Head - Tale) / 5 * 7) + 1
 
+
+
         if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, prop=fontprop)
+            self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
-        self.DrawLine([(0, Location), (16, Location)], color='black', linewidth=0.8, alpha=0.8)
 
-        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
 
         self.standard_label.setText('Standard: ' + self.StandardsName[int(self.standard.value())])
 
-        for i in range(count):
-            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
-                          linewidth=0.8, alpha=0.8)
 
-            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
-                               xycoords='data', xytext=(-15, 0),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8, rotation=90)
+        self.yticks = [Location+i for i in range(count)]
+        self.yticklabels = [str(np.power(10.0, (Location + i))) for i in range(count)]
 
-        for i in range(min(len(self.xticks), len(self.xticklabels))):
-            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
-                          linewidth=0.8, alpha=0.8)
-            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8)
+        self.axes.set_yticks(self.yticks)
+        self.axes.set_yticklabels(self.yticklabels)
+
+        self.axes.set_xticks(self.xticks)
+        self.axes.set_xticklabels(self.xticklabels)
+
 
 
 
         self.canvas.draw()
 
-
-        self.WholeResult = self.Explain()
-
-
-    def Explain(self):
         self.Intro = pd.DataFrame(
             {'Label': self.LabelList,
              'algebraDeltaEu': self.algebraDeltaEuList,
@@ -273,9 +269,10 @@ class REE(AppForm):
              'ALLREE': self.ALLREEList
              })
 
-        #self.Intro = self.Intro.set_index('Label')
+        self.WholeResult = self.Intro
+
+
+    def Explain(self):
 
         self.tablepop = TabelViewer(df=self.Intro,title='REE Result')
         self.tablepop.show()
-
-        return(self.Intro)

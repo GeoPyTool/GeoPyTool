@@ -27,7 +27,7 @@ plt.rcParams['axes.unicode_minus']=False
 class QAPF(AppForm, Tool):
 
     infotext ='Q = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.'
-    reference = 'Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
+    reference = 'Reference: Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
     _df = pd.DataFrame()
     _changed = False
 
@@ -172,9 +172,13 @@ class QAPF(AppForm, Tool):
                          fontsize=16, )
 
     def create_main_frame(self):
+        self.resize(600, 800)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((8, 12), dpi=self.dpi)
+        self.fig = Figure((12, 12), dpi=self.dpi)
+
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
+
         # 8 * np.sqrt(3)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -194,21 +198,35 @@ class QAPF(AppForm, Tool):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.QAPF)
+        #self.result_button = QPushButton('&Result')
+        #self.result_button.clicked.connect(self.Explain)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.QAPF)  # int
 
+
+
+
+
+        self.slider_label = QLabel('Plutonic')
+        self.slider = QSlider(Qt.Vertical)
+        self.slider.setRange(0, 1)
+        self.slider.setValue(0)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.QAPF)  # int
+
+        '''
         self.Tag_cb = QCheckBox('&Plutonic')
         self.Tag_cb.setChecked(True)
         self.Tag_cb.stateChanged.connect(self.QAPF)  # int
-
         if (self.Tag_cb.isChecked()):
             self.Tag_cb.setText('&Plutonic')
         else:
             self.Tag_cb.setText('&Volcanic')
+        '''
+
 
         self.detail_cb = QCheckBox('&Detail')
         self.detail_cb.setChecked(True)
@@ -219,7 +237,7 @@ class QAPF(AppForm, Tool):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.Tag_cb, self.detail_cb, self.legend_cb]:
+        for w in [self.save_button,  self.detail_cb, self.legend_cb,self.slider_label,self.slider]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -228,9 +246,11 @@ class QAPF(AppForm, Tool):
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
 
-        self.detailtext = QLineEdit(self)
-        self.detailtext.setText(self.infotext)
-        self.vbox.addWidget(self.detailtext)
+
+        self.textbox = GrowingTextEdit(self)
+        self.textbox.setText(self.reference+'\n'+self.infotext)
+
+        self.vbox.addWidget(self.textbox)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -251,7 +271,7 @@ class QAPF(AppForm, Tool):
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
                            label=i.Label)
 
-        if (self.Tag_cb.isChecked()):
+        if (int(self.slider.value()) == 0):
 
             self.Labels = ['quartzolite',
 
@@ -360,10 +380,8 @@ class QAPF(AppForm, Tool):
                            (-40, 0),
                            (60, 0),
                            (-30, 0)]
-            self.Tag_cb.setText('&Plutonic')
-
-            self.setWindowTitle(
-                'QAPF modal classification of plutonic rocks (based on Streckeisen, 1976, Fig. 1a).')
+            self.slider_label.setText('Plutonic')
+            self.setWindowTitle('QAPF modal classification of plutonic rocks')
 
             D1 = (0, 0, 100)
             L1 = [(10, 0, 90), (0, 10, 90)]
@@ -536,10 +554,10 @@ class QAPF(AppForm, Tool):
                            (-40, 20),
                            (0, 20),
                            (-20, 0)]
-            self.Tag_cb.setText('&Volcanic')
+            self.slider_label.setText('Volcanic')
 
-            self.setWindowTitle(
-                'QAPF modal classification of volcanic rocks (based on Streckeisen, 1978, Fig. 1).\nQ = quartz, A = alkali feldspar, P = plagioclase and F = feldspathoid.\nOnly for rocks in which the mafic mineral content, M, is greater than 90%.')
+            self.setWindowTitle('QAPF modal classification of volcanic rocks')
+
 
             D = (0, 0, 100)
             L1 = [(10, 0, 90), (0, 10, 90)]
@@ -714,9 +732,9 @@ class QAPF(AppForm, Tool):
             self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
                               label=i.Label, edgecolors='black')
 
+
+
         if (self.legend_cb.isChecked()):
-            # a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(0, 0))
-            self.axes.legend(loc=3,prop=fontprop, bbox_to_anchor=(0, 0))
+            self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
         self.canvas.draw()

@@ -10,7 +10,8 @@ class TAS(AppForm):
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
 
-    reference = 'Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
+
+    reference = 'Reference: Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
 
     ItemNames = ['Foidolite',
                  'Peridotgabbro',
@@ -59,9 +60,11 @@ class TAS(AppForm):
 
 
     def create_main_frame(self):
+        self.resize(800, 600)
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
@@ -73,8 +76,8 @@ class TAS(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.TAS)
+        self.result_button = QPushButton('&Result')
+        self.result_button.clicked.connect(self.Explain)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
@@ -84,25 +87,22 @@ class TAS(AppForm):
         self.tag_cb.setChecked(True)
         self.tag_cb.stateChanged.connect(self.TAS)  # int
 
-        self.more_cb = QCheckBox('&More')
-        self.more_cb.setChecked(True)
-        self.more_cb.stateChanged.connect(self.TAS)  # int
-
-        slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
+        self.slider_label = QLabel('Type: Volcanic')
+        self.slider = QSlider(Qt.Vertical)
+        self.slider.setRange(0, 1)
+        self.slider.setValue(0)
         self.slider.setTracking(True)
         self.slider.setTickPosition(QSlider.TicksBothSides)
         self.slider.valueChanged.connect(self.TAS)  # int
+
 
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.tag_cb, self.more_cb,
-                  self.legend_cb, slider_label, self.slider]:
+        for w in [self.save_button, self.result_button, self.tag_cb,
+                  self.legend_cb,self.slider_label, self.slider]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -110,6 +110,10 @@ class TAS(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
+        self.textbox = GrowingTextEdit(self)
+        self.textbox.setText(self.reference)
+
+        self.vbox.addWidget(self.textbox)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -119,9 +123,22 @@ class TAS(AppForm):
             height=12, dpi=300):
         self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
         self.axes.clear()
-        self.axes.axis('off')
+        #self.axes.axis('off')
+        
+        
         self.axes.set_xlabel(self.xlabel)
         self.axes.set_ylabel(self.ylabel)
+        self.axes.spines['right'].set_color('none')
+        self.axes.spines['top'].set_color('none')
+
+
+        self.axes.set_xticks([30,40,50,60,70,80,90])
+        self.axes.set_xticklabels([30,40,50,60,70,80,90])
+
+        self.axes.set_yticks([0, 5, 10, 15, 20])
+        self.axes.set_yticklabels([0, 5, 10, 15, 20])
+
+
 
 
         PointLabels = []
@@ -134,26 +151,41 @@ class TAS(AppForm):
         X_offset = -6
         Y_offset = 3
 
-        if (self.more_cb.isChecked()):
+        if (int(self.slider.value())==0):
             Labels = [u'F', u'Pc', u'U1', u'Ba', u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3',
                       u'T',
                       u'Td', u'R', u'Q', u'S/N/L']
-            detail = 'TAS (total alkali–silica) diagram Volcanic (after Wilson et al. 1989).'
+            title = 'TAS (total alkali–silica) diagram Volcanic (after Wilson et al. 1989).'
             description = '\n' \
                           'F: Foidite, Ph: Phonolite, Pc Pocrobasalt, U1: Tephrite (ol < 10%) Basanite(ol > 10%), U2: Phonotephrite, U3: Tephriphonolite,\n' \
                           'Ba: alkalic basalt,Bs: subalkalic baslt, S1: Trachybasalt, S2: Basaltic Trachyandesite, S3: Trachyandesite,\n' \
                           'O1: Basaltic Andesite, O2: Andesite, O3 Dacite, T: Trachyte , Td: Trachydacite , R: Rhyolite, Q: Silexite \n' \
                           'S/N/L: Sodalitite/Nephelinolith/Leucitolith'
+            self.setWindowTitle(title)
+            self.textbox.setText(self.reference+description)
+            self.slider_label.setText('Type: Volcanic')
+
+
+
+
         else:
             Labels = [u'F', u'Pc', u'U1', u'Ba', u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3',
                       u'T',
                       u'Td', u'R', u'Q', u'T/U/I']
-            detail = 'TAS (total alkali–silica) diagram Intrusive (after Wilson et al. 1989).'
+            title = 'TAS (total alkali–silica) diagram Intrusive (after Wilson et al. 1989).'
             description = '\n' \
                           'F: Foidolite, Ph: Foid Syenite, Pc: Peridotgabbro, U1: Foid Gabbro, U2: Foid Monzodiorite, U3: Foid Monzosyenite,\n' \
                           'Ba: alkalic gabbro,Bs: subalkalic gabbro, S1: Monzogabbro, S2: Monzodiorite, S3: Monzonite,\n' \
                           'O1: Gabbroic Diorite, O2: Diorite, O3: Graodiorite, T: Syenite , Td: Quartz Monzonite , R: Granite, Q: Quartzolite \n' \
                           'T/U/I: Tawite/Urtite/Italite'
+
+
+            self.setWindowTitle(title)
+            self.textbox.setText(self.reference+description)
+
+            self.slider_label.setText('Type: Intrusive')
+
+
 
         TagNumber = min(len(Labels), len(Locations))
         if (self.tag_cb.isChecked()):
@@ -221,68 +253,29 @@ class TAS(AppForm):
                                   s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
                                   edgecolors='black')
 
+
+
             if (self.legend_cb.isChecked()):
-                a = int(self.slider.value())
-                self.axes.legend(loc=a, prop=fontprop)
-
-
-
-            self.DrawLine([(30, 0), (90, 0)], color='black', linewidth=0.8, alpha=0.5)
-            self.DrawLine([(30, 0), (30, 20)], color='black', linewidth=0.8, alpha=0.5)
-
-
-
-
-            a=[[(30, 0), (29, 0)],
-                [(30, 5), (29, 5)],
-                [(30, 10), (29, 10)],
-                [(30, 15), (29, 15)],
-                [(30, 20), (29, 20)],]
-
-            b=[[(30, 0), (30, -0.5)],
-                [(40, 0), (40, -0.5)],
-                [(50, 0), (50, -0.5)],
-                [(60, 0), (60, -0.5)],
-                [(70, 0), (70, -0.5)],
-                [(80, 0), (80, -0.5)],
-                [(90, 0), (90, -0.5)],]
-
-
-
-            for i in a:
-                self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
-                self.axes.annotate(str(i[0][1]),i[1] , xycoords='data', xytext=(X_offset, Y_offset),
-                                   textcoords='offset points',
-                                   fontsize=9, color='grey', alpha=0.8)
-
-
-            for i in b:
-                self.DrawLine(i, color='black', linewidth=0.8, alpha=0.5)
-                self.axes.annotate(str(i[0][0]),i[1] , xycoords='data', xytext=(X_offset, Y_offset-10),
-                                   textcoords='offset points',
-                                   fontsize=9, color='grey', alpha=0.8)
-
-
+                self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
             self.canvas.draw()
 
 
 
-
-
-
-        self.WholeResult=self.Explain()
-
-
-
-    def Explain(self):
         self.Intro = pd.DataFrame(
             {'Label': self.LabelList,
              'RockType': self.TypeList
              })
+        self.WholeResult = self.Intro
+
+
+
+
+
+
+    def Explain(self):
 
         #self.Intro = self.Intro.set_index('Label')
 
         self.tablepop = TabelViewer(df=self.Intro,title='TAS Result')
         self.tablepop.show()
-        return(self.Intro)

@@ -10,6 +10,7 @@ class Trace(AppForm):
                    u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
 
     StandardsName = ['OIB', 'EMORB', 'C1', 'PM', 'NMORB']
+    reference = 'Reference: Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
 
     NameChosen = 'OIB'
     Standards = {
@@ -64,11 +65,12 @@ class Trace(AppForm):
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig = Figure((12.0, 12.0), dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.8, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
-        self.axes.axis('off')
+        #self.axes.axis('off')
 
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
@@ -77,8 +79,8 @@ class Trace(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Trace)
+        #self.result_button = QPushButton('&Result')
+        #self.result_button.clicked.connect(self.Trace)
 
         self.Type_cb = QCheckBox('&CS-Lu (37 Elements)')
         self.Type_cb.setChecked(True)
@@ -88,13 +90,6 @@ class Trace(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Trace)  # int
 
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Trace)  # int
 
         self.standard = QSlider(Qt.Horizontal)
         self.standard.setRange(0, 4)
@@ -104,14 +99,14 @@ class Trace(AppForm):
         self.standard.valueChanged.connect(self.Trace)  # int
 
         self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
-        self.reference = self.StandardsName[int(self.standard.value())]+ 'Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
-        #
+
+
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.Type_cb,
-                  self.legend_cb, self.slider_label, self.slider, self.standard_label, self.standard]:
+        for w in [self.save_button, self.Type_cb,
+                  self.legend_cb, self.standard_label, self.standard]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -119,152 +114,14 @@ class Trace(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
+        self.textbox = GrowingTextEdit(self)
+        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard.value())])
+        self.vbox.addWidget(self.textbox)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
-    def oldTrace(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
-              Top=6, Y0=-1,
-              Y1=3, Y_Gap=5, FontSize=12,
-              xLabel=r'$Trace-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
 
-        if (self.Type_cb.isChecked()):
-            self.Type_cb.setText('&CS-Lu (37 Elements)')
-            self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
-                            u'Pr', u'Mo',
-                            u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb',
-                            u'Dy', u'Li', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
-            self.xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                           26, 27,
-                           28, 29,
-                           30, 31, 32, 33, 34, 35, 36, 37]
-            self.xticklabels = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
-                                u'Pr', u'Mo',
-                                u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb',
-                                u'Dy',
-                                u'Li', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
-
-            self.setWindowTitle('Trace Standardlized Pattern Diagram CS-Lu (37 Elements)')
-
-
-
-        else:
-            self.Type_cb.setText('&Rb-Lu (27 Elements)')
-            self.Element = [u'Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd',
-                            u'Zr', u'Hf',
-                            u'Sm', u'Eu', u'Ti', u'Tb', u'Dy', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
-
-            self.xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                           26, 27]
-            self.xticklabels = [u'Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd',
-                                u'Zr', u'Hf',
-                                u'Sm', u'Eu', u'Ti', u'Tb', u'Dy', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
-            self.setWindowTitle('Trace Standardlized Pattern Diagram Rb-Lu (27 Elements)')
-
-        self.axes.clear()
-        self.axes.axis('off')
-
-        self.WholeData = []
-
-        raw = self._df
-
-        self.FontSize = FontSize
-
-        PointLabels = []
-        k = 0
-        flag = 1
-
-        standardnamechosen = self.StandardsName[int(self.standard.value())]
-        standardchosen = self.Standards[standardnamechosen]
-
-        for i in range(len(raw)):
-            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
-
-            TmpLabel = ''
-
-            LinesX = []
-            LinesY = []
-
-            for j in range(len(self.Element)):
-
-                flag = 1
-
-                tmp = 1
-
-                if self.Element[j] in raw.columns:
-                    tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
-
-                elif self.Element[j] == 'K' and 'K2O' in raw.columns:
-                    tmp = raw.at[i, 'K2O'] * (
-                        2 * 39.0983 / 94.1956) * 10000 / standardchosen[
-                              self.Element[j]]
-
-                elif self.Element[j] == 'Ti' and 'TiO2' in raw.columns:
-                    tmp = raw.at[i, 'TiO2'] * (
-                        47.867 / 79.865) * 10000 / standardchosen[
-                              self.Element[j]]
-
-                else:
-                    flag = 0
-
-                if flag == 1:
-                    LinesX.append(j + 1)
-                    LinesY.append(math.log(tmp, 10))
-                    self.WholeData.append(math.log(tmp, 10))
-
-                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                        TmpLabel = ''
-                    else:
-                        PointLabels.append(raw.at[i, 'Label'])
-                        TmpLabel = raw.at[i, 'Label']
-
-                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
-                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
-
-            self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
-                           linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
-
-        Tale = 0
-        Head = 0
-
-        if (len(self.WholeData) > 0):
-            Tale = min(self.WholeData)
-            Head = max(self.WholeData)
-
-        Location = round(Tale - (Head - Tale) / 5)
-
-        count = round((Head - Tale) / 5 * 7) + 1
-
-        if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, prop=fontprop)
-
-        self.DrawLine([(0, Location), (max(self.xticks), Location)], color='black', linewidth=0.8, alpha=0.8)
-
-        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
-
-        self.standard_label.setText('Standard: ' + self.StandardsName[int(self.standard.value())])
-
-        for i in range(count):
-            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
-                          linewidth=0.8, alpha=0.8)
-
-            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
-                               xycoords='data', xytext=(-15, 0),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8, rotation=90)
-
-        for i in range(min(len(self.xticks), len(self.xticklabels))):
-            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
-                          linewidth=0.8, alpha=0.8)
-            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8)
-
-        self.canvas.draw()
-
-        pass
     def Trace(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
               Top=6, Y0=-1,
               Y1=3, Y_Gap=5, FontSize=12,
@@ -301,7 +158,10 @@ class Trace(AppForm):
 
 
         self.axes.clear()
-        self.axes.axis('off')
+        #self.axes.axis('off')
+
+        self.axes.spines['right'].set_color('none')
+        self.axes.spines['top'].set_color('none')
 
         self.WholeData = []
 
@@ -315,6 +175,8 @@ class Trace(AppForm):
 
         standardnamechosen = self.StandardsName[int(self.standard.value())]
         standardchosen = self.Standards[standardnamechosen]
+
+        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard.value())])
 
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
@@ -387,29 +249,26 @@ class Trace(AppForm):
         count = round((Head - Tale) / 5 * 7) + 1
 
         if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, prop=fontprop)
+            self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
-        self.DrawLine([(0, Location), (max(self.xticks), Location)], color='black', linewidth=0.8, alpha=0.8)
 
-        self.DrawLine([(0, Location), (0, Head + (Head - Tale) / 5)], color='black', linewidth=0.8, alpha=0.8)
 
         self.standard_label.setText('Standard: ' + self.StandardsName[int(self.standard.value())])
 
-        for i in range(count):
-            self.DrawLine([(0, round(Location + i)), ((Head - Tale) / 50, round(Location + i))], color='black',
-                          linewidth=0.8, alpha=0.8)
 
-            self.axes.annotate(str(np.power(10.0, (Location + i))), ((Head - Tale) / 50, round(Location + i)),
-                               xycoords='data', xytext=(-15, 0),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8, rotation=90)
 
-        for i in range(min(len(self.xticks), len(self.xticklabels))):
-            self.DrawLine([(self.xticks[i], Location), (self.xticks[i], Location + (Head - Tale) / 50)], color='black',
-                          linewidth=0.8, alpha=0.8)
-            self.axes.annotate(self.xticklabels[i], (self.xticks[i], Location), xycoords='data', xytext=(-5, -10),
-                               textcoords='offset points',
-                               fontsize=8, color='black', alpha=0.8)
+        self.yticks = [Location+i for i in range(count)]
+
+        self.yticklabels = [str(np.power(10.0, (Location + i))) for i in range(count)]
+
+        self.axes.set_yticks(self.yticks)
+        self.axes.set_yticklabels(self.yticklabels)
+
+
+
+
+        self.axes.set_xticks(self.xticks)
+        self.axes.set_xticklabels(self.xticklabels)
+
 
         self.canvas.draw()

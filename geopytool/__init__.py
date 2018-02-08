@@ -916,7 +916,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.ChemResult = pd.concat([self.taspop.Intro, self.ChemResult], axis=1)
-
         self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
 
 

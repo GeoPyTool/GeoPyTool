@@ -94,9 +94,11 @@ class Harker(AppForm):
         self.create_status_bar()
 
     def create_main_frame(self):
+        self.resize(800, 800)
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
@@ -109,20 +111,10 @@ class Harker(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Harker)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Harker)  # int
-
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Harker)  # int
 
         self.x_element = QSlider(Qt.Horizontal)
         self.x_element.setRange(0, len(self.items) - 1)
@@ -158,8 +150,8 @@ class Harker(AppForm):
         self.hbox2 = QHBoxLayout()
         self.hbox3 = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button,
-                  self.legend_cb, self.slider_label, self.slider]:
+        for w in [self.save_button,
+                  self.legend_cb]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -239,9 +231,9 @@ class Harker(AppForm):
             except(ValueError):
                 pass
 
+
         if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a, prop=fontprop)
+            self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
         self.canvas.draw()
 

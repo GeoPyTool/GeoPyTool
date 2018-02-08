@@ -1,13 +1,25 @@
-version = '0.7.52'
+version = '0.7.53'
 
-date = '2018-2-7'
+date = '2018-2-8'
 
 dpi = 128
 #coding:utf-8
 
 from geopytool.ImportDependence import *
 
+class GrowingTextEdit(QtGui.QTextEdit):
 
+    def __init__(self, *args, **kwargs):
+        super(GrowingTextEdit, self).__init__(*args, **kwargs)
+        self.document().contentsChanged.connect(self.sizeChange)
+
+        self.heightMin = 0
+        self.heightMax = 8
+
+    def sizeChange(self):
+        docHeight = self.document().size().height()
+        if self.heightMin <= docHeight <= self.heightMax:
+            self.setMinimumHeight(docHeight)
 
 class Tool():
     def TriToBin(self, x, y, z):
@@ -779,9 +791,8 @@ class AppForm(QMainWindow):
         self.setCentralWidget(self.main_frame)
 
     def create_status_bar(self):
-        self.textbox = QLineEdit(self)
-        self.textbox.setText('Reference：' + '\n' + self.reference)
-        self.statusBar().addWidget(self.textbox, 1)
+        self.status_text = QLabel("Click Save button to save your figure.")
+        self.statusBar().addWidget(self.status_text, 1)
 
     def add_actions(self, target, actions):
         for action in actions:

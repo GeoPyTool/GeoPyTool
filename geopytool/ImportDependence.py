@@ -31,7 +31,7 @@ from scipy.stats import mode
 from scipy.spatial.distance import *
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.cluster import hierarchy as hc
-from PyQt5.QtWidgets import QMainWindow, QMenu, QSizePolicy, QMessageBox, QWidget, QFileDialog, QAction, QLineEdit,    QApplication, QPushButton, QSlider, QLabel, QHBoxLayout, QVBoxLayout,QProxyStyle,QStyle,qApp,QCheckBox
+from PyQt5.QtWidgets import QMainWindow, QMenu, QSizePolicy, QMessageBox, QWidget, QFileDialog, QAction,QTextEdit, QLineEdit,    QApplication, QPushButton, QSlider, QLabel, QHBoxLayout, QVBoxLayout,QProxyStyle,QStyle,qApp,QCheckBox
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
