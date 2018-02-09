@@ -2,6 +2,8 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
 class Rose(AppForm):
+    reference = 'Zhou, J. B., Zeng, Z. X., and Yuan, J. R., 2003, THE DESIGN AND DEVELOPMENT OF THE SOFTWARE STRUCKIT FOR STRUCTURAL GEOLOGY: Journal of Changchun University of Science & Technology, v. 33, no. 3, p. 276-281.'
+
     _df = pd.DataFrame()
     _changed = False
 
@@ -27,9 +29,12 @@ class Rose(AppForm):
         self.create_status_bar()
 
     def create_main_frame(self):
+        self.resize(1000,600)
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.6, top=0.9)
+
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111, projection='polar')
@@ -108,7 +113,9 @@ class Rose(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
-
+        self.textbox = GrowingTextEdit(self)
+        self.textbox.setText(self.reference)
+        self.vbox.addWidget(self.textbox)
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
@@ -243,10 +250,10 @@ class Rose(AppForm):
 
         #self.axes.set_thetagrids(range(360 + 90, 0 + 90, -15), [str(x) for x in range(0, 360, 15)])
 
+
+
         if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
-            self.axes.legend(loc=2, prop=fontprop, bbox_to_anchor=(0, 0))
+            self.axes.legend(bbox_to_anchor=(1.5, 1), loc=2, borderaxespad=0, prop=fontprop)
 
     def multirose(self, Width=1, Name='Dip'):
         '''
@@ -339,9 +346,7 @@ class Rose(AppForm):
         #self.axes.set_thetagrids(range(360 + 90, 0 + 90, -15), [str(x) for x in range(0, 360, 15)])
 
         if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
-            self.axes.legend(loc=2, prop=fontprop, bbox_to_anchor=(0, 0))
+            self.axes.legend(bbox_to_anchor=(1.5, 1), loc=2, borderaxespad=0, prop=fontprop)
 
     def Rose(self):
 

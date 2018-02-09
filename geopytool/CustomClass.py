@@ -1,6 +1,6 @@
-version = '0.7.54'
+version = '0.7.55'
 
-date = '2018-2-8'
+date = '2018-2-9'
 
 dpi = 128
 #coding:utf-8
@@ -286,9 +286,9 @@ class Tag():
     Location = (0, 0)
     X_offset = -6
     Y_offset = 3
-    FontSize = 12
+    FontSize = 8
 
-    def __init__(self, Label=u'Label', Location=(0, 0), X_offset=-6, Y_offset=3, FontSize=12):
+    def __init__(self, Label=u'Label', Location=(0, 0), X_offset=-6, Y_offset=3, FontSize=8):
         '''
         set up the values
         '''
@@ -786,7 +786,10 @@ class AppForm(QMainWindow):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
+        self.textbox = GrowingTextEdit(self)
+        self.textbox.setText(self.reference)
 
+        self.vbox.addWidget(self.textbox)
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 

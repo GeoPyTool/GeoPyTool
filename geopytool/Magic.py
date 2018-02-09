@@ -10,6 +10,10 @@ class Magic(AppForm):
                u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
 
     StandardsName = ['OIB', 'EMORB', 'C1', 'PM', 'NMORB']
+    reference = 'Reference: Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
+    sentence =''
+
+    Marker=1
 
     NameChosen = 'OIB'
     Standards = {
@@ -44,7 +48,7 @@ class Magic(AppForm):
     xlabel = 'x'
     ylabel = 'y'
 
-    description = 'X-Y diagram'
+    description = 'Magic diagram'
     unuseful = ['Name',
                 'Author',
                 'DataType',
@@ -115,6 +119,7 @@ class Magic(AppForm):
         self.flag = 0
 
     def create_main_frame(self):
+        self.resize(800, 800)
         self.main_frame = QWidget()
         self.dpi = 128
         self.ShapeGroups =200
@@ -264,7 +269,9 @@ class Magic(AppForm):
         self.vbox.addLayout(self.hbox1)
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
+        self.textbox = GrowingTextEdit(self)
 
+        self.vbox.addWidget(self.textbox)
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
@@ -561,22 +568,17 @@ class Magic(AppForm):
                 self.ylabel = self.items[b]
 
                 if (self.Normalize_cb.isChecked()):
-
-                    self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
-
-
-                    self.x_element_label.setText(self.xlabel)
-
-                    self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
-
-
-                    self.y_element_label.setText(self.ylabel)
+                    self.sentence=self.reference
 
                     if self.items[a] in self.Element:
                         xuse = xuse / standardchosen[self.items[a]]
+                        self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+                        self.x_element_label.setText(self.xlabel)
 
                     if self.items[b] in self.Element:
                         yuse = yuse / standardchosen[self.items[b]]
+                        self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+                        self.y_element_label.setText(self.ylabel)
 
                 if (self.logx_cb.isChecked()):
                     xuse = math.log(x, 10)
@@ -614,8 +616,9 @@ class Magic(AppForm):
         Xline = p(Yline)
 
         print(z)
-        self.reference=str(z)
-        self.textbox.setText('x=f(y) Polyfitting parameter：' + '\n' + self.reference)
+
+
+        self.textbox.setText('x=f(y) Polyfitting parameter：' + '\n' +str(z)+'\n'+ self.sentence)
 
 
         xmin, xmax = min(XtoFit), max(XtoFit)
@@ -707,8 +710,14 @@ class Magic(AppForm):
 
 
 
-        self.view.plot(XtoFitUsed, YtoFitUsed, pen=None, symbol=Markers[i], symbolPen=None, symbolSize=3,
-                  symbolBrush=(100, 255, 255, 48), name= PointLabels)
+        if (self.Marker==1):
+            self.view.plot(XtoFitUsed, YtoFitUsed, pen=None, symbol=Markers[i], symbolPen=None, symbolSize=3,
+                  symbolBrush=(255, 255, 255, 80), name= PointLabels)
+            self.Marker =0
+        else:
+            self.view.plot(XtoFitUsed, YtoFitUsed, pen=None, symbol=Markers[i], symbolPen=None, symbolSize=3,
+                  symbolBrush=(255, 255, 255, 80))
+
 
         if (self.fit_cb.isChecked()):
             #self.axes.plot(Xline, Yline, 'b-')

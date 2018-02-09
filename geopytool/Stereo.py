@@ -3,6 +3,9 @@ from geopytool.CustomClass import *
 
 
 class Stereo(AppForm):
+
+    reference = 'Zhou, J. B., Zeng, Z. X., and Yuan, J. R., 2003, THE DESIGN AND DEVELOPMENT OF THE SOFTWARE STRUCKIT FOR STRUCTURAL GEOLOGY: Journal of Changchun University of Science & Technology, v. 33, no. 3, p. 276-281.'
+
     _df = pd.DataFrame()
     _changed = False
 
@@ -22,9 +25,12 @@ class Stereo(AppForm):
         self.create_status_bar()
 
     def create_main_frame(self):
+        self.resize(1000,600)
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.6, top=0.9)
+
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111, projection='polar')
@@ -67,13 +73,7 @@ class Stereo(AppForm):
         else:
             self.Type_cb.setText('Schmidt')
 
-        slider_label = QLabel('Step:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Stereo)  # int
+
 
         #
         # Layout with box sizers
@@ -81,7 +81,7 @@ class Stereo(AppForm):
         self.hbox = QHBoxLayout()
 
         for w in [self.save_button, self.draw_button, self.LineOrPoint_cb, self.Type_cb,
-                  self.legend_cb, slider_label, self.slider]:
+                  self.legend_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -89,6 +89,10 @@ class Stereo(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
+
+        self.textbox = GrowingTextEdit(self)
+        self.textbox.setText(self.reference)
+        self.vbox.addWidget(self.textbox)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -201,8 +205,7 @@ class Stereo(AppForm):
         # self.axes.thetagrids(range(360 + 90, 0 + 90, -30), [str(x) for x in range(0, 360, 30)])
 
         if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=2, prop=fontprop, bbox_to_anchor=(0, 0))
+            self.axes.legend(bbox_to_anchor=(1.5, 1), loc=2, borderaxespad=0, prop=fontprop)
 
     def points(self, Width=1, Color='k'):
         '''
@@ -287,12 +290,9 @@ class Stereo(AppForm):
 
         # plt.plot(120, 30, color='K', linewidth=4, alpha=Alpha, marker='o')
         # self.axes.thetagrids(range(360 + 90, 0 + 90, -30), [str(x) for x in range(0, 360, 30)])
-
-
         if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
-            self.axes.legend(loc=2, prop=fontprop, bbox_to_anchor=(0, 0))
+            self.axes.legend(bbox_to_anchor=(1.5, 1), loc=2, borderaxespad=0, prop=fontprop)
+
 
     def Stereo(self):
         self.Label = [u'N', u'S', u'W', u'E']

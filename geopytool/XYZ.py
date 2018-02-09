@@ -10,6 +10,9 @@ class XYZ(AppForm):
 
     StandardsName = ['OIB', 'EMORB', 'C1', 'PM', 'NMORB']
 
+    reference = 'Reference: Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
+    sentence=''
+
     NameChosen = 'OIB'
     Standards = {
         'OIB': {'Cs': 0.387, 'Tl': 0.077, 'Rb': 31, 'Ba': 350, 'W': 0.56, 'Th': 4, 'U': 1.02, 'Nb': 48, 'Ta': 2.7,
@@ -117,9 +120,15 @@ class XYZ(AppForm):
         self.flag = 0
 
     def create_main_frame(self):
+
+        self.resize(800, 800)
+
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
+
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
@@ -135,22 +144,16 @@ class XYZ(AppForm):
         self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Reset)
 
+
+        self.stat_button = QPushButton('&Stat')
+        self.stat_button.clicked.connect(self.Stat)
+
         self.load_button = QPushButton('&Load')
         self.load_button.clicked.connect(self.Load)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
-
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Magic)  # int
-
-
 
         self.Normalize_cb = QCheckBox('&Normalize')
         self.Normalize_cb.setChecked(False)
@@ -239,8 +242,8 @@ class XYZ(AppForm):
 
 
 
-        for w in [self.save_button, self.draw_button, self.load_button,
-                  self.legend_cb, self.slider_label, self.slider,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
+        for w in [self.save_button,self.stat_button, self.draw_button, self.load_button,
+                  self.legend_cb, self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -267,6 +270,9 @@ class XYZ(AppForm):
         self.vbox.addLayout(self.hbox3)
         self.vbox.addLayout(self.hbox4)
 
+        self.textbox = GrowingTextEdit(self)
+
+        self.vbox.addWidget(self.textbox)
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
@@ -491,7 +497,7 @@ class XYZ(AppForm):
                 self.zlabel = self.items[c]
 
                 if (self.Normalize_cb.isChecked()):
-
+                    self.sentence = self.reference
 
                     if self.items[a] in self.Element:
                         self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
@@ -500,7 +506,7 @@ class XYZ(AppForm):
                         self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
                         yuse = yuse / standardchosen[self.items[b]]
                     if self.items[c] in self.Element:
-                        self.zlabel = self.items[b] + ' Norm by ' + standardnamechosen
+                        self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
                         zuse = zuse / standardchosen[self.items[c]]
 
                 if (self.logx_cb.isChecked()):
@@ -525,9 +531,9 @@ class XYZ(AppForm):
         self.x_element_label.setText(self.xlabel)
         self.y_element_label.setText(self.ylabel)
         self.z_element_label.setText(self.zlabel)
-        self.axes.annotate(self.xlabel, (0, 15))
-        self.axes.annotate(self.ylabel, (97, 15))
-        self.axes.annotate(self.zlabel, (30, 85))
+        self.axes.annotate(self.xlabel, (-4, -3))
+        self.axes.annotate(self.ylabel, (100, -3))
+        self.axes.annotate(self.zlabel, (30, 90))
 
         for i in TPoints:
             self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
@@ -537,9 +543,13 @@ class XYZ(AppForm):
 
 
 
+        self.textbox.setText(self.sentence)
+
+
         if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a,prop=fontprop)
+            self.axes.legend(bbox_to_anchor=(1.05, 1),loc=2, borderaxespad=0, prop=fontprop)
+
+
 
         if self.polygon != 0 and self.polyline != 0 and self.line != 0:
 
@@ -559,7 +569,7 @@ class XYZ(AppForm):
                 # self.DrawLine(self.polygon)
                 # self.DrawLine(self.polyline)
 
-        self.Intro = self.Stat()
+
         self.canvas.draw()
 
 
@@ -602,8 +612,11 @@ class XYZ(AppForm):
         StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
         StatResultDf['Items']=StatResultDf.index.tolist()
 
-        self.tablepop = TabelViewer(df=StatResultDf,title='X-Y Statistical Result')
+        self.tablepop = TabelViewer(df=StatResultDf,title='X-Y-Z Statistical Result')
         self.tablepop.show()
+
+        self.Intro = StatResultDf
+
         return(StatResultDf)
 
 

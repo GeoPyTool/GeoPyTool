@@ -24,6 +24,9 @@ class ZirconTiTemp(AppForm):
         self.create_status_bar()
 
     def create_main_frame(self):
+
+
+        self.resize(800, 600)
         self.main_frame = QWidget()
         self.dpi = 128
 
@@ -130,6 +133,7 @@ class RutileZrTemp(AppForm):
         self.create_status_bar()
 
     def create_main_frame(self):
+        self.resize(800, 600)
         self.main_frame = QWidget()
         self.dpi = 128
 

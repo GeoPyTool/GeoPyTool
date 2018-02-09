@@ -2,7 +2,8 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
 class QmFLt(AppForm, Tool):
-    reference = 'Dickinson, W. R., and Suczek, C. A., 1979, Plate Tectonics and sandstone composition: Aapg Bulletin, v. 63, no. 12, p. 2164-2182.'
+    reference = 'Refrence: Dickinson, W. R., Beard, L. S., Brakenridge, G. R., Erjavec, J. L., Ferguson, R. C., Inman, K. F., Knepp, R. A., Lindberg, F. A., and Ryberg, P. T., 1983, Provenance of North American Phanerozoic sandstones in relation to tectonic setting: Geological Society of America Bulletin, v. 94, no. 2, p. 222.'
+
     _df = pd.DataFrame()
     _changed = False
 
@@ -74,9 +75,13 @@ class QmFLt(AppForm, Tool):
                                  X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
 
     def create_main_frame(self):
+
+        self.resize(1000,600)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((8.0, 6.0), dpi=self.dpi)
+        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.6, top=0.9)
+
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
@@ -112,6 +117,11 @@ class QmFLt(AppForm, Tool):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
+
+
+        self.textbox = GrowingTextEdit(self)
+        self.textbox.setText(self.reference)
+        self.vbox.addWidget(self.textbox)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -292,10 +302,9 @@ class QmFLt(AppForm, Tool):
                                    textcoords='offset points',
                                    fontsize=i.FontSize, color='grey', alpha=0.8)
 
+
         if (self.legend_cb.isChecked()):
-            # a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
-            self.axes.legend(loc=4, prop=fontprop, bbox_to_anchor=(1.1, 0.5))
+            self.axes.legend(bbox_to_anchor=(1, 1), loc=2, borderaxespad=0, prop=fontprop)
 
         self.canvas.draw()
 

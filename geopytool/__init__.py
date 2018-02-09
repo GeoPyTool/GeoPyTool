@@ -14,11 +14,11 @@ sign = '''
 created on Sat Dec 17 22:28:24 2016
 @author: cycleuser
 # Create Date: 2015-07-13
-# Modify Date: 2017-11-22
+# Modify Date: 2018-02-09
 a tool set for daily geology related task.
 # prerequisite:
 #   based on Python 3.x
-#   need math,numpy,pandas,matplotlib,xlrd,pyqt5,BeautifulSoup4
+#   need math,numpy,pandas,matplotlib,xlrd,pyqt5,BeautifulSoup4,pyopengl,pyqtgraph
     Any issues or improvements please contact cycleuser@cycleuser.org
     or Open An Issue at GitHub:https://github.com/GeoPyTool/GeoPyTool/issues     
     Website For Chinese Users：https://zhuanlan.zhihu.com/p/28908475
@@ -32,7 +32,6 @@ from geopytool.CIPW import CIPW
 from geopytool.Cluster import Cluster
 from geopytool.Harker import Harker
 from geopytool.Magic import Magic
-from geopytool.MudStone import MudStone
 from geopytool.MultiDimension import MultiDimension
 from geopytool.GLMultiDimension import GLMultiDimension
 from geopytool.Pearce import Pearce
@@ -170,14 +169,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuStructure = QtWidgets.QMenu(self.menubar)
         self.menuStructure.setObjectName('menuStructure')
 
-        self.menuCalc = QtWidgets.QMenu(self.menubar)
-        self.menuCalc.setObjectName('menuCalc')
+        self.menuTesting = QtWidgets.QMenu(self.menubar)
+        self.menuTesting.setObjectName('menuTesting')
 
-        self.menuStat = QtWidgets.QMenu(self.menubar)
-        self.menuStat.setObjectName('menuStat')
-
-        self.menuMore = QtWidgets.QMenu(self.menubar)
-        self.menuMore.setObjectName('menuMore')
+        self.menuDIY = QtWidgets.QMenu(self.menubar)
+        self.menuDIY.setObjectName('menuDIY')
 
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName('menuHelp')
@@ -274,8 +270,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
-        self.actionMudStone = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'MudStone',self)
-        self.actionMudStone.setObjectName('actionMudStone')
+
 
         self.actionXY = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'X-Y',self)
         self.actionXY.setObjectName('actionXY')
@@ -294,28 +289,28 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionRee)
         self.menuGeoChem.addAction(self.actionPearce)
         self.menuGeoChem.addAction(self.actionHarker)
+        self.menuGeoChem.addAction(self.actionQAPF)
+        self.menuGeoChem.addAction(self.actionCIPW)
+        self.menuGeoChem.addAction(self.actionZirconCe)
+        self.menuGeoChem.addAction(self.actionZirconTiTemp)
+        self.menuGeoChem.addAction(self.actionRutileZrTemp)
+
+
+
 
         self.menuStructure.addAction(self.actionStereo)
         self.menuStructure.addAction(self.actionRose)
         self.menuStructure.addAction(self.actionQFL)
         self.menuStructure.addAction(self.actionQmFLt)
 
-        self.menuCalc.addAction(self.actionCIPW)
-        self.menuCalc.addAction(self.actionZirconCe)
-        self.menuCalc.addAction(self.actionZirconTiTemp)
-        self.menuCalc.addAction(self.actionRutileZrTemp)
 
-        self.menuStat.addAction(self.actionCluster)
-        self.menuStat.addAction(self.actionMultiDimension)
-        self.menuStat.addAction(self.actionGLMultiDimension)
+        self.menuDIY.addAction(self.actionXY)
+        self.menuDIY.addAction(self.actionXYZ)
 
-
-        self.menuMore.addAction(self.actionMudStone)
-        self.menuMore.addAction(self.actionQAPF)
-
-        self.menuMore.addAction(self.actionXY)
-        self.menuMore.addAction(self.actionXYZ)
-        self.menuMore.addAction(self.actionMagic)
+        self.menuTesting.addAction(self.actionCluster)
+        self.menuTesting.addAction(self.actionMultiDimension)
+        self.menuTesting.addAction(self.actionGLMultiDimension)
+        self.menuTesting.addAction(self.actionMagic)
 
         self.menuHelp.addAction(self.actionCnWeb)
         self.menuHelp.addAction(self.actionEnWeb)
@@ -339,14 +334,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menuStructure.menuAction())
         self.menubar.addSeparator()
 
-        self.menubar.addAction(self.menuCalc.menuAction())
+        self.menubar.addAction(self.menuDIY.menuAction())
         self.menubar.addSeparator()
 
-        self.menubar.addAction(self.menuStat.menuAction())
+
+        self.menubar.addAction(self.menuTesting.menuAction())
         self.menubar.addSeparator()
 
-        self.menubar.addAction(self.menuMore.menuAction())
-        self.menubar.addSeparator()
 
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menubar.addSeparator()
@@ -392,7 +386,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
         self.actionMagic.triggered.connect(self.Magic)
-        self.actionMudStone.triggered.connect(self.Mud)
 
         self.pushButtonOpen.clicked.connect(self.getDataFile)
         self.pushButtonSave.clicked.connect(self.saveDataFile)
@@ -429,11 +422,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuStructure.setTitle(_translate('MainWindow',u'Structure'))
 
-        self.menuCalc.setTitle(_translate('MainWindow',u'Calculation'))
 
-        self.menuStat.setTitle(_translate('MainWindow',u'Statistics'))
+        self.menuTesting.setTitle(_translate('MainWindow',u'Testing Functions'))
 
-        self.menuMore.setTitle(_translate('MainWindow',u'Others'))
+        self.menuDIY.setTitle(_translate('MainWindow',u'DIY Functions'))
 
         self.menuHelp.setTitle(_translate('MainWindow',u'Help'))
 
@@ -471,7 +463,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionMagic.setText(_translate('MainWindow',u'Magic'))
 
-        self.actionMudStone.setText(_translate('MainWindow',u'Sand-Silt-Mud'))
 
         self.actionVersionCheck.setText(_translate('MainWindow',u'Version'))
         self.actionCnWeb.setText(_translate('MainWindow',u'Chinese Forum'))
@@ -523,11 +514,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuStructure.setTitle(_translate('MainWindow', u'Structure'))
 
-        self.menuCalc.setTitle(_translate('MainWindow', u'Calculation'))
+        self.menuTesting.setTitle(_translate('MainWindow', u'Testing Functions'))
 
-        self.menuStat.setTitle(_translate('MainWindow', u'Statistics'))
-
-        self.menuMore.setTitle(_translate('MainWindow', u'Others'))
+        self.menuDIY.setTitle(_translate('MainWindow', u'DIY Functions'))
 
         self.menuHelp.setTitle(_translate('MainWindow', u'Help'))
         self.menuLanguage.setTitle(_translate('MainWindow', u'Language'))
@@ -561,8 +550,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
 
         self.actionMagic.setText(_translate('MainWindow', u'Magic'))
-
-        self.actionMudStone.setText(_translate('MainWindow', u'Sand-Silt-Mud'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionCnWeb.setText(_translate('MainWindow', u'Chinese Forum'))
@@ -997,13 +984,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-    def Mud(self):
-        self.mudpop = MudStone(df=self.model._df)
-        try:
-            self.mudpop.Tri()
-            self.mudpop.show()
-        except(KeyError):
-            self.ErrorEvent()
 
     def ZirconCe(self):
         # print('Opening a new popup window...')

@@ -10,6 +10,11 @@ class XY(AppForm):
 
     StandardsName = ['OIB', 'EMORB', 'C1', 'PM', 'NMORB']
 
+    reference = 'Reference: Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
+    sentence =''
+
+
+
     NameChosen = 'OIB'
     Standards = {
         'OIB': {'Cs': 0.387, 'Tl': 0.077, 'Rb': 31, 'Ba': 350, 'W': 0.56, 'Th': 4, 'U': 1.02, 'Nb': 48, 'Ta': 2.7,
@@ -117,9 +122,17 @@ class XY(AppForm):
         self.flag = 0
 
     def create_main_frame(self):
+
+
+
+        self.resize(800, 800)
+
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
+
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
@@ -135,6 +148,10 @@ class XY(AppForm):
         self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Reset)
 
+        self.stat_button = QPushButton('&Stat')
+        self.stat_button.clicked.connect(self.Stat)
+
+
         self.load_button = QPushButton('&Load')
         self.load_button.clicked.connect(self.Load)
 
@@ -142,13 +159,6 @@ class XY(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
 
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Magic)  # int
 
         self.fit_cb= QCheckBox('&PolyFit')
         self.fit_cb.setChecked(False)
@@ -180,13 +190,6 @@ class XY(AppForm):
 
 
 
-        self.fade_cb= QCheckBox('&Fade')
-        self.fade_cb.setChecked(False)
-        self.fade_cb.stateChanged.connect(self.Magic)  # int
-
-        self.fade_label = QLabel('Groups')
-        self.fade_seter = QLineEdit(self)
-        self.fade_seter.textChanged[str].connect(self.FadeChanged)
 
 
         self.shape_cb= QCheckBox('&Shape')
@@ -292,14 +295,18 @@ class XY(AppForm):
         self.hbox6 = QHBoxLayout()
         self.hbox7 = QHBoxLayout()
 
-        for w in [self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.fade_cb,self.fade_label,self.fade_seter,self.shape_cb,self.shape_label,self.shape_seter]:
+
+
+        for w in [self.save_button,self.stat_button, self.draw_button, self.load_button,
+                  self.legend_cb,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.save_button, self.draw_button, self.load_button,
-                  self.legend_cb, self.slider_label, self.slider,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
+
+        for w in [self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.shape_cb,self.shape_label,self.shape_seter]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
 
         for w in [self.logx_cb, self.x_element_label,self.x_seter, self.x_element]:
             self.hbox2.addWidget(w)
@@ -336,6 +343,12 @@ class XY(AppForm):
         self.vbox.addLayout(self.hbox5)
         self.vbox.addLayout(self.hbox6)
         self.vbox.addLayout(self.hbox7)
+
+
+        self.textbox = GrowingTextEdit(self)
+
+        self.vbox.addWidget(self.textbox)
+
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -594,17 +607,7 @@ class XY(AppForm):
 
         self.Magic()
 
-    def FadeChanged(self, text):
-        w = 'Fade' + text
-        self.fade_label.setText(w)
-        self.fade_label.adjustSize()
 
-        try:
-            self.FadeGroups = float(text)
-        except:
-            pass
-
-        self.Magic()
 
     def ShapeChanged(self, text):
         w = 'Shape' + text
@@ -776,6 +779,7 @@ class XY(AppForm):
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
 
+
             TmpLabel = ''
 
             #   self.WholeData.append(math.log(tmp, 10))
@@ -786,10 +790,12 @@ class XY(AppForm):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
 
+
             x, y = 0, 0
             xuse, yuse = 0, 0
 
             x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+
 
 
             try:
@@ -801,9 +807,7 @@ class XY(AppForm):
 
                 if (self.Normalize_cb.isChecked()):
 
-
-
-
+                    self.sentence = self.reference
 
                     if self.items[a] in self.Element:
                         self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
@@ -826,6 +830,9 @@ class XY(AppForm):
 
                     self.axes.set_ylabel(self.ylabel)
 
+                self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                  label=TmpLabel, edgecolors='black')
 
                 XtoFit.append(xuse)
                 YtoFit.append(yuse)
@@ -855,63 +862,11 @@ class XY(AppForm):
         Xline = p(Yline)
 
 
-        print(z)
-        self.reference=str(z)
 
-        self.textbox.setText('x=f(y) Polyfitting parameter：' + '\n' + self.reference)
+        self.textbox.setText('x=f(y) Polyfitting parameter：' + '\n' +str(z)+'\n\n'+ self.sentence)
 
 
 
-        alphatouse = []
-
-        for i in range(len(XtoFit)):
-            tmp = abs(p(YtoFit[i]) - XtoFit[i])
-            alphatouse.append(tmp)
-
-        alist = []
-
-        step = abs(min(alphatouse) - max(alphatouse)) / self.FadeGroups
-
-        if self.FadeGroups>4:
-            for i in alphatouse:
-                if min(alphatouse) <= i < min(alphatouse) + step:
-                    alist.append(0.8)
-                elif min(alphatouse) + step <= i < min(alphatouse) + 2 * step:
-                    alist.append(0.6)
-                elif min(alphatouse) + 2 * step <= i < min(alphatouse) + 3 * step:
-                    alist.append(0.4)
-                elif min(alphatouse) + 3 * step <= i < min(alphatouse) + 4 * step:
-                    alist.append(0.2)
-                else:
-                    alist.append(0.05)
-        else:
-            for i in alphatouse:
-                if min(alphatouse) <= i < min(alphatouse) + step:
-                    alist.append(0.8)
-                else:
-                    alist.append(0.2)
-
-        print("Plotted")
-
-        for i in range(len(XtoFit)):
-            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
-
-            if (self.fade_cb.isChecked()==False):
-                UsedAlpha=raw.at[i, 'Alpha']
-
-            elif (self.fade_cb.isChecked()==True):
-                UsedAlpha=alist[i]
-
-            self.axes.scatter(XtoFit[i], YtoFit[i], marker=raw.at[i, 'Marker'],
-                              s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=UsedAlpha,
-                              label=raw.at[i, 'Label'], edgecolors='black')
-
-        '''                
-        if (self.legend_cb.isChecked()):
-            lgloc = int(self.slider.value())
-            self.axes.legend(loc=lgloc, prop=fontprop)
-            #self.axes.legend(loc=lgloc, prop=fontprop)
-        '''
 
 
 
@@ -973,7 +928,11 @@ class XY(AppForm):
                 # self.DrawLine(self.polygon)
                 # self.DrawLine(self.polyline)
 
-        self.Intro = self.Stat()
+
+        if (self.legend_cb.isChecked()):
+            self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
+
+
         self.canvas.draw()
 
 
@@ -1019,6 +978,8 @@ class XY(AppForm):
 
         self.tablepop = TabelViewer(df=StatResultDf,title='X-Y Statistical Result')
         self.tablepop.show()
+
+        self.Intro = StatResultDf
         return(StatResultDf)
 
 

@@ -93,9 +93,15 @@ class MultiDimension(AppForm):
         self.flag = 0
 
     def create_main_frame(self):
+
+        self.resize(800, 800)
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+
+        self.fig.subplots_adjust(hspace=0.1, wspace=0.1,left=0.1, bottom=0.2, right=0.9, top=0.9)
+
+
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
@@ -108,17 +114,15 @@ class MultiDimension(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
+
+        self.result_button = QPushButton('&Result')
+        self.result_button.clicked.connect(self.Stat)
+
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
 
-        self.slider_label = QLabel('Location:')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 5)
-        self.slider.setValue(1)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Magic)  # int
+
 
         self.Normalize_cb = QCheckBox('&Normalize')
         self.Normalize_cb.setChecked(False)
@@ -193,13 +197,10 @@ class MultiDimension(AppForm):
 
 
 
-        for w in [self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
+        for w in [self.save_button,self.result_button, self.legend_cb,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.save_button, self.legend_cb, self.slider_label, self.slider]:
-            self.hbox1.addWidget(w)
-            self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
 
 
@@ -223,7 +224,6 @@ class MultiDimension(AppForm):
 
         self.vbox.addLayout(self.hbox)
         self.vbox.addLayout(self.hbox0)
-        self.vbox.addLayout(self.hbox1)
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
         self.vbox.addLayout(self.hbox4)
@@ -347,30 +347,29 @@ class MultiDimension(AppForm):
 
                 if (self.Normalize_cb.isChecked()):
 
-                    self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
-
-                    self.axes.set_xlabel(self.xlabel)
-                    self.x_element_label.setText(self.xlabel)
-
-                    self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
-
-                    self.axes.set_ylabel(self.ylabel)
-                    self.y_element_label.setText(self.ylabel)
-
-
-                    self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
-
-                    self.axes.set_zlabel(self.zlabel)
-                    self.z_element_label.setText(self.zlabel)
 
                     if self.items[a] in self.Element:
                         xuse = xuse / standardchosen[self.items[a]]
 
+                        self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+
+                        self.axes.set_xlabel(self.xlabel)
+                        self.x_element_label.setText(self.xlabel)
+
                     if self.items[b] in self.Element:
                         yuse = yuse / standardchosen[self.items[b]]
 
+                        self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+
+                        self.axes.set_ylabel(self.ylabel)
+                        self.y_element_label.setText(self.ylabel)
+
                     if self.items[c] in self.Element:
                         zuse = zuse / standardchosen[self.items[c]]
+                        self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
+
+                        self.axes.set_zlabel(self.zlabel)
+                        self.z_element_label.setText(self.zlabel)
 
 
                 if (self.logx_cb.isChecked()):
@@ -400,10 +399,9 @@ class MultiDimension(AppForm):
                 pass
 
         if (self.legend_cb.isChecked()):
-            a = int(self.slider.value())
-            self.axes.legend(loc=a,prop=fontprop)
+            self.axes.legend(loc=2,prop=fontprop)
 
-        self.Intro = self.Stat()
+
         self.canvas.draw()
 
 
@@ -450,4 +448,8 @@ class MultiDimension(AppForm):
 
         self.tablepop = TabelViewer(df=StatResultDf,title='MultiDimensional Statistical Result')
         self.tablepop.show()
+
+
+        self.Intro = StatResultDf
+
         return(StatResultDf)
