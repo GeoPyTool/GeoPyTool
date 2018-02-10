@@ -169,6 +169,17 @@ class XY(AppForm):
         self.fit_seter.textChanged[str].connect(self.FitChanged)
 
 
+
+        self.fit_slider_label = QLabel('y= f(x)')
+        self.fit_slider = QSlider(Qt.Vertical)
+        self.fit_slider.setRange(0, 1)
+        self.fit_slider.setValue(0)
+        self.fit_slider.setTracking(True)
+        self.fit_slider.setTickPosition(QSlider.TicksBothSides)
+        self.fit_slider.valueChanged.connect(self.Magic)  # int
+
+
+
         self.xlim_seter_left_label = QLabel('Xleft')
         self.xlim_seter_left = QLineEdit(self)
         self.xlim_seter_left.textChanged[str].connect(self.XleftChanged)
@@ -303,7 +314,7 @@ class XY(AppForm):
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.shape_cb,self.shape_label,self.shape_seter]:
+        for w in [self.fit_slider_label ,self.fit_slider,self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.shape_cb,self.shape_label,self.shape_seter]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -852,18 +863,36 @@ class XY(AppForm):
 
 
 
-        z = np.polyfit(YtoFit, XtoFit,self.FitLevel)
+
 
         #Yline = np.linspace(min(YtoFit), max(YtoFit), 30)
 
-        Yline = np.linspace(self.Ydown,self.Yup, 30)
-
-        p = np.poly1d(z)
-        Xline = p(Yline)
 
 
 
-        self.textbox.setText('x=f(y) Polyfitting parameter：' + '\n' +str(z)+'\n\n'+ self.sentence)
+        if(int(self.fit_slider.value())== 0):
+            Xline = np.linspace(self.Xleft, self.Xright, 30)
+            z = np.polyfit(XtoFit, YtoFit, self.FitLevel)
+            self.fit_slider_label.setText('y= f(x)')
+            p = np.poly1d(z)
+            Yline = p(Xline)
+            formular='y= f(x)'
+
+
+        elif(int(self.fit_slider.value())== 1):
+            Yline = np.linspace(self.Ydown, self.Yup, 30)
+            z = np.polyfit(YtoFit, XtoFit, self.FitLevel)
+            self.fit_slider_label.setText('x= f(y)')
+            p = np.poly1d(z)
+            Xline = p(Yline)
+            formular='x= f(y)'
+
+
+
+
+
+
+        self.textbox.setText(formular+' Polyfitting parameter：' + '\n' +str(z)+'\n\n'+ self.sentence)
 
 
 
