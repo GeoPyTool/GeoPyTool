@@ -9,6 +9,8 @@ class Pearce(AppForm):
 
     description = '\n syn-COLG: syn-collision granites\t VAG: volcanic arc granites\n WPG: within plate granites\t ORG: ocean ridge granites  \n '
 
+    itemstocheck = [u'Y', u'Yb', u'Nb', u'Rb', u'Ta']
+
 
 
     text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
@@ -75,7 +77,7 @@ class Pearce(AppForm):
         self.resize(900, 900)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig ,self.axes= plt.subplots(2, 2,figsize=(12.0, 12.0),dpi=self.dpi)
+        self.fig ,self.axes= plt.subplots(2, 2,figsize=(16.0, 16.0),dpi=self.dpi)
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5,left=0.1, bottom=0.2, right=0.8, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -396,3 +398,8 @@ class Pearce(AppForm):
 
 
         self.canvas.draw()
+
+
+        self.OutPutTitle='Pearce'
+
+        self.OutPutFig=self.fig

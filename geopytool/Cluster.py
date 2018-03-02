@@ -45,6 +45,8 @@ class Cluster(AppForm):
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 128
+        self.setWindowTitle('Cluster Figure')
+
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
         # self.canvas = FigureCanvas(self.fig)
         # self.canvas.setParent(self.main_frame)

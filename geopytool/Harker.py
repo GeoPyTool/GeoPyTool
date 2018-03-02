@@ -70,6 +70,8 @@ class Harker(AppForm):
                 'Width',
                 'Tag']
 
+    itemstocheck = ['Al2O3', 'MgO', 'FeO', 'Fe2O3','CaO', 'Na2O', 'K2O', 'TiO2', 'P2O5', 'SiO2']
+
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Harker diagram')
@@ -93,16 +95,27 @@ class Harker(AppForm):
         self.create_main_frame()
         self.create_status_bar()
 
+
+    def Check(self):
+
+        row = self._df.index.tolist()
+        col = self._df.columns.tolist()
+        itemstocheck = self.itemstocheck
+        checklist = list((set(itemstocheck).union(set(col))) ^ (set(itemstocheck) ^ set(col)))
+        if len(checklist) >= (len(itemstocheck)-1) and ('FeO' in checklist or 'Fe2O3' in checklist):
+            self.OutPutCheck = True
+        else:
+            self.OutPutCheck = False
+        return(self.OutPutCheck)
+
     def create_main_frame(self):
-        self.resize(800, 800)
+        self.resize(600, 900)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
+        self.fig ,self.axes= plt.subplots(4, 2,figsize=(12.0, 24.0),dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.2, wspace=0.2,left=0.05, bottom=0.1, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
-        # self.axes.hold(False)
 
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
@@ -112,66 +125,39 @@ class Harker(AppForm):
         self.save_button.clicked.connect(self.saveImgFile)
 
 
+        #self.result_button = QPushButton('&Result')
+        #self.result_button.clicked.connect(self.Harker)
+
+
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Harker)  # int
 
-        self.x_element = QSlider(Qt.Horizontal)
-        self.x_element.setRange(0, len(self.items) - 1)
-        self.x_element.setValue(0)
-        self.x_element.setTracking(True)
-        self.x_element.setTickPosition(QSlider.TicksBothSides)
-        self.x_element.valueChanged.connect(self.Harker)  # int
 
-        self.x_element_label = QLabel('X')
-
-        self.logx_cb = QCheckBox('&Log')
-        self.logx_cb.setChecked(False)
-        self.logx_cb.stateChanged.connect(self.Harker)  # int
-
-        self.y_element = QSlider(Qt.Horizontal)
-        self.y_element.setRange(0, len(self.items) - 1)
-        self.y_element.setValue(0)
-        self.y_element.setTracking(True)
-        self.y_element.setTickPosition(QSlider.TicksBothSides)
-        self.y_element.valueChanged.connect(self.Harker)  # int
-
-        self.y_element_label = QLabel('Y')
-
-        self.logy_cb = QCheckBox('&Log')
-        self.logy_cb.setChecked(False)
-        self.logy_cb.stateChanged.connect(self.Harker)  # int
 
         #
         # Layout with box sizers
-
         #
-        self.hbox1 = QHBoxLayout()
-        self.hbox2 = QHBoxLayout()
-        self.hbox3 = QHBoxLayout()
+        self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,
-                  self.legend_cb]:
-            self.hbox1.addWidget(w)
-            self.hbox1.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.logx_cb, self.x_element_label, self.x_element]:
-            self.hbox2.addWidget(w)
-            self.hbox2.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.logy_cb, self.y_element_label, self.y_element]:
-            self.hbox3.addWidget(w)
-            self.hbox3.setAlignment(w, Qt.AlignVCenter)
+        for w in [self.save_button, self.legend_cb]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox1)
-        self.vbox.addLayout(self.hbox2)
-        self.vbox.addLayout(self.hbox3)
+        self.vbox.addLayout(self.hbox)
+
+
+        self.textbox = GrowingTextEdit(self)
+        self.textbox.setText(self.reference+self.description)
+
+        self.vbox.addWidget(self.textbox)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
+
 
     def Harker(self):
 
@@ -179,17 +165,68 @@ class Harker(AppForm):
 
         raw = self._df
 
-        a = int(self.x_element.value())
+        itemstoshow = [r'$Al_2O_3$', r'$MgO$', r'$Fe_{Total}$', r'$CaO$', r'$Na_2O$', r'$K_2O$', r'$TiO_2$', r'$P_2O_5$', r'$SiO_2$', ]
 
-        b = int(self.y_element.value())
+        self.axes[0, 0].clear()
+        self.axes[0, 0].set_xlim(45, 75)
+        self.axes[0, 0].set_ylabel(itemstoshow[0])
+        self.axes[0,0].set_xticks([45,50,55,60,65,70,75])
+        self.axes[0, 0].set_xticklabels('')
 
-        self.axes.clear()
+        self.axes[0, 1].clear()
+        self.axes[0, 1].set_xlim(45, 75)
+        self.axes[0, 1].set_ylabel(itemstoshow[1])
+        self.axes[0,1].set_xticks([45,50,55,60,65,70,75])
+        self.axes[0, 1].set_xticklabels('')
 
-        self.axes.set_xlabel(self.items[a])
-        self.x_element_label.setText(self.items[a])
+        self.axes[1,0].clear()
+        self.axes[1,0].set_xlim(45, 75)
+        self.axes[1,0].set_ylabel(itemstoshow[2])
+        self.axes[1,0].set_xticks([45,50,55,60,65,70,75])
+        self.axes[1, 0].set_xticklabels('')
 
-        self.axes.set_ylabel(self.items[b])
-        self.y_element_label.setText(self.items[b])
+
+        self.axes[1,1].clear()
+        self.axes[1,1].set_xlim(45, 75)
+        self.axes[1,1].set_ylabel(itemstoshow[3])
+        self.axes[1,1].set_xticks([45,50,55,60,65,70,75])
+        self.axes[1, 1].set_xticklabels('')
+
+        self.axes[2,0].clear()
+        self.axes[2,0].set_xlim(45, 75)
+        self.axes[2,0].set_ylabel(itemstoshow[4])
+        self.axes[2,0].set_xticks([45,50,55,60,65,70,75])
+        self.axes[2, 0].set_xticklabels('')
+
+        self.axes[2,1].clear()
+        self.axes[2,1].set_xlim(45, 75)
+        self.axes[2,1].set_ylabel(itemstoshow[5])
+        self.axes[2,1].set_xticks([45,50,55,60,65,70,75])
+        self.axes[2, 1].set_xticklabels('')
+
+        self.axes[3,0].clear()
+        self.axes[3,0].set_xlim(45, 75)
+        self.axes[3,0].set_ylabel(itemstoshow[6])
+        self.axes[3, 0].set_xticks([45,50,55,60,65,70,75])
+
+        self.axes[3, 0].set_xticklabels([45,50,55,60,65,70,75])
+
+        self.axes[3,0].set_xlabel(itemstoshow[8])
+
+
+
+        self.axes[3,1].clear()
+        self.axes[3,1].set_xlim(45, 75)
+        self.axes[3,1].set_ylabel(itemstoshow[7])
+        self.axes[3, 1].set_xticks([45,50,55,60,65,70,75])
+
+        self.axes[3, 1].set_xticklabels([45,50,55,60,65,70,75])
+
+        self.axes[3,1].set_xlabel(itemstoshow[8])
+
+
+
+
 
         PointLabels = []
 
@@ -206,34 +243,70 @@ class Harker(AppForm):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
 
-            x, y = 0, 0
-            xuse, yuse = 0, 0
 
-            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+            Al2O3, MgO, FeO, Fe2O3, CaO, Na2O, K2O, TiO2, P2O5, SiO2 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-            try:
-                xuse = x
-                yuse = y
+            Al2O3, MgO,CaO, Na2O, K2O, TiO2, P2O5, SiO2 = raw.at[i,'Al2O3'],raw.at[i, 'MgO'],raw.at[i,'CaO'],raw.at[i, 'Na2O'],raw.at[i, 'K2O'],raw.at[i, 'TiO2'],raw.at[i, 'P2O5'],raw.at[i, 'SiO2']
 
-                if (self.logx_cb.isChecked()):
-                    xuse = math.log(x, 10)
+            if ('FeO' in raw.columns.tolist()):
+                FeO=raw.at[i, 'FeO']
 
-                    self.axes.set_xlabel('$log10$ ' + self.items[a])
+            if ('Fe2O3' in raw.columns.tolist()):
+                Fe2O3=raw.at[i, 'Fe2O3']
 
-                if (self.logy_cb.isChecked()):
-                    yuse = math.log(y, 10)
+            FeTotal= FeO+Fe2O3
 
-                    self.axes.set_ylabel('$log10$ ' + self.items[b])
 
-                self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                  label=TmpLabel, edgecolors='black')
-            except(ValueError):
-                pass
+
+            self.axes[0, 0].scatter(SiO2, Al2O3, marker=raw.at[i, 'Marker'],
+                                    s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                    label=TmpLabel, edgecolors='black')
+
+            self.axes[0, 1].scatter(SiO2, MgO, marker=raw.at[i, 'Marker'],
+                                    s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                    label=TmpLabel, edgecolors='black')
+
+            self.axes[1, 0].scatter(SiO2, FeTotal, marker=raw.at[i, 'Marker'],
+                                    s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                    label=TmpLabel, edgecolors='black')
+
+            self.axes[1, 1].scatter(SiO2, CaO, marker=raw.at[i, 'Marker'],
+                                    s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                    label=TmpLabel, edgecolors='black')
+
+            self.axes[2, 0].scatter(SiO2, Na2O, marker=raw.at[i, 'Marker'],
+                                    s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                    label=TmpLabel, edgecolors='black')
+
+            self.axes[2, 1].scatter(SiO2, TiO2, marker=raw.at[i, 'Marker'],
+                                    s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                    label=TmpLabel, edgecolors='black')
+
+            self.axes[3, 0].scatter(SiO2, K2O, marker=raw.at[i, 'Marker'],
+                                    s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                    label=TmpLabel, edgecolors='black')
+
+            self.axes[3, 1].scatter(SiO2, P2O5, marker=raw.at[i, 'Marker'],
+                                    s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                    label=TmpLabel, edgecolors='black')
+
+
+
+
 
 
         if (self.legend_cb.isChecked()):
-            self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
+            self.axes[0, 1].legend(bbox_to_anchor=(1.05, 1),loc=2, borderaxespad=0, prop=fontprop)
+
+
+
+
+
+
 
         self.canvas.draw()
 
+
+        self.OutPutTitle='Harker'
+
+        self.OutPutFig=self.fig

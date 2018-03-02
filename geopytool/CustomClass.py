@@ -1,6 +1,6 @@
-version = '0.7.57'
+version = '0.7.58'
 
-date = '2018-2-10'
+date = '2018-3-1'
 
 dpi = 128
 #coding:utf-8
@@ -627,7 +627,7 @@ class AppForm(QMainWindow):
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
     reference = 'Print the reference here.'
-    WholeResult=pd.DataFrame()
+
     LabelList=[]
     ItemNames = ['Foidolite',
                  'Peridotgabbro',
@@ -674,6 +674,13 @@ class AppForm(QMainWindow):
     SelectDic = {}
 
 
+    WholeResult = {}
+    OutPutCheck= True
+    OutPutTitle = 'Blank Title'
+    OutPutData = pd.DataFrame()
+    OutPutFig = Figure((8.0, 8.0))
+    itemstocheck = ['SiO2', 'K2O', 'Na2O']
+
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
@@ -693,6 +700,18 @@ class AppForm(QMainWindow):
 
         self.create_main_frame()
         self.create_status_bar()
+
+    def Check(self):
+
+        row = self._df.index.tolist()
+        col = self._df.columns.tolist()
+        itemstocheck = self.itemstocheck
+        checklist = list((set(itemstocheck).union(set(col))) ^ (set(itemstocheck) ^ set(col)))
+        if len(checklist) == len(itemstocheck):
+            self.OutPutCheck = True
+        else:
+            self.OutPutCheck = False
+        return(self.OutPutCheck)
 
     def DrawLine(self, l=[(41, 0), (41, 3), (45, 3)], color='grey', linewidth=0.5, linestyle='-', linelabel='',
                  alpha=0.5):
@@ -850,6 +869,7 @@ class AppForm(QMainWindow):
         return action
 
     def GetResult(self):
+        self.WholeResult={'Check':True,'Title':self.OutPutTitle,'Data':self.OutPutData,'Fig':self.OutPutFig}
         return(self.WholeResult)
 
     def DropUseless(self,df= pd.DataFrame(),droplist = ['Q (Mole)', 'A (Mole)', 'P (Mole)', 'F (Mole)',
@@ -859,6 +879,7 @@ class AppForm(QMainWindow):
             if t in df.columns.values:
                 df = df.drop(t, 1)
         return(df)
+
 
 
 class PlotModel(FigureCanvas):

@@ -18,6 +18,7 @@ from matplotlib import path
 import matplotlib.patches as patches
 import matplotlib.image as mpimg
 import matplotlib.font_manager as font_manager
+import matplotlib.backends.backend_pdf
 import math
 import csv
 from xml.dom import minidom

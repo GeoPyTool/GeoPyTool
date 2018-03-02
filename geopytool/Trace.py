@@ -9,6 +9,12 @@ class Trace(AppForm):
                    u'Li',
                    u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
 
+
+    itemstocheck = ['Cs', 'Tl', 'Rb', 'Ba', 'W', 'Th', '', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Pb', 'Pr', 'Mo',
+                   'Sr', 'P', 'Nd', 'F', 'Sm', 'Zr', 'Hf', 'E', 'Sn', 'Sb', 'Ti', 'Gd', 'Tb', 'Dy',
+                   'Li',
+                   'Y', 'Ho', 'Er', 'Tm', 'Yb', 'L']
+
     StandardsName = ['OIB', 'EMORB', 'C1', 'PM', 'NMORB']
     reference = 'Reference: Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
 
@@ -62,10 +68,25 @@ class Trace(AppForm):
         self.create_main_frame()
         self.create_status_bar()
 
+
+    def Check(self):
+
+        row = self._df.index.tolist()
+        col = self._df.columns.tolist()
+        itemstocheck = self.itemstocheck
+        checklist = list((set(itemstocheck).union(set(col))) ^ (set(itemstocheck) ^ set(col)))
+        if len(checklist) > 1 :
+            self.OutPutCheck = True
+        else:
+            self.OutPutCheck = False
+        return(self.OutPutCheck)
+
+
+
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((12.0, 12.0), dpi=self.dpi)
+        self.fig = Figure((18.0, 12.0), dpi=self.dpi)
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.8, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -272,3 +293,8 @@ class Trace(AppForm):
 
 
         self.canvas.draw()
+
+
+        self.OutPutTitle='Trace'
+
+        self.OutPutFig=self.fig

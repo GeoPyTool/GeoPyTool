@@ -7,6 +7,10 @@ class REE(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     xticklabels = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
 
+    itemstocheck = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
+
+
+
     LREE = ['La', 'Ce', 'Pr', 'Nd']
     MREE = ['Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho']
     HREE = [ 'Er', 'Tm', 'Yb', 'Lu']
@@ -61,11 +65,23 @@ class REE(AppForm):
         self.create_main_frame()
         self.create_status_bar()
 
+    def Check(self):
+
+        row = self._df.index.tolist()
+        col = self._df.columns.tolist()
+        itemstocheck = self.itemstocheck
+        checklist = list((set(itemstocheck).union(set(col))) ^ (set(itemstocheck) ^ set(col)))
+        if len(checklist) > 1 :
+            self.OutPutCheck = True
+        else:
+            self.OutPutCheck = False
+        return(self.OutPutCheck)
+
     def create_main_frame(self):
         self.resize(800, 600)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((12.0, 12.0), dpi=self.dpi)
+        self.fig = Figure((18.0, 12.0), dpi=self.dpi)
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -259,7 +275,12 @@ class REE(AppForm):
 
         self.canvas.draw()
 
-        self.Intro = pd.DataFrame(
+
+
+
+        self.OutPutTitle='REE'
+
+        self.OutPutData = pd.DataFrame(
             {'Label': self.LabelList,
              'algebraDeltaEu': self.algebraDeltaEuList,
              'geometricDeltaEu': self.geometricDeltaEuList,
@@ -269,10 +290,11 @@ class REE(AppForm):
              'ALLREE': self.ALLREEList
              })
 
-        self.WholeResult = self.Intro
+        self.OutPutFig=self.fig
+
 
 
     def Explain(self):
 
-        self.tablepop = TabelViewer(df=self.Intro,title='REE Result')
+        self.tablepop = TabelViewer(df=self.OutPutData,title='REE Result')
         self.tablepop.show()

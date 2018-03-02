@@ -10,7 +10,7 @@ class TAS(AppForm):
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
 
-
+    itemstocheck = ['SiO2', 'K2O', 'Na2O']
     reference = 'Reference: Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
 
     ItemNames = ['Foidolite',
@@ -63,7 +63,7 @@ class TAS(AppForm):
         self.resize(800, 600)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig = Figure((18.0, 12.0), dpi=self.dpi)
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -117,6 +117,7 @@ class TAS(AppForm):
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
+
 
     def TAS(self, Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
             Top=19, Y0=1, Y1=19, Y_Gap=19, FontSize=12, xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', width=12,
@@ -262,12 +263,16 @@ class TAS(AppForm):
 
 
 
-        self.Intro = pd.DataFrame(
+
+
+        self.OutPutTitle='TAS'
+
+        self.OutPutData = pd.DataFrame(
             {'Label': self.LabelList,
              'RockType': self.TypeList
              })
-        self.WholeResult = self.Intro
 
+        self.OutPutFig=self.fig
 
 
 
@@ -275,7 +280,7 @@ class TAS(AppForm):
 
     def Explain(self):
 
-        #self.Intro = self.Intro.set_index('Label')
+        #self.OutPutData = self.OutPutData.set_index('Label')
 
-        self.tablepop = TabelViewer(df=self.Intro,title='TAS Result')
+        self.tablepop = TabelViewer(df=self.OutPutData,title='TAS Result')
         self.tablepop.show()

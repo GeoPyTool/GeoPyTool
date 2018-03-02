@@ -30,6 +30,7 @@ _translate = QtCore.QCoreApplication.translate
 from geopytool.TabelViewer import TabelViewer
 from geopytool.CIPW import CIPW
 from geopytool.Cluster import Cluster
+from geopytool.Bivariate import Bivariate
 from geopytool.Harker import Harker
 from geopytool.Magic import Magic
 from geopytool.MultiDimension import MultiDimension
@@ -78,7 +79,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     targetversion = '0'
 
+
+    DataLocation =''
+
     ChemResult=pd.DataFrame()
+
+    TotalResult=[]
+
+
 
     def __init__(self):
 
@@ -231,6 +239,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPearce = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'Pearce',self)
         self.actionPearce.setObjectName('actionPearce')
 
+        self.actionBivariate = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'Bivariate',self)
+        self.actionBivariate.setObjectName('actionBivariate')
+
         self.actionHarker = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'Harker',self)
         self.actionHarker.setObjectName('actionHarker')
 
@@ -261,6 +272,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCluster = QtWidgets.QAction(QIcon(LocationOfMySelf+'/cluster.png'),u'Cluster',self)
         self.actionCluster.setObjectName('actionCluster')
 
+        self.actionAuto = QtWidgets.QAction(QIcon(LocationOfMySelf+'/auto.png'),u'Auto',self)
+        self.actionAuto.setObjectName('actionAuto')
+
         self.actionMultiDimension = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'MultiDimension',self)
         self.actionMultiDimension.setObjectName('actionMultiDimension')
 
@@ -289,6 +303,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionRee)
         self.menuGeoChem.addAction(self.actionPearce)
         self.menuGeoChem.addAction(self.actionHarker)
+        self.menuGeoChem.addAction(self.actionBivariate)
         self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionCIPW)
         self.menuGeoChem.addAction(self.actionZirconCe)
@@ -308,6 +323,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuDIY.addAction(self.actionXYZ)
 
         self.menuTesting.addAction(self.actionCluster)
+        self.menuTesting.addAction(self.actionAuto)
         self.menuTesting.addAction(self.actionMultiDimension)
         self.menuTesting.addAction(self.actionGLMultiDimension)
         self.menuTesting.addAction(self.actionMagic)
@@ -353,6 +369,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTrace.triggered.connect(self.Trace)
         self.actionRee.triggered.connect(self.REE)
         self.actionPearce.triggered.connect(self.Pearce)
+        self.actionBivariate.triggered.connect(self.Bivariate)
         self.actionHarker.triggered.connect(self.Harker)
         self.actionQAPF.triggered.connect(self.QAPF)
 
@@ -366,6 +383,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconTiTemp.triggered.connect(self.ZirconTiTemp)
         self.actionRutileZrTemp.triggered.connect(self.RutileZrTemp)
         self.actionCluster.triggered.connect(self.Cluster)
+        self.actionAuto.triggered.connect(self.Auto)
+
+
         self.actionMultiDimension.triggered.connect(self.MultiDimension)
         self.actionGLMultiDimension.triggered.connect(self.GLMultiDimension)
 
@@ -440,6 +460,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTrace.setText(_translate('MainWindow',u'Trace'))
         self.actionRee.setText(_translate('MainWindow',u'REE'))
         self.actionPearce.setText(_translate('MainWindow',u'Pearce'))
+        self.actionBivariate.setText(_translate('MainWindow',u'Bivariate'))
         self.actionHarker.setText(_translate('MainWindow',u'Harker'))
 
         self.actionQAPF.setText(_translate('MainWindow',u'QAPF'))
@@ -455,6 +476,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconTiTemp.setText(_translate('MainWindow',u'ZirconTiTemp'))
         self.actionRutileZrTemp.setText(_translate('MainWindow',u'RutileZrTemp'))
         self.actionCluster.setText(_translate('MainWindow',u'Cluster'))
+        self.actionAuto.setText(_translate('MainWindow', u'Auto'))
         self.actionMultiDimension.setText(_translate('MainWindow',u'MultiDimension'))
         self.actionGLMultiDimension.setText(_translate('MainWindow',u'GLMultiDimension'))
 
@@ -528,7 +550,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTrace.setText(_translate('MainWindow', u'Trace'))
         self.actionRee.setText(_translate('MainWindow', u'REE'))
         self.actionPearce.setText(_translate('MainWindow', u'Pearce'))
-        self.actionHarker.setText(_translate('MainWindow', u'Harker'))
+        self.actionBivariate.setText(_translate('MainWindow', u'Bivariate'))
+        self.actionHarker.setText(_translate('MainWindow',u'Harker'))
 
         self.actionQAPF.setText(_translate('MainWindow', u'QAPF'))
 
@@ -543,6 +566,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconTiTemp.setText(_translate('MainWindow', u'ZirconTiTemp'))
         self.actionRutileZrTemp.setText(_translate('MainWindow', u'RutileZrTemp'))
         self.actionCluster.setText(_translate('MainWindow', u'Cluster'))
+        self.actionAuto.setText(_translate('MainWindow', u'Auto'))
         self.actionMultiDimension.setText(_translate('MainWindow',u'MultiDimension'))
         self.actionGLMultiDimension.setText(_translate('MainWindow',u'GLMultiDimension'))
 
@@ -824,6 +848,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         # #print(DataFileInput,filetype)
 
+        self.DataLocation = DataFileInput
+
+        print(self.DataLocation )
+
+
         if ('csv' in DataFileInput):
             self.raw = pd.read_csv(DataFileInput)
         elif ('xls' in DataFileInput):
@@ -902,7 +931,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
 
-        self.ChemResult = pd.concat([self.taspop.Intro, self.ChemResult], axis=1)
+        self.ChemResult = pd.concat([self.taspop.OutPutData, self.ChemResult], axis=1)
         self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
 
 
@@ -936,6 +965,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
+    def Bivariate(self):
+        self.bivariatepop = Bivariate(df=self.model._df)
+        try:
+            self.bivariatepop.Bivariate()
+            self.bivariatepop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
+
     def Harker(self):
         self.harkerpop = Harker(df=self.model._df)
         try:
@@ -943,6 +981,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.harkerpop.show()
         except(KeyError):
             self.ErrorEvent()
+
 
     def Stereo(self):
         self.stereopop = Stereo(df=self.model._df)
@@ -1041,31 +1080,63 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def Auto(self):
 
-        TasDone= True
-        self.taspop = TAS(df=self.model._df)
-        try:
-            self.taspop.TAS()
-        except(KeyError):
-            TasDone = False
-            pass
+        pdf = matplotlib.backends.backend_pdf.PdfPages(self.DataLocation+'output.pdf')
 
-        if TasDone==True:
-            self.ChemResult = pd.concat([self.taspop.Intro, self.ChemResult], axis=1)
 
-        ReeDone = True
-        self.reepop = REE(df=self.model._df)
-        try:
-            self.reepop.REE()
-        except(KeyError):
-            ReeDone = False
-            pass
 
-        if ReeDone == True:
-            self.ChemResult=pd.concat([self.reepop.Intro, self.ChemResult], axis=1)
+
+        self.tassilent = TAS(df = self.model._df)
+
+        if (self.tassilent.Check()==True):
+            self.tassilent.TAS()
+            self.tassilent.GetResult()
+            self.TotalResult.append(self.tassilent.OutPutFig)
+
+            pdf.savefig(self.tassilent.OutPutFig)
+
+            self.ChemResult = pd.concat([self.tassilent.OutPutData, self.ChemResult], axis=1)
+
+
+
+        self.reesilent = REE(df=self.model._df)
+
+        if (self.reesilent.Check()==True):
+            self.reesilent.REE()
+            self.reesilent.GetResult()
+            self.TotalResult.append(self.reesilent.OutPutFig)
+
+            pdf.savefig(self.reesilent.OutPutFig)
+
+            self.ChemResult = pd.concat([self.reesilent.OutPutData, self.ChemResult], axis=1)
+
+
+        self.tracesilent = Trace(df=self.model._df)
+
+        if (self.tracesilent.Check()==True):
+
+            self.tracesilent.Trace()
+            self.tracesilent.GetResult()
+            self.TotalResult.append(self.tracesilent.OutPutFig)
+
+            pdf.savefig(self.tracesilent.OutPutFig)
+
+        self.pearcesilent = Pearce(df=self.model._df)
+
+        if (self.pearcesilent.Check()==True):
+
+            self.pearcesilent.Pearce()
+            self.pearcesilent.GetResult()
+            self.TotalResult.append(self.pearcesilent.OutPutFig)
+
+            pdf.savefig(self.pearcesilent.OutPutFig)
+
 
         self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
 
         print(self.ChemResult)
+
+        pdf.close()
+
 
 def main():
     import sys
