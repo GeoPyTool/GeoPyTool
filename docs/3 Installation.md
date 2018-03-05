@@ -142,7 +142,8 @@ pip install conda
 ```
 Then we use conda to install some other packages:
 ```Bash
-python3 -m conda install cython numpy pandas scipy scikit-learn sympy
+python3 -m conda install cython numpy pandas xlrd matplotlib BeautifulSoup4 scipy scikit-learn sympy requests pyopengl
+pip3 install pyqt5  pyqtgraph
 ```
 
 After the installation of those packages above, you can use this similar command also in the **terminal** to install the GeoPyTool.
