@@ -42,6 +42,16 @@ class REE(AppForm):
     LabelList=[]
     algebraDeltaEuList = []
     geometricDeltaEuList = []
+
+
+
+    LaPrDeltaCeList = []
+    LaNdDeltaCeList = []
+
+    LaYbList=[]
+    LaSmList=[]
+    GdYbList=[]
+
     LREEList=[]
     MREEList=[]
     HREEList=[]
@@ -177,8 +187,30 @@ class REE(AppForm):
             TmpSm = raw.at[i, 'Sm'] / standardchosen['Sm']
             TmpGd = raw.at[i, 'Gd'] / standardchosen['Gd']
 
+
+            TmpCe = raw.at[i, 'Ce'] / standardchosen['Ce']
+            TmpLa = raw.at[i, 'La'] / standardchosen['La']
+            TmpPr = raw.at[i, 'Pr'] / standardchosen['Pr']
+            TmpNd = raw.at[i, 'Nd'] / standardchosen['Nd']
+
+            TmpYb = raw.at[i, 'Yb'] / standardchosen['Yb']
+
+
+
+
             algebraEu = 2*TmpEu/(TmpSm+TmpGd)
             geometricEu = TmpEu/np.power((TmpSm*TmpGd),0.5)
+
+            firstCe=2*TmpCe/(TmpLa+TmpPr)
+            secondCe=3*TmpCe/(2*TmpLa+TmpNd)
+
+
+
+            LaYb=TmpLa/TmpYb
+
+            LaSm=TmpLa/TmpSm
+
+            GdYb=TmpGd/TmpYb
 
 
             tmpLREEResult = 0
@@ -202,6 +234,15 @@ class REE(AppForm):
             self.LabelList.append(raw.at[i, 'Label'])
             self.algebraDeltaEuList.append( algebraEu )
             self.geometricDeltaEuList.append( geometricEu )
+
+
+            self.LaPrDeltaCeList.append(firstCe)
+            self.LaNdDeltaCeList.append(secondCe)
+
+            self.LaSmList.append(LaSm)
+            self.LaYbList.append(LaYb)
+            self.GdYbList.append(GdYb)
+
             self.LREEList.append( tmpLREEResult )
             self.MREEList.append( tmpMREEResult )
             self.HREEList.append( tmpHREEResult )
@@ -282,13 +323,28 @@ class REE(AppForm):
 
         self.OutPutData = pd.DataFrame(
             {'Label': self.LabelList,
-             'algebraDeltaEu': self.algebraDeltaEuList,
-             'geometricDeltaEu': self.geometricDeltaEuList,
+             'Eu/Eu*(algebra)': self.algebraDeltaEuList,
+             'Eu/Eu*(square)': self.geometricDeltaEuList,
+
+             'Ce/Ce*(LaPr)': self.LaPrDeltaCeList,
+             'Ce/Ce*(LaNd)': self.LaNdDeltaCeList,
+
+             '(La/Sm)N':self.LaSmList,
+             '(La/Yb)N':self.LaYbList,
+             '(Gd/Yb)N':self.GdYbList,
+
              'LREE': self.LREEList,
              'MREE': self.MREEList,
              'HREE': self.HREEList,
              'ALLREE': self.ALLREEList
              })
+
+
+
+        '''
+        self.LaPrDeltaCeList.append(firstCe)
+        self.LaNdDeltaCeList.append(secondCe)
+        '''
 
         self.OutPutFig=self.fig
 

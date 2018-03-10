@@ -1413,7 +1413,9 @@ class CIPW(AppForm):
         self.model = PandasModel(self.WholeResult)
         self.tableView.setModel(self.model)
 
-        self.Intro = self.WholeResult
+
+
+        self.OutPutData = self.WholeResult
 
 
     def DropUseless(self,df= pd.DataFrame(),droplist = ['Q (Mole)', 'A (Mole)', 'P (Mole)', 'F (Mole)',

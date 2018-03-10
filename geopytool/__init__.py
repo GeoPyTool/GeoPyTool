@@ -888,7 +888,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-        self.ChemResult = pd.concat([self.cipwpop.Intro, self.ChemResult], axis=1)
+        self.ChemResult = pd.concat([self.cipwpop.OutPutData, self.ChemResult], axis=1)
 
         self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
 
@@ -943,7 +943,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-        self.ChemResult=pd.concat([self.reepop.Intro, self.ChemResult], axis=1)
+        self.ChemResult=pd.concat([self.reepop.OutPutData, self.ChemResult], axis=1)
         self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
 
 
@@ -1080,7 +1080,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def Auto(self):
 
-        pdf = matplotlib.backends.backend_pdf.PdfPages(self.DataLocation+'output.pdf')
+
+        FileOutput, ok1 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'PDF Files (*.pdf)')  # 数据文件保存输出
+
+        if (FileOutput != ''):
+            pdf = matplotlib.backends.backend_pdf.PdfPages(FileOutput)
+
+        else:
+            pdf = matplotlib.backends.backend_pdf.PdfPages(self.DataLocation+'output.pdf')
+            
+
+
 
 
 
@@ -1120,6 +1133,24 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             pdf.savefig(self.tracesilent.OutPutFig)
 
+
+
+
+
+        self.harkersilent = Harker(df=self.model._df)
+
+        if (self.harkersilent.Check()==True):
+
+            self.harkersilent.Harker()
+            self.harkersilent.GetResult()
+            self.TotalResult.append(self.harkersilent.OutPutFig)
+
+            pdf.savefig(self.harkersilent.OutPutFig)
+
+
+
+
+
         self.pearcesilent = Pearce(df=self.model._df)
 
         if (self.pearcesilent.Check()==True):
@@ -1136,6 +1167,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print(self.ChemResult)
 
         pdf.close()
+
+
+
+
+        if (FileOutput != ''):
+            self.ChemResult.to_csv(FileOutput+'.csv', sep=',', encoding='utf-8')
+        else:
+            self.ChemResult.to_csv((self.DataLocation + 'output.csv'), sep=',', encoding='utf-8')
+
 
 
 def main():
