@@ -50,7 +50,6 @@ class XY(AppForm):
 
     description = 'X-Y diagram'
     unuseful = ['Name',
-                'Mineral',
                 'Author',
                 'DataType',
                 'Label',
@@ -608,7 +607,7 @@ class XY(AppForm):
         self.Magic()
 
     def FitChanged(self, text):
-        w = 'Fit Exp is' + text
+        w = 'Fit' + text
         self.fit_label.setText(w)
         self.fit_label.adjustSize()
 

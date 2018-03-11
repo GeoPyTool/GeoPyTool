@@ -33,7 +33,6 @@ from geopytool.Cluster import Cluster
 from geopytool.Bivariate import Bivariate
 from geopytool.Harker import Harker
 from geopytool.Magic import Magic
-from geopytool.RbSrIsoTope import RbSrIsoTope
 from geopytool.MultiDimension import MultiDimension
 from geopytool.GLMultiDimension import GLMultiDimension
 from geopytool.Pearce import Pearce
@@ -296,9 +295,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Magic',self)
         self.actionMagic.setObjectName('actionMagic')
 
-        self.actionRbSrIsoTope = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Rb-Sr IsoTope',self)
-        self.actionRbSrIsoTope.setObjectName('actionRbSrIsoTope')
-
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
 
@@ -314,7 +310,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionZirconTiTemp)
         self.menuGeoChem.addAction(self.actionRutileZrTemp)
 
-        self.menuGeoChem.addAction(self.actionRbSrIsoTope)
+
 
 
         self.menuStructure.addAction(self.actionStereo)
@@ -410,9 +406,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
         self.actionMagic.triggered.connect(self.Magic)
-        self.actionRbSrIsoTope.triggered.connect(self.RbSrIsoTope)
-
-
 
         self.pushButtonOpen.clicked.connect(self.getDataFile)
         self.pushButtonSave.clicked.connect(self.saveDataFile)
@@ -491,7 +484,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ.setText(_translate('MainWindow',u'X-Y-Z plot'))
 
         self.actionMagic.setText(_translate('MainWindow',u'Magic'))
-        self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
+
 
         self.actionVersionCheck.setText(_translate('MainWindow',u'Version'))
         self.actionCnWeb.setText(_translate('MainWindow',u'Chinese Forum'))
@@ -581,7 +574,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
 
         self.actionMagic.setText(_translate('MainWindow', u'Magic'))
-        self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionCnWeb.setText(_translate('MainWindow', u'Chinese Forum'))
@@ -1040,15 +1032,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.zirconpop.show()
         except(KeyError,ValueError):
             self.ErrorEvent()
-
-    def RbSrIsoTope(self):
-        self.rbsrisotopepop = RbSrIsoTope(df=self.model._df)
-        try:
-            self.rbsrisotopepop.Magic()
-            self.rbsrisotopepop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
 
     def XY(self):
         self.xypop = XY(df=self.model._df)

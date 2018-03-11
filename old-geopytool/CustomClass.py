@@ -1,7 +1,6 @@
 version = '0.7.59'
-#version = '0.7.60'
 
-date = '2018-3-11'
+date = '2018-3-10'
 
 dpi = 128
 #coding:utf-8
@@ -615,7 +614,6 @@ class PandasModel(QtCore.QAbstractTableModel):
 class CustomQTableView(QtWidgets.QTableView):
     def __init__(self, *args):
         super().__init__(*args)
-        self.resize(800, 600)
         self.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers |
                              QtWidgets.QAbstractItemView.DoubleClicked)
 
@@ -1064,37 +1062,6 @@ class PlotModel(FigureCanvas):
             # self.axes.xlabel(xLabel, fontsize=12)
 
             self.draw()
-
-
-class Lsq():
-    xlist = [2.069, 5.862, 7.281, 3.336, 0.0723, 3.908, 0.1367, 11.29, 7.384, 2.861, 4.396, 9.231, 0.8056]
-    ylist = [0.716972, 0.724464, 0.727566, 0.719333, 0.712823, 0.720578, 0.712962, 0.735598, 0.727391, 0.718462,
-             0.721609, 0.731475, 0.714279]
-
-    Xi = np.array(xlist)
-    Yi = np.array(ylist)
-
-    def __init__(self, parent=None, df=pd.DataFrame()):
-        # TEST
-        p0 = [100, 2]
-        print(self.error(p0, self.Xi, self.Yi))
-
-        ###主函数从此开始###
-        s = "Test the number of iteration"  # 试验最小二乘法函数leastsq得调用几次error函数才能找到使得均方误差之和最小的k、b
-        Para = leastsq(self.error, p0, args=(self.Xi, self.Yi, s))  # 把error函数中除了p以外的参数打包到args中
-        k, b = Para[0]
-
-    ###需要拟合的函数func及误差error###
-    def func(self,p, x):
-        k, b = p
-        return k * x + b
-
-    def error(self, p, x, y, s='error function'):
-        print(s)
-        return (self.func(p, x) - y)  # x、y都是列表，故返回值也是个列表
-
-
-
 
 LocationOfMySelf=os.path.dirname(__file__)
 

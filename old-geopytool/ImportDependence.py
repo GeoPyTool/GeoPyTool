@@ -5,9 +5,6 @@ import webbrowser
 import sys
 import sklearn as sk
 import scipy.stats as st
-
-from scipy.optimize import leastsq
-
 import requests
 import re
 import random
