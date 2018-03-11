@@ -1,5 +1,4 @@
-version = '0.7.59'
-#version = '0.7.60'
+version = '0.7.60'
 
 date = '2018-3-11'
 

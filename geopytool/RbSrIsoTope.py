@@ -200,8 +200,23 @@ class RbSrIsoTope(AppForm):
         formular='y= f(x)'
 
 
+        print(z)
 
-        self.textbox.setText(formular+' Polyfitting parameter：' + '\n' +str(z)+'\n\n'+ self.sentence)
+        k= z[0]
+        b= z[1]
+        t = 0
+
+        deltaRb = 1.42 / np.power(10, 11)
+        deltaRb = 1.42e-11
+
+        t = np.log(k + 1) / deltaRb
+
+        tma=t/np.power(10,6)
+
+
+
+
+        self.textbox.setText('Age = '+ str(tma)+'\n'+' Ma'+'Initial 87Sr/86Sr = '+ str(b) +'\n\n'+ self.sentence)
 
 
         self.axes.plot(Xline, Yline, 'b-')
