@@ -86,6 +86,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     DataLocation =''
 
     ChemResult=pd.DataFrame()
+    AutoResult=pd.DataFrame()
 
     TotalResult=[]
 
@@ -336,11 +337,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuDIY.addAction(self.actionXY)
         self.menuDIY.addAction(self.actionXYZ)
-        self.menuDIY.addAction(self.actionCluster)
-
-
 
         self.menuTesting.addAction(self.actionAuto)
+
+
+        self.menuTesting.addAction(self.actionCluster)
+
+
+
+
         self.menuTesting.addAction(self.actionMultiDimension)
         self.menuTesting.addAction(self.actionGLMultiDimension)
         #self.menuTesting.addAction(self.actionMagic)
@@ -716,6 +721,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if buttonReply == QMessageBox.Yes:
                     print('Yes clicked.')
+                    self.UpDate
+
                     webbrowser.open('https://github.com/chinageology/GeoPyTool/blob/master/Download.md')
                 else:
                     print('No clicked.')
@@ -725,12 +732,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                                              'This is the latest version.'))
 
     def Update(self):
-        webbrowser.open('https://github.com/chinageology/GeoPyTool/wiki/Download')
-        cmd = 'pip3 install geopytool --upgrade'
-        try:
-            os.system(cmd)
-        except:
-            pass
+        #webbrowser.open('https://github.com/chinageology/GeoPyTool/wiki/Download')
+        pip.main(['install', 'geopytool','--upgrade'])
 
     def ReadConfig(self):
         if(os.path.isfile('config.ini')):
@@ -908,11 +911,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def CIPW(self):
         self.cipwpop = CIPW(df=self.model._df)
+
+        self.cipwpop.CIPW()
+        self.cipwpop.show()
+
+        '''
         try:
             self.cipwpop.CIPW()
             self.cipwpop.show()
         except(KeyError):
             self.ErrorEvent()
+        '''
+
 
         self.ChemResult = pd.concat([self.cipwpop.OutPutData, self.ChemResult], axis=1)
 
@@ -1126,7 +1136,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def Tri(self):
         pass
 
-    def Auto(self):
+    def OldAuto(self):
 
 
         FileOutput, ok1 = QFileDialog.getSaveFileName(self,
@@ -1141,7 +1151,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             pdf = matplotlib.backends.backend_pdf.PdfPages(self.DataLocation+'output.pdf')
             
 
+        self.cipwsilent = CIPW(df = self.model._df)
+        self.cipwsilent.CIPW()
+        self.cipwsilent.QAPFsilent()
+        #self.TotalResult.append(self.cipwsilent.OutPutFig)
+        pdf.savefig(self.cipwsilent.OutPutFig)
 
+        #self.ChemResult = pd.concat([self.cipwsilent.OutPutData, self.ChemResult], axis=1)
 
 
 
@@ -1151,7 +1167,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (self.tassilent.Check()==True):
             self.tassilent.TAS()
             self.tassilent.GetResult()
-            self.TotalResult.append(self.tassilent.OutPutFig)
+            #self.TotalResult.append(self.tassilent.OutPutFig)
 
             pdf.savefig(self.tassilent.OutPutFig)
 
@@ -1164,7 +1180,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (self.reesilent.Check()==True):
             self.reesilent.REE()
             self.reesilent.GetResult()
-            self.TotalResult.append(self.reesilent.OutPutFig)
+            #self.TotalResult.append(self.reesilent.OutPutFig)
 
             pdf.savefig(self.reesilent.OutPutFig)
 
@@ -1220,10 +1236,126 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         if (FileOutput != ''):
-            self.ChemResult.to_csv(FileOutput+'.csv', sep=',', encoding='utf-8')
-        else:
-            self.ChemResult.to_csv((self.DataLocation + 'output.csv'), sep=',', encoding='utf-8')
 
+            if ('pdf' in FileOutput):
+
+                FileOutput = FileOutput[0:-4]
+
+            self.ChemResult.to_csv(FileOutput+'.csv', sep=',', encoding='utf-8')
+
+            self.cipwsilent.newdf.to_csv(FileOutput+'mole.csv', sep=',', encoding='utf-8')
+            self.cipwsilent.newdf1.to_csv(FileOutput+'mass.csv', sep=',', encoding='utf-8')
+            self.cipwsilent.newdf2.to_csv(FileOutput+'volume.csv', sep=',', encoding='utf-8')
+            self.cipwsilent.newdf3.to_csv(FileOutput+'calculated.csv', sep=',', encoding='utf-8')
+
+
+        else:
+
+            if ('pdf' in FileOutput):
+
+                FileOutput = FileOutput[0:-4]
+
+            self.ChemResult.to_csv((self.DataLocation + 'mole.csv'), sep=',', encoding='utf-8')
+            self.cipwsilent.newdf1.to_csv(self.DataLocation +'mass.csv', sep=',', encoding='utf-8')
+            self.cipwsilent.newdf2.to_csv(self.DataLocation +'volume.csv', sep=',', encoding='utf-8')
+            self.cipwsilent.newdf3.to_csv(self.DataLocation +'calculated.csv', sep=',', encoding='utf-8')
+
+    def Auto(self):
+
+        FileOutput, ok1 = QFileDialog.getSaveFileName(self,
+                                                      '文件保存',
+                                                      'C:/',
+                                                      'PDF Files (*.pdf)')  # 数据文件保存输出
+        if (FileOutput != ''):
+
+            pdf = matplotlib.backends.backend_pdf.PdfPages(FileOutput)
+
+
+            self.cipwsilent = CIPW(df=self.model._df)
+            self.cipwsilent.CIPW()
+            self.cipwsilent.QAPFsilent()
+            # self.TotalResult.append(self.cipwsilent.OutPutFig)
+            pdf.savefig(self.cipwsilent.OutPutFig)
+
+            # self.AutoResult = pd.concat([self.cipwsilent.OutPutData, self.AutoResult], axis=1)
+
+            self.tassilent = TAS(df=self.model._df)
+
+            if (self.tassilent.Check() == True):
+                self.tassilent.TAS()
+                self.tassilent.GetResult()
+                # self.TotalResult.append(self.tassilent.OutPutFig)
+
+                pdf.savefig(self.tassilent.OutPutFig)
+
+                self.AutoResult = pd.concat([self.tassilent.OutPutData, self.AutoResult], axis=1)
+
+            self.reesilent = REE(df=self.model._df)
+
+            if (self.reesilent.Check() == True):
+                self.reesilent.REE()
+                self.reesilent.GetResult()
+                # self.TotalResult.append(self.reesilent.OutPutFig)
+
+                pdf.savefig(self.reesilent.OutPutFig)
+
+                self.AutoResult = pd.concat([self.reesilent.OutPutData, self.AutoResult], axis=1)
+
+            self.tracesilent = Trace(df=self.model._df)
+
+            if (self.tracesilent.Check() == True):
+                self.tracesilent.Trace()
+                self.tracesilent.GetResult()
+                self.TotalResult.append(self.tracesilent.OutPutFig)
+
+                pdf.savefig(self.tracesilent.OutPutFig)
+
+            self.harkersilent = Harker(df=self.model._df)
+
+            if (self.harkersilent.Check() == True):
+                self.harkersilent.Harker()
+                self.harkersilent.GetResult()
+                self.TotalResult.append(self.harkersilent.OutPutFig)
+
+                pdf.savefig(self.harkersilent.OutPutFig)
+
+            self.pearcesilent = Pearce(df=self.model._df)
+
+            if (self.pearcesilent.Check() == True):
+                self.pearcesilent.Pearce()
+                self.pearcesilent.GetResult()
+                self.TotalResult.append(self.pearcesilent.OutPutFig)
+
+                pdf.savefig(self.pearcesilent.OutPutFig)
+
+            self.AutoResult = self.AutoResult.T.groupby(level=0).first().T
+
+            print(self.AutoResult)
+
+            pdf.close()
+
+            self.AutoResult = self.AutoResult.set_index('Label')
+
+            self.AutoResult = pd.concat([self.cipwsilent.newdf3, self.AutoResult], axis=1)
+
+
+
+
+
+
+
+            if ('pdf' in FileOutput):
+                FileOutput = FileOutput[0:-4]
+
+            self.AutoResult.to_csv(FileOutput + '-chemical-info.csv', sep=',', encoding='utf-8')
+            self.cipwsilent.newdf.to_csv(FileOutput + '-cipw-mole.csv', sep=',', encoding='utf-8')
+            self.cipwsilent.newdf1.to_csv(FileOutput + '-cipw-mass.csv', sep=',', encoding='utf-8')
+            self.cipwsilent.newdf2.to_csv(FileOutput + '-cipw-volume.csv', sep=',', encoding='utf-8')
+
+
+        else:
+
+            pass
 
 
 def main():

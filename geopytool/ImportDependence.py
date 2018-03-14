@@ -1,6 +1,24 @@
 #coding:utf-8
 import matplotlib
 matplotlib.use('Qt5Agg')
+
+import importlib
+
+'''
+try:
+    importlib.import_module(package)
+except ImportError:
+    import pip
+
+    pip.main(['install', package])
+finally:
+    globals()[package] = importlib.import_module(package)
+'''
+
+import pip
+import subprocess
+
+
 import webbrowser
 import sys
 import sklearn as sk
@@ -12,7 +30,6 @@ import requests
 import re
 import random
 import pandas as pd
-import os
 import os
 import numpy as np
 import pyqtgraph as pg

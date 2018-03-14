@@ -777,3 +777,6 @@ class QAPF(AppForm, Tool):
             self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
         self.canvas.draw()
+
+
+        self.OutPutFig=self.fig
