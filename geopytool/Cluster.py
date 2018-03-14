@@ -8,6 +8,7 @@ class Cluster(AppForm):
     Tags = []
     description = 'Cluster diagram'
     unuseful = ['Name',
+                'Mineral',
                 'Author',
                 'DataType',
                 'Label',

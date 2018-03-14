@@ -50,6 +50,7 @@ class Magic(AppForm):
 
     description = 'Magic diagram'
     unuseful = ['Name',
+                'Mineral',
                 'Author',
                 'DataType',
                 'Label',
@@ -617,30 +618,81 @@ class Magic(AppForm):
             self.Xleft, self.Xright, self.Ydown, self.Yup = min(XtoFit), max(XtoFit), min(YtoFit), max(YtoFit)
 
 
-        z = np.polyfit(YtoFit, XtoFit,self.FitLevel)
 
 
 
+        ResultStr=''
+        BoxResultStr=''
+        Paralist=[]
 
-        if(int(self.fit_slider.value())==0):
+        if (int(self.fit_slider.value()) == 0):
             Xline = np.linspace(self.Xleft, self.Xright, 30)
-            z = np.polyfit(XtoFit, YtoFit, self.FitLevel)
+            opt, cov = np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
             self.fit_slider_label.setText('y= f(x)')
-            p = np.poly1d(z)
+            p = np.poly1d(opt)
             Yline = p(Xline)
-            formular='y= f(x)'
+            formular = 'y= f(x):'
 
 
-        elif(int(self.fit_slider.value())==1):
+
+
+
+        elif (int(self.fit_slider.value()) == 1):
             Yline = np.linspace(self.Ydown, self.Yup, 30)
-            z = np.polyfit(YtoFit, XtoFit, self.FitLevel)
+            opt, cov = np.polyfit(YtoFit, XtoFit, self.FitLevel, cov=True)
             self.fit_slider_label.setText('x= f(y)')
-            p = np.poly1d(z)
+            p = np.poly1d(opt)
             Xline = p(Yline)
-            formular='x= f(y)'
+            formular = 'x= f(y):'
+
+        sigma = np.sqrt(np.diag(cov))
+
+        for i in range(int(self.FitLevel + 1)):
+            Paralist.append([opt[i], sigma[i]])
 
 
-        self.textbox.setText(formular+' Polyfitting parameter：' + '\n' +str(z)+'\n\n'+ self.sentence)
+            if int(self.fit_slider.value()) == 0:
+
+                if (self.FitLevel - i == 0):
+                    ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i])+'+'
+                    BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '\n'
+
+                else:
+                    ResultStr = ResultStr+ str(opt[i])+'$\pm$'+str(sigma[i])+'$x^'+str(self.FitLevel-i)+'$'+'+'
+                    BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'x^' + str(
+                    self.FitLevel - i) +  '+\n'
+
+
+
+            elif (int(self.fit_slider.value()) == 1):
+
+                if (self.FitLevel-i==0):
+                    ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i])+'+'
+                    BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '+\n'
+
+
+
+                else:
+                    ResultStr = ResultStr+ str(opt[i])+'$\pm$'+str(sigma[i])+'$y^'+str(self.FitLevel-i)+'$'+'+'
+                    BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'y^' + str(
+                    self.FitLevel - i) +  '+\n'
+
+
+                pass
+
+            pass
+
+
+
+        N=len(XtoFit)
+        F=N-2
+        MSWD=1+2*np.sqrt(2/F)
+        MSWDerr=np.sqrt(2/F)
+
+        #self.textbox.setText(formular +'\n'+ BoxResultStr+ '\n\n' + self.sentence)
+
+        self.textbox.setText(formular +'\n'+ BoxResultStr+ '\n MSWD(±2σ)'+str(MSWD)+'±'+str(MSWDerr)+'\n' + self.sentence)
+
 
 
         xmin, xmax = min(XtoFit), max(XtoFit)

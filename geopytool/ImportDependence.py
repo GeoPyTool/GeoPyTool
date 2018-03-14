@@ -7,7 +7,7 @@ import sklearn as sk
 import scipy.stats as st
 
 from scipy.optimize import leastsq
-
+from scipy.optimize import curve_fit
 import requests
 import re
 import random

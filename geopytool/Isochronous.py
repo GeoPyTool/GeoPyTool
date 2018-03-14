@@ -4,7 +4,7 @@ from geopytool.TabelViewer import TabelViewer
 
 
 
-class IsoTope(AppForm):
+class Isochronous(AppForm):
 
 
     reference = 'Ludwig, K. R. (2003). "Isoplot, rev. 3.75. A geochronological toolkit for microsoft excel."  5: 1-75.'
@@ -13,6 +13,10 @@ class IsoTope(AppForm):
     Lines = []
     Tags = []
 
+    xlabel = 'x'
+    ylabel = 'y'
+
+    description = 'Isochronous age diagram'
     unuseful = ['Name',
                 'Mineral',
                 'Author',
@@ -28,41 +32,24 @@ class IsoTope(AppForm):
 
 
     FitLevel=1
+    lambdaItem = 1.42e-11
 
 
     LimSet= False
     LabelSetted = False
     ValueChoosed = True
 
-
-    description = 'Rb-Sr IsoTope diagram'
-    xname='87Rb/86Sr'
-    yname='87Sr/86Sr'
-    lambdaItem = 1.42e-11
-    xlabel = r'$^{87}Rb/^{86}Sr$'
-    ylabel = r'$^{87}Sr/^{86}Sr$'
-
-
-    def __init__(self, parent=None, df=pd.DataFrame(), description='Rb-Sr IsoTope diagram', xname='87Rb/86Sr',
-                 yname='87Sr/86Sr', lambdaItem=1.42e-11, xlabel=r'$^{87}Rb/^{86}Sr$', ylabel=r'$^{87}Sr/^{86}Sr$'):
-
+    def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
+        self.setWindowTitle(self.description)
 
         self.items = []
-
-        self.description = description
-        self.xname = xname
-        self.yname = yname
-        self.lambdaItem = lambdaItem
-        self.xlabel = xlabel
-        self.ylabel = ylabel
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to Magic')
 
-        self.setWindowTitle(self.description)
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
 
@@ -103,8 +90,6 @@ class IsoTope(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Reset)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
@@ -115,7 +100,7 @@ class IsoTope(AppForm):
         self.hbox0 = QHBoxLayout()
 
 
-        for w in [self.save_button,self.draw_button,
+        for w in [self.save_button,
                   self.legend_cb]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
@@ -183,7 +168,7 @@ class IsoTope(AppForm):
             x, y = 0, 0
             xuse, yuse = 0, 0
 
-            x, y = raw.at[i, self.xname], raw.at[i, self.yname]
+            x, y = raw.at[i, '87Rb/86Sr'], raw.at[i, '87Sr/86Sr']
 
 
 
@@ -234,7 +219,8 @@ class IsoTope(AppForm):
         MSWDerr=np.sqrt(2/F)
 
 
-        self.textbox.setText('Age(±2σ) = '+ str(tma)+' Ma ±'+str(2*terr)+'\n Initial '+ self.yname +' (±2σ)= '+ str(b)+'±'+str(2*berr) +'\n MSWD(±2σ)= '+ str(MSWD)+'±'+str(2*MSWDerr)+'\n\n'+ self.sentence)
+
+        self.textbox.setText('Age(±2σ) = '+ str(tma)+' Ma ±'+str(2*terr)+'\n Initial 87Sr/86Sr (±2σ)= '+ str(b)+'±'+str(2*berr) +'\n MSWD(±2σ)= '+ str(MSWD)+'±'+str(2*MSWDerr)+'\n\n'+ self.sentence)
 
         self.axes.plot(Xline, Yline, color='grey', linestyle='-', alpha=0.5)
 

@@ -32,8 +32,10 @@ from geopytool.CIPW import CIPW
 from geopytool.Cluster import Cluster
 from geopytool.Bivariate import Bivariate
 from geopytool.Harker import Harker
-from geopytool.Magic import Magic
-from geopytool.RbSrIsoTope import RbSrIsoTope
+#from geopytool.Magic import Magic
+
+from geopytool.IsoTope import IsoTope
+
 from geopytool.MultiDimension import MultiDimension
 from geopytool.GLMultiDimension import GLMultiDimension
 from geopytool.Pearce import Pearce
@@ -293,11 +295,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'Triangular',self)
         self.actionXYZ.setObjectName('actionXYZ')
 
-        self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Magic',self)
-        self.actionMagic.setObjectName('actionMagic')
+        #self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Magic',self)
+        #self.actionMagic.setObjectName('actionMagic')
 
         self.actionRbSrIsoTope = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Rb-Sr IsoTope',self)
         self.actionRbSrIsoTope.setObjectName('actionRbSrIsoTope')
+
+        self.actionSmNdIsoTope = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Sm-Nd IsoTope',self)
+        self.actionSmNdIsoTope.setObjectName('actionSmNdIsoTope')
+
+
+
+
 
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -313,8 +322,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionZirconCe)
         self.menuGeoChem.addAction(self.actionZirconTiTemp)
         self.menuGeoChem.addAction(self.actionRutileZrTemp)
-
         self.menuGeoChem.addAction(self.actionRbSrIsoTope)
+        self.menuGeoChem.addAction(self.actionSmNdIsoTope)
+
+
 
 
         self.menuStructure.addAction(self.actionStereo)
@@ -325,12 +336,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuDIY.addAction(self.actionXY)
         self.menuDIY.addAction(self.actionXYZ)
+        self.menuDIY.addAction(self.actionCluster)
 
-        self.menuTesting.addAction(self.actionCluster)
+
+
         self.menuTesting.addAction(self.actionAuto)
         self.menuTesting.addAction(self.actionMultiDimension)
         self.menuTesting.addAction(self.actionGLMultiDimension)
-        self.menuTesting.addAction(self.actionMagic)
+        #self.menuTesting.addAction(self.actionMagic)
 
         self.menuHelp.addAction(self.actionCnWeb)
         self.menuHelp.addAction(self.actionEnWeb)
@@ -409,8 +422,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
-        self.actionMagic.triggered.connect(self.Magic)
+        #self.actionMagic.triggered.connect(self.Magic)
         self.actionRbSrIsoTope.triggered.connect(self.RbSrIsoTope)
+        self.actionSmNdIsoTope.triggered.connect(self.SmNdIsoTope)
 
 
 
@@ -490,8 +504,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXY.setText(_translate('MainWindow',u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow',u'X-Y-Z plot'))
 
-        self.actionMagic.setText(_translate('MainWindow',u'Magic'))
+        #self.actionMagic.setText(_translate('MainWindow',u'Magic'))
         self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
+        self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
+
+
 
         self.actionVersionCheck.setText(_translate('MainWindow',u'Version'))
         self.actionCnWeb.setText(_translate('MainWindow',u'Chinese Forum'))
@@ -580,8 +597,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXY.setText(_translate('MainWindow', u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
 
-        self.actionMagic.setText(_translate('MainWindow', u'Magic'))
+        #self.actionMagic.setText(_translate('MainWindow', u'Magic'))
         self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
+        self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionCnWeb.setText(_translate('MainWindow', u'Chinese Forum'))
@@ -1042,10 +1060,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def RbSrIsoTope(self):
-        self.rbsrisotopepop = RbSrIsoTope(df=self.model._df)
+        self.rbsrisotopepop = IsoTope(df=self.model._df,description='Rb-Sr IsoTope diagram', xname='87Rb/86Sr',
+                 yname='87Sr/86Sr', lambdaItem=1.42e-11, xlabel=r'$^{87}Rb/^{86}Sr$', ylabel=r'$^{87}Sr/^{86}Sr$')
         try:
             self.rbsrisotopepop.Magic()
             self.rbsrisotopepop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
+    def SmNdIsoTope(self):
+        self.smndisotopepop = IsoTope(df=self.model._df,description='Sm-Nd IsoTope diagram', xname='147Sm/144Nd',
+                 yname= '143Nd/144Nd', lambdaItem=6.54e-12, xlabel=r'$^{147}Sm/^{144}Nd$', ylabel=r'$^{143}Nd/^{144}Nd$')
+        try:
+            self.smndisotopepop.Magic()
+            self.smndisotopepop.show()
         except(KeyError):
             self.ErrorEvent()
 
@@ -1066,6 +1094,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
+    '''    
     def Magic(self):
         self.magicpop = Magic(df=self.model._df)
         try:
@@ -1073,6 +1102,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.magicpop.show()
         except(KeyError):
             self.ErrorEvent()
+    '''
+
 
     def MultiDimension(self):
         self.mdpop = MultiDimension(df=self.model._df)

@@ -4,7 +4,7 @@ from geopytool.TabelViewer import TabelViewer
 
 
 
-class IsoTope(AppForm):
+class SmNdIsoTope(AppForm):
 
 
     reference = 'Ludwig, K. R. (2003). "Isoplot, rev. 3.75. A geochronological toolkit for microsoft excel."  5: 1-75.'
@@ -13,6 +13,10 @@ class IsoTope(AppForm):
     Lines = []
     Tags = []
 
+    xlabel = r'$^{147}Sm/^{144}Nd$'
+    ylabel = r'$^{143}Nd/^{144}Nd$'
+
+    description = 'Sm Nd IsoTope diagram'
     unuseful = ['Name',
                 'Mineral',
                 'Author',
@@ -28,41 +32,24 @@ class IsoTope(AppForm):
 
 
     FitLevel=1
+    lambdaItem = 6.54e-12
 
 
     LimSet= False
     LabelSetted = False
     ValueChoosed = True
 
-
-    description = 'Rb-Sr IsoTope diagram'
-    xname='87Rb/86Sr'
-    yname='87Sr/86Sr'
-    lambdaItem = 1.42e-11
-    xlabel = r'$^{87}Rb/^{86}Sr$'
-    ylabel = r'$^{87}Sr/^{86}Sr$'
-
-
-    def __init__(self, parent=None, df=pd.DataFrame(), description='Rb-Sr IsoTope diagram', xname='87Rb/86Sr',
-                 yname='87Sr/86Sr', lambdaItem=1.42e-11, xlabel=r'$^{87}Rb/^{86}Sr$', ylabel=r'$^{87}Sr/^{86}Sr$'):
-
+    def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
+        self.setWindowTitle(self.description)
 
         self.items = []
-
-        self.description = description
-        self.xname = xname
-        self.yname = yname
-        self.lambdaItem = lambdaItem
-        self.xlabel = xlabel
-        self.ylabel = ylabel
 
         self._df = df
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to Magic')
 
-        self.setWindowTitle(self.description)
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
 
@@ -183,7 +170,7 @@ class IsoTope(AppForm):
             x, y = 0, 0
             xuse, yuse = 0, 0
 
-            x, y = raw.at[i, self.xname], raw.at[i, self.yname]
+            x, y = raw.at[i, '147Sm/144Nd'], raw.at[i, '143Nd/144Nd']
 
 
 
@@ -234,7 +221,7 @@ class IsoTope(AppForm):
         MSWDerr=np.sqrt(2/F)
 
 
-        self.textbox.setText('Age(±2σ) = '+ str(tma)+' Ma ±'+str(2*terr)+'\n Initial '+ self.yname +' (±2σ)= '+ str(b)+'±'+str(2*berr) +'\n MSWD(±2σ)= '+ str(MSWD)+'±'+str(2*MSWDerr)+'\n\n'+ self.sentence)
+        self.textbox.setText('Age(±2σ) = '+ str(tma)+' Ma ±'+str(2*terr)+'\n Initial 87Sr/86Sr (±2σ)= '+ str(b)+'±'+str(2*berr) +'\n MSWD(±2σ)= '+ str(MSWD)+'±'+str(2*MSWDerr)+'\n\n'+ self.sentence)
 
         self.axes.plot(Xline, Yline, color='grey', linestyle='-', alpha=0.5)
 

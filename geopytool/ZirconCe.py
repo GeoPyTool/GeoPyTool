@@ -84,6 +84,9 @@ class ZirconCe(QMainWindow):
         self.save_img_button = QPushButton('&Save Figure')
         self.save_img_button.clicked.connect(self.saveImgFile)
 
+        self.show_data_button = QPushButton('&Show Result')
+        self.show_data_button.clicked.connect(self.showResult)
+
         self.save_data_button = QPushButton('&Save Result')
         self.save_data_button.clicked.connect(self.saveResult)
 
@@ -96,7 +99,7 @@ class ZirconCe(QMainWindow):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_img_button, self.save_data_button]:
+        for w in [self.save_img_button, self.show_data_button, self.save_data_button]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -135,8 +138,6 @@ class ZirconCe(QMainWindow):
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
 
-
-
     def saveResult(self):
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',
@@ -150,6 +151,15 @@ class ZirconCe(QMainWindow):
 
             elif ('xls' in DataFileOutput):
                 self.newdf.to_excel(DataFileOutput, encoding='utf-8')
+
+    def showResult(self):
+
+        self.tablepop = TabelViewer(df=self.newdf,title='Zircon Ce Result')
+        self.tablepop.show()
+
+
+
+
 
     def create_action(self, text, slot=None, shortcut=None,
                       icon=None, tip=None, checkable=False,

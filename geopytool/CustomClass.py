@@ -1,6 +1,6 @@
-version = '0.7.60'
+version = '0.7.61'
 
-date = '2018-3-11'
+date = '2018-3-15'
 
 dpi = 128
 #coding:utf-8
@@ -881,7 +881,15 @@ class AppForm(QMainWindow):
                 df = df.drop(t, 1)
         return(df)
 
+    def ReduceSize(self,df=pd.DataFrame):
 
+        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
+
+        for i in m:
+            if i in df.columns.values:
+                df = df.drop(i, 1)
+        df = df.loc[:, (df != 0).any(axis=0)]
+        return(df)
 
 class PlotModel(FigureCanvas):
     _df = pd.DataFrame()

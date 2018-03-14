@@ -2,6 +2,8 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 from geopytool.TabelViewer import TabelViewer
 
+
+
 class RbSrIsoTope(AppForm):
 
 
@@ -11,10 +13,6 @@ class RbSrIsoTope(AppForm):
     Lines = []
     Tags = []
 
-    xlabel = r'$^{87}Rb/^{86}Sr$'
-    ylabel = r'$^{87}Sr/^{86}Sr$'
-
-    description = 'Rb Sr IsoTope diagram'
     unuseful = ['Name',
                 'Mineral',
                 'Author',
@@ -31,6 +29,15 @@ class RbSrIsoTope(AppForm):
 
     FitLevel=1
 
+
+
+
+    description = 'Rb-Sr IsoTope diagram'
+    xname='87Rb/86Sr'
+    yname='87Sr/86Sr'
+    lambdaItem = 1.42e-11
+    xlabel = r'$^{87}Rb/^{86}Sr$'
+    ylabel = r'$^{87}Sr/^{86}Sr$'
 
     LimSet= False
     LabelSetted = False
@@ -167,7 +174,7 @@ class RbSrIsoTope(AppForm):
             x, y = 0, 0
             xuse, yuse = 0, 0
 
-            x, y = raw.at[i, '87Rb/86Sr'], raw.at[i, '87Sr/86Sr']
+            x, y = raw.at[i, self.xname], raw.at[i, self.yname]
 
 
 
@@ -194,32 +201,33 @@ class RbSrIsoTope(AppForm):
 
 
         Xline = np.linspace(min(XtoFit), max(XtoFit), 30)
-        z = np.polyfit(XtoFit, YtoFit, self.FitLevel)
-        p = np.poly1d(z)
+
+        opt, cov = np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
+        p = np.poly1d(opt)
+
+
         Yline = p(Xline)
-        formular='y= f(x)'
 
 
-        print(z)
+        sigma = np.sqrt(np.diag(cov))
+        a, aerr, b, berr = opt[0], sigma[0], opt[1], sigma[1]
 
-        k= z[0]
-        b= z[1]
-        t = 0
+        lambdaItem = self.lambdaItem
 
-        deltaRb = 1.42 / np.power(10, 11)
-        deltaRb = 1.42e-11
-
-        t = np.log(k + 1) / deltaRb
+        t = np.log(a + 1) / lambdaItem
 
         tma=t/np.power(10,6)
+        terr=1/(a+1)*aerr/ lambdaItem/ np.power(10, 6)
+
+        N=len(XtoFit)
+        F=N-2
+        MSWD=1+2*np.sqrt(2/F)
+        MSWDerr=np.sqrt(2/F)
 
 
+        self.textbox.setText('Age(±2σ) = '+ str(tma)+' Ma ±'+str(2*terr)+'\n Initial '+ self.yname +' (±2σ)= '+ str(b)+'±'+str(2*berr) +'\n MSWD(±2σ)= '+ str(MSWD)+'±'+str(2*MSWDerr)+'\n\n'+ self.sentence)
 
-
-        self.textbox.setText('Age = '+ str(tma)+'\n'+' Ma'+'Initial 87Sr/86Sr = '+ str(b) +'\n\n'+ self.sentence)
-
-
-        self.axes.plot(Xline, Yline, 'b-')
+        self.axes.plot(Xline, Yline, color='grey', linestyle='-', alpha=0.5)
 
 
         if (self.legend_cb.isChecked()):
@@ -232,7 +240,3 @@ class RbSrIsoTope(AppForm):
 
         return(dict)
 
-    def relation(self,data1=np.ndarray,data2=np.ndarray):
-        data=array([data1,data2])
-        dict={'cov':cov(data,bias=1),'corrcoef':corrcoef(data)}
-        return(dict)
