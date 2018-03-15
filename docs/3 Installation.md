@@ -3,19 +3,19 @@ Date: 2017-11-15 0:00
 Category: Doc
 Tags: Doc,English,Chinese
 
-## Installation
+# Installation, Easy Way 
 
 GeoPyTool can be used as a module inside Python, and can also run as a standalone application.
 
 
 
-## Standalone Application
+## Standalone Application （Recommended！）
 
-Packed up executable files are temporarily only provided for Windows and MacOS platform.
-
+Packed up executable files are provided for Windows and MacOS platform.
 
 
 [Click here to get Download links.](https://github.com/GeoPyTool/GeoPyTool/blob/master/Download.md)
+Unzip the zip and keep all components there. Make sure that the whole unzipped folder is under an English path.
 
 ### Mac APP
 
@@ -24,11 +24,6 @@ On macOS, everything is extremely easy to use GeoPyTool. Just download and unzip
 ![User Interface of the APP on macOS.](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/MacOSScreenShot.png)
 
 
-### Mac APP Update
-
-Go to the location inside the app file, `GeoPyTool.app/Contents/Resources/UpDateGeoPytool`.Double click on this file neamed UpDateGeoPytool at `GeoPyTool.app/Contents/Resources/`. It will update the GeoPyTool inside your GeoPyTool.app file. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
-
-![Update the APP on macOS.](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/OSXUpdate.png)
 
 ### Windows Pack
 
@@ -57,134 +52,22 @@ So if you encounter any `api-ms-win-crt`related errors, please check those insta
 I failed many times on both XP and Vista, and I think there might not be a lot users of these two antique systems.
 If you are using one or both of them, please be good to yourself to update you old PC to at least Windows 7 SP1 or try Linux on your antique computers. My advice is that we should not waste our life on those systems that are not even supported by their developers and manufacturer. So, if you still want to run GeoPyTool on those two old systems, good luck and good bye.
 
-### Windows EXE Update
+
+## Update
+
+### Mac APP Update
+
+Go to the location inside the app file, `GeoPyTool.app/Contents/Resources/UpDateGeoPytool`.Double click on this file neamed UpDateGeoPytool at `GeoPyTool.app/Contents/Resources/`. It will update the GeoPyTool inside your GeoPyTool.app file. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
+
+![Update the APP on macOS.](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/OSXUpdate.png)
+
+### Windows Bat Update
 
 Double click on the  **Update.bat** file to run update. It will update the GeoPyTool inside your GeoPyTool folder. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
 
 
 ![Update the EXE on Windows.](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WinUpdate.png)
 
-
-
-# Attention！ If you already download the packed up APP, just egnore the parts below and READ CAREFULLY PLEASE!!!!!!
-
-
-## Use as a Python Module
-
-
-Users of other Operating Systems, such as Debian Linux, Ubuntu Linux, Fedora Linux, FreeBSD or GNU/Hurd, please try to use GeoPyTool in Python, which is also recommended to all the users including those who use macOS or Windows 10, because the latest version of GeoPyTool can be installed with pip easilier and faster than using standalone executable files.
-
-### Install Python First
-
-The first thing to do is to install Python, newer than 3.5, which can be download from [Python Website](https://www.python.org/downloads/) or  [Tsinghua Tuna](https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/).
-
-Anaconda3-4.0.0 and other newer versions of Anaconda3 are recommended. Because they already contain useful modules such as cython, numpy, pandas, matplotlib, and the powerful ipython.
-
-
-##### Useful links for Windows users to install GeoPyTool with PIP:
-
-In fact, you guys can easily find instructions on how to install Python and PIP on the Internet. So I will just cast some links for newbie using Python on Windows.
-
-###### 32bit：
-
-|Item |Address |
-|--|--|
-|Anaconda|https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-4.4.0-Windows-x86.exe|
-
-###### 64bit：
-
-|Item |Address |
-|--|--|
-|Anaconda|https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-4.4.0-Windows-x86_64.exe|
-
-### Install GeoPyTool with PIP
-
-
-After installation of Python, you might think that finally you can install GeoPyTool.
-
-**NO!** In fact you need to install some used packages first, even you are using Anaconda. Because some packages used to build the Graphic User Interface of GeoPyTool still need to be installed, and this is also a good chance for you to update all the modules to the latest version (OR not).
-
-So use the following commands in your **terminal** to install these modules.
-
-You don't know what a Terminal is? For Windows, it can be the mighty **CMD** or PowerShell. For other systems including macOS, it should be the **BASH** ore just labeled as **Terminal** in the built-in applications list. Still don't know how to launch a terminal? Google it dude, we can't do that hand by hand for you.
-
-#### Notice
-
-	Here we use pip as we assume that your default version of Python is Python 3.X and the pip will refer to the PIP under Python3. If you installed both Python 2.X and Python 3.X, you might need to try to use **pip3** instead of **pip** in all the following commands to call the PIP of Python 3.
-
-So paste the following commands in your **terminal** as their sequence to install these modules in order.
-
-```Bash
-pip install cython
-pip install numpy
-pip install pandas
-pip install xlrd
-pip install matplotlib
-pip install BeautifulSoup4
-pip install pyqt5
-pip install scipy
-pip install scikit-learn
-pip install sympy
-pip install requests
-pip install pyopengl
-pip install pyqtgraph
-```
-
-The installation of scikit-learn might require [Microsoft Visual C++ Build Tools](http://landinghub.visualstudio.com/visual-cpp-build-tools), another solution is to use conda to install scipy and scikit-learn.
-
-We install conda with pip first:
-
-```Bash
-pip install requests
-pip install pyopengl
-pip install pyqtgraph
-pip install conda
-```
-Then we use conda to install some other packages:
-```Bash
-python3 -m conda install cython numpy pandas xlrd matplotlib BeautifulSoup4 scipy scikit-learn sympy requests pyopengl
-pip3 install pyqt5  pyqtgraph
-```
-
-After the installation of those packages above, you can use this similar command also in the **terminal** to install the GeoPyTool.
-```Bash
-pip install geopytool
-```
-
-If there comes no error message, everything should have been done successfully.
-
-### Update an existing GeoPyTool
-
-If you installed GeoPyTool as a module in Python, you can use this similar command also in the **terminal** to update to the latest version of GeoPyTool.
-```Bash
-pip install geopytool --update --no-cache-dir
-```
-
-### Launch GeoPyTool form a Python interpreter
-
-After the installation step above, GeoPyTool now becomes available in Python interpreter. The **IPython** interpreter is recommended because it is much friendly than the buildin interpreter of Python. **IPython** can be also installed with pip:
-```Bash
-pip install ipython
-```
-
-Then you can run ipython in **terminal** with the following command:
-```Bash
-ipython
-```
-
-Then you can simply use **GeoPyTool** by type the following commands in your Python interpreter:
-
-```Python
-import geopytool as gp
-gp.main()
-```
-
-
-You would see the GUI of **GeoPyTool**, which is under development for now. So it is a good idea to update **GeoPyTool** with pip everytime before you use it:
-
-```Bash
-pip install --upgrade geopytool
-```
 
 ## Marker/Color/Style
 
