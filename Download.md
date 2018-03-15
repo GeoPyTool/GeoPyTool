@@ -1,13 +1,36 @@
 Title: Download
-Date: 2018-3-10 0:00
+Date: 2018-3-16 0:00
 Category: Doc
-Tags: Doc,English,Chinese
+Tags: Doc, English, Chinese
 
-# GeoPyTool Application Download Links
+#GeoPyTool Application Download Links
 ># GeoPyTool 打包的可执行程序下载链接
 
+## Latest Version
+>## 最新版本
 
-# GeoPyTool pack for Windows:
+
+### GeoPyTool pack for Windows:
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1r3Vqf4xwvK7wi6ibiXWM7w)
+
+
+[Google Drive](https://drive.google.com/open?id=1h2Q1ulG1-buLHpswMpnNkTBzx3YEasO_)
+
+
+
+
+### GeoPyTool app for macOS:
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1msLDAQgtWZFptxjgF_GL6Q)
+
+[Google Drive](https://drive.google.com/open?id=10KBuMxwvB18k9vq5E_On5Vr6W6nvilvJ)
+
+
+
+## Older Version
+>## 上一个版本
+
+
+### GeoPyTool pack for Windows:
 [Baidu Download 百度网盘](https://pan.baidu.com/s/141X5Ve5Yh2eSCC6WLnuPLw)
 
 
@@ -16,10 +39,10 @@ Tags: Doc,English,Chinese
 
 
 
-# GeoPyTool app for macOS:
+### GeoPyTool app for macOS:
 [Baidu Download 百度网盘](https://pan.baidu.com/s/12ErZuNBnn5MudQWFl8tKHg)
 
-[Googel Drive](https://drive.google.com/open?id=1d9V2EfKU2NrwJtrHPFZ1ZcrXUlWhL76k)
+[Google Drive](https://drive.google.com/open?id=1d9V2EfKU2NrwJtrHPFZ1ZcrXUlWhL76k)
 
 
 
@@ -27,3 +50,4 @@ Tags: Doc,English,Chinese
 
 如果你希望支持 GeoPyTool 的开发，可以扫描下面的二维码进行捐助。
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WeChatQrCode.png)
+
