@@ -1,5 +1,5 @@
 Title: Download
-Date: 2018-3-16 0:00
+Date: 2018-3-20 0:00
 Category: Doc
 Tags: Doc, English, Chinese
 
@@ -9,6 +9,24 @@ Tags: Doc, English, Chinese
 ## Latest Version
 >## 最新版本
 
+
+### GeoPyTool pack for Windows:
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1fh-btO2fscqOmMM79pqXUg)
+
+
+[Google Drive](https://drive.google.com/open?id=1Qx9daV2RU5Uj-TkKgh19HVGCF_gI1gfo)
+
+
+
+
+### GeoPyTool app for macOS:
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1Vv4hGCfhYdCCxvQp6ziqXA)
+
+[Google Drive](https://drive.google.com/open?id=1hvEqLsdA7HFH_1ourfzgVEmrPvui6jBR)
+
+
+## Older Version
+>## 上一个版本
 
 ### GeoPyTool pack for Windows:
 [Baidu Download 百度网盘](https://pan.baidu.com/s/1IY8y4WmkWytWkytN1Wd2gw)
@@ -23,25 +41,6 @@ Tags: Doc, English, Chinese
 [Baidu Download 百度网盘](https://pan.baidu.com/s/1ODQdhd6cdpO-BQm_TyiYtQ)
 
 [Google Drive](https://drive.google.com/open?id=102r0BpKCrhaWyuAx7Mim3ymXqqCTRWZv)
-
-
-
-## Older Version
->## 上一个版本
-
-### GeoPyTool pack for Windows:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1r3Vqf4xwvK7wi6ibiXWM7w)
-
-
-[Google Drive](https://drive.google.com/open?id=1h2Q1ulG1-buLHpswMpnNkTBzx3YEasO_)
-
-
-
-
-### GeoPyTool app for macOS:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1msLDAQgtWZFptxjgF_GL6Q)
-
-[Google Drive](https://drive.google.com/open?id=10KBuMxwvB18k9vq5E_On5Vr6W6nvilvJ)
 
 
 
