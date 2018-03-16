@@ -34,6 +34,8 @@ from geopytool.Bivariate import Bivariate
 from geopytool.Harker import Harker
 #from geopytool.Magic import Magic
 
+from geopytool.Clastic import Clastic
+
 from geopytool.IsoTope import IsoTope
 
 from geopytool.MultiDimension import MultiDimension
@@ -181,6 +183,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuStructure = QtWidgets.QMenu(self.menubar)
         self.menuStructure.setObjectName('menuStructure')
 
+        self.menuSedimentary = QtWidgets.QMenu(self.menubar)
+        self.menuSedimentary.setObjectName('menuSedimentary')
+
         self.menuTesting = QtWidgets.QMenu(self.menubar)
         self.menuTesting.setObjectName('menuTesting')
 
@@ -288,7 +293,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
-
+        self.actionClastic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'Clastic',self)
+        self.actionClastic.setObjectName("actionClastic")
 
         self.actionXY = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'X-Y',self)
         self.actionXY.setObjectName('actionXY')
@@ -331,8 +337,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuStructure.addAction(self.actionStereo)
         self.menuStructure.addAction(self.actionRose)
-        self.menuStructure.addAction(self.actionQFL)
-        self.menuStructure.addAction(self.actionQmFLt)
+        self.menuSedimentary.addAction(self.actionQFL)
+        self.menuSedimentary.addAction(self.actionQmFLt)
+        self.menuSedimentary.addAction(self.actionClastic)
 
 
         self.menuDIY.addAction(self.actionXY)
@@ -372,6 +379,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menuStructure.menuAction())
         self.menubar.addSeparator()
 
+
+        self.menubar.addAction(self.menuSedimentary.menuAction())
+        self.menubar.addSeparator()
+
+
         self.menubar.addAction(self.menuDIY.menuAction())
         self.menubar.addSeparator()
 
@@ -399,6 +411,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionRose.triggered.connect(self.Rose)
         self.actionQFL.triggered.connect(self.QFL)
         self.actionQmFLt.triggered.connect(self.QmFLt)
+
+        self.actionClastic.triggered.connect(self.Mud)
 
         self.actionCIPW.triggered.connect(self.CIPW)
         self.actionZirconCe.triggered.connect(self.ZirconCe)
@@ -468,6 +482,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuStructure.setTitle(_translate('MainWindow',u'Structure'))
 
+        self.menuSedimentary.setTitle(_translate('MainWindow', u'Sedimentary'))
+
 
         self.menuTesting.setTitle(_translate('MainWindow',u'Testing Functions'))
 
@@ -495,6 +511,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionRose.setText(_translate('MainWindow',u'Rose'))
         self.actionQFL.setText(_translate('MainWindow',u'QFL'))
         self.actionQmFLt.setText(_translate('MainWindow',u'QmFLt'))
+        self.actionClastic.setText(_translate('MainWindow',u'Clastic'))
 
         self.actionCIPW.setText(_translate('MainWindow',u'CIPW'))
 
@@ -564,6 +581,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.setTitle(_translate('MainWindow', u'Geochemistry'))
 
         self.menuStructure.setTitle(_translate('MainWindow', u'Structure'))
+        self.menuSedimentary.setTitle(_translate('MainWindow', u'Sedimentary'))
 
         self.menuTesting.setTitle(_translate('MainWindow', u'Testing Functions'))
 
@@ -588,6 +606,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionRose.setText(_translate('MainWindow', u'Rose'))
         self.actionQFL.setText(_translate('MainWindow', u'QFL'))
         self.actionQmFLt.setText(_translate('MainWindow', u'QmFLt'))
+        self.actionClastic.setText(_translate('MainWindow',u'Clastic'))
 
         self.actionCIPW.setText(_translate('MainWindow', u'CIPW'))
 
@@ -1048,6 +1067,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         try:
             self.qmfltpop.Tri()
             self.qmfltpop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
+    def Mud(self):
+        self.mudpop = Clastic(df=self.model._df)
+        try:
+            self.mudpop.Tri()
+            self.mudpop.show()
         except(KeyError):
             self.ErrorEvent()
 

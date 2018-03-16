@@ -4,7 +4,7 @@ from geopytool.CustomClass import *
 
 
 
-class MudStone(AppForm, Tool):
+class Clastic(AppForm, Tool):
     _df = pd.DataFrame()
     _changed = False
 
@@ -14,9 +14,9 @@ class MudStone(AppForm, Tool):
     Tags = []
 
     Label = [u'Clay', u'Sand', u'Silt']
-    LabelPosition = [(48, 50 * np.sqrt(3) + 2),
-                     (-13, -2),
-                     (104, -1)]
+    LabelPosition = [(45, 50 * np.sqrt(3) + 2),
+                     (-15, -5),
+                     (104, -5)]
 
     Labels = [u'Y',
               u'SY',
@@ -115,9 +115,13 @@ class MudStone(AppForm, Tool):
                                  X_offset=self.Offset[i][0], Y_offset=self.Offset[i][1]))
 
     def create_main_frame(self):
+
+        self.resize(1000,600)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((15.0, 9.0), dpi=self.dpi)
+        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.6, top=0.9)
+
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
         self.axes = self.fig.add_subplot(111)
@@ -174,7 +178,7 @@ class MudStone(AppForm, Tool):
         for i in range(len(self.LabelPosition)):
             self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
                                textcoords='offset points',
-                               fontsize=16, )
+                               fontsize=9, )
         # 20间隔点坐标：
         Gap20 = [(20, 0, 80),
                  (40, 0, 60),
@@ -270,7 +274,7 @@ class MudStone(AppForm, Tool):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
 
-            TPoints.append(TriPoint((raw.at[i, 'sand'], raw.at[i, 'silt'], raw.at[i, 'clay']), Size=raw.at[i, 'Size'],
+            TPoints.append(TriPoint((raw.at[i, 'Sand'], raw.at[i, 'Silt'], raw.at[i, 'Clay']), Size=raw.at[i, 'Size'],
                                     Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                     Label=TmpLabel))
 
@@ -289,10 +293,11 @@ class MudStone(AppForm, Tool):
                                    textcoords='offset points',
                                    fontsize=i.FontSize, color='grey', alpha=0.8)
 
+
+
         if (self.legend_cb.isChecked()):
-            # a = int(self.slider.value())
-            # self.axes.legend(loc=a, fontsize=9,bbox_to_anchor=(1.5, 0.5))
-            self.axes.legend(loc=4, prop=fontprop, bbox_to_anchor=(1.1, 0.5))
+            self.axes.legend(bbox_to_anchor=(1, 1), loc=2, borderaxespad=0, prop=fontprop)
+
 
         self.canvas.draw()
 

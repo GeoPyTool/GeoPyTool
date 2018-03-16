@@ -133,7 +133,7 @@ class QFL(AppForm, Tool):
         for i in range(len(self.LabelPosition)):
             self.axes.annotate(self.Label[i], xy=(self.LabelPosition[i]), xycoords='data', xytext=(0, 0),
                                textcoords='offset points',
-                               fontsize=16, )
+                               fontsize=9, )
 
         a = [TriLine(Points=[(85, 15, 0), (0, 3, 97)], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                      Label=''),
