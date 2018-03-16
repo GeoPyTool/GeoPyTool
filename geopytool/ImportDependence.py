@@ -46,6 +46,7 @@ from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer, Binarizer, OneHotEncoder, Imputer,  PolynomialFeatures, FunctionTransformer
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_selection import VarianceThreshold, SelectKBest, chi2
+from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.decomposition import PCA, FastICA
 from sklearn import datasets
 from scipy.stats import mode
@@ -60,6 +61,8 @@ from numpy import vstack, array, nan, mean, median, ptp, var, std, cov, corrcoef
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.font_manager import ttfFontProperty
 from matplotlib.figure import Figure
+from matplotlib import colors
+from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 from matplotlib import ft2font
