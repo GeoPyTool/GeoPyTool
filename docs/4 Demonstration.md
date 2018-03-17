@@ -70,6 +70,8 @@ Notice that the first Letters must be in UPPER case.
 
 The data file used here is quite complicated. Please follow the guidance shown in the picture below.
 
+In the template data file for this calculation, the row with the **Base** symbol needs to be filled with the bulk REE data, and the **zircon** rows and **Label** column is where the REE data is input. The **Zr** value for zircon should be set as the **“constant”** **497555**. The **“use”** row tells the program to use the data in the row in the calculation if set as yes or excluded if set at no, but all of the data will be plotted on the graph generated. The Ri and Ro values are from Ballard et al. (2002) where La is set as No as the default setting, because of the anomaly of La in their data.
+
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/ZriconCeCalculation.png)
 
 
