@@ -2,7 +2,6 @@
 
 
 ##### author: cycleuser
-##### email: cycleuser@cycleuser.org
 ##### Copyright 2017 cycleuser
 
 #### IF you want to run GeoPyTool, just take a look at the [Installation Document](http://geopytool.com/installation.html).DO NOT Download this repo and try to run directly, because that is not how it works!!!!!
@@ -71,3 +70,5 @@ GeoPyTool 包含了一些常用的传统方法，也实现了一些近年来新�
 
 如果你希望支持 GeoPyTool 的开发，可以扫描下面的二维码进行捐助。
 ![](https://raw.githubusercontent.com/chinageology/GeoPyTool/master/img/WeChatQrCode.png)
+
+
