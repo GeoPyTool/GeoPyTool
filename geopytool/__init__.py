@@ -54,6 +54,8 @@ from geopytool.XY import XY
 from geopytool.XYZ import XYZ
 from geopytool.ZirconCe import ZirconCe
 
+from geopytool.Magic import Magic
+
 # Create a custom "QProxyStyle" to enlarge the QMenu icons
 #-----------------------------------------------------------
 class MyProxyStyle(QProxyStyle):
@@ -299,11 +301,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXY = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'X-Y',self)
         self.actionXY.setObjectName('actionXY')
 
-        self.actionXYZ = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'Triangular',self)
+        self.actionXYZ = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'Ternary',self)
         self.actionXYZ.setObjectName('actionXYZ')
 
-        #self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Magic',self)
-        #self.actionMagic.setObjectName('actionMagic')
+        self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Magic',self)
+        self.actionMagic.setObjectName('actionMagic')
 
         self.actionRbSrIsoTope = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Rb-Sr IsoTope',self)
         self.actionRbSrIsoTope.setObjectName('actionRbSrIsoTope')
@@ -344,11 +346,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuDIY.addAction(self.actionXY)
         self.menuDIY.addAction(self.actionXYZ)
+        self.menuDIY.addAction(self.actionCluster)
+        self.menuDIY.addAction(self.actionAuto)
 
-        self.menuTesting.addAction(self.actionAuto)
 
 
-        self.menuTesting.addAction(self.actionCluster)
 
 
 
@@ -441,7 +443,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
-        #self.actionMagic.triggered.connect(self.Magic)
+        self.actionMagic.triggered.connect(self.Magic)
         self.actionRbSrIsoTope.triggered.connect(self.RbSrIsoTope)
         self.actionSmNdIsoTope.triggered.connect(self.SmNdIsoTope)
 
@@ -526,7 +528,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXY.setText(_translate('MainWindow',u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow',u'X-Y-Z plot'))
 
-        #self.actionMagic.setText(_translate('MainWindow',u'Magic'))
+        self.actionMagic.setText(_translate('MainWindow',u'Magic'))
         self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
         self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
 
@@ -621,7 +623,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXY.setText(_translate('MainWindow', u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
 
-        #self.actionMagic.setText(_translate('MainWindow', u'Magic'))
+        self.actionMagic.setText(_translate('MainWindow', u'Magic'))
         self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
         self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
 
@@ -1131,7 +1133,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-    '''    
+
     def Magic(self):
         self.magicpop = Magic(df=self.model._df)
         try:
@@ -1139,7 +1141,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.magicpop.show()
         except(KeyError):
             self.ErrorEvent()
-    '''
+
 
 
     def MultiDimension(self):
@@ -1287,7 +1289,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.cipwsilent.newdf2.to_csv(self.DataLocation +'volume.csv', sep=',', encoding='utf-8')
             self.cipwsilent.newdf3.to_csv(self.DataLocation +'calculated.csv', sep=',', encoding='utf-8')
 
-    def Auto(self):
+    def LastAuto(self):
+
+        self.AutoResult=pd.DataFrame()
 
         FileOutput, ok1 = QFileDialog.getSaveFileName(self,
                                                       '文件保存',
@@ -1384,6 +1388,107 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             pass
 
+    def Auto(self):
+
+        AutoResult=pd.DataFrame()
+        TotalResult=[]
+
+        FileOutput, ok1 = QFileDialog.getSaveFileName(self,
+                                                      '文件保存',
+                                                      'C:/',
+                                                      'PDF Files (*.pdf)')  # 数据文件保存输出
+        if (FileOutput != ''):
+
+            pdf = matplotlib.backends.backend_pdf.PdfPages(FileOutput)
+
+
+            cipwsilent = CIPW(df=self.model._df)
+            cipwsilent.CIPW()
+            cipwsilent.QAPFsilent()
+            # TotalResult.append(cipwsilent.OutPutFig)
+            pdf.savefig(cipwsilent.OutPutFig)
+
+            # AutoResult = pd.concat([cipwsilent.OutPutData, AutoResult], axis=1)
+
+            tassilent = TAS(df=self.model._df)
+
+            if (tassilent.Check() == True):
+                tassilent.TAS()
+                tassilent.GetResult()
+                # TotalResult.append(tassilent.OutPutFig)
+
+                pdf.savefig(tassilent.OutPutFig)
+
+                AutoResult = pd.concat([tassilent.OutPutData, AutoResult], axis=1)
+
+            reesilent = REE(df=self.model._df)
+
+            if (reesilent.Check() == True):
+                reesilent.REE()
+                reesilent.GetResult()
+                # TotalResult.append(reesilent.OutPutFig)
+
+                pdf.savefig(reesilent.OutPutFig)
+
+                AutoResult = pd.concat([reesilent.OutPutData, AutoResult], axis=1)
+
+            tracesilent = Trace(df=self.model._df)
+
+            if (tracesilent.Check() == True):
+                tracesilent.Trace()
+                tracesilent.GetResult()
+                TotalResult.append(tracesilent.OutPutFig)
+
+                pdf.savefig(tracesilent.OutPutFig)
+
+            harkersilent = Harker(df=self.model._df)
+
+            if (harkersilent.Check() == True):
+                harkersilent.Harker()
+                harkersilent.GetResult()
+                TotalResult.append(harkersilent.OutPutFig)
+
+                pdf.savefig(harkersilent.OutPutFig)
+
+            pearcesilent = Pearce(df=self.model._df)
+
+            if (pearcesilent.Check() == True):
+                pearcesilent.Pearce()
+                pearcesilent.GetResult()
+                TotalResult.append(pearcesilent.OutPutFig)
+
+                pdf.savefig(pearcesilent.OutPutFig)
+
+            AutoResult = AutoResult.T.groupby(level=0).first().T
+
+            print(AutoResult)
+
+            pdf.close()
+
+            AutoResult = AutoResult.set_index('Label')
+
+            AutoResult = pd.concat([cipwsilent.newdf3, AutoResult], axis=1)
+
+
+
+
+
+
+
+            if ('pdf' in FileOutput):
+                FileOutput = FileOutput[0:-4]
+
+            AutoResult.to_csv(FileOutput + '-chemical-info.csv', sep=',', encoding='utf-8')
+            cipwsilent.newdf.to_csv(FileOutput + '-cipw-mole.csv', sep=',', encoding='utf-8')
+            cipwsilent.newdf1.to_csv(FileOutput + '-cipw-mass.csv', sep=',', encoding='utf-8')
+            cipwsilent.newdf2.to_csv(FileOutput + '-cipw-volume.csv', sep=',', encoding='utf-8')
+
+
+        else:
+
+            pass
+
+        AutoResult=pd.DataFrame()
 
 def main():
     import sys

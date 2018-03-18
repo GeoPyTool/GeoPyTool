@@ -726,19 +726,62 @@ class XY(AppForm):
 
         raw = self._df
 
+        dataframe = self._df
+        ItemsAvalibale = self._df.columns.values.tolist()
+        ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width','Label']
 
+        for i in ItemsToTest:
+            if i in ItemsAvalibale:
+                dataframe = dataframe.drop(i, 1)
+
+        ItemsAvalibale = dataframe.columns.values.tolist()
+
+
+
+
+
+        a = int(self.x_element.value())
+        b = int(self.y_element.value())
 
         if self.LabelSetted == True:
             if(self.x_seter.text()!=''):
-                a = int(self.x_seter.text())
+                try:
+                    a = int(self.x_seter.text())
+                except(ValueError):
+                    atmp=self.x_seter.text()
+                    try:
+                        if atmp in ItemsAvalibale:
+                            a= ItemsAvalibale.index(atmp)
+                            print(a)
+                    except(ValueError):
+                        pass
+                    pass
             else:
                 a = int(self.x_element.value())
 
 
             if (self.y_seter.text() != ''):
-                b = int(self.y_seter.text())
+                try:
+                    b = int(self.y_seter.text())
+                except(ValueError):
+                    btmp=self.y_seter.text()
+                    try:
+                        if btmp in ItemsAvalibale:
+                            b= ItemsAvalibale.index(btmp)
+                            print(b)
+                    except(ValueError):
+                        pass
+                    pass
             else:
                 b = int(self.y_element.value())
+
+
+            if b> len(ItemsAvalibale)-1:
+                b = int(self.y_element.value())
+            if a> len(ItemsAvalibale)-1:
+                a = int(self.x_element.value())
+
 
         if self.ValueChoosed == True:
             a = int(self.x_element.value())
@@ -775,11 +818,11 @@ class XY(AppForm):
             else:
                 self.axes.imshow(self.img, interpolation='nearest', aspect='auto')
 
-        self.axes.set_xlabel(self.items[a])
-        self.x_element_label.setText(self.items[a])
+        self.axes.set_xlabel(ItemsAvalibale[a])
+        self.x_element_label.setText(ItemsAvalibale[a])
 
-        self.axes.set_ylabel(self.items[b])
-        self.y_element_label.setText(self.items[b])
+        self.axes.set_ylabel(ItemsAvalibale[b])
+        self.y_element_label.setText(ItemsAvalibale[b])
 
         PointLabels = []
 
@@ -806,7 +849,7 @@ class XY(AppForm):
             x, y = 0, 0
             xuse, yuse = 0, 0
 
-            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+            x, y = dataframe.at[i, self.items[a]], dataframe.at[i, self.items[b]]
 
 
 
@@ -831,14 +874,14 @@ class XY(AppForm):
 
                 if (self.logx_cb.isChecked()):
                     xuse = math.log(x, 10)
-                    self.xlabel = 'log10 ' + self.xlabel
+                    self.xlabel = '$log10$( ' + self.xlabel+')'
 
                     self.axes.set_xlabel(self.xlabel)
 
                 if (self.logy_cb.isChecked()):
                     yuse = math.log(y, 10)
 
-                    self.ylabel = 'log10 ' + self.ylabel
+                    self.ylabel = '$log10$( ' + self.ylabel+')'
 
                     self.axes.set_ylabel(self.ylabel)
 

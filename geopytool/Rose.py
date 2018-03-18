@@ -244,7 +244,16 @@ class Rose(AppForm):
             self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
 
-        list2 = [str(x) for x in range(0, int(maxuse + 1), int((maxuse + 1) / 7))]
+
+        list2= list1
+
+
+        print(maxuse + 1)
+
+        try:
+            list2 = [str(x) for x in range(0, int(maxuse + 1), int((maxuse + 1.0) / 7.0))]
+        except(ValueError):
+            pass
         list2.reverse()
         self.axes.set_rgrids(list1, list2)
 
@@ -338,7 +347,14 @@ class Rose(AppForm):
             self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
 
-        list2 = [str(x) for x in range(0, int(maxuse + 1), int((maxuse + 1) / 7))]
+        list2= list1
+
+        try:
+            list2 = [str(x) for x in range(0, int(maxuse + 1), int((maxuse + 1) / 7))]
+        except(ValueError):
+            pass
+
+
         list2.reverse()
 
         self.axes.set_rgrids(list1, list2)

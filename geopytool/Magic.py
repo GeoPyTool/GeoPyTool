@@ -706,95 +706,97 @@ class Magic(AppForm):
 
         positions = np.vstack([xx.ravel(), yy.ravel()])
         values = np.vstack([raw[self.items[a]], raw[self.items[b]]])
-        kernel = st.gaussian_kde(values)
-        f = np.reshape(kernel(positions).T, xx.shape)
-        data = f
-        img = pg.ImageItem(data)
 
-        TargetWidth = img.width()
-        TargetHeight = img.height()
 
-        OriginalWidth = abs(xmax - xmin)
-        OriginalHeight = abs(ymax - ymin)
-
-        xscale = TargetWidth / OriginalWidth
-        yscale = TargetHeight / OriginalHeight
-
-        XtoFitUsed = []
-        YtoFitUsed = []
-
-        XlineUsed = []
-        YlineUsed = []
-
-        for i in range(len(XtoFit)):
-            XtoFitUsed.append((XtoFit[i] - xmin) * xscale)
-            YtoFitUsed.append((YtoFit[i] - ymin) * yscale)
-
-        for i in range(len(Xline)):
-            XlineUsed.append((Xline[i] - xmin) * xscale)
-            YlineUsed.append((Yline[i] - ymin) * yscale)
-
-        Xoriginal = np.arange(xmin, xmax, (xmax - xmin) / 10)
-        Yoriginal = np.arange(ymin, ymax, (ymax - ymin) / 10)
-
-        XonPlot = self.GetASequence(tail=self.ShapeGroups)
-        YonPlot = self.GetASequence(tail=self.ShapeGroups)
-
-        XonStick = []
-        YonStick = []
-
-        for i in range(len(XonPlot)):
-            XonStick.append([XonPlot[i], Xoriginal[i]])
-            YonStick.append([YonPlot[i], Yoriginal[i]])
+        fadeable =True
+        try:
+            kernel = st.gaussian_kde(values)
+        except():
+            fadeable=False
             pass
 
-        self.ax.setTicks([XonStick])
-        self.ay.setTicks([YonStick])
+        if fadeable:
+
+            if (self.shape_cb.isChecked()):
 
 
+                f = np.reshape(kernel(positions).T, xx.shape)
+                data = f
+                img = pg.ImageItem(data)
+
+                ## generate empty curves
+                curves = []
+
+                levels = np.linspace(data.min(), data.max(), 10)
+                for i in range(len(levels)):
+                    v = levels[i]
+                    ## generate isocurve with automatic color selection
+                    c = pg.IsocurveItem(level=v, pen=(i, len(levels) * 1.5))
+                    c.setParentItem(img)  ## make sure isocurve is always correctly displayed over image
+                    c.setZValue(10)
+                    curves.append(c)
+
+                imgLevels = (data.min(), data.max() * 2)
+
+                img.setImage(data, levels=imgLevels)
+
+                img.setScaledMode()
+
+                for c in curves:
+                    c.setData(data)
+
+                self.view.addItem(img)
+                TargetWidth = img.width()
+                TargetHeight = img.height()
+
+                OriginalWidth = abs(xmax - xmin)
+                OriginalHeight = abs(ymax - ymin)
+
+                xscale = TargetWidth / OriginalWidth
+                yscale = TargetHeight / OriginalHeight
+
+                XtoFitUsed = []
+                YtoFitUsed = []
+
+                XlineUsed = []
+                YlineUsed = []
+
+                for i in range(len(XtoFit)):
+                    XtoFitUsed.append((XtoFit[i] - xmin) * xscale)
+                    YtoFitUsed.append((YtoFit[i] - ymin) * yscale)
+
+                for i in range(len(Xline)):
+                    XlineUsed.append((Xline[i] - xmin) * xscale)
+                    YlineUsed.append((Yline[i] - ymin) * yscale)
+
+                Xoriginal = np.arange(xmin, xmax, (xmax - xmin) / 10)
+                Yoriginal = np.arange(ymin, ymax, (ymax - ymin) / 10)
+
+                XonPlot = self.GetASequence(tail=self.ShapeGroups)
+                YonPlot = self.GetASequence(tail=self.ShapeGroups)
+
+                XonStick = []
+                YonStick = []
+
+                for i in range(len(XonPlot)):
+                    XonStick.append([XonPlot[i], Xoriginal[i]])
+                    YonStick.append([YonPlot[i], Yoriginal[i]])
+                    pass
+
+                self.ax.setTicks([XonStick])
+                self.ay.setTicks([YonStick])
+
+                if (self.Marker==1):
+                    self.view.plot(XtoFitUsed, YtoFitUsed, pen=None, symbol=Markers[i], symbolPen=None, symbolSize=3,
+                          symbolBrush=(255, 255, 255, 80), name= PointLabels)
+                    self.Marker =0
+                else:
+                    self.view.plot(XtoFitUsed, YtoFitUsed, pen=None, symbol=Markers[i], symbolPen=None, symbolSize=3,
+                          symbolBrush=(255, 255, 255, 80))
 
 
+                if (self.fit_cb.isChecked()):
+                    #self.axes.plot(Xline, Yline, 'b-')
+                    self.view.plot(XlineUsed, YlineUsed, pen='b')
 
-        if (self.shape_cb.isChecked()):
-
-            ## generate empty curves
-            curves = []
-
-            levels = np.linspace(data.min(), data.max(), 10)
-            for i in range(len(levels)):
-                v = levels[i]
-                ## generate isocurve with automatic color selection
-                c = pg.IsocurveItem(level=v, pen=(i, len(levels) * 1.5))
-                c.setParentItem(img)  ## make sure isocurve is always correctly displayed over image
-                c.setZValue(10)
-                curves.append(c)
-
-            imgLevels = (data.min(), data.max() * 2)
-
-            img.setImage(data, levels=imgLevels)
-
-            img.setScaledMode()
-
-            for c in curves:
-                c.setData(data)
-
-            self.view.addItem(img)
-            pass
-
-
-
-
-        if (self.Marker==1):
-            self.view.plot(XtoFitUsed, YtoFitUsed, pen=None, symbol=Markers[i], symbolPen=None, symbolSize=3,
-                  symbolBrush=(255, 255, 255, 80), name= PointLabels)
-            self.Marker =0
-        else:
-            self.view.plot(XtoFitUsed, YtoFitUsed, pen=None, symbol=Markers[i], symbolPen=None, symbolSize=3,
-                  symbolBrush=(255, 255, 255, 80))
-
-
-        if (self.fit_cb.isChecked()):
-            #self.axes.plot(Xline, Yline, 'b-')
-            self.view.plot(XlineUsed, YlineUsed, pen='b')
-
-            pass
+                    pass

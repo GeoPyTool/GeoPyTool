@@ -1,8 +1,6 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
-import scipy
-import scipy.cluster.hierarchy as sch
 
 class Cluster(AppForm):
     Lines = []
