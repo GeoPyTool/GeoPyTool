@@ -10,7 +10,7 @@ Tags: Doc,English
 ## Open and Import Data
 To start a plot or calculation, raw data file should be imported to GeoPyTool first.
 
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/ImportData.png)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/01.ImportData.png?raw=true)
 
 
 The Data file can be Xlsx/Xls or CSV.
@@ -33,6 +33,9 @@ After setting up, you can just click to use the function you need.
 ## TAS/REE/Trace Elements
 
 These functions are quite commonly used and the details are shown as the picture below.
+
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/02.Save%20Image.png?raw=true)
+
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/TAS-REE-Trace.png)
 
 
@@ -93,5 +96,18 @@ But you must understand the original plot first and know the mathematical settin
 For example, as the picture below shown,  the original diagram used Nb and Th, normalized by N-MORB(Sun and McDonough 1989), and then used the Log function of these two items. So we do the same setting up as shown by the picture. The Left/Right/Down/Up limit of the original diagram are 0.01/100/0.01/1000, so we need to use the Log function and find out that we should set the Left/Right/Down/Up limit to be -2/2/-2/3. If you can not understand why, please take a rest and good bye.
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/UserDefinedXY.png)
+
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/03.LoadBaseMap.png?raw=true)
+
+
+## 3D and Statistics
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/04.Statistical.png?raw=true)
+
+
+## Cluster
+
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/05.Cluster.png?raw=true)
+
+
 
 
