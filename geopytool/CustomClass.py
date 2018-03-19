@@ -1,4 +1,4 @@
-version = '0.7.65'
+version = '0.7.66'
 
 date = '2018-3-22'
 
@@ -7,7 +7,7 @@ dpi = 128
 
 from geopytool.ImportDependence import *
 
-class GrowingTextEdit(QtGui.QTextEdit):
+class GrowingTextEdit(QtWidgets.QTextEdit):
 
     def __init__(self, *args, **kwargs):
         super(GrowingTextEdit, self).__init__(*args, **kwargs)

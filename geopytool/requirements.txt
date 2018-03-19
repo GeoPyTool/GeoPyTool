@@ -10,6 +10,4 @@ matplotlib==2.1.0
 BeautifulSoup4==4.5.1
 requests==2.18.4
 PyQt5==5.9.1
-scikit-image==0.12.3
 scikit-learn==0.19.1
-pyqtgraph==0.10.0

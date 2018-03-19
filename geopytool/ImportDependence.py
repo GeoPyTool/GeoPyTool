@@ -32,7 +32,6 @@ import random
 import pandas as pd
 import os
 import numpy as np
-import pyqtgraph as pg
 import matplotlib.pyplot as plt
 from matplotlib import path
 import matplotlib.patches as patches

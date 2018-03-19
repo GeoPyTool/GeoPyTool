@@ -39,7 +39,6 @@ from geopytool.Clastic import Clastic
 from geopytool.IsoTope import IsoTope
 
 from geopytool.MultiDimension import MultiDimension
-from geopytool.GLMultiDimension import GLMultiDimension
 from geopytool.Pearce import Pearce
 from geopytool.QAPF import QAPF
 from geopytool.QFL import QFL
@@ -188,8 +187,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuSedimentary = QtWidgets.QMenu(self.menubar)
         self.menuSedimentary.setObjectName('menuSedimentary')
 
-        self.menuTesting = QtWidgets.QMenu(self.menubar)
-        self.menuTesting.setObjectName('menuTesting')
 
         self.menuDIY = QtWidgets.QMenu(self.menubar)
         self.menuDIY.setObjectName('menuDIY')
@@ -289,9 +286,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMultiDimension = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'MultiDimension',self)
         self.actionMultiDimension.setObjectName('actionMultiDimension')
 
-        self.actionGLMultiDimension = QtWidgets.QAction(QIcon(LocationOfMySelf+'/power.png'),u'MultiDimension',self)
-        self.actionGLMultiDimension.setObjectName('actionGLMultiDimension')
-
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
@@ -303,9 +297,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionXYZ = QtWidgets.QAction(QIcon(LocationOfMySelf+'/triangular.png'),u'Ternary',self)
         self.actionXYZ.setObjectName('actionXYZ')
-
-        self.actionMagic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Magic',self)
-        self.actionMagic.setObjectName('actionMagic')
 
         self.actionRbSrIsoTope = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'Rb-Sr IsoTope',self)
         self.actionRbSrIsoTope.setObjectName('actionRbSrIsoTope')
@@ -320,6 +311,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
 
+        self.menuGeoChem.addAction(self.actionAuto)
         self.menuGeoChem.addAction(self.actionTAS)
         self.menuGeoChem.addAction(self.actionTrace)
         self.menuGeoChem.addAction(self.actionRee)
@@ -347,17 +339,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuDIY.addAction(self.actionXY)
         self.menuDIY.addAction(self.actionXYZ)
         self.menuDIY.addAction(self.actionCluster)
-        self.menuDIY.addAction(self.actionAuto)
+        self.menuDIY.addAction(self.actionMultiDimension)
 
 
 
-
-
-
-
-        self.menuTesting.addAction(self.actionMultiDimension)
-        self.menuTesting.addAction(self.actionGLMultiDimension)
-        #self.menuTesting.addAction(self.actionMagic)
 
         self.menuHelp.addAction(self.actionCnWeb)
         self.menuHelp.addAction(self.actionEnWeb)
@@ -390,8 +375,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addSeparator()
 
 
-        self.menubar.addAction(self.menuTesting.menuAction())
-        self.menubar.addSeparator()
 
 
         self.menubar.addAction(self.menuHelp.menuAction())
@@ -425,7 +408,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.actionMultiDimension.triggered.connect(self.MultiDimension)
-        self.actionGLMultiDimension.triggered.connect(self.GLMultiDimension)
 
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
@@ -443,7 +425,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionXY.triggered.connect(self.XY)
         self.actionXYZ.triggered.connect(self.XYZ)
-        self.actionMagic.triggered.connect(self.Magic)
         self.actionRbSrIsoTope.triggered.connect(self.RbSrIsoTope)
         self.actionSmNdIsoTope.triggered.connect(self.SmNdIsoTope)
 
@@ -487,7 +468,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuSedimentary.setTitle(_translate('MainWindow', u'Sedimentary'))
 
 
-        self.menuTesting.setTitle(_translate('MainWindow',u'Testing Functions'))
 
         self.menuDIY.setTitle(_translate('MainWindow',u'DIY Functions'))
 
@@ -523,12 +503,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCluster.setText(_translate('MainWindow',u'Cluster'))
         self.actionAuto.setText(_translate('MainWindow', u'Auto'))
         self.actionMultiDimension.setText(_translate('MainWindow',u'MultiDimension'))
-        self.actionGLMultiDimension.setText(_translate('MainWindow',u'GLMultiDimension'))
 
         self.actionXY.setText(_translate('MainWindow',u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow',u'X-Y-Z plot'))
 
-        self.actionMagic.setText(_translate('MainWindow',u'Magic'))
         self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
         self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
 
@@ -585,8 +563,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuStructure.setTitle(_translate('MainWindow', u'Structure'))
         self.menuSedimentary.setTitle(_translate('MainWindow', u'Sedimentary'))
 
-        self.menuTesting.setTitle(_translate('MainWindow', u'Testing Functions'))
-
         self.menuDIY.setTitle(_translate('MainWindow', u'DIY Functions'))
 
         self.menuHelp.setTitle(_translate('MainWindow', u'Help'))
@@ -618,12 +594,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCluster.setText(_translate('MainWindow', u'Cluster'))
         self.actionAuto.setText(_translate('MainWindow', u'Auto'))
         self.actionMultiDimension.setText(_translate('MainWindow',u'MultiDimension'))
-        self.actionGLMultiDimension.setText(_translate('MainWindow',u'GLMultiDimension'))
 
         self.actionXY.setText(_translate('MainWindow', u'X-Y plot'))
         self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
 
-        self.actionMagic.setText(_translate('MainWindow', u'Magic'))
         self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
         self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
 
@@ -936,18 +910,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.cipwpop.CIPW()
         self.cipwpop.show()
 
-        '''
-        try:
-            self.cipwpop.CIPW()
-            self.cipwpop.show()
-        except(KeyError):
-            self.ErrorEvent()
-        '''
-
-
-        self.ChemResult = pd.concat([self.cipwpop.OutPutData, self.ChemResult], axis=1)
-
-        self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
 
     def ZirconTiTemp(self):
         self.ztpop = ZirconTiTemp(df=self.model._df)
@@ -988,9 +950,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
 
-        self.ChemResult = pd.concat([self.taspop.OutPutData, self.ChemResult], axis=1)
-        self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
-
 
     def REE(self):
         self.reepop = REE(df=self.model._df)
@@ -1000,8 +959,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-        self.ChemResult=pd.concat([self.reepop.OutPutData, self.ChemResult], axis=1)
-        self.ChemResult = self.ChemResult.T.groupby(level=0).first().T
 
 
 
@@ -1134,16 +1091,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
 
-    def Magic(self):
-        self.magicpop = Magic(df=self.model._df)
-        try:
-            self.magicpop.Magic()
-            self.magicpop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
-
-
     def MultiDimension(self):
         self.mdpop = MultiDimension(df=self.model._df)
         try:
@@ -1152,15 +1099,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-
-
-    def GLMultiDimension(self):
-        self.GLmdpop = GLMultiDimension(df=self.model._df)
-        try:
-            self.GLmdpop.Magic()
-            self.GLmdpop.show()
-        except(KeyError):
-            self.ErrorEvent()
 
     def Tri(self):
         pass
@@ -1390,8 +1328,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def Auto(self):
 
-        AutoResult=pd.DataFrame()
+
         TotalResult=[]
+
+        df = self.model._df
+        AutoResult = 0
 
         FileOutput, ok1 = QFileDialog.getSaveFileName(self,
                                                       '文件保存',
@@ -1399,10 +1340,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                       'PDF Files (*.pdf)')  # 数据文件保存输出
         if (FileOutput != ''):
 
+            AutoResult = pd.DataFrame()
+
             pdf = matplotlib.backends.backend_pdf.PdfPages(FileOutput)
 
 
-            cipwsilent = CIPW(df=self.model._df)
+            cipwsilent = CIPW(df=df)
             cipwsilent.CIPW()
             cipwsilent.QAPFsilent()
             # TotalResult.append(cipwsilent.OutPutFig)
@@ -1410,7 +1353,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             # AutoResult = pd.concat([cipwsilent.OutPutData, AutoResult], axis=1)
 
-            tassilent = TAS(df=self.model._df)
+            tassilent = TAS(df=df)
 
             if (tassilent.Check() == True):
                 tassilent.TAS()
@@ -1421,7 +1364,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 AutoResult = pd.concat([tassilent.OutPutData, AutoResult], axis=1)
 
-            reesilent = REE(df=self.model._df)
+            reesilent = REE(df=df)
 
             if (reesilent.Check() == True):
                 reesilent.REE()
@@ -1432,7 +1375,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 AutoResult = pd.concat([reesilent.OutPutData, AutoResult], axis=1)
 
-            tracesilent = Trace(df=self.model._df)
+            tracesilent = Trace(df=df)
 
             if (tracesilent.Check() == True):
                 tracesilent.Trace()
@@ -1441,7 +1384,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 pdf.savefig(tracesilent.OutPutFig)
 
-            harkersilent = Harker(df=self.model._df)
+            harkersilent = Harker(df=df)
 
             if (harkersilent.Check() == True):
                 harkersilent.Harker()
@@ -1450,7 +1393,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 pdf.savefig(harkersilent.OutPutFig)
 
-            pearcesilent = Pearce(df=self.model._df)
+            pearcesilent = Pearce(df=df)
 
             if (pearcesilent.Check() == True):
                 pearcesilent.Pearce()
@@ -1461,19 +1404,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             AutoResult = AutoResult.T.groupby(level=0).first().T
 
-            print(AutoResult)
+
 
             pdf.close()
 
             AutoResult = AutoResult.set_index('Label')
 
-            AutoResult = pd.concat([cipwsilent.newdf3, AutoResult], axis=1)
+            AutoResult=AutoResult.drop_duplicates()
 
+            print(AutoResult.shape, cipwsilent.newdf3.shape)
 
-
-
-
-
+            try:
+                AutoResult = pd.concat([cipwsilent.newdf3, AutoResult], axis=1)
+            except(ValueError):
+                pass
 
             if ('pdf' in FileOutput):
                 FileOutput = FileOutput[0:-4]
@@ -1482,13 +1426,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             cipwsilent.newdf.to_csv(FileOutput + '-cipw-mole.csv', sep=',', encoding='utf-8')
             cipwsilent.newdf1.to_csv(FileOutput + '-cipw-mass.csv', sep=',', encoding='utf-8')
             cipwsilent.newdf2.to_csv(FileOutput + '-cipw-volume.csv', sep=',', encoding='utf-8')
+            cipwsilent.newdf3.to_csv(FileOutput + '-cipw-index.csv', sep=',', encoding='utf-8')
+
 
 
         else:
-
             pass
 
-        AutoResult=pd.DataFrame()
+
+
 
 def main():
     import sys
