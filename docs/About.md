@@ -4,7 +4,7 @@ Category: Doc
 Tags: Doc,English,Chinese
 
 # Welcome to GeoPyTool
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/GeoPyToolNewPic.jpg?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/Samples.png?raw=true)
 
 ## Introduction
 
