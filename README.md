@@ -6,7 +6,8 @@
 
 
 # Welcome to GeoPyTool
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/GeoPyToolNewPic.jpg?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/Samples.png?raw=true)
+
 
 
 #### IF you want to run GeoPyTool, just take a look at the [Installation Document](http://geopytool.com/installation.html).DO NOT Download this repo and try to run directly, because that is not how it works!!!!!
