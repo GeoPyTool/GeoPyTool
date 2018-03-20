@@ -268,22 +268,82 @@ class MultiDimension(AppForm):
 
 
 
+        dataframe = self._df
+        ItemsAvalibale = self._df.columns.values.tolist()
+        ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width','Label']
+
+        for i in ItemsToTest:
+            if i in ItemsAvalibale:
+                dataframe = dataframe.drop(i, 1)
+
+        ItemsAvalibale = dataframe.columns.values.tolist()
+
+
+
+
+
+        a = int(self.x_element.value())
+        b = int(self.y_element.value())
+        c = int(self.z_element.value())
+
         if self.LabelSetted == True:
             if(self.x_seter.text()!=''):
-                a = int(self.x_seter.text())
+                try:
+                    a = int(self.x_seter.text())
+                except(ValueError):
+                    atmp=self.x_seter.text()
+                    try:
+                        if atmp in ItemsAvalibale:
+                            a= ItemsAvalibale.index(atmp)
+                            print(a)
+                    except(ValueError):
+                        pass
+                    pass
             else:
                 a = int(self.x_element.value())
 
 
             if (self.y_seter.text() != ''):
-                b = int(self.y_seter.text())
+                try:
+                    b = int(self.y_seter.text())
+                except(ValueError):
+                    btmp=self.y_seter.text()
+                    try:
+                        if btmp in ItemsAvalibale:
+                            b= ItemsAvalibale.index(btmp)
+                            print(b)
+                    except(ValueError):
+                        pass
+                    pass
             else:
                 b = int(self.y_element.value())
 
             if (self.z_seter.text() != ''):
-                c = int(self.z_seter.text())
+                try:
+                    c = int(self.z_seter.text())
+                except(ValueError):
+                    ctmp=self.z_seter.text()
+                    try:
+                        if ctmp in ItemsAvalibale:
+                            c= ItemsAvalibale.index(ctmp)
+                            print(c)
+                    except(ValueError):
+                        pass
+                    pass
             else:
                 c = int(self.z_element.value())
+
+
+            if a> len(ItemsAvalibale)-1:
+                a = int(self.x_element.value())
+            if b> len(ItemsAvalibale)-1:
+                b = int(self.y_element.value())
+            if c> len(ItemsAvalibale)-1:
+                c = int(self.z_element.value())
+
+
+
 
         if self.ValueChoosed == True:
             a = int(self.x_element.value())
