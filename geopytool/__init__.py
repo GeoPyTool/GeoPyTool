@@ -38,6 +38,8 @@ from geopytool.Clastic import Clastic
 
 from geopytool.IsoTope import IsoTope
 
+from geopytool.KArIsoTope import KArIsoTope
+
 from geopytool.MultiDimension import MultiDimension
 from geopytool.Pearce import Pearce
 from geopytool.QAPF import QAPF
@@ -305,7 +307,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSmNdIsoTope.setObjectName('actionSmNdIsoTope')
 
 
-
+        self.actionKArIsoTope = QtWidgets.QAction(QIcon(LocationOfMySelf+'/magic.png'),u'K-Ar IsoTope',self)
+        self.actionKArIsoTope.setObjectName('actionKArIsoTope')
 
 
         self.menuFile.addAction(self.actionOpen)
@@ -325,6 +328,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionRutileZrTemp)
         self.menuGeoChem.addAction(self.actionRbSrIsoTope)
         self.menuGeoChem.addAction(self.actionSmNdIsoTope)
+        #self.menuGeoChem.addAction(self.actionKArIsoTope)
 
 
 
@@ -427,7 +431,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionXYZ.triggered.connect(self.XYZ)
         self.actionRbSrIsoTope.triggered.connect(self.RbSrIsoTope)
         self.actionSmNdIsoTope.triggered.connect(self.SmNdIsoTope)
-
+        self.actionKArIsoTope.triggered.connect(self.KArIsoTope)
 
 
         self.pushButtonOpen.clicked.connect(self.getDataFile)
@@ -509,7 +513,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
         self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
-
+        self.actionKArIsoTope.setText(_translate('MainWindow',u'K-Ar IsoTope'))
 
 
         self.actionVersionCheck.setText(_translate('MainWindow',u'Version'))
@@ -600,6 +604,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
         self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
+        self.actionKArIsoTope.setText(_translate('MainWindow',u'K-Ar IsoTope'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionCnWeb.setText(_translate('MainWindow', u'Chinese Forum'))
@@ -1073,6 +1078,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
+
+
+
+    def KArIsoTope(self):
+        self.karisotopepop = KArIsoTope(df=self.model._df)
+        try:
+            self.karisotopepop.Magic()
+            self.karisotopepop.show()
+        except(KeyError):
+            self.ErrorEvent()
 
     def XY(self):
         self.xypop = XY(df=self.model._df)

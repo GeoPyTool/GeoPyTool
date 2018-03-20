@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="zh_TW" sourcelanguage="en">
+<!DOCTYPE TS><TS version="2.0" language="zh_TW" sourcelanguage="en">
 <context>
     <name>MainWindow</name>
     <message>
@@ -340,7 +339,7 @@
         <translation>設置項目已添加，請自行調整顏色分類等信息</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="764"/>
+        <location filename="__init__.py" line="813"/>
         <source>Your Data mismatch this Plot.
  Some Items missing?
  Or maybe there are blanks in items names?
@@ -402,13 +401,13 @@
         <source>Sm-Nd IsoTope</source>
         <translation>Sm-Nd 同位素等時線</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="__init__.py" line="813"/>
         <source>Your Data mismatch this Plot.
  Some Items missing?
  Or maybe there are blanks in items names?
  Or there are nonnumerical value？</source>
-        <translation>你的數據不匹配所選用途，請檢查是否正確設置數據分組格式，或者是否有非數值項目。</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
