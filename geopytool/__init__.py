@@ -721,7 +721,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if buttonReply == QMessageBox.Yes:
                     print('Yes clicked.')
-                    self.UpDate
+                    qApp.quit
+                    pip.main(['install', 'geopytool', '--upgrade --no-cache-dir'])
+
+
+                    #self.UpDate
 
                     webbrowser.open('https://github.com/chinageology/GeoPyTool/blob/master/Download.md')
                 else:

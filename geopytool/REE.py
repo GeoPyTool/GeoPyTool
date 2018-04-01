@@ -15,6 +15,9 @@ class REE(AppForm):
     MREE = ['Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho']
     HREE = [ 'Er', 'Tm', 'Yb', 'Lu']
 
+    BinLREE=['La', 'Ce', 'Pr', 'Nd','Sm', 'Eu']
+    BinHREE=['Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
+
     StandardsName = ['C1 Chondrite Sun and McDonough,1989', 'Chondrite Taylor and McLennan,1985',
                      'Chondrite Haskin et al.,1966', 'Chondrite Nakamura,1977', 'MORB Sun and McDonough,1989']
 
@@ -55,6 +58,10 @@ class REE(AppForm):
     LREEList=[]
     MREEList=[]
     HREEList=[]
+
+    BinLREEList = []
+    BinHREEList = []
+
     ALLREEList=[]
 
     def __init__(self, parent=None, df=pd.DataFrame()):
@@ -217,6 +224,8 @@ class REE(AppForm):
             tmpMREEResult = 0
             tmpHREEResult = 0
             tmpWholeResult = 0
+            tmpBinLREE=0
+            tmpBinHREE=0
 
             for j in self.Element:
 
@@ -226,6 +235,12 @@ class REE(AppForm):
                     tmpMREEResult += raw.at[i, j]
                 elif j in self.HREE:
                     tmpHREEResult += raw.at[i, j]
+
+
+                if j in self.BinLREE:
+                    tmpBinLREE += raw.at[i, j]
+                elif j in self.BinHREE:
+                    tmpBinHREE += raw.at[i, j]
 
                 tmpWholeResult+= raw.at[i, j]
 
@@ -247,6 +262,9 @@ class REE(AppForm):
             self.MREEList.append( tmpMREEResult )
             self.HREEList.append( tmpHREEResult )
             self.ALLREEList.append( tmpWholeResult )
+
+            self.BinHREEList.append(tmpBinHREE)
+            self.BinLREEList.append(tmpBinLREE)
 
 
 
@@ -333,9 +351,12 @@ class REE(AppForm):
              '(La/Yb)N':self.LaYbList,
              '(Gd/Yb)N':self.GdYbList,
 
-             'LREE': self.LREEList,
-             'MREE': self.MREEList,
-             'HREE': self.HREEList,
+             'trisection LREE': self.LREEList,
+             'trisection MREE': self.MREEList,
+             'trisection HREE': self.HREEList,
+             'bisection LREE': self.BinLREEList,
+             'bisection HREE': self.BinHREEList,
+
              'ALLREE': self.ALLREEList
              })
 

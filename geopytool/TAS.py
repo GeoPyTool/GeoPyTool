@@ -83,6 +83,12 @@ class TAS(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.TAS)  # int
 
+
+        self.irvine_cb = QCheckBox('&Irvine')
+        self.irvine_cb.setChecked(True)
+        self.irvine_cb.stateChanged.connect(self.TAS)  # int
+
+
         self.tag_cb = QCheckBox('&Tag')
         self.tag_cb.setChecked(True)
         self.tag_cb.stateChanged.connect(self.TAS)  # int
@@ -101,7 +107,7 @@ class TAS(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.result_button, self.tag_cb,
+        for w in [self.save_button, self.result_button, self.tag_cb,self.irvine_cb,
                   self.legend_cb,self.slider_label, self.slider]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
@@ -117,6 +123,16 @@ class TAS(AppForm):
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
+
+
+
+    def Irvine(self,x, a = 39.0, b = 3.9492, c = -2.1111, d = 0.86096, e = -0.15188, f = 0.012030, g = -(3.3539 / 10000)):
+
+        return(a+ b*np.power(x,1) +c*np.power(x,2) +d*np.power(x,3) +e*np.power(x,4) +f*np.power(x,5) +g*np.power(x,6))
+        pass
+
+
+
 
 
     def TAS(self, Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
@@ -136,10 +152,16 @@ class TAS(AppForm):
         self.axes.set_xticks([30,40,50,60,70,80,90])
         self.axes.set_xticklabels([30,40,50,60,70,80,90])
 
+
+
+
         self.axes.set_yticks([0, 5, 10, 15, 20])
         self.axes.set_yticklabels([0, 5, 10, 15, 20])
 
+        self.axes.set_ylim(bottom=0)
 
+        YIrvine= np.arange(0,10.2,0.1)
+        XIrvine= self.Irvine(YIrvine)
 
 
         PointLabels = []
@@ -255,9 +277,15 @@ class TAS(AppForm):
                                   edgecolors='black')
 
 
+            if (self.irvine_cb.isChecked()):
+                self.axes.plot(XIrvine, YIrvine,color= 'black', linewidth=1,
+                           linestyle=':', alpha=0.6,label='Irvine, Barragar 1971\n')
+
+
 
             if (self.legend_cb.isChecked()):
                 self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
+
 
             self.canvas.draw()
 
