@@ -237,7 +237,10 @@ class TAS(AppForm):
         # self.DrawLine([(39.8, 0.35), (65.6, 9.7)])
         # self.DrawLine([(39.2, 0.0), (40.0, 0.4), (43.2, 2.0), (45.0, 2.8), (48.0, 4.0), (50.0, 4.75), (53.7, 6.0),(55.0, 6.4), (60.0, 8.0), (65.0, 8.8)])
 
+        self.Check()
 
+        if self.OutPutCheck==True:
+            pass
 
         if (self._changed):
             df = self._df
@@ -248,6 +251,8 @@ class TAS(AppForm):
                 else:
                     PointLabels.append(df.at[i, 'Label'])
                     TmpLabel = df.at[i, 'Label']
+
+
 
                 x.append(df.at[i, 'SiO2'])
                 y.append(df.at[i, 'Na2O'] + df.at[i, 'K2O'])

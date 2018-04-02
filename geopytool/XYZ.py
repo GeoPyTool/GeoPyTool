@@ -547,47 +547,51 @@ class XYZ(AppForm):
             x, y, z = 0, 0, 0
             xuse, yuse, zuse = 0, 0, 0
 
-            x, y, z = raw.at[i, self.items[a]], raw.at[i, self.items[b]],raw.at[i, self.items[c]]
-
-
-            try:
-                xuse = x
-                yuse = y
-                zuse = z
-
-                self.xlabel = self.items[a]
-                self.ylabel = self.items[b]
-                self.zlabel = self.items[c]
-
-                if (self.Normalize_cb.isChecked()):
-                    self.sentence = self.reference
-
-                    if self.items[a] in self.Element:
-                        self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
-                        xuse = xuse / standardchosen[self.items[a]]
-                    if self.items[b] in self.Element:
-                        self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
-                        yuse = yuse / standardchosen[self.items[b]]
-                    if self.items[c] in self.Element:
-                        self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
-                        zuse = zuse / standardchosen[self.items[c]]
-
-                if (self.logx_cb.isChecked()):
-                    xuse = math.log(x, 10)
-                    self.xlabel = 'log10 ' + self.xlabel
-                if (self.logy_cb.isChecked()):
-                    yuse = math.log(y, 10)
-                    self.ylabel = 'log10 ' + self.ylabel
-                if (self.logy_cb.isChecked()):
-                    zuse = math.log(y, 10)
-                    self.zlabel = 'log10 ' + self.zlabel
-
-
-                TPoints.append(TriPoint((xuse, yuse, zuse), Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'],
-                                        Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel))
-
-            except(ValueError):
+            if pd.isnull(dataframe.at[i, self.items[a]]) or pd.isnull(dataframe.at[i, self.items[b]]) or pd.isnull(raw.at[i, self.items[c]]):
                 pass
+
+            else:
+                x, y, z = raw.at[i, self.items[a]], raw.at[i, self.items[b]],raw.at[i, self.items[c]]
+
+
+                try:
+                    xuse = x
+                    yuse = y
+                    zuse = z
+
+                    self.xlabel = self.items[a]
+                    self.ylabel = self.items[b]
+                    self.zlabel = self.items[c]
+
+                    if (self.Normalize_cb.isChecked()):
+                        self.sentence = self.reference
+
+                        if self.items[a] in self.Element:
+                            self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+                            xuse = xuse / standardchosen[self.items[a]]
+                        if self.items[b] in self.Element:
+                            self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+                            yuse = yuse / standardchosen[self.items[b]]
+                        if self.items[c] in self.Element:
+                            self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
+                            zuse = zuse / standardchosen[self.items[c]]
+
+                    if (self.logx_cb.isChecked()):
+                        xuse = math.log(x, 10)
+                        self.xlabel = 'log10 ' + self.xlabel
+                    if (self.logy_cb.isChecked()):
+                        yuse = math.log(y, 10)
+                        self.ylabel = 'log10 ' + self.ylabel
+                    if (self.logy_cb.isChecked()):
+                        zuse = math.log(y, 10)
+                        self.zlabel = 'log10 ' + self.zlabel
+
+
+                    TPoints.append(TriPoint((xuse, yuse, zuse), Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'],
+                                            Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel))
+
+                except(ValueError):
+                    pass
 
 
 

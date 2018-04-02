@@ -1,6 +1,6 @@
-version = '0.7.74'
+version = '0.7.75'
 
-date = '2018-4-01'
+date = '2018-4-02'
 
 dpi = 128
 #coding:utf-8
@@ -713,6 +713,14 @@ class AppForm(QMainWindow):
         else:
             self.OutPutCheck = False
         return(self.OutPutCheck)
+
+
+
+    def ErrorEvent(self):
+        _translate = QtCore.QCoreApplication.translate
+        reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Plot.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
+
+
 
     def DrawLine(self, l=[(41, 0), (41, 3), (45, 3)], color='grey', linewidth=0.5, linestyle='-', linelabel='',
                  alpha=0.5):

@@ -849,51 +849,60 @@ class XY(AppForm):
             x, y = 0, 0
             xuse, yuse = 0, 0
 
-            x, y = dataframe.at[i, self.items[a]], dataframe.at[i, self.items[b]]
 
-
-
-            try:
-                xuse = x
-                yuse = y
-
-                self.xlabel = self.items[a]
-                self.ylabel = self.items[b]
-
-                if (self.Normalize_cb.isChecked()):
-
-                    self.sentence = self.reference
-
-                    if self.items[a] in self.Element:
-                        self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
-                        xuse = xuse / standardchosen[self.items[a]]
-
-                    if self.items[b] in self.Element:
-                        self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
-                        yuse = yuse / standardchosen[self.items[b]]
-
-                if (self.logx_cb.isChecked()):
-                    xuse = math.log(x, 10)
-                    self.xlabel = '$log10$( ' + self.xlabel+')'
-
-                    self.axes.set_xlabel(self.xlabel)
-
-                if (self.logy_cb.isChecked()):
-                    yuse = math.log(y, 10)
-
-                    self.ylabel = '$log10$( ' + self.ylabel+')'
-
-                    self.axes.set_ylabel(self.ylabel)
-
-                self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                  label=TmpLabel, edgecolors='black')
-
-                XtoFit.append(xuse)
-                YtoFit.append(yuse)
-
-            except(ValueError):
+            if pd.isnull(dataframe.at[i, self.items[a]]) or pd.isnull(dataframe.at[i, self.items[b]]):
                 pass
+
+            else:
+                #if dataframe.at[i, self.items[a]]!='nan' and dataframe.at[i, self.items[b]]!='nan':
+
+
+
+                x, y = dataframe.at[i, self.items[a]], dataframe.at[i, self.items[b]]
+
+
+
+                try:
+                    xuse = x
+                    yuse = y
+
+                    self.xlabel = self.items[a]
+                    self.ylabel = self.items[b]
+
+                    if (self.Normalize_cb.isChecked()):
+
+                        self.sentence = self.reference
+
+                        if self.items[a] in self.Element:
+                            self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+                            xuse = xuse / standardchosen[self.items[a]]
+
+                        if self.items[b] in self.Element:
+                            self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+                            yuse = yuse / standardchosen[self.items[b]]
+
+                    if (self.logx_cb.isChecked()):
+                        xuse = math.log(x, 10)
+                        self.xlabel = '$log10$( ' + self.xlabel+')'
+
+                        self.axes.set_xlabel(self.xlabel)
+
+                    if (self.logy_cb.isChecked()):
+                        yuse = math.log(y, 10)
+
+                        self.ylabel = '$log10$( ' + self.ylabel+')'
+
+                        self.axes.set_ylabel(self.ylabel)
+
+                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel, edgecolors='black')
+
+                    XtoFit.append(xuse)
+                    YtoFit.append(yuse)
+
+                except(ValueError):
+                    pass
 
         self.axes.set_xlabel(self.xlabel)
         self.axes.set_ylabel(self.ylabel)
@@ -915,6 +924,17 @@ class XY(AppForm):
         ResultStr=''
         BoxResultStr=''
         Paralist=[]
+
+        print(XtoFit, '\n', YtoFit)
+
+        if len(XtoFit) != len(YtoFit):
+
+            reply = QMessageBox.information(self, 'Warning','Your Data X and Y have different length!')
+
+            pass
+
+
+
 
         if (int(self.fit_slider.value()) == 0):
             Xline = np.linspace(self.Xleft, self.Xright, 30)
