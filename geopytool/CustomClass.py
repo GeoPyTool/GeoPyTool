@@ -1,6 +1,6 @@
-version = '0.7.75'
+version = '0.7.76'
 
-date = '2018-4-02'
+date = '2018-04-04'
 
 dpi = 128
 #coding:utf-8

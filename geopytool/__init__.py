@@ -914,6 +914,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.model._df.to_excel(DataFileOutput, encoding='utf-8')
 
     def CIPW(self):
+
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
         self.cipwpop = CIPW(df=self.model._df)
 
         self.cipwpop.CIPW()
@@ -921,6 +925,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def ZirconTiTemp(self):
+
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
         self.ztpop = ZirconTiTemp(df=self.model._df)
         try:
             self.ztpop.ZirconTiTemp()
@@ -929,6 +937,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def RutileZrTemp(self):
+
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+
         self.rzpop = RutileZrTemp(df=self.model._df)
         try:
             self.rzpop.RutileZrTemp()
@@ -937,7 +950,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def Cluster(self):
+        print('self.model._df length: ',len(self.model._df))
 
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
         self.clusterpop = Cluster(df=self.model._df)
         self.clusterpop.Cluster()
         self.clusterpop.show()
@@ -951,6 +969,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def TAS(self):
 
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+
         self.taspop = TAS(df=self.model._df)
         try:
             self.taspop.TAS()
@@ -961,6 +983,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def REE(self):
+
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+
         self.reepop = REE(df=self.model._df)
         try:
             self.reepop.REE()
@@ -972,6 +999,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def Trace(self):
+
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.tracepop = Trace(df=self.model._df)
         try:
             self.tracepop.Trace()
@@ -980,6 +1011,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def Pearce(self):
+
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.pearcepop = Pearce(df=self.model._df)
 
         try:
@@ -989,6 +1024,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def Bivariate(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.bivariatepop = Bivariate(df=self.model._df)
         try:
             self.bivariatepop.Bivariate()
@@ -998,6 +1036,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def Harker(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.harkerpop = Harker(df=self.model._df)
         try:
             self.harkerpop.Harker()
@@ -1007,6 +1048,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def Stereo(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.stereopop = Stereo(df=self.model._df)
         try:
             self.stereopop.Stereo()
@@ -1015,6 +1059,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def Rose(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.rosepop = Rose(df=self.model._df)
         try:
             self.rosepop.Rose()
@@ -1023,6 +1070,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def QFL(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.qflpop = QFL(df=self.model._df)
         try:
             self.qflpop.Tri()
@@ -1031,6 +1081,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def QmFLt(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.qmfltpop = QmFLt(df=self.model._df)
         try:
             self.qmfltpop.Tri()
@@ -1039,6 +1092,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def Mud(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.mudpop = Clastic(df=self.model._df)
         try:
             self.mudpop.Tri()
@@ -1047,6 +1103,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def QAPF(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.qapfpop = QAPF(df=self.model._df)
         try:
             self.qapfpop.QAPF()
@@ -1056,6 +1115,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def ZirconCe(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         # print('Opening a new popup window...')
         self.zirconpop = ZirconCe(df=self.model._df)
         try:
@@ -1065,6 +1127,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def RbSrIsoTope(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.rbsrisotopepop = IsoTope(df=self.model._df,description='Rb-Sr IsoTope diagram', xname='87Rb/86Sr',
                  yname='87Sr/86Sr', lambdaItem=1.42e-11, xlabel=r'$^{87}Rb/^{86}Sr$', ylabel=r'$^{87}Sr/^{86}Sr$')
         try:
@@ -1074,6 +1139,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def SmNdIsoTope(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.smndisotopepop = IsoTope(df=self.model._df,description='Sm-Nd IsoTope diagram', xname='147Sm/144Nd',
                  yname= '143Nd/144Nd', lambdaItem=6.54e-12, xlabel=r'$^{147}Sm/^{144}Nd$', ylabel=r'$^{143}Nd/^{144}Nd$')
         try:
@@ -1086,6 +1154,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def KArIsoTope(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.karisotopepop = KArIsoTope(df=self.model._df)
         try:
             self.karisotopepop.Magic()
@@ -1094,6 +1165,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def XY(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.xypop = XY(df=self.model._df)
         try:
             self.xypop.Magic()
@@ -1102,6 +1176,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.ErrorEvent()
 
     def XYZ(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.xyzpop = XYZ(df=self.model._df)
         try:
             self.xyzpop.Magic()
@@ -1111,6 +1188,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def MultiDimension(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
         self.mdpop = MultiDimension(df=self.model._df)
         try:
             self.mdpop.Magic()
@@ -1347,6 +1427,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def Auto(self):
 
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
 
         TotalResult=[]
 
