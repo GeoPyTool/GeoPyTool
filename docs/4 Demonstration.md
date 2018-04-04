@@ -1,5 +1,5 @@
 Title: Demonstration
-Date: 2017-11-15 0:00
+Date: 2018-04-04 11:46
 Category: Doc
 Tags: Doc,English
 
@@ -18,11 +18,39 @@ The Data file can be Xlsx/Xls or CSV.
 
 ## Set Up Data
 
-If there is no setting up information such as the Label/Color/Marker/Style/Alapha/Width, you need to click on the Set Format button to add these items and make modification by yourself.
+If there is no setting up information such as the 'Label'/'Color'/'Marker'/'Style'/'Alpha'/'Width', you need to click on the Set Format button to add these items and make modification by yourself.
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/SetDataUp.png)
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/SettingDataUp.png)
+
+## Data Setting Details
+
+As shown in the [Data File Samples](https://github.com/GeoPyTool/GeoPyTool/tree/master/DataFileSamples), all data files contain the following Items:
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/images/SettingArea.png)
+
+1. 'Label': control the group of sample and will be shown on legend
+2. 'Color': control the 'Color' of both drawn line and plotted point
+3. 'Marker': control the points shape
+4. 'Size': control the points 'Size'
+5. 'Width': control the line 'Width'
+6. 'Style': control the line shape
+7. 'Alpha': control the transparency of both drawn line and plotted point
+
+'Label' can be set to any character，word or phrase.
+'Color' can only be chosen from following words: 'blue','green','red','cyan','magenta','yellow','black','white','grey'.
+'Size', 'Width', and 'Alpha' are number values. The unit used for 'Size' and 'Width' is pt. 'Size' normally should be larger than '10', and 'Width' usually is '1'. 'Alpha' can be set from '0' to '1', for example, setting 'Alpha' as '0.4' means 40% transparency.
+'Marker' and 'Style', these two are slightly more complicated and can be set as the contents of the following lists.
+
+'Marker' :
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/MarkerList.png?raw=true)
+
+'Style':
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/StyleList.png?raw=true)
+
+The effect of setting:
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/images/SettingEffect.png)
 
 
 ## Click the Function you need
@@ -73,7 +101,7 @@ Notice that the first Letters must be in UPPER case.
 
 The data file used here is quite complicated. Please follow the guidance shown in the picture below.
 
-In the template data file for this calculation, the row with the **Base** symbol needs to be filled with the bulk REE data, and the **zircon** rows and **Label** column is where the REE data is input. The **Zr** value for zircon should be set as the **“constant”** **497555**. The **“use”** row tells the program to use the data in the row in the calculation if set as yes or excluded if set at no, but all of the data will be plotted on the graph generated. The Ri and Ro values are from Ballard et al. (2002) where La is set as No as the default setting, because of the anomaly of La in their data.
+In the template data file for this calculation, the row with the **Base** symbol needs to be filled with the bulk REE data, and the **zircon** rows and **'Label'** column is where the REE data is input. The **Zr** value for zircon should be set as the **“constant”** **497555**. The **“use”** row tells the program to use the data in the row in the calculation if set as yes or excluded if set at no, but all of the data will be plotted on the graph generated. The Ri and Ro values are from Ballard et al. (2002) where La is set as No as the default setting, because of the anomaly of La in their data.
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/ZriconCeCalculation.png)
 
