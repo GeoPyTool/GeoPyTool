@@ -39,7 +39,9 @@ As shown in the [Data File Samples](https://github.com/GeoPyTool/GeoPyTool/tree/
 7. `Alpha`: control the transparency of both drawn line and plotted point
 
 `Label` can be set to any character，word or phrase.
-`Color` can only be chosen from following words: 'blue','green','red','cyan','magenta','yellow','black','white','grey'.
+`Color` can only be chosen from following words: 'blue','green','red','cyan','magenta','yellow','black','white'.
+`Color`:
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/ColorList.png?raw=true)
 `Size`, `Width`, and `Alpha` are number values. The unit used for `Size` and `Width` is pt. `Size` normally should be larger than '10', and `Width` usually is '1'. `Alpha` can be set from '0' to '1', for example, setting `Alpha` as '0.4' means 40% transparency.
 `Marker` and `Style`, these two are slightly more complicated and can be set as the contents of the following lists.
 
