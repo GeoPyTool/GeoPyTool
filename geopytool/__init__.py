@@ -32,7 +32,7 @@ from geopytool.CIPW import CIPW
 from geopytool.Cluster import Cluster
 from geopytool.Bivariate import Bivariate
 from geopytool.Harker import Harker
-from geopytool.HarkerDIY import HarkerDIY
+#from geopytool.HarkerDIY import HarkerDIY
 
 #from geopytool.Magic import Magic
 
@@ -326,7 +326,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionRee)
         self.menuGeoChem.addAction(self.actionPearce)
         self.menuGeoChem.addAction(self.actionHarker)
-        #fdself.menuGeoChem.addAction(self.actionHarkerDIY)
+        #self.menuGeoChem.addAction(self.actionHarkerDIY)
         self.menuGeoChem.addAction(self.actionBivariate)
         self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionCIPW)

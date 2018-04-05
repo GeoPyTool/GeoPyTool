@@ -851,9 +851,9 @@ class XY(AppForm):
 
                 try:
                     np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
-
-                except(ValueError):
+                except(ValueError,TypeError):
                     fitstatus = False
+                    pass
 
 
                 if (fitstatus == True):
@@ -911,8 +911,6 @@ class XY(AppForm):
                     if (self.fit_cb.isChecked()):
                         self.axes.plot(Xline, Yline, 'b-')
 
-                else:
-                    reply = QMessageBox.information(self,'Warning','Your Data Failed to Cluster.\n Please remove Non Valued items and Blanks!')
 
 
 
@@ -927,8 +925,9 @@ class XY(AppForm):
 
                 try:
                     np.polyfit(YtoFit, XtoFit, self.FitLevel, cov=True)
-                except():
+                except(ValueError, TypeError):
                     fitstatus = False
+                    pass
 
                 if (fitstatus == True):
                     opt, cov = np.polyfit(YtoFit, XtoFit, self.FitLevel, cov=True)

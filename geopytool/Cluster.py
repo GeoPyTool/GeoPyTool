@@ -120,7 +120,7 @@ class Cluster(AppForm):
 
         dataframe = self._df
 
-        #dataframe =  dataframe.dropna(axis=1,how='all')
+        dataframe =  dataframe.dropna(axis=1,how='all')
 
 
 
