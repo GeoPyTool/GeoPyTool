@@ -38,6 +38,9 @@ As shown in the [Data File Samples](https://github.com/GeoPyTool/GeoPyTool/tree/
 6. `Style`: control the line shape
 7. `Alpha`: control the transparency of both drawn line and plotted point
 
+
+Besides these seven items, the **other columns in your data MUST ALL be number values!**
+
 #### `Label` can be set to any character，word or phrase.
 
 #### `Color` can only be chosen from following words: 'blue','green','red','cyan','magenta','yellow','black','white'.
