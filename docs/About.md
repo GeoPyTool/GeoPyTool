@@ -25,22 +25,24 @@ GeoPyTool 不需依赖任何其他软件，不像 GeoKit 那样依赖特定版�
 GeoPyTool 是一个自由软件:您可以根据自由软件基金会发布的GNU通用公共许可证的条款重新发布或者对其进行修改，但必须也基于同样的 GPLV3（GNU通用公共许可证第三版 ） ，或者更新版本的 GNU General Public License。
 
 GeoPyTool 包含了一些常用的传统方法，也实现了一些近年来新诞生的研究成果。
+
+
 #GeoPyTool Application Download Links
 ># GeoPyTool 打包的可执行程序下载链接
 
 
 ### GeoPyTool pack for Windows:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1JtmjEphWQhFEQpf-6yIQFQ)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1SfOLi-CQ4js3dmM7pzZsiQ)
 
-[Google Drive](https://drive.google.com/open?id=1t2tJDx67pP5lehAo-wht_uuUWo_G9KeV)
+[Google Drive](https://drive.google.com/open?id=1LFcth8cK8aCo-blHRt_sSfSK6hyTICH4)
 
 
 
 
 ### GeoPyTool app for macOS:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1pxdJWKzwnE-ApZs4SLg1ZA)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1auV4V4Hv_NVd2VCRBmw4Uw)
 
-[Google Drive](https://drive.google.com/open?id=1571PS3NVSDsfTbwt7XDbjgkm6ya4erKA)
+[Google Drive](https://drive.google.com/open?id=1N264hOtl_Jx5Qw0Fc3eb8T_uCm_Ose-c)
 
 
 
