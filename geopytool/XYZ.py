@@ -141,8 +141,6 @@ class XYZ(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Reset)
 
 
         self.stat_button = QPushButton('&Stat')
@@ -150,6 +148,9 @@ class XYZ(AppForm):
 
         self.load_button = QPushButton('&Load')
         self.load_button.clicked.connect(self.Load)
+
+        self.unload_button = QPushButton('&Unload')
+        self.unload_button.clicked.connect(self.Unload)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
@@ -242,7 +243,7 @@ class XYZ(AppForm):
 
 
 
-        for w in [self.save_button,self.stat_button, self.draw_button, self.load_button,
+        for w in [self.save_button,self.stat_button, self.load_button, self.unload_button,
                   self.legend_cb, self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
@@ -386,7 +387,7 @@ class XYZ(AppForm):
 
         self.Magic()
 
-    def Reset(self):
+    def Unload(self):
         self.flag = 0
         self.Magic()
 

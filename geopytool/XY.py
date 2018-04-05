@@ -87,10 +87,6 @@ class XY(AppForm):
     FadeGroups=100
     ShapeGroups=200
 
-    Xleft,Xright,Ydown,Yup=0,0,0,0
-
-    LimSet= False
-
     LabelSetted = False
     ValueChoosed = True
 
@@ -146,8 +142,6 @@ class XY(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.draw_button = QPushButton('&Reset')
-        self.draw_button.clicked.connect(self.Reset)
 
         self.stat_button = QPushButton('&Stat')
         self.stat_button.clicked.connect(self.Stat)
@@ -155,6 +149,10 @@ class XY(AppForm):
 
         self.load_button = QPushButton('&Load')
         self.load_button.clicked.connect(self.Load)
+        
+        self.unload_button = QPushButton('&Unload')
+        self.unload_button.clicked.connect(self.Unload)
+
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
@@ -178,30 +176,6 @@ class XY(AppForm):
         self.fit_slider.setTracking(True)
         self.fit_slider.setTickPosition(QSlider.TicksBothSides)
         self.fit_slider.valueChanged.connect(self.Magic)  # int
-
-
-
-        self.xlim_seter_left_label = QLabel('Xleft')
-        self.xlim_seter_left = QLineEdit(self)
-        self.xlim_seter_left.textChanged[str].connect(self.XleftChanged)
-
-        self.xlim_seter_right_label = QLabel('Xright')
-        self.xlim_seter_right = QLineEdit(self)
-        self.xlim_seter_right.textChanged[str].connect(self.XrightChanged)
-
-
-        self.ylim_seter_down_label = QLabel('Ydown')
-        self.ylim_seter_down = QLineEdit(self)
-        self.ylim_seter_down.textChanged[str].connect(self.YdownChanged)
-
-
-        self.ylim_seter_up_label = QLabel('Yup')
-        self.ylim_seter_up = QLineEdit(self)
-        self.ylim_seter_up.textChanged[str].connect(self.YupChanged)
-
-
-
-
 
 
         self.shape_cb= QCheckBox('&Shape')
@@ -309,13 +283,13 @@ class XY(AppForm):
 
 
 
-        for w in [self.save_button,self.stat_button, self.draw_button, self.load_button,
+        for w in [self.save_button,self.stat_button, self.load_button,self.unload_button,
                   self.legend_cb,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.fit_slider_label ,self.fit_slider,self.fit_cb,self.fit_label, self.fit_seter,self.xlim_seter_left_label,self.xlim_seter_left,self.xlim_seter_right_label,self.xlim_seter_right,self.ylim_seter_down_label,self.ylim_seter_down,self.ylim_seter_up_label,self.ylim_seter_up,self.shape_cb,self.shape_label,self.shape_seter]:
+        for w in [self.fit_slider_label ,self.fit_slider,self.fit_cb,self.fit_label, self.fit_seter,self.shape_cb,self.shape_label,self.shape_seter]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -476,7 +450,7 @@ class XY(AppForm):
 
         self.Magic()
 
-    def Reset(self):
+    def Unload(self):
         self.flag = 0
         self.Magic()
 
@@ -633,57 +607,6 @@ class XY(AppForm):
 
         self.Magic()
 
-    def XleftChanged(self,text):
-        if len(text)<1:
-            self.LimSet = False
-        else:
-            self.LimSet = True
-
-            try:
-                self.Xleft = float(text)
-            except:
-                pass
-
-            self.Magic()
-
-    def XrightChanged(self,text):
-        if len(text)<1:
-            self.LimSet = False
-        else:
-            self.LimSet = True
-
-            try:
-                self.Xright = float(text)
-            except:
-                pass
-
-            self.Magic()
-
-    def YdownChanged(self,text):
-        if len(text)<1:
-            self.LimSet = False
-        else:
-            self.LimSet = True
-
-            try:
-                self.Ydown = float(text)
-            except:
-                pass
-
-            self.Magic()
-
-    def YupChanged(self,text):
-        if len(text)<1:
-            self.LimSet = False
-        else:
-            self.LimSet =True
-
-            try:
-                self.Yup = float(text)
-            except:
-                pass
-
-            self.Magic()
 
     def LabelSeter(self):
 
@@ -900,17 +823,6 @@ class XY(AppForm):
 
         self.x_element_label.setText(self.xlabel)
         self.y_element_label.setText(self.ylabel)
-
-
-        if self.LimSet==False:
-            self.Xleft, self.Xright, self.Ydown, self.Yup = min(XtoFit), max(XtoFit), min(YtoFit), max(YtoFit)
-
-        if self.LimSet == True:
-            self.axes.set_xlim(self.Xleft, self.Xright)
-
-            self.axes.set_ylim(self.Ydown, self.Yup)
-
-
 
 
         #Yline = np.linspace(min(YtoFit), max(YtoFit), 30)

@@ -134,7 +134,6 @@ class Harker(AppForm):
         self.legend_cb.stateChanged.connect(self.Harker)  # int
 
 
-
         #
         # Layout with box sizers
         #

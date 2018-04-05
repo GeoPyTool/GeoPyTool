@@ -326,7 +326,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionRee)
         self.menuGeoChem.addAction(self.actionPearce)
         self.menuGeoChem.addAction(self.actionHarker)
-        #self.menuGeoChem.addAction(self.actionHarkerDIY)
+        #fdself.menuGeoChem.addAction(self.actionHarkerDIY)
         self.menuGeoChem.addAction(self.actionBivariate)
         self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionCIPW)
