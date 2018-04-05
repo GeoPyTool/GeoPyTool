@@ -47,7 +47,7 @@ class XYZ(AppForm):
     ylabel = 'y'
     zlabel = 'z'
 
-    description = 'X-Y-Z diagram'
+    description = 'X-Y-Z Diagram'
     unuseful = ['Name',
                 'Author',
                 'DataType',

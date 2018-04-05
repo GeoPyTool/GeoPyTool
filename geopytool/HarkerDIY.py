@@ -2,7 +2,7 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 from geopytool.TabelViewer import TabelViewer
 
-class XY(AppForm):
+class HarkerDIY(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
                u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
                u'Li',
@@ -13,7 +13,7 @@ class XY(AppForm):
     reference = 'Reference: Sun, S. S., and Mcdonough, W. F., 1989, Chemical and isotopic systematics of oceanic basalts: implications for mantle composition and processes: Geological Society London Special Publications, v. 42, no. 1, p. 313-345.'
     sentence =''
 
-    ContainNan = False
+
 
     NameChosen = 'OIB'
     Standards = {
@@ -48,7 +48,7 @@ class XY(AppForm):
     xlabel = 'x'
     ylabel = 'y'
 
-    description = 'X-Y Diagram'
+    description = 'Advanced Harker Diagram'
     unuseful = ['Name',
                 'Mineral',
                 'Author',
@@ -819,7 +819,6 @@ class XY(AppForm):
         YtoFit = []
 
 
-
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
 
@@ -835,6 +834,9 @@ class XY(AppForm):
                 TmpLabel = raw.at[i, 'Label']
 
 
+            x, y = 0, 0
+            xuse, yuse = 0, 0
+
 
             if pd.isnull(dataframe.at[i, self.items[a]]) or pd.isnull(dataframe.at[i, self.items[b]]):
                 pass
@@ -846,54 +848,49 @@ class XY(AppForm):
 
                 x, y = dataframe.at[i, self.items[a]], dataframe.at[i, self.items[b]]
 
-                if pd.isnull(x) or pd.isnull(y):
-                    self.ContainNan = True
+
+
+                try:
+                    xuse = x
+                    yuse = y
+
+                    self.xlabel = self.items[a]
+                    self.ylabel = self.items[b]
+
+                    if (self.Normalize_cb.isChecked()):
+
+                        self.sentence = self.reference
+
+                        if self.items[a] in self.Element:
+                            self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+                            xuse = xuse / standardchosen[self.items[a]]
+
+                        if self.items[b] in self.Element:
+                            self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+                            yuse = yuse / standardchosen[self.items[b]]
+
+                    if (self.logx_cb.isChecked()):
+                        xuse = math.log(x, 10)
+                        self.xlabel = '$log10$( ' + self.xlabel+')'
+
+                        self.axes.set_xlabel(self.xlabel)
+
+                    if (self.logy_cb.isChecked()):
+                        yuse = math.log(y, 10)
+
+                        self.ylabel = '$log10$( ' + self.ylabel+')'
+
+                        self.axes.set_ylabel(self.ylabel)
+
+                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel, edgecolors='black')
+
+                    XtoFit.append(xuse)
+                    YtoFit.append(yuse)
+
+                except(ValueError):
                     pass
-
-                else:
-
-                    try:
-                        xuse = x
-                        yuse = y
-
-                        self.xlabel = self.items[a]
-                        self.ylabel = self.items[b]
-
-                        if (self.Normalize_cb.isChecked()):
-
-                            self.sentence = self.reference
-
-                            if self.items[a] in self.Element:
-                                self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
-                                xuse = xuse / standardchosen[self.items[a]]
-
-                            if self.items[b] in self.Element:
-                                self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
-                                yuse = yuse / standardchosen[self.items[b]]
-
-                        if (self.logx_cb.isChecked()):
-                            xuse = math.log(x, 10)
-                            self.xlabel = '$log10$( ' + self.xlabel+')'
-
-                            self.axes.set_xlabel(self.xlabel)
-
-                        if (self.logy_cb.isChecked()):
-                            yuse = math.log(y, 10)
-
-                            self.ylabel = '$log10$( ' + self.ylabel+')'
-
-                            self.axes.set_ylabel(self.ylabel)
-
-
-                        self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                          s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                          label=TmpLabel, edgecolors='black')
-
-                        XtoFit.append(xuse)
-                        YtoFit.append(yuse)
-
-                    except(ValueError):
-                        pass
 
         self.axes.set_xlabel(self.xlabel)
         self.axes.set_ylabel(self.ylabel)
@@ -1058,8 +1055,6 @@ class XY(AppForm):
 
                 positions = np.vstack([xx.ravel(), yy.ravel()])
                 values = np.vstack([XtoFit,YtoFit])
-
-
 
                 kernelstatus = True
                 try:

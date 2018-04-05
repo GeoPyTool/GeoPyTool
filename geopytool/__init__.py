@@ -32,6 +32,8 @@ from geopytool.CIPW import CIPW
 from geopytool.Cluster import Cluster
 from geopytool.Bivariate import Bivariate
 from geopytool.Harker import Harker
+from geopytool.HarkerDIY import HarkerDIY
+
 #from geopytool.Magic import Magic
 
 from geopytool.Clastic import Clastic
@@ -255,6 +257,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionHarker = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'Harker',self)
         self.actionHarker.setObjectName('actionHarker')
 
+        self.actionHarkerDIY = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'HarkerDIY',self)
+        self.actionHarkerDIY.setObjectName('actionHarkerDIY')
+
+
         self.actionStereo = QtWidgets.QAction(QIcon(LocationOfMySelf+'/structure.png'),u'Stereo',self)
         self.actionStereo.setObjectName('actionStereo')
 
@@ -320,6 +326,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionRee)
         self.menuGeoChem.addAction(self.actionPearce)
         self.menuGeoChem.addAction(self.actionHarker)
+        #self.menuGeoChem.addAction(self.actionHarkerDIY)
         self.menuGeoChem.addAction(self.actionBivariate)
         self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionCIPW)
@@ -394,6 +401,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPearce.triggered.connect(self.Pearce)
         self.actionBivariate.triggered.connect(self.Bivariate)
         self.actionHarker.triggered.connect(self.Harker)
+        self.actionHarkerDIY.triggered.connect(self.HarkerDIY)
         self.actionQAPF.triggered.connect(self.QAPF)
 
         self.actionStereo.triggered.connect(self.Stereo)
@@ -490,6 +498,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPearce.setText(_translate('MainWindow',u'Pearce'))
         self.actionBivariate.setText(_translate('MainWindow',u'Bivariate'))
         self.actionHarker.setText(_translate('MainWindow',u'Harker'))
+        self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
 
         self.actionQAPF.setText(_translate('MainWindow',u'QAPF'))
 
@@ -581,6 +590,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPearce.setText(_translate('MainWindow', u'Pearce'))
         self.actionBivariate.setText(_translate('MainWindow', u'Bivariate'))
         self.actionHarker.setText(_translate('MainWindow',u'Harker'))
+        self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
 
         self.actionQAPF.setText(_translate('MainWindow', u'QAPF'))
 
@@ -1045,6 +1055,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.harkerpop.show()
         except(KeyError):
             self.ErrorEvent()
+
+
+    def HarkerDIY(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+        self.harkerdiypop = HarkerDIY(df=self.model._df)
+        try:
+            self.harkerdiypop.Magic()
+            self.harkerdiypop.show()
+        except(KeyError):
+            self.ErrorEvent()
+
 
 
     def Stereo(self):
