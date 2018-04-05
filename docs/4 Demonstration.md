@@ -1,5 +1,5 @@
 Title: Demonstration
-Date: 2018-04-04 11:46
+Date: 2018-04-05 12:46:38
 Category: Doc
 Tags: Doc,English
 
@@ -60,6 +60,14 @@ these two are slightly more complicated and can be set as the contents of the fo
 #### The effect of setting:
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/images/SettingEffect.png)
 
+
+## Adjusting Axises of Figure
+
+All generated figures contain a menu bar on its top, which can be used to adjust the axises and title. 
+
+As shown in the picture below:
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/images/Axis%20Adjustment.png)
 
 ## Click the Function you need
 
