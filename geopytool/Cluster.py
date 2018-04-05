@@ -112,11 +112,6 @@ class Cluster(AppForm):
     def Cluster(self):
 
         self.WholeData = []
-
-
-
-
-
         ItemsAvalibale = self._df.columns.values.tolist()
 
 
@@ -124,6 +119,10 @@ class Cluster(AppForm):
             self._df = self._df.set_index('Label')
 
         dataframe = self._df
+
+        #dataframe =  dataframe.dropna(axis=1,how='all')
+
+
 
         ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width']
@@ -134,104 +133,90 @@ class Cluster(AppForm):
 
 
 
-
-
-
         dataframe2 = dataframe.T
-
-        TmpDataFrame = dataframe
-        TmpDataMatrix = TmpDataFrame.values
-
-        #DistanceMatrix = euclidean_distances(TmpDataMatrix, TmpDataMatrix)
-        #D=DistanceMatrix
-
-        #self.model = PandasModel(self._df)
-        #self.tableView.setModel(self.model)
 
         ax1 = self.fig.add_axes([0.3,0.75,0.5,0.1])
 
 
         corr1 = 1 - dataframe.corr()
-        corr_condensed1 = hc.distance.squareform(corr1)  # convert to condensed
-        z1 = hc.linkage(corr_condensed1, method='average')
-        Z1 = hc.dendrogram(abs(z1),labels=corr1.columns)
-
-        ax1.set_xticks([])
-        ax1.set_yticks([])
-
-        ax2 = self.fig.add_axes([0.09,0.1,0.15,0.6])
-
-        # Compute and plot second dendrogram.
-
-        corr2 = 1- dataframe2.corr()
-        corr_condensed2 = hc.distance.squareform(corr2)  # convert to condensed
-        z2 = hc.linkage(corr_condensed2, method='average')
-        Z2 = hc.dendrogram(abs(z2),labels=corr2.columns,orientation='left')
-
-        ax2.set_xticks([])
-        ax2.set_yticks([])
 
 
-        #Plot distance matrix.
-        axmatrix = self.fig.add_axes([0.3, 0.1, 0.5, 0.6])
-        idx1 = Z1['leaves']
-        idx2 = Z2['leaves']
-
-        done = np.ones(dataframe.shape)
-        a = np.dot(done, corr1)
-
-        b = np.dot(a.T, corr2)
-
-        D = b.T
-
-        D = D[idx2, :]
-        D = D[:, idx1]
-        im = axmatrix.matshow(D, aspect='auto', origin='lower', cmap='Greys')
-
-
-        XLabelList = [corr1.columns[i] for i in idx1]
-        YLabelList = [corr2.columns[i] for i in idx2]
-
-        XstickList=[i for i in range(len(XLabelList))]
-        YstickList=[i for i in range(len(YLabelList))]
-
-        axmatrix.set_xticks(XstickList)
-        axmatrix.set_xticklabels( XLabelList, minor=False)
-        axmatrix.xaxis.set_label_position('top')
-        axmatrix.xaxis.tick_top()
-
-        axmatrix.set_yticks(YstickList)
-        axmatrix.set_yticklabels( YLabelList, minor=False)
-        axmatrix.yaxis.set_label_position('left')
-        axmatrix.yaxis.tick_left()
-
-
-        plt.xticks(rotation=-90, fontsize=6)
-        plt.yticks(fontsize=6)
-
-        axcolor1 = self.fig.add_axes([0.9, 0.1, 0.02, 0.6])
-
-        # Plot colorbar.
-
-        plt.colorbar(im, cax=axcolor1)
-
-        self.canvas.draw()
-
-    def Show(self):
-        dataframe = self._df
-        corr = 1 - dataframe.corr()
+        able =True
 
         try:
-            corr_condensed = hc.distance.squareform(corr)  # convert to condensed
-
-            z = hc.linkage(corr_condensed, method='average')
-
-            dendrogram = hc.dendrogram(abs(z), labels=corr.columns)
-
-            #self.axes.title('Cluster Diagram')
-
-
-        except(ValueError):
-            reply = QMessageBox.warning(self, 'Value Error',
-                                        'Check Your Data and make sure it contains only numerical values.')
+            corr_condensed1 = hc.distance.squareform(corr1)  # convert to condensed
+        except:
+            able =False
             pass
+
+
+        if able == False:
+            reply = QMessageBox.information(self,'Warning','Your Data Failed to Cluster.\n Please remove Non Valued items and Blanks!')
+
+
+        else:
+            z1 = hc.linkage(corr_condensed1, method='average')
+            Z1 = hc.dendrogram(abs(z1),labels=corr1.columns)
+
+            ax1.set_xticks([])
+            ax1.set_yticks([])
+
+            ax2 = self.fig.add_axes([0.09,0.1,0.15,0.6])
+
+            # Compute and plot second dendrogram.
+
+            corr2 = 1- dataframe2.corr()
+            corr_condensed2 = hc.distance.squareform(corr2)  # convert to condensed
+            z2 = hc.linkage(corr_condensed2, method='average')
+            Z2 = hc.dendrogram(abs(z2),labels=corr2.columns,orientation='left')
+
+            ax2.set_xticks([])
+            ax2.set_yticks([])
+
+
+            #Plot distance matrix.
+            axmatrix = self.fig.add_axes([0.3, 0.1, 0.5, 0.6])
+            idx1 = Z1['leaves']
+            idx2 = Z2['leaves']
+
+            done = np.ones(dataframe.shape)
+            a = np.dot(done, corr1)
+
+            b = np.dot(a.T, corr2)
+
+            D = b.T
+
+            D = D[idx2, :]
+            D = D[:, idx1]
+            im = axmatrix.matshow(D, aspect='auto', origin='lower', cmap='Greys')
+
+
+            XLabelList = [corr1.columns[i] for i in idx1]
+            YLabelList = [corr2.columns[i] for i in idx2]
+
+            XstickList=[i for i in range(len(XLabelList))]
+            YstickList=[i for i in range(len(YLabelList))]
+
+            axmatrix.set_xticks(XstickList)
+            axmatrix.set_xticklabels( XLabelList, minor=False)
+            axmatrix.xaxis.set_label_position('top')
+            axmatrix.xaxis.tick_top()
+
+            axmatrix.set_yticks(YstickList)
+            axmatrix.set_yticklabels( YLabelList, minor=False)
+            axmatrix.yaxis.set_label_position('left')
+            axmatrix.yaxis.tick_left()
+
+
+            plt.xticks(rotation=-90, fontsize=6)
+            plt.yticks(fontsize=6)
+
+            axcolor1 = self.fig.add_axes([0.9, 0.1, 0.02, 0.6])
+
+            # Plot colorbar.
+
+            plt.colorbar(im, cax=axcolor1)
+
+            self.canvas.draw()
+            self.show()
+

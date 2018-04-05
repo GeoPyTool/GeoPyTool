@@ -966,16 +966,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df)<=0):
             self.getDataFile()
             pass
+
         self.clusterpop = Cluster(df=self.model._df)
         self.clusterpop.Cluster()
-        self.clusterpop.show()
 
-        try:
-            self.clusterpop.Cluster()
-            self.clusterpop.show()
-        except(KeyError):
-            pass
-            # self.ErrorEvent()
 
     def TAS(self):
 

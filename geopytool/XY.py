@@ -843,109 +843,145 @@ class XY(AppForm):
         fitstatus = True
 
         if (int(self.fit_slider.value()) == 0):
-            Xline = np.linspace(min(XtoFit), max(XtoFit), 30)
+            if len(XtoFit)>0:
+
+                Xline = np.linspace(min(XtoFit), max(XtoFit), 30)
 
 
 
-            try:
-                np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
+                try:
+                    np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
 
-            except(ValueError):
-                fitstatus = False
+                except(ValueError):
+                    fitstatus = False
 
 
-            if (fitstatus == True):
-                opt, cov = np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
-                self.fit_slider_label.setText('y= f(x)')
-                p = np.poly1d(opt)
-                Yline = p(Xline)
-                formular = 'y= f(x):'
+                if (fitstatus == True):
+                    opt, cov = np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
+                    self.fit_slider_label.setText('y= f(x)')
+                    p = np.poly1d(opt)
+                    Yline = p(Xline)
+                    formular = 'y= f(x):'
+                    sigma = np.sqrt(np.diag(cov))
+
+
+                    N = len(XtoFit)
+                    F = N - 2
+                    MSWD = 1 + 2 * np.sqrt(2 / F)
+                    MSWDerr = np.sqrt(2 / F)
+
+                    for i in range(int(self.FitLevel + 1)):
+                        Paralist.append([opt[i], sigma[i]])
+
+                        if int(self.fit_slider.value()) == 0:
+
+                            if (self.FitLevel - i == 0):
+                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '+'
+                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '\n'
+
+                            else:
+                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '$x^' + str(
+                                    self.FitLevel - i) + '$' + '+'
+                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'x^' + str(
+                                    self.FitLevel - i) + '+\n'
+
+
+
+                        elif (int(self.fit_slider.value()) == 1):
+
+                            if (self.FitLevel - i == 0):
+                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '+'
+                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '+\n'
+
+
+
+                            else:
+                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '$y^' + str(
+                                    self.FitLevel - i) + '$' + '+'
+                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'y^' + str(
+                                    self.FitLevel - i) + '+\n'
+
+                            pass
+
+                        pass
+
+                    self.textbox.setText(formular + '\n' + BoxResultStr + '\n MSWD(±2σ)' + str(MSWD) + '±' + str(
+                        2 * MSWDerr) + '\n' + self.sentence)
+
+                    if (self.fit_cb.isChecked()):
+                        self.axes.plot(Xline, Yline, 'b-')
+
+                else:
+                    reply = QMessageBox.information(self,'Warning','Your Data Failed to Cluster.\n Please remove Non Valued items and Blanks!')
+
 
 
 
 
 
         elif (int(self.fit_slider.value()) == 1):
-            Yline = np.linspace(min(YtoFit), max(YtoFit), 30)
 
-            try:
-                np.polyfit(YtoFit, XtoFit, self.FitLevel, cov=True)
-            except():
-                fitstatus = False
+            if len(YtoFit) > 0:
 
-            if (fitstatus == True):
-                opt, cov = np.polyfit(YtoFit, XtoFit, self.FitLevel, cov=True)
-                self.fit_slider_label.setText('x= f(y)')
-                p = np.poly1d(opt)
-                Xline = p(Yline)
-                formular = 'x= f(y):'
+                Yline = np.linspace(min(YtoFit), max(YtoFit), 30)
 
-        if (fitstatus == True):
-            sigma = np.sqrt(np.diag(cov))
+                try:
+                    np.polyfit(YtoFit, XtoFit, self.FitLevel, cov=True)
+                except():
+                    fitstatus = False
 
+                if (fitstatus == True):
+                    opt, cov = np.polyfit(YtoFit, XtoFit, self.FitLevel, cov=True)
+                    self.fit_slider_label.setText('x= f(y)')
+                    p = np.poly1d(opt)
+                    Xline = p(Yline)
+                    formular = 'x= f(y):'
+                    sigma = np.sqrt(np.diag(cov))
 
-            N=len(XtoFit)
-            F=N-2
-            MSWD=1+2*np.sqrt(2/F)
-            MSWDerr=np.sqrt(2/F)
+                    N=len(XtoFit)
+                    F=N-2
+                    MSWD=1+2*np.sqrt(2/F)
+                    MSWDerr=np.sqrt(2/F)
 
-
-
-            for i in range(int(self.FitLevel + 1)):
-                Paralist.append([opt[i], sigma[i]])
+                    for i in range(int(self.FitLevel + 1)):
+                        Paralist.append([opt[i], sigma[i]])
 
 
-                if int(self.fit_slider.value()) == 0:
+                        if int(self.fit_slider.value()) == 0:
 
-                    if (self.FitLevel - i == 0):
-                        ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i])+'+'
-                        BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '\n'
+                            if (self.FitLevel - i == 0):
+                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i])+'+'
+                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '\n'
 
-                    else:
-                        ResultStr = ResultStr+ str(opt[i])+'$\pm$'+str(sigma[i])+'$x^'+str(self.FitLevel-i)+'$'+'+'
-                        BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'x^' + str(
-                        self.FitLevel - i) +  '+\n'
+                            else:
+                                ResultStr = ResultStr+ str(opt[i])+'$\pm$'+str(sigma[i])+'$x^'+str(self.FitLevel-i)+'$'+'+'
+                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'x^' + str(
+                                self.FitLevel - i) +  '+\n'
 
 
 
-                elif (int(self.fit_slider.value()) == 1):
+                        elif (int(self.fit_slider.value()) == 1):
 
-                    if (self.FitLevel-i==0):
-                        ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i])+'+'
-                        BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '+\n'
-
-
-
-                    else:
-                        ResultStr = ResultStr+ str(opt[i])+'$\pm$'+str(sigma[i])+'$y^'+str(self.FitLevel-i)+'$'+'+'
-                        BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'y^' + str(
-                        self.FitLevel - i) +  '+\n'
-
-
-                    pass
-
-                pass
-
-            self.textbox.setText(formular +'\n'+ BoxResultStr+ '\n MSWD(±2σ)'+str(MSWD)+'±'+str(2*MSWDerr)+'\n' + self.sentence)
+                            if (self.FitLevel-i==0):
+                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i])+'+'
+                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '+\n'
 
 
 
-
-            #self.axes.text(min(Xline),min(Yline),ResultStr)
-
-
-
-
-            #self.textbox.setText(formular+' Polyfitting parameter：' + '\n' +str(opt)+'\n\n'+ self.sentence)
-
-            # a, aerr, b, berr = opt[0], sigma[0], opt[1], sigma[1]
-            #"$\mathrm{curve fit\;\;values:\;}$\n a = %.8f\t $\pm$ %.8f\n b = %.8f\t $\pm$ %.8f"% (a, aerr, b, berr)
+                            else:
+                                ResultStr = ResultStr+ str(opt[i])+'$\pm$'+str(sigma[i])+'$y^'+str(self.FitLevel-i)+'$'+'+'
+                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'y^' + str(
+                                self.FitLevel - i) +  '+\n'
 
 
+                            pass
 
+                        pass
 
-            if (self.fit_cb.isChecked()):
-                self.axes.plot(Xline, Yline, 'b-')
+                    self.textbox.setText(formular +'\n'+ BoxResultStr+ '\n MSWD(±2σ)'+str(MSWD)+'±'+str(2*MSWDerr)+'\n' + self.sentence)
+
+                    if (self.fit_cb.isChecked()):
+                        self.axes.plot(Xline, Yline, 'b-')
 
 
         if (self.shape_cb.isChecked()):
