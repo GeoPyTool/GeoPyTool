@@ -40,6 +40,8 @@ web.png
 website.png
 wqy.ttf
 xy.png
+requirements.txt
+geopytool/requirements.txt
 geopytool/CustomClass.py
 geopytool/Test.py
 geopytool/__init__.py

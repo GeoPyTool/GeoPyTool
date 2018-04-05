@@ -40,6 +40,10 @@ include cns.qm
 include cnt.qm
 include wqy.ttf
 
+include *.txt
+
+include requirements.txt
+
 include *.py
 
 
