@@ -1143,6 +1143,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError,ValueError):
             self.ErrorEvent()
 
+
     def RbSrIsoTope(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):

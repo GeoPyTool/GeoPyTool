@@ -5,57 +5,70 @@ class ZirconCe(QMainWindow):
     _df = pd.DataFrame()
     _changed = False
 
-    ylabel = r'Ln D $Zircon/Rock%$'
+
+
+    xlabel = r'$(r_i/3+r_{Zr}/6)(r_i-r_{Zr})^2 $'
+    ylabel = r'$\log_e D_{Zircon/Base}$'
+
     reference = 'Ballard, J. R., Palin, M. J., and Campbell, I. H., 2002, Relative oxidation states of magmas inferred from Ce(IV)/Ce(III) in zircon: application to porphyry copper deposits of northern Chile: Contributions to Mineralogy and Petrology, v. 144, no. 3, p. 347-364.'
+
+    Elements3 = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
+    Elements4 = ['Th', 'U', 'Hf', 'Zr', 'Ce4']
+
+
+    UsedElements3 = []
+    UsedElements4 = []
+
+    Ri3 = [1.16, 1.143, 1.126, 1.109, 1.079, 1.066, 1.053, 1.04, 1.027, 1.015, 1.004, 0.994, 0.985, 0.977]
+    Ro3 = [0.84 for i in Ri3]
+
+    Ri4 = [1.05,1.00 ,0.83 ,0.840,0.97 ]
+    Ro4 = [0.84 for i in Ri4]
+
+    ZirconZr = 497555
+
+    x3=[]
+    x4=[]
+
+    Zircon = []
+    ZirconCe=[]
+    Ce3test = []
+    DCe3test = []
+    Ce4test = []
+    DCe4test = []
+    Ce4_3_Ratio = []
+
+    xCe3 = 0.0479981
+    xCe4 = 0.00788412
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Oxygen Fugacity Estimation by Ce(IV)/Ce(III) in Zircon (Ballard et al. 2002)')
 
+
+        for i in range(len(self.Ri3)):
+            self.x3.append((self.Ri3[i] / 3 + self.Ro3[i] / 6) * (self.Ri3[i] - self.Ro3[i]) * (self.Ri3[i] - self.Ro3[i]))
+
+            if self.Elements3[i]=='Ce':
+                self.xCe3=((self.Ri3[i] / 3 + self.Ro3[i] / 6) * (self.Ri3[i] - self.Ro3[i]) * (self.Ri3[i] - self.Ro3[i]))
+
+        for i in range(len(self.Ri4)):
+            self.x4.append((self.Ri4[i] / 3 + self.Ro4[i] / 6) * (self.Ri4[i] - self.Ro4[i]) * (self.Ri4[i] - self.Ro4[i]))
+            if self.Elements3[i] == 'Ce4':
+                self.xCe4=((self.Ri4[i] / 3 + self.Ro4[i] / 6) * (self.Ri4[i] - self.Ro4[i]) * (self.Ri4[i] - self.Ro4[i]))
+
+        self._df = pd.DataFrame()
+        self.raw = pd.DataFrame()
+
         self._df = df
+        self.raw = df
+
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved')
 
         self.create_main_frame()
         self.create_status_bar()
-
-        self.raw = self._df
-
-        self.a = self.raw.index.values.tolist()
-        self.b = self.raw.columns.values.tolist()
-
-        self.PointLabels = []
-
-        self.Base = 0
-        self.Zircon = []
-        self.Elements = []
-        self.Elements3 = []
-        self.Elements3_Plot_Only = []
-        self.Elements4 = []
-        self.x = []
-        self.x3 = []
-        self.x3_Plot_Only = []
-        self.x4 = []
-        self.y = []
-        self.y3 = []
-        self.y3_Plot_Only = []
-        self.y4 = []
-        self.z3 = []
-        self.z4 = []
-        self.xCe3 = []
-        self.yCe3 = []
-        self.xCe4 = []
-        self.yCe4 = []
-        self.Ce3test = []
-        self.DCe3test = []
-        self.Ce4test = []
-        self.DCe4test = []
-        self.Ce4_3_Ratio = []
-
-        self.ZirconCe = []
-
-        self.DataToWrite = [['First', 'Second', 'Third']]
 
     def save_plot(self):
         file_choices = 'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)'
@@ -72,13 +85,12 @@ class ZirconCe(QMainWindow):
         self.resize(1200, 800)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig ,self.axes= plt.subplots(1, 2, figsize=(12.0, 12.0),dpi=self.dpi)
-        self.fig.subplots_adjust(hspace=0.1, wspace=0.1,left=0.1, bottom=0.2, right=0.9, top=0.9)
+        self.fig, self.axes = plt.subplots(1, 2, figsize=(12.0, 12.0), dpi=self.dpi)
+        self.fig.subplots_adjust(hspace=0.1, wspace=0.1, left=0.1, bottom=0.2, right=0.9, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
 
         # Other GUI controls
         self.save_img_button = QPushButton('&Save Figure')
@@ -89,10 +101,6 @@ class ZirconCe(QMainWindow):
 
         self.save_data_button = QPushButton('&Save Result')
         self.save_data_button.clicked.connect(self.saveResult)
-
-        self.legend_cb = QCheckBox('&Legend')
-        self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.MultiBallard)  # int
 
         #
         # Layout with box sizers
@@ -105,7 +113,7 @@ class ZirconCe(QMainWindow):
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
-        
+
         self.vbox.addWidget(self.canvas)
 
         self.vbox.addLayout(self.hbox)
@@ -154,12 +162,8 @@ class ZirconCe(QMainWindow):
 
     def showResult(self):
 
-        self.tablepop = TabelViewer(df=self.newdf,title='Zircon Ce Result')
+        self.tablepop = TabelViewer(df=self.newdf, title='Zircon Ce4_3 Ratio Result')
         self.tablepop.show()
-
-
-
-
 
     def create_action(self, text, slot=None, shortcut=None,
                       icon=None, tip=None, checkable=False,
@@ -178,10 +182,8 @@ class ZirconCe(QMainWindow):
             action.setCheckable(True)
         return action
 
-    def MultiBallard(self):
 
-        xlabel = r'$(r_i/3+r_{Zr}/6)(r_i-r_{Zr})^2 $'
-        ylabel = r'$\log_e D_{Zircon/Rock}$'
+    def MultiBallard(self):
 
         self.axes[0].clear()
         self.axes[1].clear()
@@ -192,302 +194,173 @@ class ZirconCe(QMainWindow):
         self.axes[1].spines['right'].set_color('none')
         self.axes[1].spines['top'].set_color('none')
 
-        self.axes[0].set_xlabel(xlabel)
-        self.axes[0].set_ylabel(ylabel)
-        self.axes[1].set_xlabel(xlabel)
-        self.axes[1].set_ylabel(ylabel)
+        self.axes[0].set_xlabel(self.xlabel)
+        self.axes[0].set_ylabel(self.ylabel)
+        self.axes[1].set_xlabel(self.xlabel)
+        self.axes[1].set_ylabel(self.ylabel)
 
 
-        self.raw = self._df
 
-        self.RockCe = self.raw.at[4, 'Ce']
 
-        self.a = self.raw.index.values.tolist()
-        self.b = self.raw.columns.values.tolist()
 
-        self.PointLabels = []
+
+        self.items = self.raw.columns.values.tolist()
+
+        self.rows = self.raw.index.values.tolist()
+
+        DataX3=[]
+        DataX4=[]
+
+        Ybase3=[]
+        Ybase4=[]
+
 
         self.Base = 0
-        self.Zircon = []
-        self.Elements = []
-        self.Elements3 = []
-        self.Elements3_Plot_Only = []
-        self.Elements4 = []
-        self.x = []
-        self.x3 = []
-        self.x3_Plot_Only = []
-        self.x4 = []
-        self.y = []
-        self.y3 = []
-        self.y3_Plot_Only = []
-        self.y4 = []
-        self.z3 = []
-        self.z4 = []
-        self.xCe3 = []
-        self.yCe3 = []
-        self.xCe4 = []
-        self.yCe4 = []
-        self.Ce3test = []
-        self.DCe3test = []
-        self.Ce4test = []
-        self.DCe4test = []
-        self.Ce4_3_Ratio = []
-
-        self.ZirconCe = []
 
         for i in range(len(self.raw)):
             if (self.raw.at[i, 'DataType'] == 'Base'):
                 self.Base = i
+                self.BaseCe = self.raw.at[i, 'Ce']
+                self.BaseZr = self.raw.at[i, 'Zr']
+
             elif (self.raw.at[i, 'DataType'] == 'Zircon'):
                 self.Zircon.append(i)
 
-        for j in self.b:
-            if (j == 'Ce'):
-                ri = self.raw.at[2, j]
-                ro = self.raw.at[3, j]
-                if (self.raw.at[0, j] == 3):
-                    self.xCe3.append((ri / 3 + ro / 6) * (ri - ro) * (ri - ro))
-            elif (j == 'Ce4'):
-                ri = self.raw.at[2, j]
-                ro = self.raw.at[3, j]
-                if (self.raw.at[0, j] == 4):
-                    self.xCe4.append((ri / 3 + ro / 6) * (ri - ro) * (ri - ro))
 
-            elif (self.raw.at[1, j] == 'yes'):
-                ri = self.raw.at[2, j]
-                ro = self.raw.at[3, j]
-                if (self.raw.at[0, j] == 3):
-                    self.x3.append((ri / 3 + ro / 6) * (ri - ro) * (ri - ro))
-                    self.Elements3.append(j)
+        for i in self.items:
+            if i in self.Elements3:
+                self.UsedElements3.append(i)
+                DataX3.append(self.x3[self.Elements3.index(i)])
+                Ybase3.append(self.raw.at[self.Base,i])
 
-                elif (self.raw.at[0, j] == 4):
-                    self.x4.append((ri / 3 + ro / 6) * (ri - ro) * (ri - ro))
-                    self.Elements4.append(j)
-                    self.Elements.append(j)
+            elif i in self.Elements4:
+                self.UsedElements4.append(i)
+                DataX4.append(self.x4[self.Elements4.index(i)])
+                Ybase4.append(self.raw.at[self.Base,i])
 
-            elif (self.raw.at[1, j] == 'no'):
-                ri = self.raw.at[2, j]
-                ro = self.raw.at[3, j]
-                if (self.raw.at[0, j] == 3):
-                    self.x3_Plot_Only.append((ri / 3 + ro / 6) * (ri - ro) * (ri - ro))
-                    self.Elements3_Plot_Only.append(j)
-                    self.Elements.append(j)
 
-        for i in self.Zircon:
-            self.ZirconCe.append(self.raw.at[i, 'Ce'])
+
+
+        #np.log(yi / ybase)
+
+
+
+        print(self.rows)
+
+        self.FittedData=[]
+
+
+
+        print('\n DataX3 ',len(DataX3),'\n DataX4',len(DataX4))
+
+
+        for i in self.rows:
             tmpy3 = []
             tmpy4 = []
-            tmpy3_Plot_Only = []
+            fittmpy3 = []
+            fittmpy4 = []
+            fitDataX3 = []
+            fitDataX4 = []
+            if i != self.Base:
+                self.ZirconCe.append(self.raw.at[i, 'Ce'])
 
-            for j in self.b:
-                if (j == 'Ce'):
-                    ybase = self.raw.at[self.Base, j]
-                    yi = self.raw.at[i, j]
-                    ytemp = np.log(yi / ybase)
-                    self.yCe3.append(ytemp)
-                elif (j == 'Ce4'):
-                    ybase = self.raw.at[self.Base, j]
-                    yi = self.raw.at[i, j]
-                    ytemp = np.log(yi / ybase)
-                    self.yCe4.append(ytemp)
-                elif (self.raw.at[1, j] == 'yes'):
-                    ybase = self.raw.at[self.Base, j]
-                    yi = self.raw.at[i, j]
-                    ytemp = np.log(yi / ybase)
-                    if (self.raw.at[0, j] == 3):
-                        tmpy3.append(ytemp)
 
-                    elif (self.raw.at[0, j] == 4):
-                        tmpy4.append(ytemp)
-                elif (self.raw.at[1, j] == 'no'):
-                    ybase = self.raw.at[self.Base, j]
-                    yi = self.raw.at[i, j]
-                    ytemp = np.log(yi / ybase)
-                    if (self.raw.at[0, j] == 3):
-                        tmpy3_Plot_Only.append(ytemp)
-            self.y3.append(tmpy3)
-            self.y4.append(tmpy4)
-            self.y3_Plot_Only.append(tmpy3_Plot_Only)
+                for j in self.UsedElements3:
+                    if len(tmpy3)<len(DataX3):
+                        tmpy3.append(np.log(self.raw.at[i,j]/Ybase3[self.UsedElements3.index(j)]))
+                for j in self.UsedElements4:
+                    if len(tmpy4)<len(DataX4):
+                        tmpy4.append(np.log(self.raw.at[i,j]/Ybase4[self.UsedElements4.index(j)]))
 
-        for k in range(len(self.y3)):
 
-            tmpz3 = np.polyfit(self.x3, self.y3[k], 1)
-            self.z3.append(tmpz3)
-
-            for i in range(len(self.x3)):
-                x, y = self.x3[i], self.y3[k][i]
-
-                self.axes[0].scatter(x, y, s=3, color='blue', alpha=0.5, label='', edgecolors='black')
-
-            if k == 0:
-                for i in range(len(self.x3)):
-                    self.axes[0].annotate(self.Elements3[i], xy=(self.x3[i], self.y3[0][i]), fontsize=6, xytext=(16, 16),
-                                        textcoords='offset points',
-                                        ha='right', va='bottom',
-                                        bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.3),
-                                        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-
-        for i in self.z3:
-            Xline3 = np.linspace(min(self.x3), max(max(self.x3_Plot_Only), max(self.x3)), 30)
-            p3 = np.poly1d(i)
-            Yline3 = p3(Xline3)
-
-            self.axes[0].plot(Xline3, Yline3, 'b-',alpha=0.3)
-
-            self.Ce3test.append(np.power(np.e, p3(self.xCe3) + np.log(self.RockCe))[0])
-            self.DCe3test.append(np.power(np.e, p3(self.xCe3))[0])
-
-        for k in range(len(self.yCe3)):
-
-            x, y = self.xCe3, self.yCe3[k]
-
-            self.axes[0].scatter(x, y, label='', s=5, color='k', alpha=0.5)
-
-            if k == 0:
-                self.axes[0].annotate('Ce3', xy=(self.xCe3[k], max(self.yCe3)), fontsize=6, xytext=(16, 16),
-                                    textcoords='offset points',
-                                    ha='right',
-                                    va='bottom', bbox=dict(boxstyle='round,pad=0.2', fc='red', alpha=0.3),
-                                    arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-
-        for k in range(len(self.y3_Plot_Only)):
-
-            for i in range(len(self.x3_Plot_Only)):
-                x, y = self.x3_Plot_Only[i], self.y3_Plot_Only[k][i]
-                self.axes[0].scatter(x, y, label='', s=3, color='blue', alpha=0.3)
-
-            if k == 0:
-                for i in range(len(self.x3_Plot_Only)):
-                    self.axes[0].annotate(self.Elements3_Plot_Only[i], xy=(self.x3_Plot_Only[i], self.y3_Plot_Only[0][i]),
-                                        fontsize=6,
-                                        xytext=(-16*np.sqrt(2), 0),
-                                        textcoords='offset points', ha='right', va='bottom',
-                                        bbox=dict(boxstyle='round,pad=0.2', fc='green', alpha=0.2),
-                                        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-
-        for k in range(len(self.y3)):
-
-            tmpz3 = np.polyfit(self.x3, self.y3[k], 1)
-            self.z3.append(tmpz3)
-
-            for i in range(len(self.x3)):
-                x, y = self.x3[i], self.y3[k][i]
-
-                self.axes[0].scatter(x, y, label='', s=3, color='blue', alpha=0.3)
-
-            if k == 0:
-                for i in range(len(self.x3)):
-                    self.axes[0].annotate(self.Elements3[i], xy=(self.x3[i], self.y3[0][i]), fontsize=6, xytext=(16, 16),
-                                        textcoords='offset points',
-                                        ha='right', va='bottom',
-                                        bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.3),
-                                        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-
-        for i in self.z3:
-            Xline3 = np.linspace(min(self.x3), max(max(self.x3_Plot_Only), max(self.x3)), 30)
-            p3 = np.poly1d(i)
-            Yline3 = p3(Xline3)
-            self.axes[0].plot(Xline3, Yline3, 'b-',alpha=0.3)
-
-            self.Ce3test.append(np.power(np.e, p3(self.xCe3) + np.log(self.RockCe))[0])
-            self.DCe3test.append(np.power(np.e, p3(self.xCe3))[0])
-
-        for k in range(len(self.yCe3)):
-
-            x, y = self.xCe3, self.yCe3[k]
-            self.axes[0].scatter(x, y, label='', s=5, color='k', alpha=0.5)
-
-            if k == 0:
-                self.axes[0].annotate('Ce3', xy=(self.xCe3[k], max(self.yCe3)), fontsize=6, xytext=(16, 16),
-                                    textcoords='offset points',
-                                    ha='right',
-                                    va='bottom', bbox=dict(boxstyle='round,pad=0.2', fc='red', alpha=0.3),
-                                    arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-
-        for k in range(len(self.y4)):
-
-            tmpz4 = np.polyfit(self.x4, self.y4[k], 1)
-            self.z4.append(tmpz4)
-
-            for i in range(len(self.x4)):
-                x, y = self.x4[i], self.y4[k][i]
-                self.axes[1].scatter(x, y, label='', s=3, color='r', alpha=0.5)
-
-            if k == 0:
-                for i in range(len(self.x4)):
-                    self.axes[1].annotate(self.Elements4[i], xy=(self.x4[i], self.y4[0][i]), fontsize=6, xytext=(16, 16),
-                                        textcoords='offset points',
-                                        ha='right', va='bottom',
-                                        bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.3),
-                                        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-
-        for i in self.z4:
-            Xline4 = np.linspace(min(self.x4), max(self.x4), 30)
-            p4 = np.poly1d(i)
-            Yline4 = p4(Xline4)
-            self.axes[1].plot(Xline4, Yline4, 'r-',alpha=0.3)
-
-            self.Ce4test.append(np.power(np.e, p4(self.xCe4) + np.log(self.RockCe))[0])
-            self.DCe4test.append(np.power(np.e, p4(self.xCe4))[0])
-
-        for k in range(len(self.yCe4)):
-
-            x, y = self.xCe4, self.yCe4[k]
-            self.axes[1].scatter(x, y, label='', s=5, color='k', alpha=0.5)
-
-            if k == 0:
-                self.axes[1].annotate('Ce4', xy=(self.xCe4[k], max(self.yCe4)), fontsize=6, xytext=(16, 16),
-                                    textcoords='offset points',
-                                    ha='right',
-                                    va='bottom', bbox=dict(boxstyle='round,pad=0.2', fc='red', alpha=0.3),
-                                    arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-
-        DataToWrite = [
-            ['Zircon Sample Label', 'Zircon Ce4_3 Ratio', 'Melt Ce4_3 Ratio', 'DCe4', 'DCe3', 'DCe Zircon/Melt'], ]
-
-        for i in range(len(self.ZirconCe)):
-            TMP = self.raw.at[self.Zircon[i], 'Label']
-            ZirconTmp = (self.RockCe - self.ZirconCe[i] / self.DCe3test[i]) / (
-                self.ZirconCe[i] / self.DCe4test[i] - self.RockCe)
-            MeltTmp = (self.ZirconCe[i] - self.Ce3test[i]) / self.Ce3test[i] * self.DCe3test[i] / self.DCe4test[i]
-            self.Ce4_3_Ratio.append(ZirconTmp)
-            DataToWrite.append(
-                [TMP, ZirconTmp, MeltTmp, self.DCe4test[i], self.DCe3test[i], self.ZirconCe[i] / self.RockCe])
+                print('\n y3 ', len(tmpy3), '\n y4', len(tmpy4))
 
 
 
-        xlimleft3 = 0
-        xlimleft4 = -0.005
+                for q in self.UsedElements3:
+                    if q != 'Ce':
+                        fitDataX3.append(DataX3[self.UsedElements3.index(q)])
+                        fittmpy3.append(tmpy3[self.UsedElements3.index(q)])
 
-        # print('\n the value is ', min(min(self.y3)))
-
-        ylimleft3 = min(min(min(self.y3)), min(min(self.y3_Plot_Only)))
-
-        ylimleft4 = min(min(min(self.y4)), min(min(self.yCe4), min(self.yCe3)))
-
-        xlimright3 = 0.06
-        xlimright4 = 0.03
-
-        ylimright3 = max(max(self.y3))
-        ylimright4 = max(max(self.y4))
+                for q in self.UsedElements4:
+                    if q != 'Ce4':
+                        fitDataX4.append(DataX4[self.UsedElements4.index(q)])
+                        fittmpy4.append(tmpy4[self.UsedElements4.index(q)])
 
 
+                print(len(fitDataX3), len(fittmpy3))
+                print(len(fitDataX4), len(fittmpy4))
+
+                tmpz3 = np.polyfit(fitDataX3, fittmpy3, 1)
+                tmpz4 = np.polyfit(fitDataX4, fittmpy4, 1)
+
+
+
+                Xline3 = np.linspace(min(fitDataX3), max(fitDataX3), 30)
+                p3 = np.poly1d(tmpz3 )
+                Yline3 = p3(Xline3)
+
+
+
+
+
+                Xline4 = np.linspace(min(fitDataX4), max(fitDataX4), 30)
+                p4 = np.poly1d(tmpz4 )
+                Yline4 = p3(Xline4)
+
+
+
+
+                self.Ce3test.append(np.power(np.e, p3(self.xCe3) + np.log(self.BaseCe)))
+                self.DCe3test.append(np.power(np.e, p3(self.xCe3)))
+                self.Ce4test.append(np.power(np.e, p4(self.xCe4) + np.log(self.BaseCe)))
+                self.DCe4test.append(np.power(np.e, p4(self.xCe4)))
+
+
+
+                self.axes[0].scatter(DataX3, tmpy3, s=3,color='blue', alpha=0.3, label='')
+                self.axes[1].scatter(DataX4, tmpy4, s=3,color='red', alpha=0.3, label='')
+
+                self.axes[0].plot(Xline3, Yline3, 'b-', alpha=0.3)
+                self.axes[1].plot(Xline4, Yline4, 'r-', alpha=0.3)
+
+                if i ==1:
+                    for k in range(len(DataX3)):
+                        self.axes[0].annotate(self.UsedElements3[k], xy=(DataX3[k], tmpy3[k]), fontsize=6, xytext=(16, 16),
+                                              textcoords='offset points',
+                                              ha='right', va='bottom',
+                                              bbox=dict(boxstyle='round,pad=0.2', fc='blue', alpha=0.3),
+                                              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+                    for k in range(len(DataX4)):
+                        self.axes[1].annotate(self.UsedElements4[k], xy=(DataX4[k], tmpy4[k]), fontsize=6, xytext=(16, 16),
+                                              textcoords='offset points',
+                                              ha='right', va='bottom',
+                                              bbox=dict(boxstyle='round,pad=0.2', fc='red', alpha=0.3),
+                                              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+
+                tmpy3 = []
+                tmpy4 = []
+                fittmpy3 = []
+                fittmpy4 = []
+                fitDataX3 = []
+                fitDataX4 = []
         self.canvas.draw()
+
 
         self.DataToWrite = [
             ['Zircon Sample Label', 'Zircon Ce4_3 Ratio', 'Melt Ce4_3 Ratio', 'DCe4', 'DCe3', 'DCe Zircon/Melt'], ]
-
         for i in range(len(self.ZirconCe)):
             TMP = self.raw.at[self.Zircon[i], 'Label']
-            ZirconTmp = (self.RockCe - self.ZirconCe[i] / self.DCe3test[i]) / (
-                self.ZirconCe[i] / self.DCe4test[i] - self.RockCe)
-            MeltTmp = (self.ZirconCe[i] - self.Ce3test[i]) / self.Ce3test[i] * self.DCe3test[i] / self.DCe4test[i]
+            ZirconTmp = (self.BaseCe - self.ZirconCe[i] / self.DCe3test[i]) / (
+                    self.ZirconCe[i] / self.DCe4test[i] - self.BaseCe)
+            MeltTmp = (self.ZirconCe[i] - self.Ce3test[i]) / self.Ce3test[i] * self.DCe3test[i] / self.DCe4test[
+                i]
             self.Ce4_3_Ratio.append(ZirconTmp)
             self.DataToWrite.append(
-                [TMP, ZirconTmp, MeltTmp, self.DCe4test[i], self.DCe3test[i], self.ZirconCe[i] / self.RockCe])
-
+                [TMP, ZirconTmp, MeltTmp, self.DCe4test[i], self.DCe3test[i], self.ZirconCe[i] / self.BaseCe])
         self.newdf = pd.DataFrame(self.DataToWrite)
-        # print('\n')
-        # print(self.newdf)
+
+
+
 
 

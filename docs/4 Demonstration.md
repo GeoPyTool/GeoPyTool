@@ -120,9 +120,12 @@ Notice that the first Letters must be in UPPER case.
 
 The data file used here is quite complicated. Please follow the guidance shown in the picture below.
 
-In the template data file for this calculation, the row with the **Base** symbol needs to be filled with the bulk REE data, and the **zircon** rows and **`Label`** column is where the REE data is input. The **Zr** value for zircon should be set as the **“constant”** **497555**. The **“use”** row tells the program to use the data in the row in the calculation if set as yes or excluded if set at no, but all of the data will be plotted on the graph generated. The Ri and Ro values are from Ballard et al. (2002) where La is set as No as the default setting, because of the anomaly of La in their data.
+Alarm！ This function has been totally rewritten and the old Data File for the older version can not be used directly to the new version function! Please Download the latest Data File Templates from [https://github.com/GeoPyTool/GeoPyTool/blob/master/DataFileSamples/Zircon%20Ce%20Calculation/ZirconCe.xlsx](https://github.com/GeoPyTool/GeoPyTool/blob/master/DataFileSamples/Zircon%20Ce%20Calculation/ZirconCe.xlsx) .
+
+In the template data file for this calculation, the row with the **Base** symbol needs to be filled with the bulk REE data, and the **zircon** rows and **`Label`** column is where the REE data is input. The **Zr** value for zircon should be set as the **“constant”** **497555**. Please Delete all unused elements and only leave the data to fit and calculate!
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/ZriconCeCalculation.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/ZriconCeCalculation2.png)
 
 
 ## Zircon and Rutile Thermometer
