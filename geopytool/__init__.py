@@ -56,7 +56,7 @@ from geopytool.Trace import Trace
 from geopytool.XY import XY
 from geopytool.XYZ import XYZ
 from geopytool.ZirconCe import ZirconCe
-
+from geopytool.ZirconCeOld import ZirconCeOld
 from geopytool.Magic import Magic
 
 # Create a custom "QProxyStyle" to enlarge the QMenu icons
@@ -279,6 +279,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconCe = QtWidgets.QAction(QIcon(LocationOfMySelf+'/calc.png'),u'ZirconCe',self)
         self.actionZirconCe.setObjectName('actionZirconCe')
 
+        self.actionZirconCeOld = QtWidgets.QAction(QIcon(LocationOfMySelf+'/calc.png'),u'ZirconCeOld',self)
+        self.actionZirconCeOld.setObjectName('actionZirconCeOldOld')
+
         self.actionZirconTiTemp = QtWidgets.QAction(QIcon(LocationOfMySelf+'/temperature.png'),u'ZirconTiTemp',self)
         self.actionZirconTiTemp.setObjectName('actionZirconTiTemp')
 
@@ -331,6 +334,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionCIPW)
         self.menuGeoChem.addAction(self.actionZirconCe)
+        self.menuGeoChem.addAction(self.actionZirconCeOld)
         self.menuGeoChem.addAction(self.actionZirconTiTemp)
         self.menuGeoChem.addAction(self.actionRutileZrTemp)
         self.menuGeoChem.addAction(self.actionRbSrIsoTope)
@@ -413,6 +417,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionCIPW.triggered.connect(self.CIPW)
         self.actionZirconCe.triggered.connect(self.ZirconCe)
+        self.actionZirconCeOld.triggered.connect(self.ZirconCeOld)
         self.actionZirconTiTemp.triggered.connect(self.ZirconTiTemp)
         self.actionRutileZrTemp.triggered.connect(self.RutileZrTemp)
         self.actionCluster.triggered.connect(self.Cluster)
@@ -511,6 +516,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCIPW.setText(_translate('MainWindow',u'CIPW'))
 
         self.actionZirconCe.setText(_translate('MainWindow',u'ZirconCe'))
+        self.actionZirconCeOld.setText(_translate('MainWindow', u'ZirconCeOld'))
         self.actionZirconTiTemp.setText(_translate('MainWindow',u'ZirconTiTemp'))
         self.actionRutileZrTemp.setText(_translate('MainWindow',u'RutileZrTemp'))
         self.actionCluster.setText(_translate('MainWindow',u'Cluster'))
@@ -603,6 +609,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCIPW.setText(_translate('MainWindow', u'CIPW'))
 
         self.actionZirconCe.setText(_translate('MainWindow', u'ZirconCe'))
+        self.actionZirconCeOld.setText(_translate('MainWindow', u'ZirconCeOld'))
         self.actionZirconTiTemp.setText(_translate('MainWindow', u'ZirconTiTemp'))
         self.actionRutileZrTemp.setText(_translate('MainWindow', u'RutileZrTemp'))
         self.actionCluster.setText(_translate('MainWindow', u'Cluster'))
@@ -1137,12 +1144,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.getDataFile()
         # print('Opening a new popup window...')
         self.zirconpop = ZirconCe(df=self.model._df)
+
         try:
             self.zirconpop.MultiBallard()
             self.zirconpop.show()
         except(KeyError,ValueError):
             self.ErrorEvent()
 
+
+
+    def ZirconCeOld(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+        # print('Opening a new popup window...')
+        self.zirconoldpop = ZirconCeOld(df=self.model._df)
+        try:
+            self.zirconoldpop.MultiBallard()
+            self.zirconoldpop.show()
+        except(KeyError,ValueError):
+            self.ErrorEvent()
 
     def RbSrIsoTope(self):
         print('self.model._df length: ',len(self.model._df))

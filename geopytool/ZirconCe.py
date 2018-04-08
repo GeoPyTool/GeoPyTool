@@ -356,8 +356,9 @@ class ZirconCe(QMainWindow):
             MeltTmp = (self.ZirconCe[i] - self.Ce3test[i]) / self.Ce3test[i] * self.DCe3test[i] / self.DCe4test[
                 i]
             self.Ce4_3_Ratio.append(ZirconTmp)
-            self.DataToWrite.append(
-                [TMP, ZirconTmp, MeltTmp, self.DCe4test[i], self.DCe3test[i], self.ZirconCe[i] / self.BaseCe])
+
+            if len(self.DataToWrite) < len(DataX3):
+                self.DataToWrite.append([TMP, ZirconTmp, MeltTmp, self.DCe4test[i], self.DCe3test[i], self.ZirconCe[i] / self.BaseCe])
         self.newdf = pd.DataFrame(self.DataToWrite)
 
 

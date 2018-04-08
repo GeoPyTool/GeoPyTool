@@ -1,7 +1,7 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
-class ZirconCe(QMainWindow):
+class ZirconCeOld(QMainWindow):
     _df = pd.DataFrame()
     _changed = False
 
