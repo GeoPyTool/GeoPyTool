@@ -1,5 +1,5 @@
 Title: Introduction
-Date: 2018-03-19 15:15:13
+Date: 2018-04-8 15:15:13
 Category: Doc
 Tags: Doc,English,Chinese
 
@@ -16,6 +16,13 @@ It is a **free software**: you can redistribute it and/or modify it under the te
 
 GeoPyTool contains both traditional routines and newly developed methods。
 
+
+[Packed Application](http://geopytool.com/installation.html)
+[PIP Installation](http://geopytool.com/installation-expert.html)
+[Demonstration](http://geopytool.com/demonstration.html)
+
+
+
 ## 简介
 
 GeoPyTool 是一个基于 Python 实现的开源应用，针对的是地质学研究中的日常用途。由于使用了 Python，天生跨平台天赋加持，所以几乎能运行于所有主流操作系统，比如 Windows 7 SP1, Windows 8, Windows 10, macOS Sierra, macOS High Sierra, Ubuntu Linux, Debian Linux, Fedora Linux 等等几乎全部主流的桌面操作系统。
@@ -26,25 +33,25 @@ GeoPyTool 是一个自由软件:您可以根据自由软件基金会发布的GNU
 
 GeoPyTool 包含了一些常用的传统方法，也实现了一些近年来新诞生的研究成果。
 
+[打包程序](http://geopytool.com/an-zhuang-zhi-nan.html)
+[代码安装](http://geopytool.com/an-zhuang-zhi-nan-jin-jie.html)
+[使用指南](http://geopytool.com/yan-shi-shi-pin.html)
 
-#GeoPyTool Application Download Links
-># GeoPyTool 打包的可执行程序下载链接
+
 
 
 ### GeoPyTool pack for Windows:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1EJsLFqdnnwPDq8VnYibaRQ)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1O4Db0punGIeoX4i1GKjNnw)
 
-[Google Drive](https://drive.google.com/open?id=18pZElwAxwJiDFxLQcFktZ_CgK9jlEKHa)
+[Google Drive](https://drive.google.com/open?id=1NyjUdAuCVLrAPav81I1pljM6zL3yR-RP)
 
 
 
 
 ### GeoPyTool app for macOS:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/191rdxrfc2d2Zdi9oyLLhSQ)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1R9gCNui4p8zz4-xegmxhZA)
 
-[Google Drive](https://drive.google.com/open?id=1odnzlSDzyeJDpdF9O8mXgcQZcrml_kEn)
-
-
+[Google Drive](https://drive.google.com/open?id=1qbRJPIrBOxTKIgJWNNPFBrkpPbB3M_17)
 
 
 
