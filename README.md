@@ -17,11 +17,11 @@ It is a **free software**: you can redistribute it and/or modify it under the te
 GeoPyTool contains both traditional routines and newly developed methods。
 
 
-###[Packed Application](http://geopytool.com/installation.html)
+### [Packed Application](http://geopytool.com/installation.html)
 
-###[PIP Installation](http://geopytool.com/installation-expert.html)
+### [PIP Installation](http://geopytool.com/installation-expert.html)
 
-###[Demonstration](http://geopytool.com/demonstration.html)
+### [Demonstration](http://geopytool.com/demonstration.html)
 
 
 
@@ -35,11 +35,11 @@ GeoPyTool 是一个自由软件:您可以根据自由软件基金会发布的GNU
 
 GeoPyTool 包含了一些常用的传统方法，也实现了一些近年来新诞生的研究成果。
 
-###[打包程序](http://geopytool.com/an-zhuang-zhi-nan.html)
+### [打包程序](http://geopytool.com/an-zhuang-zhi-nan.html)
 
-###[代码安装](http://geopytool.com/an-zhuang-zhi-nan-jin-jie.html)
+### [代码安装](http://geopytool.com/an-zhuang-zhi-nan-jin-jie.html)
 
-###[使用指南](http://geopytool.com/yan-shi-shi-pin.html)
+### [使用指南](http://geopytool.com/yan-shi-shi-pin.html)
 
 
 
