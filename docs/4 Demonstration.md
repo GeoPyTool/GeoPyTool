@@ -16,6 +16,13 @@ To start a plot or calculation, raw data file should be imported to GeoPyTool fi
 The Data file can be Xlsx/Xls or CSV.
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/ChooseAndImport.png)
 
+## Data Unit
+
+Unit of Oxide Items (such as `SiO2`, `TiO2`, `Al2O3`, `Fe2O3`, `FeO`, `MnO`, `MgO`, `CaO	Na2O`, `K2O`, `P2O5`, `LOI`, `Total`, etc )is weight percent (wt%).
+But Make Sure to follow the format in data templates. 
+**Do not** contain the `%` in the used data files!
+Unit of other Elements Items (such as `Li`, `Be`, `Sc`, `V`, `Cr`, `Co`, `Ni`, `Cu`, `Zn`, `Ga`, `Rb`, `Sr`, `Y`, `Zr`, `Nb`, `Cs`, `Ba`, `La`, `Ce`, `Pr`, `Nd`, `Sm`, `Eu`, `Gd`, `Tb`, `Dy`, `Ho`, `Er`, `Tm`, `Yb`, `Lu`, `Hf`, `Ta`, `Tl`, `Pb`, `Th`, `U`) is ppm.
+
 ## Set Up Data
 
 If there is no setting up information such as the `Label`/`Color`/`Marker`/`Style`/`Alpha`/`Width`, you need to click on the Set Format button to add these items and make modification by yourself.
