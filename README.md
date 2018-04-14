@@ -50,19 +50,18 @@ GeoPyTool 包含了一些常用的传统方法，也实现了一些近年来新�
 
 
 
-
 ### GeoPyTool pack for Windows:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1O4Db0punGIeoX4i1GKjNnw)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1n5PnJR5_EbSsLIGE5DLgrg)
 
-[Google Drive](https://drive.google.com/open?id=1NyjUdAuCVLrAPav81I1pljM6zL3yR-RP)
+[Google Drive](https://drive.google.com/open?id=10GnpOezBDnNrK2y2fxLD3fdL2O-bECWD)
 
 
 
 
 ### GeoPyTool app for macOS:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1R9gCNui4p8zz4-xegmxhZA)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1HONwFiBBSIkc24ls-qcFsQ)
 
-[Google Drive](https://drive.google.com/open?id=1qbRJPIrBOxTKIgJWNNPFBrkpPbB3M_17)
+[Google Drive](https://drive.google.com/open?id=1bXmKhh8G67Ttz-UpDe7bJHF3E0uXmdaC)
 
 
 
