@@ -4,11 +4,14 @@ Category: Doc
 Tags: Doc,English,Chinese
 
 # Welcome to GeoPyTool
+
+[![Build Status](https://travis-ci.org/GeoPyTool/GeoPyTool.svg?branch=master)](https://travis-ci.org/GeoPyTool/GeoPyTool)
+
 ![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/Samples.png?raw=true)
 
 
 
-[![Build Status](https://travis-ci.org/GeoPyTool/GeoPyTool.svg?branch=master)](https://travis-ci.org/GeoPyTool/GeoPyTool)
+
 
 ## Introduction
 
