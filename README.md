@@ -6,6 +6,10 @@ Tags: Doc,English,Chinese
 # Welcome to GeoPyTool
 ![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/Samples.png?raw=true)
 
+
+
+[![Build Status](https://travis-ci.org/GeoPyTool/GeoPyTool.svg?branch=master)](https://travis-ci.org/GeoPyTool/GeoPyTool)
+
 ## Introduction
 
 GeoPyTool is an application based on Python and designed as a solution for geology related daily work. **It can run on alomost all mainstream operating systems**, such as Windows 7 SP1, Windows 8, Windows 10, macOS Sierra, macOS High Sierra, Ubuntu Linux, Debian Linux, Fedora Linux, and alomost all other widely used desktop platforms.
