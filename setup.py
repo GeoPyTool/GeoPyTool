@@ -1,10 +1,18 @@
 #!/usr/bin/env python
 #coding:utf-8
+import os
 from distutils.core import setup
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
-README = 'https://github.com/GeoPyTool/GeoPyTool/blob/master/README.md'
+
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+try:
+    README = open(os.path.join(here, 'README.md')).read()
+except:
+    README = 'https://github.com/GeoPyTool/GeoPyTool/blob/master/README.md'
 
 
 setup(name='geopytool',
@@ -16,7 +24,7 @@ setup(name='geopytool',
       url='https://github.com/GeoPyTool/GeoPyTool',
       packages=['geopytool'],
       package_data={
-          'geopytool': ['*.py','*.png','*.qm','*.ttf','*.ini'],
+          'geopytool': ['*.py','*.png','*.qm','*.ttf','*.ini','*.md'],
       },
       include_package_data=True,
 
