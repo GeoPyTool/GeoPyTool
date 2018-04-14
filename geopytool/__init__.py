@@ -37,6 +37,7 @@ from geopytool.HarkerDIY import HarkerDIY
 #from geopytool.Magic import Magic
 
 from geopytool.Clastic import Clastic
+from geopytool.CIA import CIA
 
 from geopytool.IsoTope import IsoTope
 
@@ -303,6 +304,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionClastic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'Clastic',self)
         self.actionClastic.setObjectName("actionClastic")
 
+        self.actionCIA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'CIA and ICV',self)
+        self.actionCIA.setObjectName("actionCIA")
+
         self.actionXY = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'X-Y',self)
         self.actionXY.setObjectName('actionXY')
 
@@ -349,6 +353,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuSedimentary.addAction(self.actionQFL)
         self.menuSedimentary.addAction(self.actionQmFLt)
         self.menuSedimentary.addAction(self.actionClastic)
+        self.menuSedimentary.addAction(self.actionCIA)
 
 
         self.menuDIY.addAction(self.actionXY)
@@ -413,7 +418,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQFL.triggered.connect(self.QFL)
         self.actionQmFLt.triggered.connect(self.QmFLt)
 
-        self.actionClastic.triggered.connect(self.Mud)
+        self.actionClastic.triggered.connect(self.Clastic)
+        self.actionCIA.triggered.connect(self.CIA)
 
         self.actionCIPW.triggered.connect(self.CIPW)
         self.actionZirconCe.triggered.connect(self.ZirconCe)
@@ -512,6 +518,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQFL.setText(_translate('MainWindow',u'QFL'))
         self.actionQmFLt.setText(_translate('MainWindow',u'QmFLt'))
         self.actionClastic.setText(_translate('MainWindow',u'Clastic'))
+        self.actionCIA.setText(_translate('MainWindow',u'CIA and ICV'))
 
         self.actionCIPW.setText(_translate('MainWindow',u'CIPW'))
 
@@ -605,6 +612,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQFL.setText(_translate('MainWindow', u'QFL'))
         self.actionQmFLt.setText(_translate('MainWindow', u'QmFLt'))
         self.actionClastic.setText(_translate('MainWindow',u'Clastic'))
+        self.actionCIA.setText(_translate('MainWindow',u'CIA and ICV'))
 
         self.actionCIPW.setText(_translate('MainWindow', u'CIPW'))
 
@@ -1115,16 +1123,31 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except(KeyError):
             self.ErrorEvent()
 
-    def Mud(self):
+    def Clastic(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.mudpop = Clastic(df=self.model._df)
+        self.clusterpop = Clastic(df=self.model._df)
         try:
-            self.mudpop.Tri()
-            self.mudpop.show()
+            self.clusterpop.Tri()
+            self.clusterpop.show()
         except(KeyError):
             self.ErrorEvent()
+
+
+    def CIA(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+        self.ciapop = CIA(df=self.model._df)
+
+        try:
+            self.ciapop.CIA()
+            self.ciapop.show()
+        except(KeyError):
+            self.ErrorEvent()
+        pass
+
 
     def QAPF(self):
         print('self.model._df length: ',len(self.model._df))
