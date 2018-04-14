@@ -4,10 +4,13 @@ from distutils.core import setup
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
+README = 'https://github.com/GeoPyTool/GeoPyTool/blob/master/README.md'
+
 
 setup(name='geopytool',
       version=version,
       description='a tool for daily geology related task. visit geopytool.com for further information',
+      longdescription=README,
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',
       url='https://github.com/GeoPyTool/GeoPyTool',
