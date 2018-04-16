@@ -48,7 +48,9 @@ class CIA(AppForm):
     BaseMass  = {'SiO2': 60.083,
                  'TiO2': 79.865,
                  'Al2O3': 101.960077,
+                 'TFe2O3': 159.687,
                  'Fe2O3': 159.687,
+                 'TFeO': 71.844,
                  'FeO': 71.844,
                  'MnO': 70.937044,
                  'MgO': 40.304,
@@ -57,7 +59,13 @@ class CIA(AppForm):
                  'K2O': 94.1956,
                  'P2O5': 141.942523996,
                  'CO2': 44.009,
-                 'SO3': 80.057}
+                 'SO3': 80.057,
+                 'FeO': 71.844,
+                 'Fe3O4': 231.531,
+                 'BaO': 153.326,
+                 'SrO': 103.619,
+                 'Cr2O3': 151.98919999999998,
+                 }
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -153,13 +161,13 @@ class CIA(AppForm):
         Indexes = dataframe.index.values.tolist()
 
 
-        ItemsToCheck = ['Label','SiO2','Al2O3','Fe2O3','MgO','CaO','Na2O','K2O','P2O5','MnO','TiO2']
+        #ItemsToCheck = ['Label','SiO2','Al2O3','Fe2O3','MgO','CaO','Na2O','K2O','P2O5','MnO','TiO2']
         ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width']
 
 
         for i in ItemsAvalibale:
-            if i not in ItemsToCheck:
+            if 'O' not in i and i !='Label':
                 dataframe = dataframe.drop(i, 1)
 
 
