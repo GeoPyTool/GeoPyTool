@@ -207,7 +207,7 @@ class QAPF(AppForm, Tool):
                          fontsize=16, )
 
     def create_main_frame(self):
-        self.resize(600, 800)
+        self.resize(800, 1000)
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((12, 11), dpi=self.dpi)
@@ -272,7 +272,7 @@ class QAPF(AppForm, Tool):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,  self.detail_cb, self.legend_cb,self.slider_label,self.slider]:
+        for w in [self.save_button,  self.detail_cb, self.legend_cb,self.slider,self.slider_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 

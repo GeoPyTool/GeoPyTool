@@ -917,8 +917,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.raw = pd.read_excel(DataFileInput)
         # #print(self.raw)
 
+        self.CleanDataFile()
+
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
+
+    def CleanDataFile(self,checklist=['质量','分数',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
+
+
+        for i in checklist:
+            self.raw = self.raw.rename(columns=lambda x: x.replace(i, ''))
+            pass
+
 
     def saveDataFile(self):
 
@@ -1153,13 +1163,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.qapfpop = QAPF(df=self.model._df)
-        try:
-            self.qapfpop.QAPF()
-            self.qapfpop.show()
-        except(KeyError):
-            self.ErrorEvent()
 
+
+        ItemsAvalibale = self.model._df.columns.values.tolist()
+        if 'Q' in  ItemsAvalibale and 'A' in  ItemsAvalibale and 'P' in  ItemsAvalibale and 'F' in ItemsAvalibale:
+            self.qapfpop = QAPF(df=self.model._df)
+            try:
+                self.qapfpop.QAPF()
+                self.qapfpop.show()
+            except(KeyError):
+                self.ErrorEvent()
+        else:
+            reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
+                                                                                                  'Your data contain no Q/A/P/F data.\n Maybe you need to run CIPW first?'))
 
     def ZirconCe(self):
         print('self.model._df length: ',len(self.model._df))
