@@ -620,7 +620,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionZirconCeOld.setText(_translate('MainWindow', u'ZirconCeOld'))
         self.actionZirconTiTemp.setText(_translate('MainWindow', u'ZirconTiTemp'))
         self.actionRutileZrTemp.setText(_translate('MainWindow', u'RutileZrTemp'))
-        self.actionCluster.setText(_translate('MainWindow', u'Cluster'))
+        self.actionCluster.setText(_translate('MainWindow', u'Hierarchical Cluster'))
         self.actionAuto.setText(_translate('MainWindow', u'Auto'))
         self.actionMultiDimension.setText(_translate('MainWindow',u'MultiDimension'))
 
@@ -917,10 +917,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.raw = pd.read_excel(DataFileInput)
         # #print(self.raw)
 
-        self.CleanDataFile()
+
 
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
+
+        self.CleanDataFile()
+        self.model = PandasModel(self.raw)
 
     def CleanDataFile(self,checklist=['质量','分数',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
 

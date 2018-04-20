@@ -19,12 +19,14 @@ class Cluster(AppForm):
                 'Width',
                 'Tag']
 
+    corr1 = pd.DataFrame()
+    corr2 = pd.DataFrame()
+
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Cluster Data')
 
         self.items = []
-
         self._df = df
         if (len(df) > 0):
             self._changed = True
@@ -42,14 +44,24 @@ class Cluster(AppForm):
         self.create_main_frame()
         self.create_status_bar()
 
+
+    def showResult1(self):
+
+        self.tablepop1 = TabelViewer(df=self.corr1, title='Correlation Matrix of Colums')
+        self.tablepop1.show()
+
+    def showResult2(self):
+        self.tablepop2 = TabelViewer(df=self.corr2, title='Correlation Matrix of Rows')
+        self.tablepop2.show()
+
     def create_main_frame(self):
-        self.resize(800,800)
+        self.resize(1200,720)
         self.main_frame = QWidget()
         self.dpi = 128
         self.setWindowTitle('Cluster Figure')
 
-        self.fig = plt.figure(figsize=(8, 8))
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.6, top=0.9)
+        self.fig = plt.figure(figsize=(12, 12))
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.9, top=0.9)
 
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -72,12 +84,23 @@ class Cluster(AppForm):
 
         self.save_button.clicked.connect(self.saveImgFile)
 
+
+
+        self.show_data_button1 = QPushButton('&Show Rows\' Result')
+        self.show_data_button1.clicked.connect(self.showResult1)
+        self.show_data_button2 = QPushButton('&Show Columns\' Result')
+        self.show_data_button2.clicked.connect(self.showResult2)
+
+
+        self.ShowValue_cb = QCheckBox('&Value Off')
+        self.ShowValue_cb.setChecked(False)
+        self.ShowValue_cb.stateChanged.connect(self.Cluster)  # int
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button]:
+        for w in [self.save_button,self.ShowValue_cb,self.show_data_button1,self.show_data_button2]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -111,6 +134,7 @@ class Cluster(AppForm):
 
     def Cluster(self):
 
+        self.fig.clear()
         self.WholeData = []
         ItemsAvalibale = self._df.columns.values.tolist()
 
@@ -135,8 +159,7 @@ class Cluster(AppForm):
 
         dataframe2 = dataframe.T
 
-        ax1 = self.fig.add_axes([0.3,0.75,0.5,0.1])
-
+        axup = self.fig.add_axes([0.53, 0.88, 0.38, 0.1])
 
         corr1 = 1 - dataframe.corr()
 
@@ -158,10 +181,25 @@ class Cluster(AppForm):
             z1 = hc.linkage(corr_condensed1, method='average')
             Z1 = hc.dendrogram(abs(z1),labels=corr1.columns)
 
-            ax1.set_xticks([])
-            ax1.set_yticks([])
+            axup.set_xticks([])
+            axup.set_yticks([])
 
-            ax2 = self.fig.add_axes([0.09,0.1,0.15,0.6])
+            axmatrixup = self.fig.add_axes([0.53, 0.49, 0.38, 0.38])
+
+            imup = axmatrixup.matshow(corr1, aspect='auto', origin='lower', cmap='GnBu')
+
+            axmatrixup.set_xticks([])
+            axmatrixup.set_xticklabels([], minor=False,prop=fontprop)
+            axmatrixup.xaxis.set_label_position('bottom')
+            axmatrixup.xaxis.tick_bottom()
+
+            axmatrixup.set_yticks([])
+            axmatrixup.set_yticklabels([], minor=False,prop=fontprop)
+            axmatrixup.yaxis.set_label_position('right')
+            axmatrixup.yaxis.tick_right()
+
+            axleft = self.fig.add_axes([0.0,0.1,0.13,0.38])
+
 
             # Compute and plot second dendrogram.
 
@@ -170,12 +208,26 @@ class Cluster(AppForm):
             z2 = hc.linkage(corr_condensed2, method='average')
             Z2 = hc.dendrogram(abs(z2),labels=corr2.columns,orientation='left')
 
-            ax2.set_xticks([])
-            ax2.set_yticks([])
+            axleft.set_xticks([])
+            axleft.set_yticks([])
 
+            axmatrixleft = self.fig.add_axes([0.14, 0.1, 0.38, 0.38])
+            imleft = axmatrixleft.matshow(corr2, aspect='auto', origin='lower', cmap='GnBu')
+
+
+            axmatrixleft.set_xticks([])
+            axmatrixleft.set_xticklabels([], minor=False)
+            axmatrixleft.xaxis.set_label_position('bottom')
+            axmatrixleft.xaxis.tick_bottom()
+
+            axmatrixleft.set_yticks([])
+            axmatrixleft.set_yticklabels([], minor=False)
+            axmatrixleft.yaxis.set_label_position('right')
+            axmatrixleft.yaxis.tick_right()
 
             #Plot distance matrix.
-            axmatrix = self.fig.add_axes([0.3, 0.1, 0.5, 0.6])
+            axmatrix = self.fig.add_axes([0.53, 0.1, 0.38, 0.38])
+
             idx1 = Z1['leaves']
             idx2 = Z2['leaves']
 
@@ -188,7 +240,7 @@ class Cluster(AppForm):
 
             D = D[idx2, :]
             D = D[:, idx1]
-            im = axmatrix.matshow(D, aspect='auto', origin='lower', cmap='Greys')
+            im = axmatrix.matshow(D, aspect='auto', origin='lower', cmap='Blues')
 
 
             XLabelList = [corr1.columns[i] for i in idx1]
@@ -199,23 +251,49 @@ class Cluster(AppForm):
 
             axmatrix.set_xticks(XstickList)
             axmatrix.set_xticklabels( XLabelList, minor=False)
-            axmatrix.xaxis.set_label_position('top')
-            axmatrix.xaxis.tick_top()
+            axmatrix.xaxis.set_label_position('bottom')
+            axmatrix.xaxis.tick_bottom()
 
             axmatrix.set_yticks(YstickList)
             axmatrix.set_yticklabels( YLabelList, minor=False)
-            axmatrix.yaxis.set_label_position('left')
-            axmatrix.yaxis.tick_left()
+            axmatrix.yaxis.set_label_position('right')
+            axmatrix.yaxis.tick_right()
 
 
             plt.xticks(rotation=-90, fontsize=6)
             plt.yticks(fontsize=6)
 
-            axcolor1 = self.fig.add_axes([0.9, 0.1, 0.02, 0.6])
+            #axcolor1 = self.fig.add_axes([0.3, 0.54, 0.02, 0.4])
 
             # Plot colorbar.
 
-            plt.colorbar(im, cax=axcolor1)
+            #plt.colorbar(im, cax=axcolor1)
+
+
+
+
+            if self.ShowValue_cb.isChecked():
+                flag=0
+
+                self.ShowValue_cb.setText('&Value On')
+            else:
+                self.ShowValue_cb.setText('&Value Off')
+                flag=1
+
+            if flag==0:
+                for (j, i), label in np.ndenumerate(1-corr1):
+                    axmatrixup.text(i, j, "%.2f" % label, ha='center', va='center')
+
+                for (j, i), label in np.ndenumerate(1-corr2):
+                    axmatrixleft.text(i, j, "%.2f" % label, ha='center', va='center')
+
+                for (j, i), label in np.ndenumerate(D):
+                    axmatrix.text(i, j, "%.2f" % label, ha='center', va='center')
+
+
+
+            self.corr1=1-corr1
+            self.corr2=1-corr2
 
             self.canvas.draw()
             self.show()
