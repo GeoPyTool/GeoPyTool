@@ -1,7 +1,7 @@
 Title: Introduction
 Date: 2018-04-21 15:15:13
 Category: Doc
-Tags: Doc,English,Chinese
+Tags: Doc,English
 
 # Welcome to GeoPyTool
 

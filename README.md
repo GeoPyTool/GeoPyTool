@@ -1,7 +1,7 @@
 Title: Introduction
 Date: 2018-04-21 15:15:13
 Category: Doc
-Tags: Doc,English,Chinese
+Tags: Doc,English
 
 # Welcome to GeoPyTool
 
@@ -89,12 +89,12 @@ Please believe me that I have tried this on several brand new Mac machines.
 
 
 Just download and unzip the packed file, then double click on the GeoPyTool.app file, you will find the APP available as the following picture shows.
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/MacOSScreenShot.png =800)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/MacOSScreenShot.png)
 
 To Update the GeoPyTool.app, you need to go to the location inside the app file, `GeoPyTool.app/Contents/Resources/UpDateGeoPytool`.
 Double click on this file named `UpDateGeoPytool` at `GeoPyTool.app/Contents/Resources/`. 
 As the following screenshot shows:
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/OSXUpdate.png =800)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/OSXUpdate.png)
 
 It will update the GeoPyTool inside your GeoPyTool.app file. Remember that never modify any files directly under the same folder unless you are an expert on dealing with Python.
 
@@ -102,7 +102,7 @@ It will update the GeoPyTool inside your GeoPyTool.app file. Remember that never
 ### For Windows Users
 On Windows 8/8.1/10, everything is also extremely easy to use GeoPyTool. Just download and unzip the file, then double click on a bat file in the unzipped folder, and make sure that you don't delete any file form the unzipped folder because they are all required by the program, then you will find the APP available as the following picture shows.
 
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/RunWin.jpg =800)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/RunWin.jpg)
 
 To use GeoPyTool on Windows 7, some system patches need to be installed. You need to install the SP1 of Windows and then install KB2999226 and the Visual C++ Redistributable 2015. If you are using Windows 7 without the SP1 package installed, there might comes `anapi-ms-win-crtrelated error`. So believe me my friend, just install these patched below, they won't harm you after all.
 
@@ -173,12 +173,12 @@ After all, please find your own way to open these files and do not act like a ba
 
 
 
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/Samples.png =800)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/Samples.png?raw=true)
 
 # Support Us
 
 If you want to support GeoPyTool and you also use WeChat, please scan the following QR code to reward us.
 I can use this money to pay for medical expenses to stay healthy and add more functions to GeoPyTool.
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WeChatQrCode.png  =200)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WeChatQrCode.png)
 
 
