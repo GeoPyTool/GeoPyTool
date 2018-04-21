@@ -186,6 +186,6 @@ After all, please find your own way to open these files and do not act like a ba
 
 If you want to support GeoPyTool and you also use WeChat, please scan the following QR code to reward us.
 I can use this money to pay for medical expenses to stay healthy and add more functions to GeoPyTool.
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WeChatQrCode.png =200)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WeChatQrCode.png)
 
 
