@@ -186,6 +186,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem = QtWidgets.QMenu(self.menubar)
         self.menuGeoChem.setObjectName('menuGeoChem')
 
+
+        self.menuGeoCalc = QtWidgets.QMenu(self.menubar)
+        self.menuGeoCalc.setObjectName('menuGeoCalc')
+
         self.menuStructure = QtWidgets.QMenu(self.menubar)
         self.menuStructure.setObjectName('menuStructure')
 
@@ -193,8 +197,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuSedimentary.setObjectName('menuSedimentary')
 
 
-        self.menuDIY = QtWidgets.QMenu(self.menubar)
-        self.menuDIY.setObjectName('menuDIY')
+        self.menuAdditional = QtWidgets.QMenu(self.menubar)
+        self.menuAdditional.setObjectName('menuAdditional')
 
         self.menuHelp = QtWidgets.QMenu(self.menubar)
         self.menuHelp.setObjectName('menuHelp')
@@ -335,16 +339,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionHarker)
         #self.menuGeoChem.addAction(self.actionHarkerDIY)
         self.menuGeoChem.addAction(self.actionBivariate)
-        self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionCIPW)
-        self.menuGeoChem.addAction(self.actionZirconCe)
-        self.menuGeoChem.addAction(self.actionZirconCeOld)
-        self.menuGeoChem.addAction(self.actionZirconTiTemp)
-        self.menuGeoChem.addAction(self.actionRutileZrTemp)
-        self.menuGeoChem.addAction(self.actionRbSrIsoTope)
-        self.menuGeoChem.addAction(self.actionSmNdIsoTope)
-        #self.menuGeoChem.addAction(self.actionKArIsoTope)
+        self.menuGeoChem.addAction(self.actionQAPF)
 
+
+
+        self.menuGeoCalc.addAction(self.actionZirconCe)
+        self.menuGeoCalc.addAction(self.actionZirconCeOld)
+        self.menuGeoCalc.addAction(self.actionZirconTiTemp)
+        self.menuGeoCalc.addAction(self.actionRutileZrTemp)
+        self.menuGeoCalc.addAction(self.actionRbSrIsoTope)
+        self.menuGeoCalc.addAction(self.actionSmNdIsoTope)
+        #self.menuGeoCalc.addAction(self.actionKArIsoTope)
 
 
 
@@ -356,10 +362,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuSedimentary.addAction(self.actionCIA)
 
 
-        self.menuDIY.addAction(self.actionXY)
-        self.menuDIY.addAction(self.actionXYZ)
-        self.menuDIY.addAction(self.actionCluster)
-        self.menuDIY.addAction(self.actionMultiDimension)
+        self.menuAdditional.addAction(self.actionXY)
+        self.menuAdditional.addAction(self.actionXYZ)
+        self.menuAdditional.addAction(self.actionCluster)
+        self.menuAdditional.addAction(self.actionMultiDimension)
 
 
 
@@ -383,6 +389,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menuGeoChem.menuAction())
         self.menubar.addSeparator()
 
+        self.menubar.addAction(self.menuGeoCalc.menuAction())
+        self.menubar.addSeparator()
+
         self.menubar.addAction(self.menuStructure.menuAction())
         self.menubar.addSeparator()
 
@@ -391,7 +400,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addSeparator()
 
 
-        self.menubar.addAction(self.menuDIY.menuAction())
+        self.menubar.addAction(self.menuAdditional.menuAction())
         self.menubar.addSeparator()
 
 
@@ -486,13 +495,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuGeoChem.setTitle(_translate('MainWindow',u'Geochemistry'))
 
+        self.menuGeoCalc.setTitle(_translate('MainWindow',u'Calculation'))
+
         self.menuStructure.setTitle(_translate('MainWindow',u'Structure'))
 
         self.menuSedimentary.setTitle(_translate('MainWindow', u'Sedimentary'))
 
 
 
-        self.menuDIY.setTitle(_translate('MainWindow',u'DIY Functions'))
+        self.menuAdditional.setTitle(_translate('MainWindow',u'Additional Functions'))
 
         self.menuHelp.setTitle(_translate('MainWindow',u'Help'))
 
@@ -586,10 +597,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuGeoChem.setTitle(_translate('MainWindow', u'Geochemistry'))
 
+
+        self.menuGeoCalc.setTitle(_translate('MainWindow',u'Calculation'))
+
         self.menuStructure.setTitle(_translate('MainWindow', u'Structure'))
         self.menuSedimentary.setTitle(_translate('MainWindow', u'Sedimentary'))
 
-        self.menuDIY.setTitle(_translate('MainWindow', u'DIY Functions'))
+        self.menuAdditional.setTitle(_translate('MainWindow', u'Additional Functions'))
 
         self.menuHelp.setTitle(_translate('MainWindow', u'Help'))
         self.menuLanguage.setTitle(_translate('MainWindow', u'Language'))
