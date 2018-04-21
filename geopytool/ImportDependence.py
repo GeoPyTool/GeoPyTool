@@ -71,7 +71,7 @@ from geopytool.TabelViewer import TabelViewer
 
 LocationOfMySelf=os.path.dirname(__file__)
 
-print(LocationOfMySelf,'Import Denpendence')
+#print(LocationOfMySelf,'Import Denpendence')
 
 fpath = LocationOfMySelf+('/wqy.ttf')
 

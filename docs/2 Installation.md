@@ -1,7 +1,7 @@
 Title: Installation
-Date: 2017-11-15 0:00
-Category: Doc
-Tags: Doc,English,Chinese
+Date: 2018-04-21 11:27:50
+Category: English
+Tags: Doc,English,Support
 
 # Installation, Easy Way 
 

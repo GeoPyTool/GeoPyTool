@@ -103,9 +103,22 @@ class Trace(AppForm):
         #self.result_button = QPushButton('&Result')
         #self.result_button.clicked.connect(self.Trace)
 
-        self.Type_cb = QCheckBox('&CS-Lu (37 Elements)')
+        self.Type_cb = QCheckBox('&Cs-Lu (37 Elements)')
         self.Type_cb.setChecked(True)
         self.Type_cb.stateChanged.connect(self.Trace)  # int
+
+
+        self.slider_left_label = QLabel('Cs-Lu (37 Elements)')
+        self.slider_right_label= QLabel('Rb-Lu (27 Elements)')
+
+
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setRange(0, 1)
+        self.slider.setValue(0)
+        self.slider.setTracking(True)
+        self.slider.setTickPosition(QSlider.TicksBothSides)
+        self.slider.valueChanged.connect(self.Trace)  # int
+
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
@@ -126,7 +139,7 @@ class Trace(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.Type_cb,
+        for w in [self.save_button,self.slider_left_label, self.slider,self.slider_right_label,
                   self.legend_cb, self.standard_label, self.standard]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
@@ -143,13 +156,26 @@ class Trace(AppForm):
         self.setCentralWidget(self.main_frame)
 
 
+
+        w=self.width()
+        h=self.height()
+
+        #setFixedWidth(w/10)
+
+        self.slider.setFixedWidth(w/10)
+        self.standard_label.setFixedWidth(w/5)
+
+
+
+
     def Trace(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
               Top=6, Y0=-1,
               Y1=3, Y_Gap=5, FontSize=12,
               xLabel=r'$Trace-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
 
-        if (self.Type_cb.isChecked()):
-            self.Type_cb.setText('&CS-Lu (37 Elements)')
+
+
+        if (int(self.slider.value()) == 0):
             self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
                             u'Pr', u'Mo',
                             u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb',
@@ -160,7 +186,7 @@ class Trace(AppForm):
             self.xticks = [i for i in range(1,len(CommonElements)+2)]
             self.xticklabels = CommonElements
 
-            self.setWindowTitle('Trace Standardlized Pattern Diagram CS-Lu '+ str(len(CommonElements)+1) +' Elements')
+            self.setWindowTitle('Trace Standardlized Pattern Diagram Cs-Lu '+ str(len(CommonElements)+1) +' Elements')
 
 
 
@@ -283,13 +309,14 @@ class Trace(AppForm):
         self.yticklabels = [str(np.power(10.0, (Location + i))) for i in range(count)]
 
         self.axes.set_yticks(self.yticks)
-        self.axes.set_yticklabels(self.yticklabels)
+        self.axes.set_yticklabels(self.yticklabels, fontsize=6)
 
 
 
 
         self.axes.set_xticks(self.xticks)
-        self.axes.set_xticklabels(self.xticklabels)
+        self.axes.set_xticklabels(self.xticklabels, rotation=-45, fontsize=6)
+
 
 
         self.canvas.draw()

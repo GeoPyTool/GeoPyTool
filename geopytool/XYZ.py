@@ -146,21 +146,21 @@ class XYZ(AppForm):
         self.stat_button = QPushButton('&Stat')
         self.stat_button.clicked.connect(self.Stat)
 
-        self.load_button = QPushButton('&Load')
+        self.load_button = QPushButton('&Load Basemap')
         self.load_button.clicked.connect(self.Load)
 
-        self.unload_button = QPushButton('&Unload')
+        self.unload_button = QPushButton('&Unload Basemap')
         self.unload_button.clicked.connect(self.Unload)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
 
-        self.Normalize_cb = QCheckBox('&Normalize')
-        self.Normalize_cb.setChecked(False)
-        self.Normalize_cb.stateChanged.connect(self.Magic)  # int
+        self.norm_cb = QCheckBox('&Norm')
+        self.norm_cb.setChecked(False)
+        self.norm_cb.stateChanged.connect(self.Magic)  # int
 
-        self.norm_slider_label = QLabel('Standard:' + self.NameChosen)
+        self.norm_slider_label = QLabel('Standard:'+self.NameChosen)
         self.norm_slider = QSlider(Qt.Horizontal)
         self.norm_slider.setRange(0, 4)
         self.norm_slider.setValue(0)
@@ -175,7 +175,7 @@ class XYZ(AppForm):
         self.x_element.setTickPosition(QSlider.TicksBothSides)
         self.x_element.valueChanged.connect(self.ValueChooser)  # int
 
-        self.x_element_label = QLabel('X')
+
 
         self.x_seter = QLineEdit(self)
         self.x_seter.textChanged[str].connect(self.LabelSeter)
@@ -195,7 +195,7 @@ class XYZ(AppForm):
         self.y_element.setTickPosition(QSlider.TicksBothSides)
         self.y_element.valueChanged.connect(self.ValueChooser)  # int
 
-        self.y_element_label = QLabel('Y')
+
 
         self.y_seter = QLineEdit(self)
         self.y_seter.textChanged[str].connect(self.LabelSeter)
@@ -214,7 +214,7 @@ class XYZ(AppForm):
         self.z_element.setTickPosition(QSlider.TicksBothSides)
         self.z_element.valueChanged.connect(self.ValueChooser)  # int
 
-        self.z_element_label = QLabel('Z')
+
 
         self.z_seter = QLineEdit(self)
         self.z_seter.textChanged[str].connect(self.LabelSeter)
@@ -244,20 +244,20 @@ class XYZ(AppForm):
 
 
         for w in [self.save_button,self.stat_button, self.load_button, self.unload_button,
-                  self.legend_cb, self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
+                  self.legend_cb, self.norm_cb, self.norm_slider_label, self.norm_slider]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logx_cb, self.x_element_label,self.x_seter, self.x_element]:
+        for w in [self.logx_cb, self.x_seter, self.x_element]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logy_cb, self.y_element_label,self.y_seter, self.y_element]:
+        for w in [self.logy_cb, self.y_seter, self.y_element]:
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.logz_cb, self.z_element_label,self.z_seter, self.z_element]:
+        for w in [self.logz_cb, self.z_seter, self.z_element]:
             self.hbox4.addWidget(w)
             self.hbox4.setAlignment(w, Qt.AlignVCenter)
 
@@ -276,6 +276,18 @@ class XYZ(AppForm):
         self.vbox.addWidget(self.textbox)
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
+
+        w=self.width()
+        h=self.height()
+
+        self.x_seter.setFixedWidth(w/10)
+        self.y_seter.setFixedWidth(w/10)
+        self.z_seter.setFixedWidth(w/10)
+        self.norm_slider.setMinimumWidth(w/5)
+
+        self.norm_slider_label.setFixedWidth(w/16)
+
+
 
     def Read(self, inpoints):
         points = []
@@ -322,7 +334,7 @@ class XYZ(AppForm):
             width=''
             for letter in svg_width[0]:
                 if letter in digit:
-                    width = width + letter
+                    width = width+letter
 
             #print(width)
 
@@ -331,7 +343,7 @@ class XYZ(AppForm):
             height=''
             for letter in svg_height[0]:
                 if letter in digit:
-                    height = height + letter
+                    height = height+letter
 
             #print(height)
             '''
@@ -438,6 +450,8 @@ class XYZ(AppForm):
         b = int(self.y_element.value())
         c = int(self.z_element.value())
 
+
+
         if self.LabelSetted == True:
             if(self.x_seter.text()!=''):
                 try:
@@ -447,10 +461,12 @@ class XYZ(AppForm):
                     try:
                         if atmp in ItemsAvalibale:
                             a= ItemsAvalibale.index(atmp)
-                            print(a)
+                            #print(a)
                     except(ValueError):
                         pass
                     pass
+
+                self.x_element.setValue(a)
             else:
                 a = int(self.x_element.value())
 
@@ -463,12 +479,14 @@ class XYZ(AppForm):
                     try:
                         if btmp in ItemsAvalibale:
                             b= ItemsAvalibale.index(btmp)
-                            print(b)
+                            #print(b)
                     except(ValueError):
                         pass
                     pass
+                self.y_element.setValue(b)
             else:
                 b = int(self.y_element.value())
+
 
             if (self.z_seter.text() != ''):
                 try:
@@ -485,7 +503,6 @@ class XYZ(AppForm):
             else:
                 c = int(self.z_element.value())
 
-
             if a> len(ItemsAvalibale)-1:
                 a = int(self.x_element.value())
             if b> len(ItemsAvalibale)-1:
@@ -495,11 +512,17 @@ class XYZ(AppForm):
 
 
 
-
         if self.ValueChoosed == True:
             a = int(self.x_element.value())
             b = int(self.y_element.value())
             c = int(self.z_element.value())
+
+            self.x_seter.setText(ItemsAvalibale[a])
+            self.y_seter.setText(ItemsAvalibale[b])
+            self.z_seter.setText(ItemsAvalibale[c])
+
+
+
 
 
 
@@ -564,22 +587,22 @@ class XYZ(AppForm):
                     self.ylabel = self.items[b]
                     self.zlabel = self.items[c]
 
-                    if (self.Normalize_cb.isChecked()):
+                    if (self.norm_cb.isChecked()):
                         self.sentence = self.reference
 
                         if self.items[a] in self.Element:
-                            self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+                            self.xlabel = self.items[a]+' Norm by '+standardnamechosen
                             xuse = xuse / standardchosen[self.items[a]]
                         if self.items[b] in self.Element:
-                            self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+                            self.ylabel = self.items[b]+' Norm by '+standardnamechosen
                             yuse = yuse / standardchosen[self.items[b]]
                         if self.items[c] in self.Element:
-                            self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
+                            self.zlabel = self.items[c]+' Norm by '+standardnamechosen
                             zuse = zuse / standardchosen[self.items[c]]
 
                     if (self.logx_cb.isChecked()):
                         xuse = math.log(x, 10)
-                        newxlabel = '$log10$( ' + self.xlabel+')'
+                        newxlabel = '$log10$('+self.xlabel+')'
                     else:
 
                         newxlabel =  self.xlabel
@@ -587,14 +610,14 @@ class XYZ(AppForm):
 
                     if (self.logy_cb.isChecked()):
                         yuse = math.log(y, 10)
-                        newylabel = '$log10$( ' + self.ylabel+')'
+                        newylabel = '$log10$('+self.ylabel+')'
                     else:
                         newylabel =  self.ylabel
 
 
                     if (self.logz_cb.isChecked()):
                         zuse = math.log(y, 10)
-                        newzlabel = '$log10$( ' + self.zlabel+')'
+                        newzlabel = '$log10$('+self.zlabel+')'
                     else:
                         newzlabel =  self.zlabel
 
@@ -610,9 +633,6 @@ class XYZ(AppForm):
         self.axes.annotate(newylabel, xy=(100,0), xytext=(100, -4),fontsize=6)
         self.axes.annotate(newzlabel , xy=(50,86.7), xytext=(45, 90),fontsize=6)
 
-        self.x_element_label.setText(self.xlabel)
-        self.y_element_label.setText(self.ylabel)
-        self.z_element_label.setText(self.zlabel)
 
 
         for i in TPoints:

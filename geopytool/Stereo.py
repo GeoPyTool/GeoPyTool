@@ -55,23 +55,26 @@ class Stereo(AppForm):
         self.tag_cb.setChecked(True)
         self.tag_cb.stateChanged.connect(self.Stereo)  # int
 
-        self.LineOrPoint_cb = QCheckBox('&Line')
-        self.LineOrPoint_cb.setChecked(True)
-        self.LineOrPoint_cb.stateChanged.connect(self.Stereo)  # int
+        self.shape_slider_left_label = QLabel('Line')
+        self.shape_slider_right_label = QLabel('Point')
+        self.shape_slider = QSlider(Qt.Horizontal)
+        self.shape_slider.setRange(0, 1)
+        self.shape_slider.setValue(0)
+        self.shape_slider.setTracking(True)
+        self.shape_slider.setTickPosition(QSlider.TicksBothSides)
+        self.shape_slider.valueChanged.connect(self.Stereo)  # int
 
-        if (self.LineOrPoint_cb.isChecked()):
-            self.LineOrPoint_cb.setText('Line')
-        else:
-            self.LineOrPoint_cb.setText('Point')
 
-        self.Type_cb = QCheckBox('&Wulf')
-        self.Type_cb.setChecked(True)
-        self.Type_cb.stateChanged.connect(self.Stereo)  # int
+        self.type_slider_left_label = QLabel('Wulff')
+        self.type_slider_right_label = QLabel('Schmidt')
+        self.type_slider = QSlider(Qt.Horizontal)
+        self.type_slider.setRange(0, 1)
+        self.type_slider.setValue(0)
+        self.type_slider.setTracking(True)
+        self.type_slider.setTickPosition(QSlider.TicksBothSides)
+        self.type_slider.valueChanged.connect(self.Stereo)  # int
 
-        if (self.Type_cb.isChecked()):
-            self.Type_cb.setText('Wulf')
-        else:
-            self.Type_cb.setText('Schmidt')
+
 
 
 
@@ -80,10 +83,13 @@ class Stereo(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.LineOrPoint_cb, self.Type_cb,
-                  self.legend_cb]:
+
+        for w in [self.save_button,self.legend_cb, self.shape_slider_left_label, self.shape_slider, self.shape_slider_right_label,
+                  self.type_slider_left_label,self.type_slider,self.type_slider_right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
@@ -96,6 +102,17 @@ class Stereo(AppForm):
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
+
+        w=self.width()
+        h=self.height()
+
+        self.shape_slider.setFixedWidth(w/20)
+        self.type_slider.setFixedWidth(w/20)
+
+
+
+
+
 
     def eqar(self, A):
         return (2 ** .5) * 90 * np.sin(np.pi * (90. - A) / (2. * 180.))
@@ -146,18 +163,17 @@ class Stereo(AppForm):
         Data = []
         Labels = []
 
-        if (self.Type_cb.isChecked()):
-            self.Type_cb.setText('Wulf')
+
+        if (int(self.type_slider.value()) == 0):
             list1 = [self.eqan(x) for x in range(15, 90, 15)]
         else:
-            self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
 
         list2 = [str(x) for x in range(15, 90, 15)]
         self.axes.set_rgrids(list1, list2)
 
         for i in range(len(raw)):
-            Data.append([raw.at[i, 'Name'], raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
+            Data.append([raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
                          raw.at[i, 'Width'], raw.at[i, 'Alpha'], raw.at[i, 'Label']])
             Dip = raw.at[i, 'Dip']
             Dip_Angle = raw.at[i, 'Dip-Angle']
@@ -193,11 +209,9 @@ class Stereo(AppForm):
             r = np.arange(Dip - 90, Dip + 91, 1)
             BearR = [np.radians(-A + 90) for A in r]
 
-            if (self.Type_cb.isChecked()):
-                self.Type_cb.setText('Wulf')
+            if (int(self.type_slider.value()) == 0):
                 Line = (self.eqan(self.getangular(Dip_Angle, Dip, r)))
             else:
-                self.Type_cb.setText('Schmidt')
                 Line = (self.eqar(self.getangular(Dip_Angle, Dip, r)))
 
             self.axes.plot(BearR, Line, color=Color, linewidth=Width, alpha=Alpha, label=Label)
@@ -231,18 +245,17 @@ class Stereo(AppForm):
         Data = []
         Labels = []
 
-        if (self.Type_cb.isChecked()):
-            self.Type_cb.setText('Wulf')
+
+        if (int(self.type_slider.value()) == 0):
             list1 = [self.eqan(x) for x in range(15, 90, 15)]
         else:
-            self.Type_cb.setText('Schmidt')
             list1 = [self.eqar(x) for x in range(15, 90, 15)]
         list2 = [str(x) for x in range(15, 90, 15)]
         self.axes.set_rgrids(list1, list2)
 
         for i in range(len(raw)):
             Data.append(
-                [raw.at[i, 'Name'], raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
+                [raw.at[i, 'Dip'], raw.at[i, 'Dip-Angle'], raw.at[i, 'Color'],
                  raw.at[i, 'Width'], raw.at[i, 'Alpha'], raw.at[i, 'Marker'], raw.at[i, 'Label']])
             Dip = raw.at[i, 'Dip']
             Dip_Angle = raw.at[i, 'Dip-Angle']
@@ -277,13 +290,11 @@ class Stereo(AppForm):
 
                 Setting = [Width, Color, Alpha, Marker, Size]
 
-            if (self.Type_cb.isChecked()):
-                self.Type_cb.setText('Wulf')
+            if (int(self.type_slider.value()) == 0):
                 self.axes.scatter(np.radians(90 - Dip), self.eqan(Dip_Angle), marker=Marker, s=Size, color=Color,
                                   alpha=Alpha,
                                   label=Label, edgecolors='black')
             else:
-                self.Type_cb.setText('Schmidt')
                 self.axes.scatter(np.radians(90 - Dip), self.eqar(Dip_Angle), marker=Marker, s=Size, color=Color,
                                   alpha=Alpha,
                                   label=Label, edgecolors='black')
@@ -298,16 +309,9 @@ class Stereo(AppForm):
         self.Label = [u'N', u'S', u'W', u'E']
         self.LabelPosition = []
 
-        if (self.Type_cb.isChecked()):
-            self.Type_cb.setText('Wulf')
-        else:
-            self.Type_cb.setText('Schmidt')
-
-        if (self.LineOrPoint_cb.isChecked()):
-            self.LineOrPoint_cb.setText('Line')
+        if (int(self.shape_slider.value()) == 0):
             self.lines()
         else:
-            self.LineOrPoint_cb.setText('Point')
             self.points()
 
         self.canvas.draw()

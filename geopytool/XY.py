@@ -89,6 +89,9 @@ class XY(AppForm):
 
     LabelSetted = False
     ValueChoosed = True
+    FlagLoaded=False
+    TypeLoaded=''
+
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -147,10 +150,10 @@ class XY(AppForm):
         self.stat_button.clicked.connect(self.Stat)
 
 
-        self.load_button = QPushButton('&Load')
+        self.load_button = QPushButton('&Load Basemap')
         self.load_button.clicked.connect(self.Load)
-        
-        self.unload_button = QPushButton('&Unload')
+
+        self.unload_button = QPushButton('&Unload Basemap')
         self.unload_button.clicked.connect(self.Unload)
 
 
@@ -163,13 +166,15 @@ class XY(AppForm):
         self.fit_cb.setChecked(False)
         self.fit_cb.stateChanged.connect(self.Magic)  # int
 
-        self.fit_label = QLabel('Exp')
+
+
+
         self.fit_seter = QLineEdit(self)
         self.fit_seter.textChanged[str].connect(self.FitChanged)
 
 
 
-        self.fit_slider_label = QLabel('y= f(x)')
+        self.fit_slider_label = QLabel('y= f(x) EXP')
         self.fit_slider = QSlider(Qt.Vertical)
         self.fit_slider.setRange(0, 1)
         self.fit_slider.setValue(0)
@@ -182,15 +187,15 @@ class XY(AppForm):
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.Magic)  # int
 
-        self.shape_label = QLabel('Step')
-        self.shape_seter = QLineEdit(self)
-        self.shape_seter.textChanged[str].connect(self.ShapeChanged)
+        #self.shape_label = QLabel('Step')
+        #self.shape_seter = QLineEdit(self)
+        #self.shape_seter.textChanged[str].connect(self.ShapeChanged)
 
 
 
-        self.Normalize_cb = QCheckBox('&Normalize')
-        self.Normalize_cb.setChecked(False)
-        self.Normalize_cb.stateChanged.connect(self.Magic)  # int
+        self.norm_cb = QCheckBox('&Norm')
+        self.norm_cb.setChecked(False)
+        self.norm_cb.stateChanged.connect(self.Magic)  # int
 
         self.norm_slider_label = QLabel('Standard:' + self.NameChosen)
         self.norm_slider = QSlider(Qt.Horizontal)
@@ -207,7 +212,7 @@ class XY(AppForm):
         self.x_element.setTickPosition(QSlider.TicksBothSides)
         self.x_element.valueChanged.connect(self.ValueChooser)  # int
 
-        self.x_element_label = QLabel('X')
+
 
         self.x_seter = QLineEdit(self)
         self.x_seter.textChanged[str].connect(self.LabelSeter)
@@ -227,7 +232,6 @@ class XY(AppForm):
         self.y_element.setTickPosition(QSlider.TicksBothSides)
         self.y_element.valueChanged.connect(self.ValueChooser)  # int
 
-        self.y_element_label = QLabel('Y')
 
         self.y_seter = QLineEdit(self)
         self.y_seter.textChanged[str].connect(self.LabelSeter)
@@ -239,32 +243,32 @@ class XY(AppForm):
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Magic)  # int
 
-        self.width_size_seter_label = QLabel('Width')
+        self.width_size_seter_label = QLabel('SVG Width')
         self.width_size_seter = QLineEdit(self)
 
         self.width_size_seter.textChanged[str].connect(self.WChanged)
 
-        self.height_size_seter_label = QLabel('height')
+        self.height_size_seter_label = QLabel('SVG Height')
         self.height_size_seter = QLineEdit(self)
 
         self.height_size_seter.textChanged[str].connect(self.HChanged)
 
-        self.Left_size_seter_label = QLabel('Left')
+        self.Left_size_seter_label = QLabel('PNG Left')
         self.Left_size_seter = QLineEdit(self)
 
         self.Left_size_seter.textChanged[str].connect(self.LeftChanged)
 
-        self.Right_size_seter_label = QLabel('Right')
+        self.Right_size_seter_label = QLabel('PNG Right')
         self.Right_size_seter = QLineEdit(self)
 
         self.Right_size_seter.textChanged[str].connect(self.RightChanged)
 
-        self.Up_size_seter_label = QLabel('Up')
+        self.Up_size_seter_label = QLabel('PNG Top')
         self.Up_size_seter = QLineEdit(self)
 
         self.Up_size_seter.textChanged[str].connect(self.UpChanged)
 
-        self.Down_size_seter_label = QLabel('Down')
+        self.Down_size_seter_label = QLabel('PNG Bottom')
         self.Down_size_seter = QLineEdit(self)
 
         self.Down_size_seter.textChanged[str].connect(self.DownChanged)
@@ -277,46 +281,37 @@ class XY(AppForm):
         self.hbox2 = QHBoxLayout()
         self.hbox3 = QHBoxLayout()
         self.hbox4 = QHBoxLayout()
-        self.hbox5 = QHBoxLayout()
-        self.hbox6 = QHBoxLayout()
-        self.hbox7 = QHBoxLayout()
 
 
 
-        for w in [self.save_button,self.stat_button, self.load_button,self.unload_button,
-                  self.legend_cb,self.Normalize_cb, self.norm_slider_label, self.norm_slider]:
+        for w in [self.save_button,self.stat_button,self.legend_cb,self.norm_cb, self.norm_slider_label, self.norm_slider,self.shape_cb,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.fit_slider_label ,self.fit_slider,self.fit_cb,self.fit_label, self.fit_seter,self.shape_cb,self.shape_label,self.shape_seter]:
+        for w in [self.logx_cb,self.x_seter, self.x_element]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-
-        for w in [self.logx_cb, self.x_element_label,self.x_seter, self.x_element]:
+        for w in [self.logy_cb,self.y_seter, self.y_element]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logy_cb, self.y_element_label,self.y_seter, self.y_element]:
+
+        for w in [self.load_button, self.width_size_seter_label, self.width_size_seter, self.height_size_seter_label,
+                  self.height_size_seter]:
             self.hbox3.addWidget(w)
-            self.hbox3.setAlignment(w, Qt.AlignVCenter)
+            self.hbox3.setAlignment(w, Qt.AlignLeft)
 
-        for w in [self.width_size_seter_label, self.width_size_seter]:
+
+
+        for w in [self.unload_button,self.Left_size_seter_label, self.Left_size_seter,
+                  self.Right_size_seter_label,  self.Right_size_seter,self.Down_size_seter_label, self.Down_size_seter,
+                  self.Up_size_seter_label ,self.Up_size_seter]:
             self.hbox4.addWidget(w)
-            self.hbox4.setAlignment(w, Qt.AlignVCenter)
+            self.hbox4.setAlignment(w, Qt.AlignLeft)
 
-        for w in [self.height_size_seter_label, self.height_size_seter]:
-            self.hbox5.addWidget(w)
-            self.hbox5.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.Left_size_seter, self.Left_size_seter_label, self.Right_size_seter, self.Right_size_seter_label]:
-            self.hbox6.addWidget(w)
-            self.hbox6.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.Down_size_seter, self.Down_size_seter_label, self.Up_size_seter, self.Up_size_seter_label]:
-            self.hbox7.addWidget(w)
-            self.hbox7.setAlignment(w, Qt.AlignVCenter)
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
@@ -326,18 +321,55 @@ class XY(AppForm):
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
         self.vbox.addLayout(self.hbox4)
-        self.vbox.addLayout(self.hbox5)
-        self.vbox.addLayout(self.hbox6)
-        self.vbox.addLayout(self.hbox7)
-
 
         self.textbox = GrowingTextEdit(self)
 
         self.vbox.addWidget(self.textbox)
 
 
+
+
+
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
+
+        w=self.width()
+        h=self.height()
+
+        self.x_seter.setFixedWidth(w/10)
+        self.y_seter.setFixedWidth(w/10)
+
+        self.save_button.setFixedWidth(w/10)
+        self.stat_button.setFixedWidth(w/10)
+
+        self.norm_slider.setMinimumWidth(w/5)
+
+        self.norm_slider_label.setFixedWidth(w/16)
+
+        self.fit_seter.setFixedWidth(w/20)
+
+        self.load_button.setFixedWidth(w/5)
+        self.unload_button.setFixedWidth(w/5)
+
+        self.width_size_seter_label.setFixedWidth(w/10)
+        self.height_size_seter_label.setFixedWidth(w/10)
+
+        self.width_size_seter.setMinimumWidth(w/20)
+        self.height_size_seter.setMinimumWidth(w/20)
+
+        self.Right_size_seter_label.setFixedWidth(w/10)
+        self.Left_size_seter_label.setFixedWidth(w/10)
+        self.Up_size_seter_label.setFixedWidth(w/10)
+        self.Down_size_seter_label.setFixedWidth(w/10)
+
+        self.Right_size_seter.setFixedWidth(w/20)
+        self.Left_size_seter.setFixedWidth(w/20)
+        self.Up_size_seter.setFixedWidth(w/20)
+        self.Down_size_seter.setFixedWidth(w/20)
+
+
+
+
 
     def Read(self, inpoints):
         points = []
@@ -357,6 +389,8 @@ class XY(AppForm):
         return (result)
 
     def Load(self):
+
+
         fileName, filetype = QFileDialog.getOpenFileName(self,
                                                          '选取文件',
                                                          '~/',
@@ -364,7 +398,13 @@ class XY(AppForm):
 
         print(fileName, '\t', filetype)
 
+
+        if len(fileName)>0:
+            self.FlagLoaded= True
+
         if ('svg' in fileName):
+
+            self.TypeLoaded='svg'
             doc = minidom.parse(fileName)  # parseString also exists
             polygon_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polygon')]
             polyline_points = [path.getAttribute('points') for path in doc.getElementsByTagName('polyline')]
@@ -443,22 +483,27 @@ class XY(AppForm):
                 self.line.append(m)
 
 
+
+
         elif ('png' in fileName or 'jpg' in fileName):
+
+            self.TypeLoaded='png'
 
             self.img = mpimg.imread(fileName)
             self.flag = 1
+
 
         self.Magic()
 
     def Unload(self):
         self.flag = 0
+
+        self.FlagLoaded = False
+        self.TypeLoaded = ''
+
         self.Magic()
 
     def WChanged(self, text):
-        w = 'width ' + text
-        self.width_size_seter_label.setText(w)
-        self.width_size_seter_label.adjustSize()
-
         try:
             self.width_plot = float(text)
         except:
@@ -487,9 +532,6 @@ class XY(AppForm):
         self.Magic()
 
     def HChanged(self, text):
-        h = 'height ' + text
-        self.height_size_seter_label.setText(h)
-        self.height_size_seter_label.adjustSize()
 
         try:
             self.height_plot = float(text)
@@ -534,10 +576,6 @@ class XY(AppForm):
     '''
 
     def LeftChanged(self, text):
-        w = 'Left ' + text
-        self.Left_size_seter_label.setText(w)
-        self.Left_size_seter_label.adjustSize()
-
         try:
             self.Left = float(text)
         except:
@@ -546,10 +584,6 @@ class XY(AppForm):
         self.Magic()
 
     def RightChanged(self, text):
-        w = 'Right ' + text
-        self.Right_size_seter_label.setText(w)
-        self.Right_size_seter_label.adjustSize()
-
         try:
             self.Right = float(text)
         except:
@@ -558,9 +592,6 @@ class XY(AppForm):
         self.Magic()
 
     def UpChanged(self, text):
-        w = 'Up ' + text
-        self.Up_size_seter_label.setText(w)
-        self.Up_size_seter_label.adjustSize()
 
         try:
             self.Up = float(text)
@@ -570,9 +601,6 @@ class XY(AppForm):
         self.Magic()
 
     def DownChanged(self, text):
-        w = 'Down ' + text
-        self.Down_size_seter_label.setText(w)
-        self.Down_size_seter_label.adjustSize()
 
         try:
             self.Down = float(text)
@@ -582,18 +610,12 @@ class XY(AppForm):
         self.Magic()
 
     def FitChanged(self, text):
-        w = 'Fit Exp is' + text
-        self.fit_label.setText(w)
-        self.fit_label.adjustSize()
-
         try:
             self.FitLevel = float(text)
         except:
             pass
 
         self.Magic()
-
-
 
     def ShapeChanged(self, text):
         w = 'Shape' + text
@@ -606,7 +628,6 @@ class XY(AppForm):
             pass
 
         self.Magic()
-
 
     def LabelSeter(self):
 
@@ -626,6 +647,9 @@ class XY(AppForm):
 
 
     def Magic(self):
+
+
+
 
         self.WholeData = []
 
@@ -655,6 +679,8 @@ class XY(AppForm):
         a = int(self.x_element.value())
         b = int(self.y_element.value())
 
+
+
         if self.LabelSetted == True:
             if(self.x_seter.text()!=''):
                 try:
@@ -664,10 +690,12 @@ class XY(AppForm):
                     try:
                         if atmp in ItemsAvalibale:
                             a= ItemsAvalibale.index(atmp)
-                            print(a)
+                            #print(a)
                     except(ValueError):
                         pass
                     pass
+
+                self.x_element.setValue(a)
             else:
                 a = int(self.x_element.value())
 
@@ -680,10 +708,11 @@ class XY(AppForm):
                     try:
                         if btmp in ItemsAvalibale:
                             b= ItemsAvalibale.index(btmp)
-                            print(b)
+                            #print(b)
                     except(ValueError):
                         pass
                     pass
+                self.y_element.setValue(b)
             else:
                 b = int(self.y_element.value())
 
@@ -698,8 +727,8 @@ class XY(AppForm):
             a = int(self.x_element.value())
             b = int(self.y_element.value())
 
-
-
+            self.x_seter.setText(ItemsAvalibale[a])
+            self.y_seter.setText(ItemsAvalibale[b])
 
 
 
@@ -730,10 +759,8 @@ class XY(AppForm):
                 self.axes.imshow(self.img, interpolation='nearest', aspect='auto')
 
         self.axes.set_xlabel(ItemsAvalibale[a])
-        self.x_element_label.setText(ItemsAvalibale[a])
 
         self.axes.set_ylabel(ItemsAvalibale[b])
-        self.y_element_label.setText(ItemsAvalibale[b])
 
         PointLabels = []
 
@@ -782,7 +809,7 @@ class XY(AppForm):
                         self.xlabel = self.items[a]
                         self.ylabel = self.items[b]
 
-                        if (self.Normalize_cb.isChecked()):
+                        if (self.norm_cb.isChecked()):
 
                             self.sentence = self.reference
 
@@ -799,6 +826,9 @@ class XY(AppForm):
                             newxlabel = '$log10$( ' + self.xlabel+')'
 
                             self.axes.set_xlabel(newxlabel)
+                        else:
+
+                            self.axes.set_xlabel(self.xlabel)
 
                         if (self.logy_cb.isChecked()):
                             yuse = math.log(y, 10)
@@ -806,9 +836,7 @@ class XY(AppForm):
                             newylabel = '$log10$( ' + self.ylabel+')'
 
                             self.axes.set_ylabel(newylabel)
-
-                        if(self.logy_cb.isChecked() or self.logx_cb.isChecked() == False):
-                            self.axes.set_xlabel(self.xlabel)
+                        else:
                             self.axes.set_ylabel(self.ylabel)
 
                         self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
@@ -822,8 +850,6 @@ class XY(AppForm):
                         pass
 
 
-        self.x_element_label.setText(self.xlabel)
-        self.y_element_label.setText(self.ylabel)
 
 
         #Yline = np.linspace(min(YtoFit), max(YtoFit), 30)
@@ -833,7 +859,7 @@ class XY(AppForm):
         BoxResultStr=''
         Paralist=[]
 
-        print(XtoFit, '\n', YtoFit)
+        #print(XtoFit, '\n', YtoFit)
 
         if len(XtoFit) != len(YtoFit):
 
@@ -852,14 +878,14 @@ class XY(AppForm):
 
                 try:
                     np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
-                except(ValueError,TypeError):
+                except():
                     fitstatus = False
                     pass
 
 
                 if (fitstatus == True):
                     opt, cov = np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
-                    self.fit_slider_label.setText('y= f(x)')
+                    self.fit_slider_label.setText('y= f(x) EXP')
                     p = np.poly1d(opt)
                     Yline = p(Xline)
                     formular = 'y= f(x):'
@@ -932,7 +958,7 @@ class XY(AppForm):
 
                 if (fitstatus == True):
                     opt, cov = np.polyfit(YtoFit, XtoFit, self.FitLevel, cov=True)
-                    self.fit_slider_label.setText('x= f(y)')
+                    self.fit_slider_label.setText('x= f(x) EXP')
                     p = np.poly1d(opt)
                     Xline = p(Yline)
                     formular = 'x= f(y):'
@@ -999,9 +1025,13 @@ class XY(AppForm):
                 # Peform the kernel density estimate
                 xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
 
+                #print(self.ShapeGroups)
 
-                command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
-                exec(command)
+                #command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
+
+                #exec(command)
+
+                #print(xx, yy)
 
 
                 positions = np.vstack([xx.ravel(), yy.ravel()])
@@ -1030,23 +1060,25 @@ class XY(AppForm):
 
 
 
-        if self.polygon != 0 and self.polyline != 0 and self.line != 0:
+        if self.TypeLoaded=='svg':
 
-            # print('gon: ',self.polygon,' \n line:',self.polyline)
+            if self.polygon != 0 and self.polyline != 0 and self.line != 0:
 
-            for i in self.polygon:
-                self.DrawLine(i)
+                # print('gon: ',self.polygon,' \n line:',self.polyline)
 
-            for i in self.polyline:
-                self.DrawLine(i)
+                for i in self.polygon:
+                    self.DrawLine(i)
 
-            for i in self.line:
-                self.DrawLine(i)
+                for i in self.polyline:
+                    self.DrawLine(i)
+
+                for i in self.line:
+                    self.DrawLine(i)
 
 
 
-                # self.DrawLine(self.polygon)
-                # self.DrawLine(self.polyline)
+                    # self.DrawLine(self.polygon)
+                    # self.DrawLine(self.polyline)
 
 
         if (self.legend_cb.isChecked()):
@@ -1090,8 +1122,12 @@ class XY(AppForm):
 
         StdSortedList.reverse()
 
+        '''
         for k in sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std']):
             print("%s=%s" % (k, StatResultDict[k]))
+        '''
+
+
 
         StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
         StatResultDf['Items']=StatResultDf.index.tolist()

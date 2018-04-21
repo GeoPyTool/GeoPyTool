@@ -7,7 +7,7 @@ from geopytool.CustomClass import *
 
 LocationOfMySelf=os.path.dirname(__file__)
 
-print(LocationOfMySelf,' init')
+#print(LocationOfMySelf,' init')
 
 
 sign = '''
@@ -187,14 +187,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.setObjectName('menuGeoChem')
 
 
-        self.menuGeoCalc = QtWidgets.QMenu(self.menubar)
-        self.menuGeoCalc.setObjectName('menuGeoCalc')
-
         self.menuStructure = QtWidgets.QMenu(self.menubar)
         self.menuStructure.setObjectName('menuStructure')
 
         self.menuSedimentary = QtWidgets.QMenu(self.menubar)
         self.menuSedimentary.setObjectName('menuSedimentary')
+
+
+
+        self.menuGeoCalc = QtWidgets.QMenu(self.menubar)
+        self.menuGeoCalc.setObjectName('menuGeoCalc')
 
 
         self.menuAdditional = QtWidgets.QMenu(self.menubar)
@@ -338,9 +340,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionPearce)
         self.menuGeoChem.addAction(self.actionHarker)
         #self.menuGeoChem.addAction(self.actionHarkerDIY)
-        self.menuGeoChem.addAction(self.actionBivariate)
+        #self.menuGeoChem.addAction(self.actionBivariate)
         self.menuGeoChem.addAction(self.actionCIPW)
         self.menuGeoChem.addAction(self.actionQAPF)
+
+
+
+
+
+        self.menuStructure.addAction(self.actionStereo)
+        self.menuStructure.addAction(self.actionRose)
+        self.menuSedimentary.addAction(self.actionQFL)
+        self.menuSedimentary.addAction(self.actionQmFLt)
+        self.menuSedimentary.addAction(self.actionClastic)
+        self.menuSedimentary.addAction(self.actionCIA)
 
 
 
@@ -352,14 +365,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoCalc.addAction(self.actionSmNdIsoTope)
         #self.menuGeoCalc.addAction(self.actionKArIsoTope)
 
-
-
-        self.menuStructure.addAction(self.actionStereo)
-        self.menuStructure.addAction(self.actionRose)
-        self.menuSedimentary.addAction(self.actionQFL)
-        self.menuSedimentary.addAction(self.actionQmFLt)
-        self.menuSedimentary.addAction(self.actionClastic)
-        self.menuSedimentary.addAction(self.actionCIA)
 
 
         self.menuAdditional.addAction(self.actionXY)
@@ -389,16 +394,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menuGeoChem.menuAction())
         self.menubar.addSeparator()
 
-        self.menubar.addAction(self.menuGeoCalc.menuAction())
-        self.menubar.addSeparator()
-
         self.menubar.addAction(self.menuStructure.menuAction())
         self.menubar.addSeparator()
-
 
         self.menubar.addAction(self.menuSedimentary.menuAction())
         self.menubar.addSeparator()
 
+        self.menubar.addAction(self.menuGeoCalc.menuAction())
+        self.menubar.addSeparator()
 
         self.menubar.addAction(self.menuAdditional.menuAction())
         self.menubar.addSeparator()
@@ -932,7 +935,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # #print(self.raw)
 
 
-
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
 
@@ -946,11 +948,27 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.raw = self.raw.rename(columns=lambda x: x.replace(i, ''))
             pass
 
+
+
+
+        for i in self.raw:
+            pass
+
         for i in self.raw.dtypes.index:
             if self.raw.dtypes[i] != float and self.raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha', 'Style','Width', 'Label']:
                 print(i)
                 self.raw = self.raw.drop(i, 1)
 
+        for i in self.raw.columns.values.tolist():
+            if i=='':
+                self.raw = self.raw.drop(i, 1)
+                pass
+            pass
+
+        self.raw = self.raw.dropna(axis=1, how='all')
+
+
+        print(self.raw.columns.values.tolist())
 
     def saveDataFile(self):
 
@@ -1116,6 +1134,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df)<=0):
             self.getDataFile()
         self.stereopop = Stereo(df=self.model._df)
+
         try:
             self.stereopop.Stereo()
             self.stereopop.show()

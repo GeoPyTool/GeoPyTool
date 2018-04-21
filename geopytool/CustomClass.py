@@ -1,4 +1,4 @@
-version = '0.7.95'
+version = '0.7.96'
 
 date = '2018-04-21'
 
@@ -714,7 +714,33 @@ class AppForm(QMainWindow):
             self.OutPutCheck = False
         return(self.OutPutCheck)
 
+    def clearLayout(self, layout):
+        if layout is not None:
+            while layout.count():
+                item = layout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+                else:
+                    self.clearLayout(item.layout())
 
+
+    def resizeEvent(self, evt=None):
+
+        w=self.width()
+        h=self.height()
+        '''
+        if h<=360:
+            h=360
+            self.resize(w,h)
+        if w<=640:
+            w = 640
+            self.resize(w, h)
+        '''
+
+
+        step = (w * 94 / 100) / 5
+        foot=h*3/48
 
     def ErrorEvent(self):
         _translate = QtCore.QCoreApplication.translate
@@ -1113,4 +1139,4 @@ class Lsq():
 
 LocationOfMySelf=os.path.dirname(__file__)
 
-print(LocationOfMySelf,'Custom Bass Classes')
+#print(LocationOfMySelf,'Custom Bass Classes')

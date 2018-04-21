@@ -122,21 +122,21 @@ class REE(AppForm):
 
 
 
-        self.standard = QSlider(Qt.Horizontal)
-        self.standard.setRange(0, 4)
-        self.standard.setValue(0)
-        self.standard.setTracking(True)
-        self.standard.setTickPosition(QSlider.TicksBothSides)
-        self.standard.valueChanged.connect(self.REE)  # int
-
-        self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
+        self.standard_slider = QSlider(Qt.Horizontal)
+        self.standard_slider.setRange(0, 4)
+        self.standard_slider.setValue(0)
+        self.standard_slider.setTracking(True)
+        self.standard_slider.setTickPosition(QSlider.TicksBothSides)
+        self.standard_slider.valueChanged.connect(self.REE)  # int
+        self.left_label= QLabel('Standard' )
+        self.right_label = QLabel(self.StandardsName[int(self.standard_slider.value())])
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
         for w in [self.save_button, self.result_button,
-                  self.legend_cb, self.standard_label, self.standard]:
+                  self.legend_cb,  self.left_label, self.standard_slider, self.right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -145,12 +145,22 @@ class REE(AppForm):
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
         self.textbox = GrowingTextEdit(self)
-        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard.value())])
+        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard_slider.value())])
         self.vbox.addWidget(self.textbox)
 
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
+
+
+        w=self.width()
+        h=self.height()
+
+        #setFixedWidth(w/10)
+
+        self.standard_slider.setMinimumWidth(w/4)
+        self.right_label.setFixedWidth(w/2)
+
 
     def REE(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
             Top=6, Y0=-1,
@@ -178,9 +188,9 @@ class REE(AppForm):
         PointLabels = []
         k = 0
 
-        standardnamechosen = self.StandardsName[int(self.standard.value())]
+        standardnamechosen = self.StandardsName[int(self.standard_slider.value())]
         standardchosen = self.Standards[standardnamechosen]
-        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard.value())])
+        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard_slider.value())])
 
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
@@ -317,17 +327,22 @@ class REE(AppForm):
 
 
 
-        self.standard_label.setText('Standard: ' + self.StandardsName[int(self.standard.value())])
+        self.right_label.setText(self.StandardsName[int(self.standard_slider.value())])
 
 
         self.yticks = [Location+i for i in range(count)]
         self.yticklabels = [str(np.power(10.0, (Location + i))) for i in range(count)]
 
         self.axes.set_yticks(self.yticks)
-        self.axes.set_yticklabels(self.yticklabels)
+        self.axes.set_yticklabels(self.yticklabels, fontsize=6)
+
+
+        #self.axes.set_yscale('log')
 
         self.axes.set_xticks(self.xticks)
-        self.axes.set_xticklabels(self.xticklabels)
+        self.axes.set_xticklabels(self.xticklabels, rotation=-45, fontsize=6)
+
+
 
 
 

@@ -93,8 +93,12 @@ class TAS(AppForm):
         self.tag_cb.setChecked(True)
         self.tag_cb.stateChanged.connect(self.TAS)  # int
 
-        self.slider_label = QLabel('Type: Volcanic')
-        self.slider = QSlider(Qt.Vertical)
+
+
+        self.slider_left_label = QLabel('Volcanic')
+        self.slider_right_label = QLabel('Plutonic')
+
+        self.slider = QSlider(Qt.Horizontal)
         self.slider.setRange(0, 1)
         self.slider.setValue(0)
         self.slider.setTracking(True)
@@ -107,8 +111,8 @@ class TAS(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.result_button, self.tag_cb,self.irvine_cb,
-                  self.legend_cb,self.slider_label, self.slider]:
+        for w in [self.save_button, self.result_button, self.legend_cb,self.tag_cb,self.irvine_cb,
+                  self.slider_left_label, self.slider,self.slider_right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -124,6 +128,12 @@ class TAS(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
+        w=self.width()
+        h=self.height()
+
+        self.slider.setFixedWidth(w/10)
+
+
 
 
     def Irvine(self,x, a = 39.0, b = 3.9492, c = -2.1111, d = 0.86096, e = -0.15188, f = 0.012030, g = -(3.3539 / 10000)):
@@ -138,7 +148,7 @@ class TAS(AppForm):
     def TAS(self, Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
             Top=19, Y0=1, Y1=19, Y_Gap=19, FontSize=12, xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', width=12,
             height=12, dpi=300):
-        self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
+        self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Plutonic (Wilson et al. 1989)')
         self.axes.clear()
         #self.axes.axis('off')
         
@@ -186,7 +196,6 @@ class TAS(AppForm):
                           'S/N/L: Sodalitite/Nephelinolith/Leucitolith'
             self.setWindowTitle(title)
             self.textbox.setText(self.reference+description)
-            self.slider_label.setText('Type: Volcanic')
 
 
 
@@ -195,7 +204,7 @@ class TAS(AppForm):
             Labels = [u'F', u'Pc', u'U1', u'Ba', u'Bs', u'S1', u'U2', u'O1', u'S2', u'U3', u'O2', u'S3', u'Ph', u'O3',
                       u'T',
                       u'Td', u'R', u'Q', u'T/U/I']
-            title = 'TAS (total alkali–silica) diagram Intrusive (after Wilson et al. 1989).'
+            title = 'TAS (total alkali–silica) diagram Plutonic (after Wilson et al. 1989).'
             description = '\n' \
                           'F: Foidolite, Ph: Foid Syenite, Pc: Peridotgabbro, U1: Foid Gabbro, U2: Foid Monzodiorite, U3: Foid Monzosyenite,\n' \
                           'Ba: alkalic gabbro,Bs: subalkalic gabbro, S1: Monzogabbro, S2: Monzodiorite, S3: Monzonite,\n' \
@@ -206,7 +215,6 @@ class TAS(AppForm):
             self.setWindowTitle(title)
             self.textbox.setText(self.reference+description)
 
-            self.slider_label.setText('Type: Intrusive')
 
 
 

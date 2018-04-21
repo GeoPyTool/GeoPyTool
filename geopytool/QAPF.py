@@ -240,12 +240,11 @@ class QAPF(AppForm, Tool):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.QAPF)  # int
 
+        self.slider_left_label = QLabel('Plutonic')
+        self.slider_right_label = QLabel('Volcanic')
 
 
-
-
-        self.slider_label = QLabel('Plutonic')
-        self.slider = QSlider(Qt.Vertical)
+        self.slider = QSlider(Qt.Horizontal)
         self.slider.setRange(0, 1)
         self.slider.setValue(0)
         self.slider.setTracking(True)
@@ -272,7 +271,7 @@ class QAPF(AppForm, Tool):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,  self.detail_cb, self.legend_cb,self.slider,self.slider_label]:
+        for w in [self.save_button,  self.detail_cb, self.legend_cb,self.slider_left_label,self.slider,self.slider_right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -282,12 +281,25 @@ class QAPF(AppForm, Tool):
         self.vbox.addLayout(self.hbox)
 
 
+
         self.textbox = GrowingTextEdit(self)
 
         self.vbox.addWidget(self.textbox)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
+
+
+
+        w=self.width()
+        h=self.height()
+
+        #setFixedWidth(w/10)
+
+        self.slider.setMinimumWidth(w/10)
+        self.slider_left_label.setMinimumWidth(w/10)
+        self.slider_right_label.setMinimumWidth(w/10)
+
 
     def QAPF(self):
 
@@ -375,7 +387,7 @@ class QAPF(AppForm, Tool):
                               (78, -30),
                               (50, -60)]
 
-            self.slider_label.setText('Plutonic')
+
             self.setWindowTitle('QAPF modal classification of plutonic rocks')
 
             self.exptext='''
@@ -565,7 +577,6 @@ class QAPF(AppForm, Tool):
                               (55, -63),
                               (48, -82)]
 
-            self.slider_label.setText('Volcanic')
 
             self.setWindowTitle('QAPF modal classification of volcanic rocks')
 
