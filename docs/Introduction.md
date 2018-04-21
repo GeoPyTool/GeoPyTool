@@ -158,7 +158,14 @@ A detailed demonstration can be found at [Demonstration](http://geopytool.com/de
 GeoPyTool offer three choices for format of generated figure, which are PDF, SVG, and PNG.
 PDF and SVG are both vector graphic formats, while PNG is not.
 
+
+#### Adjusting Axises of Figure
 There is a menubar on almost all interface of GeoPyTool that generating figures, which can be used to modify and adjust your picture, such as modifying the axis range and axis scale, etc.
+
+As shown in the picture below:
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/images/Axis%20Adjustment.png)
+
 
 Please do not blame me for not giving enough options to control your plots without even trying to use these menubar.
 Maybe you want me to make pasta for you?
@@ -179,6 +186,6 @@ After all, please find your own way to open these files and do not act like a ba
 
 If you want to support GeoPyTool and you also use WeChat, please scan the following QR code to reward us.
 I can use this money to pay for medical expenses to stay healthy and add more functions to GeoPyTool.
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WeChatQrCode.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WeChatQrCode.png =200)
 
 
