@@ -45,17 +45,17 @@ class Cluster(AppForm):
         self.create_status_bar()
 
 
-    def showResult1(self):
+    def showResultUp(self):
 
-        self.tablepop1 = TabelViewer(df=self.corr1, title='Correlation Matrix of Colums')
-        self.tablepop1.show()
+        self.tablepopUp = TabelViewer(df=self.corr1, title='Correlation Matrix of Columns (Top Matrix)')
+        self.tablepopUp.show()
 
-    def showResult2(self):
-        self.tablepop2 = TabelViewer(df=self.corr2, title='Correlation Matrix of Rows')
-        self.tablepop2.show()
+    def showResultLeft(self):
+        self.tablepopLeft = TabelViewer(df=self.corr2, title='Correlation Matrix of Rows (Left Matrix)')
+        self.tablepopLeft.show()
 
     def create_main_frame(self):
-        self.resize(1200,720)
+        self.resize(800,800)
         self.main_frame = QWidget()
         self.dpi = 128
         self.setWindowTitle('Cluster Figure')
@@ -86,21 +86,27 @@ class Cluster(AppForm):
 
 
 
-        self.show_data_button1 = QPushButton('&Show Rows\' Result')
-        self.show_data_button1.clicked.connect(self.showResult1)
-        self.show_data_button2 = QPushButton('&Show Columns\' Result')
-        self.show_data_button2.clicked.connect(self.showResult2)
+        self.show_data_buttonUp = QPushButton('&Show Correlation Matrix of Columns (Top Matrix)')
+        self.show_data_buttonUp.clicked.connect(self.showResultUp)
+        self.show_data_buttonLeft = QPushButton('&Show Correlation Matrix of Rows (Left Matrix)')
+        self.show_data_buttonLeft.clicked.connect(self.showResultLeft)
 
 
         self.ShowValue_cb = QCheckBox('&Value Off')
         self.ShowValue_cb.setChecked(False)
         self.ShowValue_cb.stateChanged.connect(self.Cluster)  # int
+
+        self.ShowCorr_cb = QCheckBox('&Show Correlation Matrix on Plot')
+        self.ShowCorr_cb.setChecked(False)
+        self.ShowCorr_cb.stateChanged.connect(self.Cluster)  # int
+
+
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,self.ShowValue_cb,self.show_data_button1,self.show_data_button2]:
+        for w in [self.save_button,self.ShowCorr_cb,self.show_data_buttonLeft,self.show_data_buttonUp]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -159,7 +165,14 @@ class Cluster(AppForm):
 
         dataframe2 = dataframe.T
 
-        axup = self.fig.add_axes([0.53, 0.88, 0.38, 0.1])
+        if self.ShowCorr_cb.isChecked():
+
+            axup = self.fig.add_axes([0.53, 0.88, 0.38, 0.1])
+
+        else:
+
+            axup = self.fig.add_axes([0.3, 0.75, 0.5, 0.1])
+
 
         corr1 = 1 - dataframe.corr()
 
@@ -184,21 +197,26 @@ class Cluster(AppForm):
             axup.set_xticks([])
             axup.set_yticks([])
 
-            axmatrixup = self.fig.add_axes([0.53, 0.49, 0.38, 0.38])
+            if self.ShowCorr_cb.isChecked():
+                axmatrixup = self.fig.add_axes([0.53, 0.49, 0.38, 0.38])
 
-            imup = axmatrixup.matshow(corr1, aspect='auto', origin='lower', cmap='GnBu')
+                imup = axmatrixup.matshow(corr1, aspect='auto', origin='lower', cmap='GnBu')
 
-            axmatrixup.set_xticks([])
-            axmatrixup.set_xticklabels([], minor=False,prop=fontprop)
-            axmatrixup.xaxis.set_label_position('bottom')
-            axmatrixup.xaxis.tick_bottom()
+                axmatrixup.set_xticks([])
+                axmatrixup.set_xticklabels([], minor=False,prop=fontprop)
+                axmatrixup.xaxis.set_label_position('bottom')
+                axmatrixup.xaxis.tick_bottom()
 
-            axmatrixup.set_yticks([])
-            axmatrixup.set_yticklabels([], minor=False,prop=fontprop)
-            axmatrixup.yaxis.set_label_position('right')
-            axmatrixup.yaxis.tick_right()
+                axmatrixup.set_yticks([])
+                axmatrixup.set_yticklabels([], minor=False,prop=fontprop)
+                axmatrixup.yaxis.set_label_position('right')
+                axmatrixup.yaxis.tick_right()
 
-            axleft = self.fig.add_axes([0.0,0.1,0.13,0.38])
+                axleft = self.fig.add_axes([0.0,0.1,0.13,0.38])
+
+            else:
+
+                axleft = self.fig.add_axes([0.09, 0.1, 0.15, 0.6])
 
 
             # Compute and plot second dendrogram.
@@ -211,22 +229,26 @@ class Cluster(AppForm):
             axleft.set_xticks([])
             axleft.set_yticks([])
 
-            axmatrixleft = self.fig.add_axes([0.14, 0.1, 0.38, 0.38])
-            imleft = axmatrixleft.matshow(corr2, aspect='auto', origin='lower', cmap='GnBu')
+            if self.ShowCorr_cb.isChecked():
+                axmatrixleft = self.fig.add_axes([0.14, 0.1, 0.38, 0.38])
+                imleft = axmatrixleft.matshow(corr2, aspect='auto', origin='lower', cmap='GnBu')
 
 
-            axmatrixleft.set_xticks([])
-            axmatrixleft.set_xticklabels([], minor=False)
-            axmatrixleft.xaxis.set_label_position('bottom')
-            axmatrixleft.xaxis.tick_bottom()
+                axmatrixleft.set_xticks([])
+                axmatrixleft.set_xticklabels([], minor=False)
+                axmatrixleft.xaxis.set_label_position('bottom')
+                axmatrixleft.xaxis.tick_bottom()
 
-            axmatrixleft.set_yticks([])
-            axmatrixleft.set_yticklabels([], minor=False)
-            axmatrixleft.yaxis.set_label_position('right')
-            axmatrixleft.yaxis.tick_right()
+                axmatrixleft.set_yticks([])
+                axmatrixleft.set_yticklabels([], minor=False)
+                axmatrixleft.yaxis.set_label_position('right')
+                axmatrixleft.yaxis.tick_right()
 
-            #Plot distance matrix.
-            axmatrix = self.fig.add_axes([0.53, 0.1, 0.38, 0.38])
+                #Plot distance matrix.
+                axmatrix = self.fig.add_axes([0.53, 0.1, 0.38, 0.38])
+
+            else:
+                axmatrix = self.fig.add_axes([0.3, 0.1, 0.5, 0.6])
 
             idx1 = Z1['leaves']
             idx2 = Z2['leaves']
@@ -251,13 +273,25 @@ class Cluster(AppForm):
 
             axmatrix.set_xticks(XstickList)
             axmatrix.set_xticklabels( XLabelList, minor=False)
-            axmatrix.xaxis.set_label_position('bottom')
-            axmatrix.xaxis.tick_bottom()
+
+
 
             axmatrix.set_yticks(YstickList)
             axmatrix.set_yticklabels( YLabelList, minor=False)
-            axmatrix.yaxis.set_label_position('right')
-            axmatrix.yaxis.tick_right()
+
+
+
+            if self.ShowCorr_cb.isChecked():
+                pass
+                axmatrix.xaxis.set_label_position('bottom')
+                axmatrix.xaxis.tick_bottom()
+                axmatrix.yaxis.set_label_position('right')
+                axmatrix.yaxis.tick_right()
+            else:
+                axmatrix.xaxis.set_label_position('top')
+                axmatrix.xaxis.tick_top()
+                axmatrix.yaxis.set_label_position('left')
+                axmatrix.yaxis.tick_left()
 
 
             plt.xticks(rotation=-90, fontsize=6)
@@ -272,24 +306,25 @@ class Cluster(AppForm):
 
 
 
+            '''
             if self.ShowValue_cb.isChecked():
-                flag=0
-
                 self.ShowValue_cb.setText('&Value On')
-            else:
-                self.ShowValue_cb.setText('&Value Off')
-                flag=1
-
-            if flag==0:
                 for (j, i), label in np.ndenumerate(1-corr1):
                     axmatrixup.text(i, j, "%.2f" % label, ha='center', va='center')
-
                 for (j, i), label in np.ndenumerate(1-corr2):
                     axmatrixleft.text(i, j, "%.2f" % label, ha='center', va='center')
-
                 for (j, i), label in np.ndenumerate(D):
                     axmatrix.text(i, j, "%.2f" % label, ha='center', va='center')
 
+            else:
+                self.ShowValue_cb.setText('&Value Off')
+                
+            if self.ShowCorr_cb.isChecked():
+                self.ShowCorr_cb.setText('&Hide Correlation Matrix')
+            else:
+                self.ShowCorr_cb.setText('&Show Correlation Matrix')
+            
+            '''
 
 
             self.corr1=1-corr1

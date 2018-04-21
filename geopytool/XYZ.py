@@ -579,13 +579,25 @@ class XYZ(AppForm):
 
                     if (self.logx_cb.isChecked()):
                         xuse = math.log(x, 10)
-                        self.xlabel = 'log10 ' + self.xlabel
+                        newxlabel = '$log10$( ' + self.xlabel+')'
+                    else:
+
+                        newxlabel =  self.xlabel
+
+
                     if (self.logy_cb.isChecked()):
                         yuse = math.log(y, 10)
-                        self.ylabel = 'log10 ' + self.ylabel
-                    if (self.logy_cb.isChecked()):
+                        newylabel = '$log10$( ' + self.ylabel+')'
+                    else:
+                        newylabel =  self.ylabel
+
+
+                    if (self.logz_cb.isChecked()):
                         zuse = math.log(y, 10)
-                        self.zlabel = 'log10 ' + self.zlabel
+                        newzlabel = '$log10$( ' + self.zlabel+')'
+                    else:
+                        newzlabel =  self.zlabel
+
 
 
                     TPoints.append(TriPoint((xuse, yuse, zuse), Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'],
@@ -594,14 +606,14 @@ class XYZ(AppForm):
                 except(ValueError):
                     pass
 
-
+        self.axes.annotate(newxlabel, xy=(0,0), xytext=(-4, -4),fontsize=6)
+        self.axes.annotate(newylabel, xy=(100,0), xytext=(100, -4),fontsize=6)
+        self.axes.annotate(newzlabel , xy=(50,86.7), xytext=(45, 90),fontsize=6)
 
         self.x_element_label.setText(self.xlabel)
         self.y_element_label.setText(self.ylabel)
         self.z_element_label.setText(self.zlabel)
-        self.axes.annotate(self.xlabel, (-4, -3))
-        self.axes.annotate(self.ylabel, (100, -3))
-        self.axes.annotate(self.zlabel, (30, 90))
+
 
         for i in TPoints:
             self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,

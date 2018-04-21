@@ -932,6 +932,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.raw = self.raw.rename(columns=lambda x: x.replace(i, ''))
             pass
 
+        for i in self.raw.dtypes.index:
+            if self.raw.dtypes[i] != float and self.raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha', 'Style','Width', 'Label']:
+                print(i)
+                self.raw = self.raw.drop(i, 1)
+
 
     def saveDataFile(self):
 

@@ -796,17 +796,20 @@ class XY(AppForm):
 
                         if (self.logx_cb.isChecked()):
                             xuse = math.log(x, 10)
-                            self.xlabel = '$log10$( ' + self.xlabel+')'
+                            newxlabel = '$log10$( ' + self.xlabel+')'
 
-                            self.axes.set_xlabel(self.xlabel)
+                            self.axes.set_xlabel(newxlabel)
 
                         if (self.logy_cb.isChecked()):
                             yuse = math.log(y, 10)
 
-                            self.ylabel = '$log10$( ' + self.ylabel+')'
+                            newylabel = '$log10$( ' + self.ylabel+')'
 
+                            self.axes.set_ylabel(newylabel)
+
+                        if(self.logy_cb.isChecked() or self.logx_cb.isChecked() == False):
+                            self.axes.set_xlabel(self.xlabel)
                             self.axes.set_ylabel(self.ylabel)
-
 
                         self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
                                           s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
@@ -818,8 +821,6 @@ class XY(AppForm):
                     except(ValueError):
                         pass
 
-        self.axes.set_xlabel(self.xlabel)
-        self.axes.set_ylabel(self.ylabel)
 
         self.x_element_label.setText(self.xlabel)
         self.y_element_label.setText(self.ylabel)

@@ -195,7 +195,7 @@ class CIA(AppForm):
         WholeMole=[]
         WholeList=[]
 
-
+        dataframe =  dataframe.dropna(axis=1,how='all')
 
         print(dataframe)
 
@@ -209,7 +209,6 @@ class CIA(AppForm):
             tmpNa2O=0
             tmpK2O=0
             tmpP2O5=0
-
             tmpFe2O3=0
             tmpMgO=0
             tmpMnO=0
@@ -226,15 +225,15 @@ class CIA(AppForm):
                     m=dataframe.at[j,i]
                     n=self.BaseMass[i]
 
-                    print('\nm & n is \t',m,n)
+                    #print('\nm & n is \t',m,n)
                     tmpmole= m/n
 
-                    print(tmpmole)
+                    #print(tmpmole)
                     tmpMoleSum = tmpMoleSum + tmpmole
                     #tmpList.append(dataframe.at[i,j])
 
 
-            print('\n total mole is',tmpMoleSum)
+            #print('\n total mole is',tmpMoleSum)
 
 
             for i in ItemsAvalibale:
@@ -242,7 +241,7 @@ class CIA(AppForm):
                     tmpdata= 100*(dataframe.at[j,i]/self.BaseMass[i])/tmpMoleSum
                     tmpList.append(tmpdata)
 
-                    print(i, tmpdata)
+                    #print(i, tmpdata)
 
 
                     if i =='Al2O3':
@@ -276,10 +275,12 @@ class CIA(AppForm):
 
 
 
-
                 elif i == 'Label' :
                     tmpdata = dataframe.at[j,i]
                     tmpList.append(tmpdata)
+                elif i in WholeItemsAvalibale:
+                    del WholeItemsAvalibale[WholeItemsAvalibale.index(i)]
+
 
             tmpList.append(tmpMoleSum)
 
@@ -295,7 +296,7 @@ class CIA(AppForm):
             else:
                 usedCaO=tmpNa2O
 
-            print(tmpAl2O3, usedCaO, tmpK2O, tmpNa2O)
+            #print(tmpAl2O3, usedCaO, tmpK2O, tmpNa2O)
 
 
 
@@ -312,7 +313,10 @@ class CIA(AppForm):
             pass
 
 
-        #print(len(WholeItemsAvalibale))
+
+
+        print(len(WholeList))
+        print(len(WholeItemsAvalibale))
 
         df = pd.DataFrame(WholeList,columns=WholeItemsAvalibale)
         self.useddf = df

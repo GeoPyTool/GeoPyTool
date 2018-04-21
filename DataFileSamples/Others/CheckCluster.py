@@ -15,7 +15,6 @@ from matplotlib import cm
 import numpy as np
 import pandas as pd
 
-from sklearn.metrics.pairwise import euclidean_distances
 
 fig = plt.figure(figsize=(12, 12))
 fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.6, top=0.9)
