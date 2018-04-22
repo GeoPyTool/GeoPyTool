@@ -10,7 +10,7 @@ Tags: Doc,English,Support
 ## Open and Import Data
 To start a plot or calculation, raw data file should be imported to GeoPyTool first.
 
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/01.ImportData.png?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/01.ImportData.png?raw=true)
 
 
 The Data file can be Xlsx/Xls or CSV.
@@ -38,7 +38,7 @@ If there is no setting up information such as the `Label`/`Color`/`Marker`/`Styl
 
 As shown in the [Data File Samples](https://github.com/GeoPyTool/GeoPyTool/tree/master/DataFileSamples), all data files contain the following Items:
 
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/images/SettingArea.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/SettingArea.png)
 
 1. `Label`: control the group of sample and will be shown on legend
 2. `Color`: control the `Color` of both drawn line and plotted point
@@ -56,7 +56,7 @@ Besides these seven items, the **other columns in your data MUST ALL be number v
 #### `Color` can only be chosen from following words: 'blue','green','red','cyan','magenta','yellow','black','white'.
 
 `Color`:
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/ColorList.png?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/ColorList.png?raw=true)
 
 #### `Size`, `Width`, and `Alpha`
 These three are number values. The unit used for `Size` and `Width` is pt. `Size` normally should be larger than '10', and `Width` usually is '1'. `Alpha` can be set from '0' to '1', for example, setting `Alpha` as '0.4' means 40% transparency.
@@ -65,13 +65,13 @@ These three are number values. The unit used for `Size` and `Width` is pt. `Size
 these two are slightly more complicated and can be set as the contents of the following lists.
 
 ##### `Marker` :
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/MarkerList.png?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/MarkerList.png?raw=true)
 
 ##### `Style`:
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/StyleList.png?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/StyleList.png?raw=true)
 
 #### The effect of setting:
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/images/SettingEffect.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/SettingEffect.png)
 
 
 ## Adjusting Axises of Figure
@@ -80,7 +80,7 @@ All generated figures contain a menu bar on its top, which can be used to adjust
 
 As shown in the picture below:
 
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/images/Axis%20Adjustment.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/Axis%20Adjustment.png)
 
 ## Click the Function you need
 
@@ -91,7 +91,7 @@ After setting up, you can just click to use the function you need.
 
 These functions are quite commonly used and the details are shown as the picture below.
 
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/02.Save%20Image.png?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/02.Save%20Image.png?raw=true)
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/TAS-REE-Trace.png)
 
@@ -157,16 +157,16 @@ For example, as the picture below shown,  the original diagram used Nb and Th, n
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/UserDefinedXY.png)
 
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/03.LoadBaseMap.png?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/03.LoadBaseMap.png?raw=true)
 
 
 ## 3D and Statistics
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/04.Statistical.png?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/04.Statistical.png?raw=true)
 
 
 ## Cluster
 
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/05.Cluster.png?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/05.Cluster.png?raw=true)
 
 
 

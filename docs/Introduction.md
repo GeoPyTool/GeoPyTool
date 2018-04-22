@@ -164,7 +164,7 @@ There is a menubar on almost all interface of GeoPyTool that generating figures,
 
 As shown in the picture below:
 
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/images/Axis%20Adjustment.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/Axis%20Adjustment.png)
 
 
 Please do not blame me for not giving enough options to control your plots without even trying to use these menubar.
@@ -180,7 +180,7 @@ After all, please find your own way to open these files and do not act like a ba
 
 
 
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/images/Samples.png?raw=true)
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/Samples.png?raw=true)
 
 # Support Us
 
