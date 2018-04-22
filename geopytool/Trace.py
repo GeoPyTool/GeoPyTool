@@ -45,11 +45,15 @@ class Trace(AppForm):
                   'Gd': 3.68, 'Tb': 0.67, 'Dy': 4.55, 'Li': 4.3, 'Y': 28, 'Ho': 1.01, 'Er': 2.97, 'Tm': 0.456,
                   'Yb': 3.05, 'Lu': 0.455}, }
 
-    def __init__(self, parent=None, df=pd.DataFrame()):
+    def __init__(self, parent=None, df=pd.DataFrame(),Standard={}):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Trace Standardlized Pattern Diagram')
 
         self._df = df
+
+
+        self._given_Standard = Standard
+
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to Trace')
@@ -108,39 +112,47 @@ class Trace(AppForm):
         self.Type_cb.stateChanged.connect(self.Trace)  # int
 
 
-        self.slider_left_label = QLabel('Cs-Lu (37 Elements)')
-        self.slider_right_label= QLabel('Rb-Lu (27 Elements)')
+        self.type_slider_left_label = QLabel('Cs-Lu (37 Elements)')
+        self.type_slider_right_label= QLabel('Rb-Lu (27 Elements)')
 
 
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(0, 1)
-        self.slider.setValue(0)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        self.slider.valueChanged.connect(self.Trace)  # int
+        self.type_slider = QSlider(Qt.Horizontal)
+        self.type_slider.setRange(0, 1)
+        self.type_slider.setValue(0)
+        self.type_slider.setTracking(True)
+        self.type_slider.setTickPosition(QSlider.TicksBothSides)
+        self.type_slider.valueChanged.connect(self.Trace)  # int
 
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Trace)  # int
 
+        self.standard_slider = QSlider(Qt.Horizontal)
+        self.standard_slider.setRange(0, len(self.StandardsName))
 
-        self.standard = QSlider(Qt.Horizontal)
-        self.standard.setRange(0, 4)
-        self.standard.setValue(0)
-        self.standard.setTracking(True)
-        self.standard.setTickPosition(QSlider.TicksBothSides)
-        self.standard.valueChanged.connect(self.Trace)  # int
+        if len(self._given_Standard) > 0:
+            self.standard_slider.setValue(len(self.StandardsName))
+            self.right_label = QLabel("Self Defined Standard")
 
-        self.standard_label = QLabel('Standard: ' + self.StandardsName[int(self.standard.value())])
+        else:
+
+            self.standard_slider.setValue(0)
+            self.right_label = QLabel(self.StandardsName[int(self.standard_slider.value())])
+
+
+        self.standard_slider.setTracking(True)
+        self.standard_slider.setTickPosition(QSlider.TicksBothSides)
+        self.standard_slider.valueChanged.connect(self.Trace)  # int
+        self.left_label= QLabel('Standard' )
 
 
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,self.slider_left_label, self.slider,self.slider_right_label,
-                  self.legend_cb, self.standard_label, self.standard]:
+        for w in [self.save_button,self.type_slider_left_label, self.type_slider,self.type_slider_right_label,
+                  self.legend_cb, self.left_label, self.standard_slider,self.right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -149,7 +161,6 @@ class Trace(AppForm):
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
         self.textbox = GrowingTextEdit(self)
-        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard.value())])
         self.vbox.addWidget(self.textbox)
 
         self.main_frame.setLayout(self.vbox)
@@ -162,20 +173,21 @@ class Trace(AppForm):
 
         #setFixedWidth(w/10)
 
-        self.slider.setFixedWidth(w/10)
-        self.standard_label.setFixedWidth(w/5)
+        self.type_slider.setFixedWidth(w/10)
+        self.standard_slider.setMinimumWidth(w/4)
+        self.right_label.setMinimumWidth(w/10)
 
 
 
 
     def Trace(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
               Top=6, Y0=-1,
-              Y1=3, Y_Gap=5, FontSize=12,
+              Y1=3, Y_Gap=5, FontSize=6,
               xLabel=r'$Trace-Standardlized-Pattern$', yLabel='', width=12, height=12, dpi=300):
 
 
 
-        if (int(self.slider.value()) == 0):
+        if (int(self.type_slider.value()) == 0):
             self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
                             u'Pr', u'Mo',
                             u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb',
@@ -204,6 +216,10 @@ class Trace(AppForm):
             self.setWindowTitle('Trace Standardlized Pattern Diagram Rb-Lu '+ str(len(CommonElements)+1) +' Elements')
 
 
+
+
+
+
         self.axes.clear()
         #self.axes.axis('off')
 
@@ -220,10 +236,31 @@ class Trace(AppForm):
         k = 0
         flag = 1
 
-        standardnamechosen = self.StandardsName[int(self.standard.value())]
-        standardchosen = self.Standards[standardnamechosen]
 
-        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard.value())])
+        slider_value=int(self.standard_slider.value())
+
+        if slider_value < len(self.StandardsName):
+            standardnamechosen = self.StandardsName[slider_value]
+            standardchosen = self.Standards[standardnamechosen]
+            self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[slider_value])
+
+            right_label_text=self.StandardsName[slider_value]
+
+        elif len(self._given_Standard)<=0:
+            standardnamechosen = self.StandardsName[slider_value-1]
+            standardchosen = self.Standards[standardnamechosen]
+            self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[slider_value-1])
+
+            right_label_text = self.StandardsName[slider_value-1]
+
+        else:
+            standardchosen = self._given_Standard
+            self.textbox.setText(self.reference + "\n You are using Self Defined Standard")
+            right_label_text = "Self Defined Standard"
+
+
+
+
 
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
@@ -300,7 +337,7 @@ class Trace(AppForm):
 
 
 
-        self.standard_label.setText('Standard: ' + self.StandardsName[int(self.standard.value())])
+        self.right_label.setText(right_label_text)
 
 
 

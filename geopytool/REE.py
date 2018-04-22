@@ -64,11 +64,14 @@ class REE(AppForm):
 
     ALLREEList=[]
 
-    def __init__(self, parent=None, df=pd.DataFrame()):
+    def __init__(self, parent=None, df=pd.DataFrame(),Standard={}):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('REE Standardlized Pattern Diagram')
 
         self._df = df
+
+        self._given_Standard = Standard
+
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to REE')
@@ -123,13 +126,25 @@ class REE(AppForm):
 
 
         self.standard_slider = QSlider(Qt.Horizontal)
-        self.standard_slider.setRange(0, 4)
-        self.standard_slider.setValue(0)
+        self.standard_slider.setRange(0, len(self.StandardsName))
+
+        if len(self._given_Standard) > 0:
+            self.standard_slider.setValue(len(self.StandardsName))
+            self.right_label = QLabel("Self Defined Standard")
+
+        else:
+
+            self.standard_slider.setValue(0)
+            self.right_label = QLabel(self.StandardsName[int(self.standard_slider.value())])
+
+
         self.standard_slider.setTracking(True)
         self.standard_slider.setTickPosition(QSlider.TicksBothSides)
         self.standard_slider.valueChanged.connect(self.REE)  # int
         self.left_label= QLabel('Standard' )
-        self.right_label = QLabel(self.StandardsName[int(self.standard_slider.value())])
+
+
+
         #
         # Layout with box sizers
         #
@@ -145,7 +160,7 @@ class REE(AppForm):
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
         self.textbox = GrowingTextEdit(self)
-        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard_slider.value())])
+        #self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard_slider.value())])
         self.vbox.addWidget(self.textbox)
 
 
@@ -188,9 +203,32 @@ class REE(AppForm):
         PointLabels = []
         k = 0
 
-        standardnamechosen = self.StandardsName[int(self.standard_slider.value())]
-        standardchosen = self.Standards[standardnamechosen]
-        self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[int(self.standard_slider.value())])
+
+        slider_value=int(self.standard_slider.value())
+
+
+
+
+        if slider_value < len(self.StandardsName):
+            standardnamechosen = self.StandardsName[slider_value]
+            standardchosen = self.Standards[standardnamechosen]
+            self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[slider_value])
+
+            right_label_text=self.StandardsName[slider_value]
+
+        elif len(self._given_Standard)<=0:
+            standardnamechosen = self.StandardsName[slider_value-1]
+            standardchosen = self.Standards[standardnamechosen]
+            self.textbox.setText(self.reference+"\nStandard Chosen: "+self.StandardsName[slider_value-1])
+
+            right_label_text = self.StandardsName[slider_value-1]
+
+        else:
+            standardchosen = self._given_Standard
+            self.textbox.setText(self.reference + "\n You are using Self Defined Standard")
+            right_label_text = "Self Defined Standard"
+
+
 
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
@@ -327,7 +365,7 @@ class REE(AppForm):
 
 
 
-        self.right_label.setText(self.StandardsName[int(self.standard_slider.value())])
+        self.right_label.setText(right_label_text)
 
 
         self.yticks = [Location+i for i in range(count)]

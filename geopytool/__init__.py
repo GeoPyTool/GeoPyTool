@@ -75,7 +75,9 @@ class MyProxyStyle(QProxyStyle):
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
     # raw=0
-    raw = pd.DataFrame(index=[], columns=[])  # raw is initialized as a blank dataframe
+    raw = pd.DataFrame(index=[], columns=[])  # raw is initialized as a blank DataFrame
+
+    Standard = {}# Standard is initialized as a blank Dict
 
     Language = ''
 
@@ -962,11 +964,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         for i in self.raw.columns.values.tolist():
             if i=='':
                 self.raw = self.raw.drop(i, 1)
-                pass
-            pass
 
         self.raw = self.raw.dropna(axis=1, how='all')
 
+
+
+        #Columns = self.raw.columns.values.tolist()
+        #Rows = self.raw.index.values.tolist()
+
+        for i in self.raw.index.values.tolist():
+            if 'tandard' in self.raw.at[i, 'Label']:
+                print('Your Self Defined Standard is at the line No.', i)
+                self.Standard = self.raw.loc[i]
+                self.raw = self.raw.drop(i)
+
+        self.raw = self.raw.reset_index(drop=True)
 
         print(self.raw.columns.values.tolist())
 
@@ -1054,10 +1066,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def REE(self):
 
         print('self.model._df length: ',len(self.model._df))
+
+
+        if len(self.Standard)>0:
+            print('self.Standard length: ', len(self.Standard))
+
         if (len(self.model._df)<=0):
             self.getDataFile()
 
-        self.reepop = REE(df=self.model._df)
+        self.reepop = REE(df=self.model._df,Standard=self.Standard)
+
         try:
             self.reepop.REE()
             self.reepop.show()
@@ -1070,9 +1088,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def Trace(self):
 
         print('self.model._df length: ',len(self.model._df))
+
+
+
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.tracepop = Trace(df=self.model._df)
+        self.tracepop = Trace(df=self.model._df,Standard=self.Standard)
         try:
             self.tracepop.Trace()
             self.tracepop.show()
