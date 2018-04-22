@@ -943,7 +943,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.CleanDataFile()
         self.model = PandasModel(self.raw)
 
-    def CleanDataFile(self,checklist=['质量','分数',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
+    def CleanDataFile(self,checklist=['质量','分数','百分比',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
 
 
         for i in checklist:
@@ -1383,7 +1383,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 AutoResult = pd.concat([tassilent.OutPutData, AutoResult], axis=1)
 
-            reesilent = REE(df=df)
+            reesilent = REE(df=df,Standard=self.Standard)
 
             if (reesilent.Check() == True):
                 reesilent.REE()
@@ -1394,7 +1394,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 AutoResult = pd.concat([reesilent.OutPutData, AutoResult], axis=1)
 
-            tracesilent = Trace(df=df)
+            tracesilent = Trace(df=df,Standard=self.Standard)
 
             if (tracesilent.Check() == True):
                 tracesilent.Trace()
