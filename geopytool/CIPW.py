@@ -249,10 +249,25 @@ class CIPW(AppForm):
         self.FinalResultVolume = self.ReduceSize(pd.concat(self.ResultVolume).set_index('Label'))
         self.FinalResultCalced = self.ReduceSize(pd.concat(self.ResultCalced).set_index('Label'))
 
+        self.FinalResultMole = self.FinalResultMole.fillna(0)
+        self.FinalResultWeight = self.FinalResultWeight.fillna(0)
+        self.FinalResultVolume = self.FinalResultVolume.fillna(0)
+        self.FinalResultCalced = self.FinalResultCalced.fillna(0)
+
+        self.FinalResultMole = self.FinalResultMole.loc[:, (self.FinalResultMole != 0).any(axis=0)]
+        self.FinalResultWeight = self.FinalResultWeight.loc[:, (self.FinalResultWeight != 0).any(axis=0)]
+        self.FinalResultVolume = self.FinalResultVolume.loc[:, (self.FinalResultVolume != 0).any(axis=0)]
+        self.FinalResultCalced = self.FinalResultCalced.loc[:, (self.FinalResultCalced != 0).any(axis=0)]
+
+
+
+
         self.newdf = self.FinalResultMole
         self.newdf1 = self.FinalResultWeight
         self.newdf2 = self.FinalResultVolume
         self.newdf3 = self.FinalResultCalced
+
+
 
         print(self.FinalResultVolume)
 

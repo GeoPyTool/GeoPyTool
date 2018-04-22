@@ -338,21 +338,34 @@ class Pearce(AppForm):
             xc, yc = raw.at[i, 'Y'], raw.at[i, 'Nb']
             xd, yd = raw.at[i, 'Yb'], raw.at[i, 'Ta']
 
-            self.axes[0, 0].scatter(math.log(xa, 10), math.log(ya, 10), marker=raw.at[i, 'Marker'],
+            try:
+                self.axes[0, 0].scatter(math.log(xa, 10), math.log(ya, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
+            except:
+                pass
 
-            self.axes[0, 1].scatter(math.log(xb, 10), math.log(yb, 10), marker=raw.at[i, 'Marker'],
+            try:
+                self.axes[0, 1].scatter(math.log(xb, 10), math.log(yb, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
+            except:
+                pass
 
-            self.axes[1, 0].scatter(math.log(xc, 10), math.log(yc, 10), marker=raw.at[i, 'Marker'],
+            try:
+                self.axes[1, 0].scatter(math.log(xc, 10), math.log(yc, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
+            except:
+                pass
 
-            self.axes[1, 1].scatter(math.log(xd, 10), math.log(yd, 10), marker=raw.at[i, 'Marker'],
+            try:
+                self.axes[1, 1].scatter(math.log(xd, 10), math.log(yd, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
+            except:
+                pass
+
 
 
 

@@ -84,7 +84,8 @@ class Cluster(AppForm):
 
         self.save_button.clicked.connect(self.saveImgFile)
 
-
+        self.stat_button = QPushButton('&Stat')
+        self.stat_button.clicked.connect(self.Stat)
 
         self.show_data_buttonUp = QPushButton('&Show Correlation Matrix of Columns (Top Matrix)')
         self.show_data_buttonUp.clicked.connect(self.showResultUp)
@@ -106,7 +107,7 @@ class Cluster(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,self.ShowCorr_cb,self.show_data_buttonLeft,self.show_data_buttonUp]:
+        for w in [self.save_button,self.stat_button, self.ShowCorr_cb,self.show_data_buttonLeft,self.show_data_buttonUp]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -333,3 +334,43 @@ class Cluster(AppForm):
             self.canvas.draw()
             self.show()
 
+
+
+    def Stat(self):
+
+        df=self._df
+
+
+        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
+        for i in m:
+            if i in df.columns.values:
+                df = df.drop(i, 1)
+        #df.set_index('Label', inplace=True)
+
+        items = df.columns.values
+        index = df.index.values
+
+        StatResultDict = {}
+
+        for i in items:
+            StatResultDict[i] = self.stateval(df[i])
+
+        StdSortedList = sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std'])
+
+        StdSortedList.reverse()
+
+        '''
+        for k in sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std']):
+            print("%s=%s" % (k, StatResultDict[k]))
+        '''
+
+
+
+        StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
+        StatResultDf['Items']=StatResultDf.index.tolist()
+
+        self.tablepop = TabelViewer(df=StatResultDf,title='Statistical Result')
+        self.tablepop.show()
+
+        self.Intro = StatResultDf
+        return(StatResultDf)

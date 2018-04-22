@@ -58,10 +58,9 @@ class TabelViewer(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame(),title='Statistical Result'):
         QMainWindow.__init__(self, parent)
+        self.setAcceptDrops(True)
         self.setWindowTitle(title)
-
         self.df = df
-
         self.create_main_frame()
         self.create_status_bar()
 
@@ -92,7 +91,16 @@ class TabelViewer(AppForm):
 
 
 
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
 
+    def dropEvent(self, event):
+        files = [(u.toLocalFile()) for u in event.mimeData().urls()]
+        for f in files:
+            print(f)
 
     def saveResult(self):
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
@@ -100,13 +108,18 @@ class TabelViewer(AppForm):
                                                           'C:/',
                                                           'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
+
+        df = self.df
+        if 'Label' in df.columns.values:
+            df.set_index('Label', inplace=True)
+
+        #self.model._df.reset_index(drop=True)
+
+
         if (DataFileOutput != ''):
 
             if ('csv' in DataFileOutput):
-                self.df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
             elif ('xls' in DataFileOutput):
-                self.df.to_excel(DataFileOutput, encoding='utf-8')
-
-
-
+                df.to_excel(DataFileOutput, encoding='utf-8')

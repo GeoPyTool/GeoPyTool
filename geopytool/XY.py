@@ -1168,7 +1168,7 @@ class XY(AppForm):
         StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
         StatResultDf['Items']=StatResultDf.index.tolist()
 
-        self.tablepop = TabelViewer(df=StatResultDf,title='X-Y Statistical Result')
+        self.tablepop = TabelViewer(df=StatResultDf,title='Statistical Result')
         self.tablepop.show()
 
         self.Intro = StatResultDf

@@ -1,4 +1,4 @@
-version = '0.8.00'
+version = '0.8.01'
 
 date = '2018-04-22'
 
@@ -612,14 +612,63 @@ class PandasModel(QtCore.QAbstractTableModel):
         self.layoutChanged.emit()
 
 class CustomQTableView(QtWidgets.QTableView):
+
+    df = pd.DataFrame()
     def __init__(self, *args):
         super().__init__(*args)
+
+        self.resize(800, 600)
+        self.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers |
+                             QtWidgets.QAbstractItemView.DoubleClicked)
+
+
+    def keyPressEvent(self, event):  # Reimplement the event here
+        return
+
+
+
+
+class NewCustomQTableView(QtWidgets.QTableView):
+
+    path=''
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.setAcceptDrops(True)
+
         self.resize(800, 600)
         self.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers |
                              QtWidgets.QAbstractItemView.DoubleClicked)
 
     def keyPressEvent(self, event):  # Reimplement the event here
         return
+
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            files = [(u.toLocalFile()) for u in event.mimeData().urls()]
+            for f in files:
+                if 'csv' in f or 'xls' in f:
+                    print('Drag', f)
+                    self.path=f
+
+                    if ('csv' in f):
+                        self.parent().raw = pd.read_csv(f)
+                    elif ('xls' in f):
+                        self.parent().raw = pd.read_excel(f)
+
+                    # #print(self.raw)
+
+
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        files = [(u.toLocalFile()) for u in event.mimeData().urls()]
+        for f in files:
+            print('Drop')
+
+
 
 class AppForm(QMainWindow):
     _df = pd.DataFrame()
@@ -683,7 +732,7 @@ class AppForm(QMainWindow):
     itemstocheck = ['SiO2', 'K2O', 'Na2O']
 
     def __init__(self, parent=None, df=pd.DataFrame()):
-        QMainWindow.__init__(self, parent)
+        QWidget.__init__(self, parent)
         self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
 
         self._df = df
@@ -924,6 +973,18 @@ class AppForm(QMainWindow):
                 df = df.drop(i, 1)
         df = df.loc[:, (df != 0).any(axis=0)]
         return(df)
+
+    def stateval(self,data=np.ndarray):
+        dict={'mean':mean(data),'ptp':ptp(data),'var':var(data),'std':std(data),'cv':mean(data)/std(data)}
+
+        return(dict)
+
+    def relation(self,data1=np.ndarray,data2=np.ndarray):
+        data=array([data1,data2])
+        dict={'cov':cov(data,bias=1),'corrcoef':corrcoef(data)}
+        return(dict)
+
+
 
 class PlotModel(FigureCanvas):
     _df = pd.DataFrame()

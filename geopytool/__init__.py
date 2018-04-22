@@ -72,35 +72,21 @@ class MyProxyStyle(QProxyStyle):
             return QProxyStyle.pixelMetric(self, QStyle_PixelMetric, option, widget)
 
 
-
 class Ui_MainWindow(QtWidgets.QMainWindow):
-    # raw=0
     raw = pd.DataFrame(index=[], columns=[])  # raw is initialized as a blank DataFrame
-
     Standard = {}# Standard is initialized as a blank Dict
-
     Language = ''
-
     app = QtWidgets.QApplication(sys.argv)
     myStyle = MyProxyStyle('Fusion')    # The proxy style should be based on an existing style,
                                         # like 'Windows', 'Motif', 'Plastique', 'Fusion', ...
     app.setStyle(myStyle)
-
     trans = QtCore.QTranslator()
-
     talk=''
-
     targetversion = '0'
-
-
     DataLocation =''
-
     ChemResult=pd.DataFrame()
     AutoResult=pd.DataFrame()
-
     TotalResult=[]
-
-
 
     def __init__(self):
 
@@ -109,6 +95,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.setObjectName('MainWindow')
         self.resize(800, 600)
 
+        self.setAcceptDrops(True)
 
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate('MainWindow', u'GeoPyTool'))
@@ -120,10 +107,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.main_widget = QWidget(self)
 
         self.tableView = CustomQTableView(self.main_widget)
-
         self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
-
 
 
         self.vbox = QVBoxLayout()
@@ -178,9 +163,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionOpen.setObjectName('actionOpen')
         self.actionOpen.setShortcut('Ctrl+O')
 
-        self.actionSet = QtWidgets.QAction(QIcon(LocationOfMySelf + '/set.png'), u'Set', self)
-        self.actionSet.setObjectName('actionSet')
-        self.actionSet.setShortcut('Ctrl+T')
+        self.actionClose = QtWidgets.QAction(QIcon(LocationOfMySelf+'/close.png'), u'Close',self)
+        self.actionClose.setObjectName('actionClose')
+        self.actionClose.setShortcut('Ctrl+T')
+
+        #self.actionSet = QtWidgets.QAction(QIcon(LocationOfMySelf + '/set.png'), u'Set', self)
+        #self.actionSet.setObjectName('actionSet')
+        #self.actionSet.setShortcut('Ctrl+F')
 
         self.actionSave = QtWidgets.QAction(QIcon(LocationOfMySelf+'/save.png'), u'Save',self)
         self.actionSave.setObjectName('actionSave')
@@ -305,7 +294,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.actionSet)
+        self.menuFile.addAction(self.actionClose)
+        #self.menuFile.addAction(self.actionSet)
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionQuit)
 
@@ -423,7 +413,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMultiDimension.triggered.connect(self.MultiDimension)
 
         self.actionOpen.triggered.connect(self.getDataFile)
-        self.actionSet.triggered.connect(self.SetUpDataFile)
+        self.actionClose.triggered.connect(self.clearDataFile)
+        #self.actionSet.triggered.connect(self.SetUpDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
         self.actionQuit.triggered.connect(qApp.quit)
 
@@ -454,7 +445,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.talk=  _translate('MainWindow','You are using GeoPyTool ') + version +'\n'+ _translate('MainWindow','released on ') + date + '\n'
 
-        self.menuFile.setTitle(_translate('MainWindow', u'File'))
+        self.menuFile.setTitle(_translate('MainWindow', u'Data File'))
         self.menuGeoChem.setTitle(_translate('MainWindow', u'Geochemistry'))
         self.menuGeoCalc.setTitle(_translate('MainWindow',u'Calculation'))
         self.menuStructure.setTitle(_translate('MainWindow', u'Structure'))
@@ -464,7 +455,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuLanguage.setTitle(_translate('MainWindow', u'Language'))
 
         self.actionOpen.setText(_translate('MainWindow', u'Open Data'))
-        self.actionSet.setText(_translate('MainWindow', u'Set Format'))
+        self.actionClose.setText(_translate('MainWindow', u'Close Data'))
+        #self.actionSet.setText(_translate('MainWindow', u'Set Format'))
         self.actionSave.setText(_translate('MainWindow', u'Save Data'))
         self.actionQuit.setText(_translate('MainWindow', u'Quit App'))
 
@@ -515,8 +507,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCnT.setText(u'繁體中文')
         self.actionEn.setText(u'English')
         self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
-
-
 
 
     def getfile(self):
@@ -624,14 +614,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             except():
                 pass
 
-
     def WriteConfig(self,text=LocationOfMySelf+'/en'):
         try:
             with open('config.ini', 'wt') as f:
                 f.write(text)
         except():
             pass
-
 
     def to_ChineseS(self):
 
@@ -640,9 +628,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.retranslateUi()
 
         self.WriteConfig('Language = \'cns\'')
-
-
-
 
     def to_ChineseT(self):
 
@@ -659,8 +644,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.WriteConfig('Language = \'en\'')
 
-
-
     def to_LoadLanguage(self):
 
 
@@ -675,17 +658,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
-
     def ErrorEvent(self):
 
         reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Plot.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
 
-
-
     def SetUpDataFile(self):
-        print('self.model._df length: ', len(self.model._df))
-        if (len(self.model._df) <= 0):
-            self.getDataFile()
         flag = 0
         ItemsAvalibale = self.model._df.columns.values.tolist()
 
@@ -736,14 +713,24 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             reply = QMessageBox.information(self,  _translate('MainWindow','Ready'),
                                          _translate('MainWindow','Items added, Modify in the Table to set up details.'))
 
+    def clearDataFile(self):
+        self.raw = pd.DataFrame()
+        self.model = PandasModel(self.raw)
+        self.tableView.setModel(self.model)
+
 
     def getDataFile(self):
         _translate = QtCore.QCoreApplication.translate
-        DataFileInput, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
-                                                              '~/',
-                                                              'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
 
-        # #print(DataFileInput,filetype)
+
+
+
+        DataFileInput, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
+                                                                  '~/',
+                                                                  'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+
+            # #print(DataFileInput,filetype)
+
 
         self.DataLocation = DataFileInput
 
@@ -757,13 +744,31 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # #print(self.raw)
 
 
-        self.model = PandasModel(self.raw)
-        self.tableView.setModel(self.model)
+        if len(self.raw)>0:
 
-        self.CleanDataFile()
-        self.model = PandasModel(self.raw)
+            self.model = PandasModel(self.raw)
+            self.tableView.setModel(self.model)
 
-    def CleanDataFile(self,checklist=['质量','分数','百分比',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
+            self.raw=self.CleanDataFile(self.raw)
+            self.model = PandasModel(self.raw)
+
+            flag = 0
+            ItemsAvalibale = self.model._df.columns.values.tolist()
+            ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
+            for i in ItemsToTest:
+                if i not in ItemsAvalibale:
+                    # print(i)
+                    flag = flag + 1
+
+            if flag == 0:
+                pass
+                #reply = QMessageBox.information(self, _translate('MainWindow', 'Ready'), _translate('MainWindow', 'Everything fine and no need to set up.'))
+
+            else:
+
+                self.SetUpDataFile()
+
+    def OldCleanDataFile(self,raw=pd.DataFrame(),checklist=['质量','分数','百分比',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
 
 
         for i in checklist:
@@ -802,86 +807,86 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         print(self.raw.columns.values.tolist())
 
+
+    def CleanDataFile(self,raw=pd.DataFrame(),checklist=['质量','分数','百分比',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
+
+
+        for i in checklist:
+            raw = raw.rename(columns=lambda x: x.replace(i, ''))
+            pass
+
+
+
+
+        for i in raw:
+            pass
+
+        for i in raw.dtypes.index:
+            if raw.dtypes[i] != float and raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha', 'Style','Width', 'Label']:
+                print(i)
+                raw = raw.drop(i, 1)
+
+        for i in raw.columns.values.tolist():
+            if i=='':
+                raw = raw.drop(i, 1)
+
+        raw = raw.dropna(axis=1, how='all')
+
+
+
+        #Columns = raw.columns.values.tolist()
+        #Rows = raw.index.values.tolist()
+
+        for i in raw.index.values.tolist():
+            if 'tandard' in raw.at[i, 'Label']:
+                print('Your Self Defined Standard is at the line No.', i)
+                self.Standard = raw.loc[i]
+                raw = raw.drop(i)
+
+        raw = raw.reset_index(drop=True)
+
+        return(raw)
+        print(raw.columns.values.tolist())
+
+
     def saveDataFile(self):
 
         # if self.model._changed == True:
         # print('changed')
         # print(self.model._df)
 
+
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,_translate('MainWindow', u'Save Data File'),
                                                           'C:/',
                                                           'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
+        df = self.model._df
+        if 'Label' in df.columns.values:
+            df.set_index('Label', inplace=True)
+
+        #self.model._df.reset_index(drop=True)
+
+
         if (DataFileOutput != ''):
 
             if ('csv' in DataFileOutput):
-                self.model._df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
             elif ('xls' in DataFileOutput):
-                self.model._df.to_excel(DataFileOutput, encoding='utf-8')
-
-    def CIPW(self):
-
-        print('self.model._df length: ', len(self.model._df))
-        if (len(self.model._df) <= 0):
-            self.getDataFile()
-        self.cipwpop = CIPW(df=self.model._df)
-
-        self.cipwpop.CIPW()
-        self.cipwpop.show()
-
-
-    def ZirconTiTemp(self):
-
-        print('self.model._df length: ', len(self.model._df))
-        if (len(self.model._df) <= 0):
-            self.getDataFile()
-        self.ztpop = ZirconTiTemp(df=self.model._df)
-        try:
-            self.ztpop.ZirconTiTemp()
-            self.ztpop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
-    def RutileZrTemp(self):
-
-        print('self.model._df length: ',len(self.model._df))
-        if (len(self.model._df)<=0):
-            self.getDataFile()
-
-        self.rzpop = RutileZrTemp(df=self.model._df)
-        try:
-            self.rzpop.RutileZrTemp()
-            self.rzpop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
-    def Cluster(self):
-        print('self.model._df length: ',len(self.model._df))
-
-
-        if (len(self.model._df)<=0):
-            self.getDataFile()
-            pass
-
-        self.clusterpop = Cluster(df=self.model._df)
-        self.clusterpop.Cluster()
-
+                df.to_excel(DataFileOutput, encoding='utf-8')
 
     def TAS(self):
-
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
 
-        self.taspop = TAS(df=self.model._df)
-        try:
-            self.taspop.TAS()
-            self.taspop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
-
+        if (len(self.model._df) > 0):
+            self.taspop = TAS(df=self.model._df)
+            try:
+                self.taspop.TAS()
+                self.taspop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def REE(self):
 
@@ -894,16 +899,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df)<=0):
             self.getDataFile()
 
-        self.reepop = REE(df=self.model._df,Standard=self.Standard)
+        if (len(self.model._df) > 0):
 
-        try:
-            self.reepop.REE()
-            self.reepop.show()
-        except(KeyError):
-            self.ErrorEvent()
+            self.reepop = REE(df=self.model._df,Standard=self.Standard)
 
-
-
+            try:
+                self.reepop.REE()
+                self.reepop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def Trace(self):
 
@@ -913,133 +917,198 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.tracepop = Trace(df=self.model._df,Standard=self.Standard)
-        try:
-            self.tracepop.Trace()
-            self.tracepop.show()
-        except(KeyError):
-            self.ErrorEvent()
+
+        if (len(self.model._df) > 0):
+            self.tracepop = Trace(df=self.model._df,Standard=self.Standard)
+            try:
+                self.tracepop.Trace()
+                self.tracepop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def Pearce(self):
 
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.pearcepop = Pearce(df=self.model._df)
 
-        try:
-            self.pearcepop.Pearce()
-            self.pearcepop.show()
-        except(KeyError):
-            self.ErrorEvent()
+        if (len(self.model._df) > 0):
+            self.pearcepop = Pearce(df=self.model._df)
+
+            try:
+                self.pearcepop.Pearce()
+                self.pearcepop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def Bivariate(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.bivariatepop = Bivariate(df=self.model._df)
-        try:
-            self.bivariatepop.Bivariate()
-            self.bivariatepop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
+        if (len(self.model._df) > 0):
+            self.bivariatepop = Bivariate(df=self.model._df)
+            try:
+                self.bivariatepop.Bivariate()
+                self.bivariatepop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def Harker(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.harkerpop = Harker(df=self.model._df)
-        try:
-            self.harkerpop.Harker()
-            self.harkerpop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
+        if (len(self.model._df) > 0):
+            self.harkerpop = Harker(df=self.model._df)
+            try:
+                self.harkerpop.Harker()
+                self.harkerpop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def HarkerDIY(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.harkerdiypop = HarkerDIY(df=self.model._df)
-        try:
-            self.harkerdiypop.Magic()
-            self.harkerdiypop.show()
-        except(KeyError):
-            self.ErrorEvent()
+        if (len(self.model._df) > 0):
+            self.harkerdiypop = HarkerDIY(df=self.model._df)
+            try:
+                self.harkerdiypop.Magic()
+                self.harkerdiypop.show()
+            except(KeyError):
+                self.ErrorEvent()
+
+    def CIPW(self):
+
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
+        if (len(self.model._df) > 0):
+            self.cipwpop = CIPW(df=self.model._df)
+
+            try:
+                self.cipwpop.CIPW()
+                self.cipwpop.show()
+            except():
+                self.ErrorEvent()
+
+    def ZirconTiTemp(self):
+
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
+        if (len(self.model._df) > 0):
+            self.ztpop = ZirconTiTemp(df=self.model._df)
+            try:
+                self.ztpop.ZirconTiTemp()
+                self.ztpop.show()
+            except(KeyError):
+                self.ErrorEvent()
+
+    def RutileZrTemp(self):
+
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+
+        if (len(self.model._df) > 0):
+            self.rzpop = RutileZrTemp(df=self.model._df)
+            try:
+                self.rzpop.RutileZrTemp()
+                self.rzpop.show()
+            except(KeyError):
+                self.ErrorEvent()
+
+    def Cluster(self):
+        print('self.model._df length: ',len(self.model._df))
 
 
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.clusterpop = Cluster(df=self.model._df)
+            self.clusterpop.Cluster()
 
     def Stereo(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.stereopop = Stereo(df=self.model._df)
 
-        try:
-            self.stereopop.Stereo()
-            self.stereopop.show()
-        except(KeyError):
-            self.ErrorEvent()
+        if (len(self.model._df) > 0):
+            self.stereopop = Stereo(df=self.model._df)
+
+            try:
+                self.stereopop.Stereo()
+                self.stereopop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def Rose(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.rosepop = Rose(df=self.model._df)
-        try:
-            self.rosepop.Rose()
-            self.rosepop.show()
-        except(KeyError):
-            self.ErrorEvent()
+
+        if (len(self.model._df) > 0):
+            self.rosepop = Rose(df=self.model._df)
+            try:
+                self.rosepop.Rose()
+                self.rosepop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def QFL(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.qflpop = QFL(df=self.model._df)
-        try:
-            self.qflpop.Tri()
-            self.qflpop.show()
-        except(KeyError):
-            self.ErrorEvent()
+
+        if (len(self.model._df) > 0):
+            self.qflpop = QFL(df=self.model._df)
+            try:
+                self.qflpop.Tri()
+                self.qflpop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def QmFLt(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.qmfltpop = QmFLt(df=self.model._df)
-        try:
-            self.qmfltpop.Tri()
-            self.qmfltpop.show()
-        except(KeyError):
-            self.ErrorEvent()
+
+        if (len(self.model._df) > 0):
+            self.qmfltpop = QmFLt(df=self.model._df)
+            try:
+                self.qmfltpop.Tri()
+                self.qmfltpop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def Clastic(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.clusterpop = Clastic(df=self.model._df)
-        try:
-            self.clusterpop.Tri()
-            self.clusterpop.show()
-        except(KeyError):
-            self.ErrorEvent()
 
+        if (len(self.model._df) > 0):
+            self.clusterpop = Clastic(df=self.model._df)
+            try:
+                self.clusterpop.Tri()
+                self.clusterpop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def CIA(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.ciapop = CIA(df=self.model._df)
 
-        try:
-            self.ciapop.CIA()
-            self.ciapop.show()
-        except(KeyError):
-            self.ErrorEvent()
-        pass
+        if (len(self.model._df) > 0):
+            self.ciapop = CIA(df=self.model._df)
 
+            try:
+                self.ciapop.CIA()
+                self.ciapop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def QAPF(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1047,116 +1116,129 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.getDataFile()
 
 
-        ItemsAvalibale = self.model._df.columns.values.tolist()
-        if 'Q' in  ItemsAvalibale and 'A' in  ItemsAvalibale and 'P' in  ItemsAvalibale and 'F' in ItemsAvalibale:
-            self.qapfpop = QAPF(df=self.model._df)
-            try:
-                self.qapfpop.QAPF()
-                self.qapfpop.show()
-            except(KeyError):
-                self.ErrorEvent()
-        else:
-            reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
-                                                                                                  'Your data contain no Q/A/P/F data.\n Maybe you need to run CIPW first?'))
+
+        if (len(self.model._df) > 0):
+            ItemsAvalibale = self.model._df.columns.values.tolist()
+            if 'Q' in  ItemsAvalibale and 'A' in  ItemsAvalibale and 'P' in  ItemsAvalibale and 'F' in ItemsAvalibale:
+                self.qapfpop = QAPF(df=self.model._df)
+                try:
+                    self.qapfpop.QAPF()
+                    self.qapfpop.show()
+                except(KeyError):
+                    self.ErrorEvent()
+            else:
+                reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
+                                                                                                      'Your data contain no Q/A/P/F data.\n Maybe you need to run CIPW first?'))
 
     def ZirconCe(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
         # print('Opening a new popup window...')
-        self.zirconpop = ZirconCe(df=self.model._df)
 
-        try:
-            self.zirconpop.MultiBallard()
-            self.zirconpop.show()
-        except(KeyError,ValueError):
-            self.ErrorEvent()
+        if (len(self.model._df) > 0):
+            self.zirconpop = ZirconCe(df=self.model._df)
 
-
+            try:
+                self.zirconpop.MultiBallard()
+                self.zirconpop.show()
+            except(KeyError,ValueError):
+                self.ErrorEvent()
 
     def ZirconCeOld(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
         # print('Opening a new popup window...')
-        self.zirconoldpop = ZirconCeOld(df=self.model._df)
-        try:
-            self.zirconoldpop.MultiBallard()
-            self.zirconoldpop.show()
-        except(KeyError,ValueError):
-            self.ErrorEvent()
+
+        if (len(self.model._df) > 0):
+            self.zirconoldpop = ZirconCeOld(df=self.model._df)
+            try:
+                self.zirconoldpop.MultiBallard()
+                self.zirconoldpop.show()
+            except(KeyError,ValueError):
+                self.ErrorEvent()
 
     def RbSrIsoTope(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.rbsrisotopepop = IsoTope(df=self.model._df,description='Rb-Sr IsoTope diagram', xname='87Rb/86Sr',
+
+        if (len(self.model._df) > 0):
+            self.rbsrisotopepop = IsoTope(df=self.model._df,description='Rb-Sr IsoTope diagram', xname='87Rb/86Sr',
                  yname='87Sr/86Sr', lambdaItem=1.42e-11, xlabel=r'$^{87}Rb/^{86}Sr$', ylabel=r'$^{87}Sr/^{86}Sr$')
-        try:
-            self.rbsrisotopepop.Magic()
-            self.rbsrisotopepop.show()
-        except(KeyError):
-            self.ErrorEvent()
+            try:
+                self.rbsrisotopepop.Magic()
+                self.rbsrisotopepop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def SmNdIsoTope(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.smndisotopepop = IsoTope(df=self.model._df,description='Sm-Nd IsoTope diagram', xname='147Sm/144Nd',
+
+        if (len(self.model._df) > 0):
+            self.smndisotopepop = IsoTope(df=self.model._df,description='Sm-Nd IsoTope diagram', xname='147Sm/144Nd',
                  yname= '143Nd/144Nd', lambdaItem=6.54e-12, xlabel=r'$^{147}Sm/^{144}Nd$', ylabel=r'$^{143}Nd/^{144}Nd$')
-        try:
-            self.smndisotopepop.Magic()
-            self.smndisotopepop.show()
-        except(KeyError):
-            self.ErrorEvent()
-
-
-
+            try:
+                self.smndisotopepop.Magic()
+                self.smndisotopepop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def KArIsoTope(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.karisotopepop = KArIsoTope(df=self.model._df)
-        try:
-            self.karisotopepop.Magic()
-            self.karisotopepop.show()
-        except(KeyError):
-            self.ErrorEvent()
+
+        if (len(self.model._df) > 0):
+            self.karisotopepop = KArIsoTope(df=self.model._df)
+            try:
+                self.karisotopepop.Magic()
+                self.karisotopepop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def XY(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.xypop = XY(df=self.model._df,Standard=self.Standard)
-        try:
-            self.xypop.Magic()
-            self.xypop.show()
-        except(KeyError):
-            self.ErrorEvent()
+
+        if (len(self.model._df) > 0):
+            self.xypop = XY(df=self.model._df,Standard=self.Standard)
+            try:
+                self.xypop.Magic()
+                self.xypop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
     def XYZ(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.xyzpop = XYZ(df=self.model._df,Standard=self.Standard)
-        try:
-            self.xyzpop.Magic()
-            self.xyzpop.show()
-        except(KeyError):
-            self.ErrorEvent()
+
+        if (len(self.model._df) > 0):
+            self.xyzpop = XYZ(df=self.model._df,Standard=self.Standard)
+            try:
+                self.xyzpop.Magic()
+                self.xyzpop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
 
     def MultiDimension(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.mdpop = MultiDimension(df=self.model._df)
-        try:
-            self.mdpop.Magic()
-            self.mdpop.show()
-        except(KeyError):
-            self.ErrorEvent()
+
+        if (len(self.model._df) > 0):
+            self.mdpop = MultiDimension(df=self.model._df)
+            try:
+                self.mdpop.Magic()
+                self.mdpop.show()
+            except(KeyError):
+                self.ErrorEvent()
 
 
     def Tri(self):
@@ -1168,109 +1250,111 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df)<=0):
             self.getDataFile()
 
-        TotalResult=[]
+        if (len(self.model._df) > 0):
+            TotalResult=[]
 
-        df = self.model._df
-        AutoResult = 0
+            df = self.model._df
+            AutoResult = 0
 
-        FileOutput, ok1 = QFileDialog.getSaveFileName(self,
-                                                      '文件保存',
-                                                      'C:/',
-                                                      'PDF Files (*.pdf)')  # 数据文件保存输出
-        if (FileOutput != ''):
+            FileOutput, ok1 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'PDF Files (*.pdf)')  # 数据文件保存输出
+            if (FileOutput != ''):
 
-            AutoResult = pd.DataFrame()
+                AutoResult = pd.DataFrame()
 
-            pdf = matplotlib.backends.backend_pdf.PdfPages(FileOutput)
-
-
-            cipwsilent = CIPW(df=df)
-            cipwsilent.CIPW()
-            cipwsilent.QAPFsilent()
-            # TotalResult.append(cipwsilent.OutPutFig)
-            pdf.savefig(cipwsilent.OutPutFig)
-
-            # AutoResult = pd.concat([cipwsilent.OutPutData, AutoResult], axis=1)
-
-            tassilent = TAS(df=df)
-
-            if (tassilent.Check() == True):
-                tassilent.TAS()
-                tassilent.GetResult()
-                # TotalResult.append(tassilent.OutPutFig)
-
-                pdf.savefig(tassilent.OutPutFig)
-
-                AutoResult = pd.concat([tassilent.OutPutData, AutoResult], axis=1)
-
-            reesilent = REE(df=df,Standard=self.Standard)
-
-            if (reesilent.Check() == True):
-                reesilent.REE()
-                reesilent.GetResult()
-                # TotalResult.append(reesilent.OutPutFig)
-
-                pdf.savefig(reesilent.OutPutFig)
-
-                AutoResult = pd.concat([reesilent.OutPutData, AutoResult], axis=1)
-
-            tracesilent = Trace(df=df,Standard=self.Standard)
-
-            if (tracesilent.Check() == True):
-                tracesilent.Trace()
-                tracesilent.GetResult()
-                TotalResult.append(tracesilent.OutPutFig)
-
-                pdf.savefig(tracesilent.OutPutFig)
-
-            harkersilent = Harker(df=df)
-
-            if (harkersilent.Check() == True):
-                harkersilent.Harker()
-                harkersilent.GetResult()
-                TotalResult.append(harkersilent.OutPutFig)
-
-                pdf.savefig(harkersilent.OutPutFig)
-
-            pearcesilent = Pearce(df=df)
-
-            if (pearcesilent.Check() == True):
-                pearcesilent.Pearce()
-                pearcesilent.GetResult()
-                TotalResult.append(pearcesilent.OutPutFig)
-
-                pdf.savefig(pearcesilent.OutPutFig)
-
-            AutoResult = AutoResult.T.groupby(level=0).first().T
+                pdf = matplotlib.backends.backend_pdf.PdfPages(FileOutput)
 
 
+                cipwsilent = CIPW(df=df)
+                cipwsilent.CIPW()
+                cipwsilent.QAPFsilent()
+                # TotalResult.append(cipwsilent.OutPutFig)
+                pdf.savefig(cipwsilent.OutPutFig)
 
-            pdf.close()
+                # AutoResult = pd.concat([cipwsilent.OutPutData, AutoResult], axis=1)
 
-            AutoResult = AutoResult.set_index('Label')
+                tassilent = TAS(df=df)
 
-            AutoResult=AutoResult.drop_duplicates()
+                if (tassilent.Check() == True):
+                    tassilent.TAS()
+                    tassilent.GetResult()
+                    # TotalResult.append(tassilent.OutPutFig)
 
-            print(AutoResult.shape, cipwsilent.newdf3.shape)
+                    pdf.savefig(tassilent.OutPutFig)
 
-            try:
-                AutoResult = pd.concat([cipwsilent.newdf3, AutoResult], axis=1)
-            except(ValueError):
+                    AutoResult = pd.concat([tassilent.OutPutData, AutoResult], axis=1)
+
+                reesilent = REE(df=df,Standard=self.Standard)
+
+                if (reesilent.Check() == True):
+                    reesilent.REE()
+                    reesilent.GetResult()
+                    # TotalResult.append(reesilent.OutPutFig)
+
+                    pdf.savefig(reesilent.OutPutFig)
+
+                    AutoResult = pd.concat([reesilent.OutPutData, AutoResult], axis=1)
+
+                tracesilent = Trace(df=df,Standard=self.Standard)
+
+                if (tracesilent.Check() == True):
+                    tracesilent.Trace()
+                    tracesilent.GetResult()
+                    TotalResult.append(tracesilent.OutPutFig)
+
+                    pdf.savefig(tracesilent.OutPutFig)
+
+                harkersilent = Harker(df=df)
+
+                if (harkersilent.Check() == True):
+                    harkersilent.Harker()
+                    harkersilent.GetResult()
+                    TotalResult.append(harkersilent.OutPutFig)
+
+                    pdf.savefig(harkersilent.OutPutFig)
+
+                pearcesilent = Pearce(df=df)
+
+                if (pearcesilent.Check() == True):
+                    pearcesilent.Pearce()
+                    pearcesilent.GetResult()
+                    TotalResult.append(pearcesilent.OutPutFig)
+
+                    pdf.savefig(pearcesilent.OutPutFig)
+
+                AutoResult = AutoResult.T.groupby(level=0).first().T
+
+
+
+                pdf.close()
+
+                AutoResult = AutoResult.set_index('Label')
+
+                AutoResult=AutoResult.drop_duplicates()
+
+                print(AutoResult.shape, cipwsilent.newdf3.shape)
+
+                try:
+                    AutoResult = pd.concat([cipwsilent.newdf3, AutoResult], axis=1)
+                except(ValueError):
+                    pass
+
+                if ('pdf' in FileOutput):
+                    FileOutput = FileOutput[0:-4]
+
+                AutoResult.to_csv(FileOutput + '-chemical-info.csv', sep=',', encoding='utf-8')
+                cipwsilent.newdf.to_csv(FileOutput + '-cipw-mole.csv', sep=',', encoding='utf-8')
+                cipwsilent.newdf1.to_csv(FileOutput + '-cipw-mass.csv', sep=',', encoding='utf-8')
+                cipwsilent.newdf2.to_csv(FileOutput + '-cipw-volume.csv', sep=',', encoding='utf-8')
+                cipwsilent.newdf3.to_csv(FileOutput + '-cipw-index.csv', sep=',', encoding='utf-8')
+
+
+
+            else:
                 pass
 
-            if ('pdf' in FileOutput):
-                FileOutput = FileOutput[0:-4]
-
-            AutoResult.to_csv(FileOutput + '-chemical-info.csv', sep=',', encoding='utf-8')
-            cipwsilent.newdf.to_csv(FileOutput + '-cipw-mole.csv', sep=',', encoding='utf-8')
-            cipwsilent.newdf1.to_csv(FileOutput + '-cipw-mass.csv', sep=',', encoding='utf-8')
-            cipwsilent.newdf2.to_csv(FileOutput + '-cipw-volume.csv', sep=',', encoding='utf-8')
-            cipwsilent.newdf3.to_csv(FileOutput + '-cipw-index.csv', sep=',', encoding='utf-8')
-
-
-
-        else:
-            pass
 
 
 
