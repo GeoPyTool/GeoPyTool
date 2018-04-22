@@ -91,13 +91,16 @@ class XYZ(AppForm):
     LabelSetted = False
     ValueChoosed = True
 
-    def __init__(self, parent=None, df=pd.DataFrame()):
+    def __init__(self, parent=None, df=pd.DataFrame(),Standard={}):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.description)
 
         self.items = []
 
         self._df = df
+        self._given_Standard = Standard
+
+
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to Magic')
@@ -160,13 +163,21 @@ class XYZ(AppForm):
         self.norm_cb.setChecked(False)
         self.norm_cb.stateChanged.connect(self.Magic)  # int
 
-        self.norm_slider_label = QLabel('Standard:'+self.NameChosen)
-        self.norm_slider = QSlider(Qt.Horizontal)
-        self.norm_slider.setRange(0, 4)
-        self.norm_slider.setValue(0)
-        self.norm_slider.setTracking(True)
-        self.norm_slider.setTickPosition(QSlider.TicksBothSides)
-        self.norm_slider.valueChanged.connect(self.Magic)  # int
+        self.standard_slider = QSlider(Qt.Horizontal)
+        self.standard_slider.setRange(0, len(self.StandardsName))
+
+        if len(self._given_Standard) > 0:
+            self.standard_slider.setValue(len(self.StandardsName))
+            self.right_label = QLabel("Self Defined Standard")
+
+        else:
+            self.standard_slider.setValue(0)
+            self.right_label = QLabel(self.StandardsName[int(self.standard_slider.value())])
+
+        self.standard_slider.setTracking(True)
+        self.standard_slider.setTickPosition(QSlider.TicksBothSides)
+        self.standard_slider.valueChanged.connect(self.Magic)  # int
+        self.left_label = QLabel('Standard')
 
         self.x_element = QSlider(Qt.Horizontal)
         self.x_element.setRange(0, len(self.items) - 1)
@@ -244,7 +255,7 @@ class XYZ(AppForm):
 
 
         for w in [self.save_button,self.stat_button, self.load_button, self.unload_button,
-                  self.legend_cb, self.norm_cb, self.norm_slider_label, self.norm_slider]:
+                  self.legend_cb, self.norm_cb, self.left_label, self.standard_slider,self.right_label]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -283,9 +294,10 @@ class XYZ(AppForm):
         self.x_seter.setFixedWidth(w/10)
         self.y_seter.setFixedWidth(w/10)
         self.z_seter.setFixedWidth(w/10)
-        self.norm_slider.setMinimumWidth(w/5)
+        self.standard_slider.setMinimumWidth(w/5)
 
-        self.norm_slider_label.setFixedWidth(w/16)
+        self.right_label.setFixedWidth(w/5)
+
 
 
 
@@ -530,11 +542,29 @@ class XYZ(AppForm):
         self.axes.clear()
         self.axes.axis('off')
 
-        standardnamechosen = self.StandardsName[int(self.norm_slider.value())]
-        standardchosen = self.Standards[standardnamechosen]
 
-        self.norm_slider_label.setText(standardnamechosen)
 
+        slider_value=int(self.standard_slider.value())
+
+        if slider_value < len(self.StandardsName):
+            standardnamechosen = self.StandardsName[slider_value]
+            standardchosen = self.Standards[standardnamechosen]
+
+            right_label_text=self.StandardsName[slider_value]
+
+        elif len(self._given_Standard)<=0:
+            standardnamechosen = self.StandardsName[slider_value-1]
+            standardchosen = self.Standards[standardnamechosen]
+
+            right_label_text = self.StandardsName[slider_value-1]
+
+        else:
+            standardnamechosen = "Self Defined Standard"
+            standardchosen = self._given_Standard
+            right_label_text = "Self Defined Standard"
+
+
+        self.right_label.setText(right_label_text)
 
 
         s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',

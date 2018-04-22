@@ -25,8 +25,8 @@
     </message>
     <message>
         <location filename="__init__.py" line="599"/>
-        <source>Data File</source>
-        <translation>数据文件</translation>
+        <source>File</source>
+        <translation>文件</translation>
     </message>
     <message>
         <location filename="__init__.py" line="601"/>

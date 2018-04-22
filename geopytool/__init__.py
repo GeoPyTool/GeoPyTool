@@ -119,61 +119,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.main_widget = QWidget(self)
 
-        self.centralwidget = QtWidgets.QWidget()
-        self.centralwidget.setObjectName('centralwidget')
-        self.setCentralWidget(self.centralwidget)
-
-        self.tableView = CustomQTableView(self.centralwidget)
+        self.tableView = CustomQTableView(self.main_widget)
 
         self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
 
-        self.pushButtonOpen = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonOpen.setObjectName('pushButtonOpen')
-
-        self.pushButtonSave = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonSave.setObjectName('pushButtonSave')
-
-        self.pushButtonSort = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonSort.setObjectName('pushButtonSort')
-
-        self.pushButtonQuit = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonQuit.setObjectName('pushButtonQuit')
-
-        self.pushButtonUpdate = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonUpdate.setObjectName('pushButtonUpdate')
 
 
+        self.vbox = QVBoxLayout()
 
-        w=self.width()
-        h=self.height()
+        self.vbox.addWidget(self.tableView)
 
+        self.main_widget.setLayout(self.vbox)
+        self.setCentralWidget(self.main_widget)
 
-        if h<360:
-            h=360
-            self.resize(w,h)
-
-        if w<640:
-            w = 640
-            self.resize(w, h)
-
-        step = (w * 94 / 100) / 5
-        foot=h*3/48
-
-
-        #if foot<=10: foot=10
-
-        self.tableView.setGeometry(QtCore.QRect(w/100, h/48, w*98/100, h*38/48))
-
-        self.pushButtonOpen.setGeometry(QtCore.QRect(w/100, h*40/48, step, foot))
-
-        self.pushButtonSave.setGeometry(QtCore.QRect(2*w/100+step, h*40/48, step, foot))
-
-        self.pushButtonSort.setGeometry(QtCore.QRect(3*w/100+step*2, h*40/48, step, foot))
-
-        self.pushButtonQuit.setGeometry(QtCore.QRect(4*w/100+step*3, h*40/48, step, foot))
-
-        self.pushButtonUpdate.setGeometry(QtCore.QRect(5*w/100+step*4, h*40/48, step, foot))
 
         self.menubar = QtWidgets.QMenuBar(self)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 22))
@@ -219,9 +178,22 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionOpen.setObjectName('actionOpen')
         self.actionOpen.setShortcut('Ctrl+O')
 
+        self.actionSet = QtWidgets.QAction(QIcon(LocationOfMySelf + '/set.png'), u'Set', self)
+        self.actionSet.setObjectName('actionSet')
+        self.actionSet.setShortcut('Ctrl+T')
+
         self.actionSave = QtWidgets.QAction(QIcon(LocationOfMySelf+'/save.png'), u'Save',self)
         self.actionSave.setObjectName('actionSave')
         self.actionSave.setShortcut('Ctrl+S')
+
+        self.actionQuit = QtWidgets.QAction(QIcon(LocationOfMySelf+'/quit.png'), u'Quit',self)
+        self.actionQuit.setObjectName('actionQuit')
+        self.actionQuit.setShortcut('Ctrl+Q')
+
+
+
+
+
 
         self.actionCnWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/forum.png'), u'Chinese Forum',self)
         self.actionCnWeb.setObjectName('actionCnWeb')
@@ -333,7 +305,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.actionSet)
         self.menuFile.addAction(self.actionSave)
+        self.menuFile.addAction(self.actionQuit)
+
+
 
         self.menuGeoChem.addAction(self.actionAuto)
         self.menuGeoChem.addAction(self.actionTAS)
@@ -447,7 +423,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMultiDimension.triggered.connect(self.MultiDimension)
 
         self.actionOpen.triggered.connect(self.getDataFile)
+        self.actionSet.triggered.connect(self.SetUpDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
+        self.actionQuit.triggered.connect(qApp.quit)
 
         self.actionCnWeb.triggered.connect(self.goCnBBS)
         self.actionEnWeb.triggered.connect(self.goEnBBS)
@@ -467,239 +445,79 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionKArIsoTope.triggered.connect(self.KArIsoTope)
 
 
-        self.pushButtonOpen.clicked.connect(self.getDataFile)
-        self.pushButtonSave.clicked.connect(self.saveDataFile)
-        self.pushButtonSort.clicked.connect(self.SetUpDataFile)
-        self.pushButtonQuit.clicked.connect(qApp.quit)
-        self.pushButtonUpdate.clicked.connect(self.checkVersion)
-
-
-        self.actionQuit = QtWidgets.QAction('Quit', self)
-        self.actionQuit.setShortcut('Ctrl+Q')
-        self.actionQuit.setObjectName('actionQuit')
-        self.actionQuit.triggered.connect(qApp.quit)
-
-
-        self.pushButtonOpen.setText(_translate('MainWindow',u'Open Data'))
-        self.pushButtonSave.setText(_translate('MainWindow',u'Save Data'))
-        self.pushButtonSort.setText(_translate('MainWindow',u'Set Format'))
-        self.pushButtonQuit.setText(_translate('MainWindow',u'Quit App'))
-        self.pushButtonUpdate.setText(_translate('MainWindow', u'Check Update'))
-
-
-
-        self.pushButtonOpen.setIcon(QtGui.QIcon(LocationOfMySelf+'/open.png'))
-        self.pushButtonSave.setIcon(QtGui.QIcon(LocationOfMySelf+'/save.png'))
-        self.pushButtonSort.setIcon(QtGui.QIcon(LocationOfMySelf+'/set.png'))
-        self.pushButtonQuit.setIcon(QtGui.QIcon(LocationOfMySelf+'/quit.png'))
-        self.pushButtonUpdate.setIcon(QtGui.QIcon(LocationOfMySelf+'/update.png'))
-
-
-
-        self.menuFile.setTitle(_translate('MainWindow',u'Data File'))
-
-        self.menuGeoChem.setTitle(_translate('MainWindow',u'Geochemistry'))
-
-        self.menuGeoCalc.setTitle(_translate('MainWindow',u'Calculation'))
-
-        self.menuStructure.setTitle(_translate('MainWindow',u'Structure'))
-
-        self.menuSedimentary.setTitle(_translate('MainWindow', u'Sedimentary'))
-
-
-
-        self.menuAdditional.setTitle(_translate('MainWindow',u'Additional Functions'))
-
-        self.menuHelp.setTitle(_translate('MainWindow',u'Help'))
-
-        self.menuLanguage.setTitle(_translate('MainWindow', u'Language'))
-
-
-
-        self.actionOpen.setText(_translate('MainWindow',u'Open Data'))
-        self.actionSave.setText(_translate('MainWindow',u'Save Data'))
-
-        self.actionTAS.setText(_translate('MainWindow',u'TAS'))
-        self.actionTrace.setText(_translate('MainWindow',u'Trace'))
-        self.actionRee.setText(_translate('MainWindow',u'REE'))
-        self.actionPearce.setText(_translate('MainWindow',u'Pearce'))
-        self.actionBivariate.setText(_translate('MainWindow',u'Bivariate'))
-        self.actionHarker.setText(_translate('MainWindow',u'Harker'))
-        self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
-
-        self.actionQAPF.setText(_translate('MainWindow',u'QAPF'))
-
-        self.actionStereo.setText(_translate('MainWindow',u'Stereo'))
-        self.actionRose.setText(_translate('MainWindow',u'Rose'))
-        self.actionQFL.setText(_translate('MainWindow',u'QFL'))
-        self.actionQmFLt.setText(_translate('MainWindow',u'QmFLt'))
-        self.actionClastic.setText(_translate('MainWindow',u'Clastic'))
-        self.actionCIA.setText(_translate('MainWindow',u'CIA and ICV'))
-
-        self.actionCIPW.setText(_translate('MainWindow',u'CIPW'))
-
-        self.actionZirconCe.setText(_translate('MainWindow',u'ZirconCe'))
-        self.actionZirconCeOld.setText(_translate('MainWindow', u'ZirconCeOld'))
-        self.actionZirconTiTemp.setText(_translate('MainWindow',u'ZirconTiTemp'))
-        self.actionRutileZrTemp.setText(_translate('MainWindow',u'RutileZrTemp'))
-        self.actionCluster.setText(_translate('MainWindow',u'Cluster'))
-        self.actionAuto.setText(_translate('MainWindow', u'Auto'))
-        self.actionMultiDimension.setText(_translate('MainWindow',u'MultiDimension'))
-
-        self.actionXY.setText(_translate('MainWindow',u'X-Y plot'))
-        self.actionXYZ.setText(_translate('MainWindow',u'X-Y-Z plot'))
-
-        self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
-        self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
-        self.actionKArIsoTope.setText(_translate('MainWindow',u'K-Ar IsoTope'))
-
-
-        self.actionVersionCheck.setText(_translate('MainWindow',u'Version'))
-        self.actionCnWeb.setText(_translate('MainWindow',u'Chinese Forum'))
-        self.actionEnWeb.setText(_translate('MainWindow',u'English Forum'))
-        self.actionGoGithub.setText(_translate('MainWindow',u'Github'))
-
-
-        '''
-        self.actionCnS.setText(_translate('MainWindow',u'Simplified Chinese'))
-        self.actionCnT.setText(_translate('MainWindow', u'Traditional Chinese'))
-        self.actionEn.setText(_translate('MainWindow',u'English'))
-        '''
-
-        self.actionCnS.setText(u'简体中文')
-        self.actionCnT.setText(u'繁體中文')
-        self.actionEn.setText(u'English')
-        self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
-
-
         self.ReadConfig()
-
         self.trans.load(LocationOfMySelf+'/'+self.Language)
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
-
-
     def retranslateUi(self):
-
-
-
-
         _translate = QtCore.QCoreApplication.translate
-
         self.talk=  _translate('MainWindow','You are using GeoPyTool ') + version +'\n'+ _translate('MainWindow','released on ') + date + '\n'
 
-
-
-        self.pushButtonOpen.setText(_translate('MainWindow',u'Open Data'))
-        self.pushButtonSave.setText(_translate('MainWindow',u'Save Data'))
-        self.pushButtonSort.setText(_translate('MainWindow',u'Set Format'))
-        self.pushButtonQuit.setText(_translate('MainWindow',u'Quit App'))
-        self.pushButtonUpdate.setText(_translate('MainWindow', u'Check Update'))
-
-
-        self.menuFile.setTitle(_translate('MainWindow', u'Data File'))
-
+        self.menuFile.setTitle(_translate('MainWindow', u'File'))
         self.menuGeoChem.setTitle(_translate('MainWindow', u'Geochemistry'))
-
-
         self.menuGeoCalc.setTitle(_translate('MainWindow',u'Calculation'))
-
         self.menuStructure.setTitle(_translate('MainWindow', u'Structure'))
         self.menuSedimentary.setTitle(_translate('MainWindow', u'Sedimentary'))
-
         self.menuAdditional.setTitle(_translate('MainWindow', u'Additional Functions'))
-
         self.menuHelp.setTitle(_translate('MainWindow', u'Help'))
         self.menuLanguage.setTitle(_translate('MainWindow', u'Language'))
 
         self.actionOpen.setText(_translate('MainWindow', u'Open Data'))
+        self.actionSet.setText(_translate('MainWindow', u'Set Format'))
         self.actionSave.setText(_translate('MainWindow', u'Save Data'))
+        self.actionQuit.setText(_translate('MainWindow', u'Quit App'))
 
-        self.actionTAS.setText(_translate('MainWindow', u'TAS'))
-        self.actionTrace.setText(_translate('MainWindow', u'Trace'))
-        self.actionRee.setText(_translate('MainWindow', u'REE'))
-        self.actionPearce.setText(_translate('MainWindow', u'Pearce'))
-        self.actionBivariate.setText(_translate('MainWindow', u'Bivariate'))
-        self.actionHarker.setText(_translate('MainWindow',u'Harker'))
-        self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
+        self.actionAuto.setText('1-1 '+_translate('MainWindow', u'Auto'))
+        self.actionTAS.setText('1-2 '+ _translate('MainWindow',u'TAS'))
+        self.actionTrace.setText('1-3 '+_translate('MainWindow',u'Trace'))
+        self.actionRee.setText('1-4 '+_translate('MainWindow',u'REE'))
+        self.actionPearce.setText('1-5 '+_translate('MainWindow',u'Pearce'))
+        self.actionHarker.setText('1-6 '+_translate('MainWindow',u'Harker'))
+        self.actionCIPW.setText('1-7 '+_translate('MainWindow',u'CIPW'))
+        self.actionQAPF.setText('1-8 '+_translate('MainWindow',u'QAPF'))
+        #self.actionBivariate.setText(_translate('MainWindow',u'Bivariate'))
+        #self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
 
-        self.actionQAPF.setText(_translate('MainWindow', u'QAPF'))
+        self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
+        self.actionRose.setText('2-2 '+_translate('MainWindow',u'Rose'))
 
-        self.actionStereo.setText(_translate('MainWindow', u'Stereo'))
-        self.actionRose.setText(_translate('MainWindow', u'Rose'))
-        self.actionQFL.setText(_translate('MainWindow', u'QFL'))
-        self.actionQmFLt.setText(_translate('MainWindow', u'QmFLt'))
-        self.actionClastic.setText(_translate('MainWindow',u'Clastic'))
-        self.actionCIA.setText(_translate('MainWindow',u'CIA and ICV'))
+        self.actionQFL.setText('3-1 '+_translate('MainWindow',u'QFL'))
+        self.actionQmFLt.setText('3-2 '+_translate('MainWindow',u'QmFLt'))
+        self.actionClastic.setText('3-3 '+_translate('MainWindow',u'Clastic'))
+        self.actionCIA.setText('3-4 '+ _translate('MainWindow',u'CIA and ICV'))
 
-        self.actionCIPW.setText(_translate('MainWindow', u'CIPW'))
+        self.actionZirconCe.setText('4-1 '+ _translate('MainWindow',u'ZirconCe'))
+        self.actionZirconCeOld.setText('4-2 '+ _translate('MainWindow', u'ZirconCeOld'))
+        self.actionZirconTiTemp.setText('4-3 '+ _translate('MainWindow',u'ZirconTiTemp'))
+        self.actionRutileZrTemp.setText('4-4 '+_translate('MainWindow',u'RutileZrTemp'))
+        self.actionRbSrIsoTope.setText('4-5 '+_translate('MainWindow',u'Rb-Sr IsoTope'))
+        self.actionSmNdIsoTope.setText('4-6 '+_translate('MainWindow',u'Sm-Nd IsoTope'))
+        #self.actionKArIsoTope.setText(_translate('MainWindow',u'K-Ar IsoTope'))
 
-        self.actionZirconCe.setText(_translate('MainWindow', u'ZirconCe'))
-        self.actionZirconCeOld.setText(_translate('MainWindow', u'ZirconCeOld'))
-        self.actionZirconTiTemp.setText(_translate('MainWindow', u'ZirconTiTemp'))
-        self.actionRutileZrTemp.setText(_translate('MainWindow', u'RutileZrTemp'))
-        self.actionCluster.setText(_translate('MainWindow', u'Hierarchical Cluster'))
-        self.actionAuto.setText(_translate('MainWindow', u'Auto'))
-        self.actionMultiDimension.setText(_translate('MainWindow',u'MultiDimension'))
-
-        self.actionXY.setText(_translate('MainWindow', u'X-Y plot'))
-        self.actionXYZ.setText(_translate('MainWindow', u'X-Y-Z plot'))
-
-        self.actionRbSrIsoTope.setText(_translate('MainWindow',u'Rb-Sr IsoTope'))
-        self.actionSmNdIsoTope.setText(_translate('MainWindow',u'Sm-Nd IsoTope'))
-        self.actionKArIsoTope.setText(_translate('MainWindow',u'K-Ar IsoTope'))
+        self.actionXY.setText('5-1 '+_translate('MainWindow',u'X-Y plot'))
+        self.actionXYZ.setText('5-2 '+_translate('MainWindow',u'X-Y-Z plot'))
+        self.actionCluster.setText('5-3 '+_translate('MainWindow',u'Cluster'))
+        self.actionMultiDimension.setText('5-4 '+_translate('MainWindow',u'MultiDimension'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionCnWeb.setText(_translate('MainWindow', u'Chinese Forum'))
         self.actionEnWeb.setText(_translate('MainWindow', u'English Forum'))
         self.actionGoGithub.setText(_translate('MainWindow', u'Github'))
 
-
         '''
         self.actionCnS.setText(_translate('MainWindow',u'Simplified Chinese'))
         self.actionCnT.setText(_translate('MainWindow', u'Traditional Chinese'))
         self.actionEn.setText(_translate('MainWindow',u'English'))
         '''
 
-
-
         self.actionCnS.setText(u'简体中文')
         self.actionCnT.setText(u'繁體中文')
         self.actionEn.setText(u'English')
         self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
 
-    def resizeEvent(self, evt=None):
-
-        w=self.width()
-        h=self.height()
-        '''
-        if h<=360:
-            h=360
-            self.resize(w,h)
-        if w<=640:
-            w = 640
-            self.resize(w, h)
-        '''
 
 
-        step = (w * 94 / 100) / 5
-        foot=h*3/48
-
-
-        #if foot<=10: foot=10
-
-        self.tableView.setGeometry(QtCore.QRect(w/100, h/48, w*98/100, h*38/48))
-
-        self.pushButtonOpen.setGeometry(QtCore.QRect(w/100, h*40/48, step, foot))
-
-        self.pushButtonSave.setGeometry(QtCore.QRect(2*w/100+step, h*40/48, step, foot))
-
-        self.pushButtonSort.setGeometry(QtCore.QRect(3*w/100+step*2, h*40/48, step, foot))
-
-        self.pushButtonUpdate.setGeometry(QtCore.QRect(4*w/100+step*3, h*40/48, step, foot))
-
-        self.pushButtonQuit.setGeometry(QtCore.QRect(5*w/100+step*4, h*40/48, step, foot))
 
     def getfile(self):
         _translate = QtCore.QCoreApplication.translate
@@ -708,7 +526,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                          'All Files (*);;Text Files (*.txt)')  # 设置文件扩展名过滤,注意用双分号间隔
 
     def goGitHub(self):
-        webbrowser.open('https://github.com/GeoPyTool/GeoPyTool/wiki')
+        webbrowser.open('https://github.com/GeoPyTool/GeoPyTool')
 
     def goCnBBS(self):
         webbrowser.open('https://zhuanlan.zhihu.com/p/30651165')
@@ -865,7 +683,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def SetUpDataFile(self):
-
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
         flag = 0
         ItemsAvalibale = self.model._df.columns.values.tolist()
 
@@ -1308,7 +1128,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.xypop = XY(df=self.model._df)
+        self.xypop = XY(df=self.model._df,Standard=self.Standard)
         try:
             self.xypop.Magic()
             self.xypop.show()
@@ -1319,7 +1139,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-        self.xyzpop = XYZ(df=self.model._df)
+        self.xyzpop = XYZ(df=self.model._df,Standard=self.Standard)
         try:
             self.xyzpop.Magic()
             self.xyzpop.show()

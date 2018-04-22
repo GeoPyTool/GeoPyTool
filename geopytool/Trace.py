@@ -258,8 +258,7 @@ class Trace(AppForm):
             self.textbox.setText(self.reference + "\n You are using Self Defined Standard")
             right_label_text = "Self Defined Standard"
 
-
-
+        self.right_label.setText(right_label_text)
 
 
         for i in range(len(raw)):
@@ -337,7 +336,7 @@ class Trace(AppForm):
 
 
 
-        self.right_label.setText(right_label_text)
+
 
 
 
