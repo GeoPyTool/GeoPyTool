@@ -147,7 +147,11 @@ class CIPW(AppForm):
         self.setWindowTitle('CIPW Norm Result')
 
         self._df = df
-        self.raw = df
+        #self.raw = df
+
+        self.raw = self.CleanDataFile(self._df)
+
+
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved')

@@ -1,6 +1,6 @@
-version = '0.8.01'
+version = '0.8.06'
 
-date = '2018-04-22'
+date = '2018-06-02'
 
 dpi = 128
 #coding:utf-8
@@ -750,6 +750,44 @@ class AppForm(QMainWindow):
 
         self.create_main_frame()
         self.create_status_bar()
+
+
+    def CleanDataFile(self,raw=pd.DataFrame(),checklist=['质量','分数','百分比',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
+
+
+        for i in checklist:
+            raw = raw.rename(columns=lambda x: x.replace(i, ''))
+            pass
+
+        for i in raw.dtypes.index:
+            if raw.dtypes[i] != float and raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha', 'Style','Width', 'Label']:
+                print(i)
+                raw = raw.drop(i, 1)
+
+        for i in raw.columns.values.tolist():
+            if i=='':
+                raw = raw.drop(i, 1)
+
+        raw = raw.dropna(axis=1, how='all')
+
+        #Columns = raw.columns.values.tolist()
+        #Rows = raw.index.values.tolist()
+
+        for i in raw.index.values.tolist():
+            if type(raw.at[i, 'Label'])== str:
+                if 'tandard' in raw.at[i, 'Label']:
+                    print('Your Self Defined Standard is at the line No.', i)
+                    self.Standard = raw.loc[i]
+                    raw = raw.drop(i)
+
+        raw = raw.reset_index(drop=True)
+
+        return(raw)
+        print(raw.columns.values.tolist())
+
+
+
+
 
     def Check(self):
 

@@ -202,6 +202,9 @@ class QFL(AppForm, Tool):
         self.axes.fill(m, n, Color='red', Alpha=0.13, )
 
         raw = self._df
+
+        raw = self.CleanDataFile(self._df)
+
         PointLabels = []
         TPoints = []
         for i in range(len(raw)):

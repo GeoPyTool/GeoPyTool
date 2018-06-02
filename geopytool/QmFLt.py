@@ -278,7 +278,11 @@ class QmFLt(AppForm, Tool):
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
                            label=i.Label)
 
-        raw = self._df
+        #raw = self._df
+
+        raw = self.CleanDataFile(self._df)
+
+
         PointLabels = []
         TPoints = []
         for i in range(len(raw)):

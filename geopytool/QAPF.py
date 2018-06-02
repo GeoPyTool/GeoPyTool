@@ -742,7 +742,11 @@ class QAPF(AppForm, Tool):
                 self.axes.annotate(i.Label, xy=i.Location,
                                    fontsize=6, color='grey', alpha=0.8)
 
-        raw = self._df
+        #raw = self._df
+
+        raw = self.CleanDataFile(self._df)
+
+
         PointLabels = []
         TPoints = []
 

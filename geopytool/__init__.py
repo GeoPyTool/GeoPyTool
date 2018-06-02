@@ -658,9 +658,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.app.installTranslator(self.trans)
         self.retranslateUi()
 
-    def ErrorEvent(self):
+    def ErrorEvent(self,text=''):
 
-        reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Plot.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
+        if(text==''):
+            reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
+                                                                                                  'Your Data mismatch this Plot.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
+        else:
+            reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
+                                                                                                      'Your Data mismatch this Plot.\n Error infor is:') + text)
 
     def SetUpDataFile(self):
         flag = 0
@@ -719,7 +724,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.tableView.setModel(self.model)
 
 
-    def getDataFile(self):
+    def getDataFile(self,CleanOrNot=True):
         _translate = QtCore.QCoreApplication.translate
 
 
@@ -747,10 +752,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if len(self.raw)>0:
 
             self.model = PandasModel(self.raw)
+
+            print(self.model._df)
+
+
             self.tableView.setModel(self.model)
 
-            self.raw=self.CleanDataFile(self.raw)
             self.model = PandasModel(self.raw)
+
+            print(self.model._df)
 
             flag = 0
             ItemsAvalibale = self.model._df.columns.values.tolist()
@@ -767,87 +777,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             else:
 
                 self.SetUpDataFile()
-
-    def OldCleanDataFile(self,raw=pd.DataFrame(),checklist=['质量','分数','百分比',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
-
-
-        for i in checklist:
-            self.raw = self.raw.rename(columns=lambda x: x.replace(i, ''))
-            pass
-
-
-
-
-        for i in self.raw:
-            pass
-
-        for i in self.raw.dtypes.index:
-            if self.raw.dtypes[i] != float and self.raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha', 'Style','Width', 'Label']:
-                print(i)
-                self.raw = self.raw.drop(i, 1)
-
-        for i in self.raw.columns.values.tolist():
-            if i=='':
-                self.raw = self.raw.drop(i, 1)
-
-        self.raw = self.raw.dropna(axis=1, how='all')
-
-
-
-        #Columns = self.raw.columns.values.tolist()
-        #Rows = self.raw.index.values.tolist()
-
-        for i in self.raw.index.values.tolist():
-            if 'tandard' in self.raw.at[i, 'Label']:
-                print('Your Self Defined Standard is at the line No.', i)
-                self.Standard = self.raw.loc[i]
-                self.raw = self.raw.drop(i)
-
-        self.raw = self.raw.reset_index(drop=True)
-
-        print(self.raw.columns.values.tolist())
-
-
-    def CleanDataFile(self,raw=pd.DataFrame(),checklist=['质量','分数','百分比',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
-
-
-        for i in checklist:
-            raw = raw.rename(columns=lambda x: x.replace(i, ''))
-            pass
-
-
-
-
-        for i in raw:
-            pass
-
-        for i in raw.dtypes.index:
-            if raw.dtypes[i] != float and raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha', 'Style','Width', 'Label']:
-                print(i)
-                raw = raw.drop(i, 1)
-
-        for i in raw.columns.values.tolist():
-            if i=='':
-                raw = raw.drop(i, 1)
-
-        raw = raw.dropna(axis=1, how='all')
-
-
-
-        #Columns = raw.columns.values.tolist()
-        #Rows = raw.index.values.tolist()
-
-        for i in raw.index.values.tolist():
-            if 'tandard' in raw.at[i, 'Label']:
-                print('Your Self Defined Standard is at the line No.', i)
-                self.Standard = raw.loc[i]
-                raw = raw.drop(i)
-
-        raw = raw.reset_index(drop=True)
-
-        return(raw)
-        print(raw.columns.values.tolist())
-
 
     def saveDataFile(self):
 
@@ -882,11 +811,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.taspop = TAS(df=self.model._df)
+
+
+
+
             try:
                 self.taspop.TAS()
                 self.taspop.show()
-            except(KeyError):
+
+
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+            '''
+                print('Error is ',e)
+            except:
+                
                 self.ErrorEvent()
+            '''
+
 
     def REE(self):
 
@@ -906,8 +849,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.reepop.REE()
                 self.reepop.show()
-            except(KeyError):
-                self.ErrorEvent()
+
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def Trace(self):
 
@@ -923,8 +867,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.tracepop.Trace()
                 self.tracepop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def Pearce(self):
 
@@ -938,8 +882,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.pearcepop.Pearce()
                 self.pearcepop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def Bivariate(self):
         print('self.model._df length: ',len(self.model._df))
@@ -950,8 +894,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.bivariatepop.Bivariate()
                 self.bivariatepop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def Harker(self):
         print('self.model._df length: ',len(self.model._df))
@@ -962,8 +906,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.harkerpop.Harker()
                 self.harkerpop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def HarkerDIY(self):
         print('self.model._df length: ',len(self.model._df))
@@ -974,8 +918,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.harkerdiypop.Magic()
                 self.harkerdiypop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def CIPW(self):
 
@@ -1001,8 +945,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.ztpop.ZirconTiTemp()
                 self.ztpop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def RutileZrTemp(self):
 
@@ -1015,8 +959,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.rzpop.RutileZrTemp()
                 self.rzpop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def Cluster(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1041,8 +985,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.stereopop.Stereo()
                 self.stereopop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def Rose(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1054,8 +998,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.rosepop.Rose()
                 self.rosepop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def QFL(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1067,8 +1011,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.qflpop.Tri()
                 self.qflpop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def QmFLt(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1080,8 +1024,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.qmfltpop.Tri()
                 self.qmfltpop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def Clastic(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1093,8 +1037,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.clusterpop.Tri()
                 self.clusterpop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def CIA(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1107,8 +1051,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.ciapop.CIA()
                 self.ciapop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def QAPF(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1124,8 +1068,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 try:
                     self.qapfpop.QAPF()
                     self.qapfpop.show()
-                except(KeyError):
-                    self.ErrorEvent()
+                except Exception as e:
+                    self.ErrorEvent(text=repr(e))
             else:
                 reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
                                                                                                       'Your data contain no Q/A/P/F data.\n Maybe you need to run CIPW first?'))
@@ -1133,22 +1077,24 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def ZirconCe(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
-            self.getDataFile()
+            self.getDataFile(CleanOrNot=False)
         # print('Opening a new popup window...')
 
         if (len(self.model._df) > 0):
             self.zirconpop = ZirconCe(df=self.model._df)
 
+
+
             try:
                 self.zirconpop.MultiBallard()
                 self.zirconpop.show()
-            except(KeyError,ValueError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def ZirconCeOld(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
-            self.getDataFile()
+            self.getDataFile(CleanOrNot=False)
         # print('Opening a new popup window...')
 
         if (len(self.model._df) > 0):
@@ -1156,7 +1102,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.zirconoldpop.MultiBallard()
                 self.zirconoldpop.show()
-            except(KeyError,ValueError):
+            except(KeyError,ValueError,TypeError):
                 self.ErrorEvent()
 
     def RbSrIsoTope(self):
@@ -1170,8 +1116,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.rbsrisotopepop.Magic()
                 self.rbsrisotopepop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def SmNdIsoTope(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1184,8 +1130,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.smndisotopepop.Magic()
                 self.smndisotopepop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def KArIsoTope(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1197,8 +1143,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.karisotopepop.Magic()
                 self.karisotopepop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def XY(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1210,8 +1156,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.xypop.Magic()
                 self.xypop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def XYZ(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1223,8 +1169,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.xyzpop.Magic()
                 self.xyzpop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
 
     def MultiDimension(self):
@@ -1237,8 +1183,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.mdpop.Magic()
                 self.mdpop.show()
-            except(KeyError):
-                self.ErrorEvent()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
 
     def Tri(self):

@@ -196,7 +196,10 @@ class REE(AppForm):
 
         self.WholeData = []
 
-        raw = self._df
+        #raw = self._df
+
+
+        raw = self.CleanDataFile(self._df)
 
         self.FontSize = FontSize
 

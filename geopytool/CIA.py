@@ -81,6 +81,13 @@ class CIA(AppForm):
             # print('DataFrame recieved to CIA')
 
         self.raw = df
+
+
+
+        self.raw = self.CleanDataFile(df)
+
+
+
         self.rawitems = self.raw.columns.values.tolist()
 
         for i in self.rawitems:

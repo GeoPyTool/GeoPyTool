@@ -251,7 +251,9 @@ class TAS(AppForm):
             pass
 
         if (self._changed):
-            df = self._df
+            df =  self.CleanDataFile(self._df)
+
+
             for i in range(len(df)):
                 TmpLabel = ''
                 if (df.at[i, 'Label'] in PointLabels or df.at[i, 'Label'] == ''):

@@ -162,7 +162,12 @@ class Harker(AppForm):
 
         self.WholeData = []
 
-        raw = self._df
+        #raw = self._df
+
+
+
+        raw = self.CleanDataFile(self._df)
+
 
         itemstoshow = [r'$Al_2O_3$', r'$MgO$', r'$Fe_{Total}$', r'$CaO$', r'$Na_2O$', r'$K_2O$', r'$TiO_2$', r'$P_2O_5$', r'$SiO_2$', ]
 

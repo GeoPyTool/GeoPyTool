@@ -157,7 +157,9 @@ class Pearce(AppForm):
 
         self.WholeData = []
 
-        raw = self._df
+        #raw = self._df
+
+        raw = self.CleanDataFile(self._df)
 
 
         self.axes[0, 0].clear()

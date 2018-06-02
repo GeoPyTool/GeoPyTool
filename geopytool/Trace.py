@@ -230,6 +230,11 @@ class Trace(AppForm):
 
         raw = self._df
 
+
+
+        raw = self.CleanDataFile(self._df)
+
+
         self.FontSize = FontSize
 
         PointLabels = []
