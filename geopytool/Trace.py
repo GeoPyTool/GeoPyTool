@@ -49,7 +49,9 @@ class Trace(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Trace Standardlized Pattern Diagram')
 
-        self._df = df
+        #self._df = df
+
+        self._df = self.CleanDataFile(df)
 
 
         self._given_Standard = Standard
@@ -232,7 +234,7 @@ class Trace(AppForm):
 
 
 
-        raw = self.CleanDataFile(self._df)
+        #raw = self.CleanDataFile(self._df)
 
 
         self.FontSize = FontSize
