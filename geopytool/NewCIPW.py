@@ -988,7 +988,7 @@ class CIPW(AppForm):
 
         # =AJ5-(AL6)-(AL7)-(AL8*2)-(AL12)-(AL9)-(AL10*4)-(AL11*2)-(AL13)-(AL14*6)-(AL15*6)-(AL16)
 
-        Quartz = Quartz -(Zircon +
+        Quartz -= (Zircon +
                    K2SiO3 +
                    Anorthite * 2 +
                    Na2SiO3 +
@@ -1002,17 +1002,17 @@ class CIPW(AppForm):
 
         # =IF(AL5>0,AL5,0)
 
-        #if Quartz > 0:
-        #    Quartz = Quartz
-        #else:
-        #    Quartz = 0
+        if Quartz > 0:
+            Quartz = Quartz
+        else:
+            Quartz = 0
 
         # =IF(AL13>0,IF(AL5>=0,'Hypersthene',IF(AL13+(2*AL5)>0,'Both','Olivine')),'None')
 
         if Hypersthene <= 0:
             HorO = 'None'
         else:
-            if Quartz > 0:
+            if Quartz >= 0:
                 HorO = 'Hypersthene'
             else:
                 if Hypersthene + 2 * Quartz > 0:
@@ -1040,7 +1040,7 @@ class CIPW(AppForm):
             Olivine = 0
 
         # =AL5+AL13-(AN13+AN17)
-        Quartz =  Quartz + Old_Hypersthene - (Hypersthene + Olivine)
+        Quartz += Old_Hypersthene - (Hypersthene + Olivine)
 
         # =IF(AL12>0,IF(AN5>=0,'Sphene',IF(AL12+AN5>0,'Both','Perovskite')),'None')
 
