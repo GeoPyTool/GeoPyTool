@@ -381,6 +381,8 @@ class CIPW(AppForm):
             except ValueError:
                 pass
 
+
+
         WeightCorrectionFactor = (100 / WholeMass)
 
         for j in self.Elements:
@@ -431,27 +433,27 @@ class CIPW(AppForm):
         Na = DataCalculating['Na2O']
 
         try:
-            DataCalced.update({'Fe3+/(Total Fe) in rock': 100 * Fe3 * 2 / (Fe3 * 2 + Fe2)})
+            DataCalced.update({'Fe3+/(Total Fe) in rock (Mole)': 100 * Fe3 * 2 / (Fe3 * 2 + Fe2)})
         except(ZeroDivisionError):
-            DataCalced.update({'Fe3+/(Total Fe) in rock': 0})
+            DataCalced.update({'Fe3+/(Total Fe) in rock (Mole)': 0})
             pass
 
         try:
-            DataCalced.update({'Mg/(Mg+Total Fe) in rock': 100 * Mg / (Mg + Fe3 * 2 + Fe2)})
+            DataCalced.update({'Mg/(Mg+Total Fe) in rock (Mole)': 100 * Mg / (Mg + Fe3 * 2 + Fe2)})
         except(ZeroDivisionError):
-            DataCalced.update({'Mg/(Mg+Total Fe) in rock': 0})
+            DataCalced.update({'Mg/(Mg+Total Fe) in rock (Mole)': 0})
             pass
 
         try:
-            DataCalced.update({'Mg/(Mg+Fe2+) in rock': 100 * Mg / (Mg + Fe2)})
+            DataCalced.update({'Mg/(Mg+Fe2+) in rock (Mole)': 100 * Mg / (Mg + Fe2)})
         except(ZeroDivisionError):
-            DataCalced.update({'Mg/(Mg+Fe2+) in rock': 0})
+            DataCalced.update({'Mg/(Mg+Fe2+) in rock (Mole)': 0})
             pass
 
         try:
-            DataCalced.update({'Ca/(Ca+Na) in rock': 100 * Ca / (Ca + Na * 2)})
+            DataCalced.update({'Ca/(Ca+Na) in rock (Mole)': 100 * Ca / (Ca + Na * 2)})
         except(ZeroDivisionError):
-            DataCalced.update({'Ca/(Ca+Na) in rock': 0})
+            DataCalced.update({'Ca/(Ca+Na) in rock (Mole)': 0})
             pass
 
         DataCalculating['CaO'] += DataCalculating['Sr']

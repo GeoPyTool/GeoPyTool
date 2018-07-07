@@ -68,9 +68,17 @@ class REE(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('REE Standardlized Pattern Diagram')
 
-        self._df = df
+        #self._df = df
 
-        self._given_Standard = Standard
+
+
+
+        self._df = self.CleanDataFile(df)
+
+
+        #self._given_Standard = Standard
+
+        self._given_Standard = self.Standard
 
         if (len(df) > 0):
             self._changed = True

@@ -790,6 +790,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                           'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
         df = self.model._df
+
+
         if 'Label' in df.columns.values:
             df.set_index('Label', inplace=True)
 
@@ -803,6 +805,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             elif ('xls' in DataFileOutput):
                 df.to_excel(DataFileOutput, encoding='utf-8')
+
+        df = self.model._df
+
 
     def TAS(self):
         print('self.model._df length: ',len(self.model._df))
