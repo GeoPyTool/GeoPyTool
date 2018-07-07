@@ -1,4 +1,4 @@
-version = '0.8.10'
+version = '0.8.11'
 
 date = '2018-07-08'
 
@@ -723,6 +723,7 @@ class AppForm(QMainWindow):
 
     SelectDic = {}
 
+    Standard=''
 
     WholeResult = {}
     OutPutCheck= True

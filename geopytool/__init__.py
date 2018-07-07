@@ -789,24 +789,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                           'C:/',
                                                           'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
-        df = self.model._df
+        dftosave = self.model._df
 
 
-        if 'Label' in df.columns.values:
-            df.set_index('Label', inplace=True)
+
 
         #self.model._df.reset_index(drop=True)
 
 
         if (DataFileOutput != ''):
 
+
             if ('csv' in DataFileOutput):
-                df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                dftosave.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
             elif ('xls' in DataFileOutput):
-                df.to_excel(DataFileOutput, encoding='utf-8')
 
-        df = self.model._df
+                dftosave.to_excel(DataFileOutput, encoding='utf-8')
+
+
 
 
     def TAS(self):
