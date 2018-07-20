@@ -26,7 +26,7 @@ That is the story of how GeoPyTool was born.
 
 ## Introduction
 
-GeoPyTool is an application based on Python and designed as a solution for geology related daily work. **It can run on alomost all mainstream operating systems**, such as Windows 7 SP1, Windows 8, Windows 10, macOS Sierra, macOS High Sierra, Ubuntu Linux, Debian Linux, Fedora Linux, and alomost all other widely used desktop platforms.
+GeoPyTool is an application based on Python and designed as a solution for geology related daily work. **It can run on almost all mainstream operating systems**, such as Windows 7 SP1, Windows 8, Windows 10, macOS Sierra, macOS High Sierra, Ubuntu Linux, Debian Linux, Fedora Linux, and alomost all other widely used desktop platforms.
 
 **GeoPyTool doesn't rely on any other software**, such as MS Excel or CorelDraw, it can directly transport your data into the plot as vector graphic files and the calculation results into data sheets such as Xlsx or CSV files.
 
@@ -45,19 +45,19 @@ In simple terms, you can use, share and modify it for free, under the same terms
 ## Bug Report 
 
 Any program may have a bug or many bugs. So does GeoPyTool.
-I am not a programming expert or a magic superman, so I will inevitably make mistakes.
-I am open minded and happy to solve problems after being told the details about bugs.
+I am not a programming expert, so I will inevitably make mistakes.
+I am open minded and happy to solve problems after being told the details about bugs you find.
 
 If you find bugs but don’t tell me where how that happens, then I'm helpless.
-If you don’t even provide any detailed information, but just blaming me, then I’m deeply hurt.
-Please do not repeating "many bugs many bugs" with no feedback, that make very frustrated in a long period of pain and self-reproach.
+If you don’t provide any detailed information and just blaming me, then I’m deeply hurt.
+Please do not repeat "many bugs many bugs" without feedback, as that make very frustrated and in for a long period of pain and self-reproach.
 
 I need your help to find out where the bugs locate and how they happen.
 I need to know the version of GeoPyTool that has these bugs.
 I might also need a piece of your data file that triggers the bugs.
-If you find any bug, I am happy to be told the details and fix it as soon as possible. 
+If you find a bug, I am happy to hear the details and fix it as soon as possible. 
 
-Please open a issue in [GeoPyTool's repo](https://github.com/GeoPyTool/GeoPyTool/issues/). 
+Please open an issue in [GeoPyTool's repo](https://github.com/GeoPyTool/GeoPyTool/issues/). 
 
 ## Feedback
 
