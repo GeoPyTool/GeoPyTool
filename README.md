@@ -11,17 +11,15 @@ Tags: Doc,English
 ## Preface
 
 I am Freddy Yu, also known as CycleUser.
-Few years ago, I had tumor and some other lifelong disease.
-Then I lost the ability to engage in geological field work.
+A few years ago, I had tumor and some other lifelong diseases, and lost the ability to engage in geological field work.
 I hate to be a useless person and hope to contribute to other people and the world.
-Then I started learning programming.
-I began to learn and use Python by translating a text book called "Think Python 2 edition" to [Chinese](https://github.com/cycleuser/ThinkPython-en-cn).
+I began programming, and learned Python by translating a text book called "Think Python 2 edition" to [Chinese](https://github.com/cycleuser/ThinkPython-en-cn).
 After translating [Think Python 2 edition](https://github.com/cycleuser/ThinkPython-en-cn), I translated [Kivy Document](https://github.com/Kivy-CN/Kivy-CN), [CS229 notes from Stanford University](https://github.com/Kivy-CN/Stanford-CS-229-CN) and [STA663 notes from Duke University](https://github.com/Kivy-CN/Duke-STA-663-CN).
-I publish all my translation works on Github, as open source projects.
+I publish all my translation works on Github as open source projects.
 
-When I began to use Python, from time to time, there have been some people asking me for help by writing some codes to help them solve some of their problems in geological research.
+After I began using Python, people have been asking me for help to write code to solve geological research problems.
 
-I gathered these scripts together, built a GUI and packed them into a standalone application, which is originally called GeoPython and later renamed GeoPyTool because of the former name had been taken by a conference.
+I gathered these scripts together, built a GUI and packed them into a standalone application, which was originally called GeoPython and later renamed GeoPyTool because of the former name had been taken by a conference.
 
 That is the story of how GeoPyTool was born.
 
