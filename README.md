@@ -24,6 +24,8 @@ I gathered these scripts together, built a GUI and packed them into a standalone
 That is the story of how GeoPyTool was born.
 
 
+
+
 ## Introduction
 
 GeoPyTool is an application based on Python and designed as a solution for geology related daily work. **It can run on almost all mainstream operating systems**, such as Windows 7 SP1, Windows 8, Windows 10, macOS Sierra, macOS High Sierra, Ubuntu Linux, Debian Linux, Fedora Linux, and alomost all other widely used desktop platforms.
@@ -181,5 +183,7 @@ The CSV in fact is just a form of plain text, which can be edited by almost any 
 If you want to support GeoPyTool and you also use WeChat, please scan the following QR code to reward us.
 I can use this money to pay for medical expenses to stay healthy and add more functions to GeoPyTool.
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WeChatQrCode.png)
+
+##### Please cite this article as: Yu, Q.-Y., Bagas, L., Yang, P.-H., Zhang, D., GeoPyTool: a cross-platform software solution for common geological calculations and plots, Geoscience Frontiers (2018), doi: 10.1016/j.gsf.2018.08.001. 
 
 
