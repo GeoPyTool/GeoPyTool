@@ -184,11 +184,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
 
-        self.actionCnWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/forum.png'), u'Chinese Forum',self)
-        self.actionCnWeb.setObjectName('actionCnWeb')
-
-        self.actionEnWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/forum.png'), u'English Forum',self)
-        self.actionEnWeb.setObjectName('actionEnWeb')
+        self.actionWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/forum.png'), u'English Forum',self)
+        self.actionWeb.setObjectName('actionWeb')
 
         self.actionGoGithub = QtWidgets.QAction(QIcon(LocationOfMySelf+'/github.png'), u'GitHub',self)
         self.actionGoGithub.setObjectName('actionGoGithub')
@@ -341,10 +338,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionMultiDimension)
 
 
-
-
-        self.menuHelp.addAction(self.actionCnWeb)
-        self.menuHelp.addAction(self.actionEnWeb)
+        self.menuHelp.addAction(self.actionWeb)
 
 
         self.menuHelp.addAction(self.actionGoGithub)
@@ -418,8 +412,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSave.triggered.connect(self.saveDataFile)
         self.actionQuit.triggered.connect(qApp.quit)
 
-        self.actionCnWeb.triggered.connect(self.goCnBBS)
-        self.actionEnWeb.triggered.connect(self.goEnBBS)
+        self.actionWeb.triggered.connect(self.goIssue)
         self.actionGoGithub.triggered.connect(self.goGitHub)
         self.actionVersionCheck.triggered.connect(self.checkVersion)
 
@@ -493,8 +486,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMultiDimension.setText('5-4 '+_translate('MainWindow',u'MultiDimension'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
-        self.actionCnWeb.setText(_translate('MainWindow', u'Chinese Forum'))
-        self.actionEnWeb.setText(_translate('MainWindow', u'English Forum'))
+        self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
         self.actionGoGithub.setText(_translate('MainWindow', u'Github'))
 
         '''
@@ -518,10 +510,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def goGitHub(self):
         webbrowser.open('https://github.com/GeoPyTool/GeoPyTool')
 
-    def goCnBBS(self):
-        webbrowser.open('https://zhuanlan.zhihu.com/p/30651165')
 
-    def goEnBBS(self):
+    def goIssue(self):
         webbrowser.open('https://github.com/GeoPyTool/GeoPyTool/issues')
 
     def checkVersion(self):
