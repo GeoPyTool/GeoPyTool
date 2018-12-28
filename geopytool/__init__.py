@@ -44,6 +44,22 @@ from geopytool.IsoTope import IsoTope
 from geopytool.KArIsoTope import KArIsoTope
 
 from geopytool.MultiDimension import MultiDimension
+
+from geopytool.Combine import MyCombine
+
+from geopytool.Flatten import MyFlatten
+
+from geopytool.MyPCA import MyPCA
+
+
+from geopytool.Trans import MyTrans
+
+
+#from geopytool.ICA import MyICA
+#from geopytool.SVM import MySVM
+
+
+
 from geopytool.Pearce import Pearce
 from geopytool.QAPF import QAPF
 from geopytool.QFL import QFL
@@ -184,6 +200,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
 
+
         self.actionWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/forum.png'), u'English Forum',self)
         self.actionWeb.setObjectName('actionWeb')
 
@@ -264,6 +281,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMultiDimension = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'MultiDimension',self)
         self.actionMultiDimension.setObjectName('actionMultiDimension')
 
+        self.actionCombine = QtWidgets.QAction(QIcon(LocationOfMySelf+'/combine.png'),u'Combine',self)
+        self.actionCombine.setObjectName('actionCombine')
+
+
+        self.actionFlatten = QtWidgets.QAction(QIcon(LocationOfMySelf+'/flatten.png'),u'Flatten',self)
+        self.actionFlatten.setObjectName('actionFlatten')
+
+        self.actionTrans = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'Trans',self)
+        self.actionTrans.setObjectName('actionTrans')
+
+        self.actionPCA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/pca.png'),u'PCA',self)
+        self.actionPCA.setObjectName('actionPCA')
+
+
+        #self.actionICA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/ica.png'),u'ICA',self)
+        #self.actionICA.setObjectName('actionICA')
+
+        #self.actionSVM = QtWidgets.QAction(QIcon(LocationOfMySelf+'/svm.png'),u'SVM',self)
+        #self.actionSVM.setObjectName('actionSVM')
+
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
@@ -337,6 +374,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionCluster)
         self.menuAdditional.addAction(self.actionMultiDimension)
 
+        self.menuAdditional.addAction(self.actionCombine)
+
+        self.menuAdditional.addAction(self.actionFlatten)
+        self.menuAdditional.addAction(self.actionTrans)
+        # self.menuAdditional.addAction(self.actionPCA)
+
+
+
+
+
+
+        #self.menuAdditional.addAction(self.actionICA)
+        #self.menuAdditional.addAction(self.actionSVM)
+
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -406,11 +457,28 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionMultiDimension.triggered.connect(self.MultiDimension)
 
+        self.actionCombine.triggered.connect(self.Combine)
+
+
+
+        self.actionFlatten.triggered.connect(self.Flatten)
+
+        self.actionTrans.triggered.connect(self.Trans)
+
+        self.actionPCA.triggered.connect(self.PCA)
+
+
+        #self.actionICA.triggered.connect(self.ICA)
+        #self.actionSVM.triggered.connect(self.SVM)
+
+
+
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionClose.triggered.connect(self.clearDataFile)
         #self.actionSet.triggered.connect(self.SetUpDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
         self.actionQuit.triggered.connect(qApp.quit)
+
 
         self.actionWeb.triggered.connect(self.goIssue)
         self.actionGoGithub.triggered.connect(self.goGitHub)
@@ -485,6 +553,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCluster.setText('5-3 '+_translate('MainWindow',u'Cluster'))
         self.actionMultiDimension.setText('5-4 '+_translate('MainWindow',u'MultiDimension'))
 
+        self.actionCombine.setText('5-5 ' + _translate('MainWindow', u'Combine'))
+
+        self.actionFlatten.setText('5-6 '+_translate('MainWindow',u'Flatten'))
+
+        self.actionTrans.setText('5-7 '+_translate('MainWindow',u'Trans'))
+
+        self.actionPCA.setText('5-8 '+_translate('MainWindow',u'PCA'))
+
+
+
+
+        #self.actionICA.setText('5-8 '+_translate('MainWindow',u'ICA'))
+        #self.actionSVM.setText('5-9 '+_translate('MainWindow',u'SVM'))
+
+
+
+
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
         self.actionGoGithub.setText(_translate('MainWindow', u'Github'))
@@ -509,7 +594,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def goGitHub(self):
         webbrowser.open('https://github.com/GeoPyTool/GeoPyTool')
-
 
     def goIssue(self):
         webbrowser.open('https://github.com/GeoPyTool/GeoPyTool/issues')
@@ -652,10 +736,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if(text==''):
             reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
-                                                                                                  'Your Data mismatch this Plot.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
+                                                                                                  'Your Data mismatch this Function.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
         else:
             reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
-                                                                                                      'Your Data mismatch this Plot.\n Error infor is:') + text)
+                                                                                                      'Your Data mismatch this Function.\n Error infor is:') + text)
 
     def SetUpDataFile(self):
         flag = 0
@@ -717,20 +801,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def getDataFile(self,CleanOrNot=True):
         _translate = QtCore.QCoreApplication.translate
 
-
-
-
         DataFileInput, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
                                                                   '~/',
                                                                   'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
-
             # #print(DataFileInput,filetype)
 
-
         self.DataLocation = DataFileInput
-
         print(self.DataLocation )
-
 
         if ('csv' in DataFileInput):
             self.raw = pd.read_csv(DataFileInput)
@@ -738,18 +815,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.raw = pd.read_excel(DataFileInput)
         # #print(self.raw)
 
-
         if len(self.raw)>0:
-
             self.model = PandasModel(self.raw)
-
             print(self.model._df)
 
-
             self.tableView.setModel(self.model)
-
             self.model = PandasModel(self.raw)
-
             print(self.model._df)
 
             flag = 0
@@ -765,7 +836,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 #reply = QMessageBox.information(self, _translate('MainWindow', 'Ready'), _translate('MainWindow', 'Everything fine and no need to set up.'))
 
             else:
-
                 self.SetUpDataFile()
 
     def saveDataFile(self):
@@ -781,14 +851,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         dftosave = self.model._df
 
-
-
-
         #self.model._df.reset_index(drop=True)
 
 
         if (DataFileOutput != ''):
 
+            dftosave.reset_index(drop=True)
 
             if ('csv' in DataFileOutput):
                 dftosave.to_csv(DataFileOutput, sep=',', encoding='utf-8')
@@ -1181,6 +1249,145 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.mdpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
+
+
+    def OldCombine(self):
+
+        print('Combine called \n')
+
+        pass
+
+        DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
+                                                              '~/',
+                                                              'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+        # #print(DataFileInput,filetype)
+
+
+        DataFramesList=[]
+
+        if len(DataFilesInput)>1:
+            for i in DataFilesInput:
+                if ('csv' in i):
+                    DataFramesList.append(pd.read_csv(i))
+                elif ('xls' in i):
+                    DataFramesList.append(pd.read_excel(i))
+                pass
+
+        #result = pd.concat(DataFramesList,axis=1,sort=False)
+
+        result = pd.concat(DataFramesList, ignore_index=True, sort=False)
+
+
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,_translate('MainWindow', u'Save Data File'),
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        dftosave = result
+        if (DataFileOutput != ''):
+            dftosave.reset_index(drop=True)
+            if ('csv' in DataFileOutput):
+                dftosave.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+            elif ('xls' in DataFileOutput):
+                dftosave.to_excel(DataFileOutput, encoding='utf-8')
+
+
+    def Combine(self):
+
+        print('Combine called \n')
+
+        pass
+
+        DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
+                                                                '~/',
+                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+        # #print(DataFileInput,filetype)
+
+        DataFramesList = []
+
+        if len(DataFilesInput) > 1:
+            for i in DataFilesInput:
+                if ('csv' in i):
+                    DataFramesList.append(pd.read_csv(i))
+                elif ('xls' in i):
+                    DataFramesList.append(pd.read_excel(i))
+                pass
+
+            # result = pd.concat(DataFramesList,axis=1,sort=False)
+
+            result = pd.concat(DataFramesList, ignore_index=True, sort=False)
+
+            print('self.model._df length: ', len(result))
+
+            if (len(result) > 0):
+                self.Combinepop = MyCombine(df=result)
+                self.Combinepop.Combine()
+
+
+        else:
+            pass
+
+
+
+
+    def Flatten(self):
+
+        print('Flatten called \n')
+
+        pass
+
+
+        print('self.model._df length: ',len(self.model._df))
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.flattenpop = MyFlatten(df=self.model._df)
+            self.flattenpop.Flatten()
+
+
+
+
+    def Trans(self):
+
+        print('Trans called \n')
+
+        pass
+
+
+        print('self.model._df length: ',len(self.model._df))
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.transpop = MyTrans(df=self.model._df)
+            self.transpop.Trans()
+
+
+
+    def PCA(self):
+
+        print('PCA called \n')
+
+        pass
+
+
+        print('self.model._df length: ',len(self.model._df))
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.pcapop = MyPCA(df=self.model._df)
+            self.pcapop.prePCA()
+
 
 
     def Tri(self):

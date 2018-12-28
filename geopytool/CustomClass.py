@@ -1,6 +1,6 @@
-version = '0.8.12'
+version = '0.8.13.10.28'
 
-date = '2018-10-10'
+date = '2018-12-5'
 
 dpi = 128
 #coding:utf-8
@@ -788,8 +788,6 @@ class AppForm(QMainWindow):
 
 
 
-
-
     def Check(self):
 
         row = self._df.index.tolist()
@@ -830,10 +828,20 @@ class AppForm(QMainWindow):
         step = (w * 94 / 100) / 5
         foot=h*3/48
 
-    def ErrorEvent(self):
+    def OldErrorEvent(self):
         _translate = QtCore.QCoreApplication.translate
-        reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Plot.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
+        reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Function.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
 
+    def ErrorEvent(self,text=''):
+
+        _translate = QtCore.QCoreApplication.translate
+        
+        if(text==''):
+            reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
+                                                                                                  'Your Data mismatch this Function.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
+        else:
+            reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
+                                                                                                      'Your Data mismatch this Function.\n Error infor is:') + text)
 
 
     def DrawLine(self, l=[(41, 0), (41, 3), (45, 3)], color='grey', linewidth=0.5, linestyle='-', linelabel='',

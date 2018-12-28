@@ -522,8 +522,8 @@ class XY(AppForm):
     def WChanged(self, text):
         try:
             self.width_plot = float(text)
-        except:
-            pass
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
 
         self.x_scale = self.width_plot / self.width_load
 
@@ -551,8 +551,8 @@ class XY(AppForm):
 
         try:
             self.height_plot = float(text)
-        except:
-            pass
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
 
         self.y_scale = self.height_plot / self.height_load
 
@@ -594,16 +594,16 @@ class XY(AppForm):
     def LeftChanged(self, text):
         try:
             self.Left = float(text)
-        except:
-            pass
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
 
         self.Magic()
 
     def RightChanged(self, text):
         try:
             self.Right = float(text)
-        except:
-            pass
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
 
         self.Magic()
 
@@ -611,8 +611,8 @@ class XY(AppForm):
 
         try:
             self.Up = float(text)
-        except:
-            pass
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
 
         self.Magic()
 
@@ -620,16 +620,16 @@ class XY(AppForm):
 
         try:
             self.Down = float(text)
-        except:
-            pass
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
 
         self.Magic()
 
     def FitChanged(self, text):
         try:
             self.FitLevel = float(text)
-        except:
-            pass
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
 
         self.Magic()
 
@@ -640,8 +640,9 @@ class XY(AppForm):
 
         try:
             self.ShapeGroups = int(text)
-        except:
-            pass
+
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
 
         self.Magic()
 
@@ -707,7 +708,9 @@ class XY(AppForm):
                         if atmp in ItemsAvalibale:
                             a= ItemsAvalibale.index(atmp)
                             #print(a)
-                    except(ValueError):
+
+                    except Exception as e:
+                        self.ErrorEvent(text=repr(e))
                         pass
                     pass
 
@@ -725,7 +728,8 @@ class XY(AppForm):
                         if btmp in ItemsAvalibale:
                             b= ItemsAvalibale.index(btmp)
                             #print(b)
-                    except(ValueError):
+                    except Exception as e:
+                        self.ErrorEvent(text=repr(e))
                         pass
                     pass
                 self.y_element.setValue(b)
@@ -882,8 +886,10 @@ class XY(AppForm):
                         XtoFit.append(xuse)
                         YtoFit.append(yuse)
 
-                    except(ValueError):
-                        pass
+
+                    except Exception as e:
+
+                        self.ErrorEvent(text=repr(e))
 
 
 
@@ -920,61 +926,63 @@ class XY(AppForm):
 
 
                 if (fitstatus == True):
-                    opt, cov = np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
-                    self.fit_slider_label.setText('y= f(x) EXP')
-                    p = np.poly1d(opt)
-                    Yline = p(Xline)
-                    formular = 'y= f(x):'
-                    sigma = np.sqrt(np.diag(cov))
+                    try:
+                        opt, cov = np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
+                        self.fit_slider_label.setText('y= f(x) EXP')
+                        p = np.poly1d(opt)
+                        Yline = p(Xline)
+                        formular = 'y= f(x):'
+                        sigma = np.sqrt(np.diag(cov))
 
 
-                    N = len(XtoFit)
-                    F = N - 2
-                    MSWD = 1 + 2 * np.sqrt(2 / F)
-                    MSWDerr = np.sqrt(2 / F)
+                        N = len(XtoFit)
+                        F = N - 2
+                        MSWD = 1 + 2 * np.sqrt(2 / F)
+                        MSWDerr = np.sqrt(2 / F)
 
-                    for i in range(int(self.FitLevel + 1)):
-                        Paralist.append([opt[i], sigma[i]])
+                        for i in range(int(self.FitLevel + 1)):
+                            Paralist.append([opt[i], sigma[i]])
 
-                        if int(self.fit_slider.value()) == 0:
+                            if int(self.fit_slider.value()) == 0:
 
-                            if (self.FitLevel - i == 0):
-                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '+'
-                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '\n'
+                                if (self.FitLevel - i == 0):
+                                    ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '+'
+                                    BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '\n'
 
-                            else:
-                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '$x^' + str(
-                                    self.FitLevel - i) + '$' + '+'
-                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'x^' + str(
-                                    self.FitLevel - i) + '+\n'
-
-
-
-                        elif (int(self.fit_slider.value()) == 1):
-
-                            if (self.FitLevel - i == 0):
-                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '+'
-                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '+\n'
+                                else:
+                                    ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '$x^' + str(
+                                        self.FitLevel - i) + '$' + '+'
+                                    BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'x^' + str(
+                                        self.FitLevel - i) + '+\n'
 
 
 
-                            else:
-                                ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '$y^' + str(
-                                    self.FitLevel - i) + '$' + '+'
-                                BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'y^' + str(
-                                    self.FitLevel - i) + '+\n'
+                            elif (int(self.fit_slider.value()) == 1):
+
+                                if (self.FitLevel - i == 0):
+                                    ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '+'
+                                    BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '+\n'
+
+
+
+                                else:
+                                    ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i]) + '$y^' + str(
+                                        self.FitLevel - i) + '$' + '+'
+                                    BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'y^' + str(
+                                        self.FitLevel - i) + '+\n'
+
+                                pass
 
                             pass
 
-                        pass
+                        self.textbox.setText(formular + '\n' + BoxResultStr + '\n MSWD(±2σ)' + str(MSWD) + '±' + str(
+                            2 * MSWDerr) + '\n' + self.sentence)
 
-                    self.textbox.setText(formular + '\n' + BoxResultStr + '\n MSWD(±2σ)' + str(MSWD) + '±' + str(
-                        2 * MSWDerr) + '\n' + self.sentence)
+                        if (self.fit_cb.isChecked()):
+                            self.axes.plot(Xline, Yline, 'b-')
 
-                    if (self.fit_cb.isChecked()):
-                        self.axes.plot(Xline, Yline, 'b-')
-
-
+                    except Exception as e:
+                        self.ErrorEvent(text=repr(e))
 
 
 

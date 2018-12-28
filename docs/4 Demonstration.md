@@ -164,6 +164,24 @@ For example, as the picture below shown,  the original diagram used Nb and Th, n
 ![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/04.Statistical.png?raw=true)
 
 
+
+
+## Combine Multiple Excel data files into One Excel file
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/CombineData.png)
+
+
+
+## Flatten a 2-d data files into 1-d array
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/Flatten.png)
+
+
+## Data Transformation: Transposition/ Center Trans/ Standard Trans / Log Trans
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/DataTrans.png)
+
+
 ## Cluster
 
 ![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/05.Cluster.png?raw=true)

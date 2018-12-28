@@ -11,3 +11,4 @@ BeautifulSoup4>=4.5.1
 requests>=2.18.4
 PyQt5>=5.9.1
 scikit-learn>=0.19.1
+sklearn-pandas>=2.0
