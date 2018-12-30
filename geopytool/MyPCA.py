@@ -176,29 +176,6 @@ class MyPCA(AppForm):
         self.create_main_frame()
         self.PCA_func()
 
-    def saveResult(self):
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          '文件保存',
-                                                          'C:/',
-                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ('csv' in DataFileOutput):
-
-                # DataFileOutput = DataFileOutput[0:-4]
-
-                self.result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-                # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
-
-            elif ('xlsx' in DataFileOutput):
-
-                # DataFileOutput = DataFileOutput[0:-5]
-
-                self.result.to_excel(DataFileOutput, encoding='utf-8')
-
-                # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
-
 
     def PCA_func(self):
 

@@ -1420,7 +1420,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.fapop = MyFA(df=self.model._df)
-            self.fapop.preFA()
+            self.fapop.FA_func()
 
 
     def LDA(self):

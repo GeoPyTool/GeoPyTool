@@ -1,6 +1,6 @@
-version = '0.8.13.10.28'
+version = '0.8.14.12.05'
 
-date = '2018-12-5'
+date = '2019-1-1'
 
 dpi = 128
 #coding:utf-8
@@ -671,6 +671,7 @@ class NewCustomQTableView(QtWidgets.QTableView):
 
 
 class AppForm(QMainWindow):
+    result = pd.DataFrame()
     _df = pd.DataFrame()
     _changed = False
 
@@ -962,6 +963,35 @@ class AppForm(QMainWindow):
 
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
+
+    def saveResult(self):
+
+
+        self.result.reset_index
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ('csv' in DataFileOutput):
+
+                # DataFileOutput = DataFileOutput[0:-4]
+
+                self.result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
+
+            elif ('xlsx' in DataFileOutput):
+
+                # DataFileOutput = DataFileOutput[0:-5]
+
+                self.result.to_excel(DataFileOutput, encoding='utf-8')
+
+                # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
+
+
+
 
     def saveDataFile(self):
 
