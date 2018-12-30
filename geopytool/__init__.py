@@ -49,6 +49,10 @@ from geopytool.Combine import MyCombine
 
 from geopytool.Flatten import MyFlatten
 
+from geopytool.MyFA import MyFA
+
+from geopytool.MyLDA import MyLDA
+
 from geopytool.MyPCA import MyPCA
 
 
@@ -288,11 +292,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionFlatten = QtWidgets.QAction(QIcon(LocationOfMySelf+'/flatten.png'),u'Flatten',self)
         self.actionFlatten.setObjectName('actionFlatten')
 
+
+
         self.actionTrans = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'Trans',self)
         self.actionTrans.setObjectName('actionTrans')
 
+        self.actionFA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/fa.png'),u'FA',self)
+        self.actionFA.setObjectName('actionFA')
+
         self.actionPCA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/pca.png'),u'PCA',self)
         self.actionPCA.setObjectName('actionPCA')
+
+        self.actionLDA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/LDA.png'),u'LDA',self)
+        self.actionLDA.setObjectName('actionLDA')
+
+
 
 
         #self.actionICA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/ica.png'),u'ICA',self)
@@ -378,15 +392,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuAdditional.addAction(self.actionFlatten)
         self.menuAdditional.addAction(self.actionTrans)
-        # self.menuAdditional.addAction(self.actionPCA)
+        self.menuAdditional.addAction(self.actionFA)
+        self.menuAdditional.addAction(self.actionPCA)
+        #self.menuAdditional.addAction(self.actionLDA)
 
 
-
-
-
-
-        #self.menuAdditional.addAction(self.actionICA)
-        #self.menuAdditional.addAction(self.actionSVM)
 
 
         self.menuHelp.addAction(self.actionWeb)
@@ -465,7 +475,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionTrans.triggered.connect(self.Trans)
 
+        self.actionFA.triggered.connect(self.FA)
         self.actionPCA.triggered.connect(self.PCA)
+        self.actionLDA.triggered.connect(self.LDA)
 
 
         #self.actionICA.triggered.connect(self.ICA)
@@ -559,7 +571,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionTrans.setText('5-7 '+_translate('MainWindow',u'Trans'))
 
-        self.actionPCA.setText('5-8 '+_translate('MainWindow',u'PCA'))
+        self.actionFA.setText('5-8 '+_translate('MainWindow',u'FA'))
+
+        self.actionPCA.setText('5-9 '+_translate('MainWindow',u'PCA'))
+
+        self.actionLDA.setText('5-10 '+_translate('MainWindow',u'LDA'))
 
 
 
@@ -817,11 +833,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if len(self.raw)>0:
             self.model = PandasModel(self.raw)
-            print(self.model._df)
+            #print(self.model._df)
 
             self.tableView.setModel(self.model)
             self.model = PandasModel(self.raw)
-            print(self.model._df)
+            #print(self.model._df)
 
             flag = 0
             ItemsAvalibale = self.model._df.columns.values.tolist()
@@ -842,7 +858,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         # if self.model._changed == True:
         # print('changed')
-        # print(self.model._df)
+        # #print(self.model._df)
 
 
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,_translate('MainWindow', u'Save Data File'),
@@ -1386,7 +1402,44 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.pcapop = MyPCA(df=self.model._df)
-            self.pcapop.prePCA()
+            self.pcapop.PCA_func()
+
+    def FA(self):
+
+        print('FA called \n')
+
+        pass
+
+
+        print('self.model._df length: ',len(self.model._df))
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.fapop = MyFA(df=self.model._df)
+            self.fapop.preFA()
+
+
+    def LDA(self):
+
+        print('LDA called \n')
+
+        pass
+
+
+        print('self.model._df length: ',len(self.model._df))
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.ldapop = MyLDA(df=self.model._df)
+            self.ldapop.preLDA()
 
 
 

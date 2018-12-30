@@ -378,6 +378,16 @@ class MultiDimension(AppForm):
 
         PointLabels = []
 
+        x_to_plot=[]
+        y_to_plot=[]
+        z_to_plot=[]
+        label_to_plot=[]
+        color_to_plot=[]
+        size_to_plot=[]
+        alpha_to_plot=[]
+        marker_to_plot=[]
+
+
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
 
@@ -395,6 +405,12 @@ class MultiDimension(AppForm):
             xuse, yuse,zuse = 0, 0, 0
 
             x, y , z= raw.at[i, self.items[a]], raw.at[i, self.items[b]],raw.at[i, self.items[c]]
+
+            marker = raw.at[i, 'Marker']
+            s = raw.at[i, 'Size']
+            color = raw.at[i, 'Color']
+            alpha = raw.at[i, 'Alpha']
+            label = TmpLabel
 
             try:
                 xuse = x
@@ -431,7 +447,6 @@ class MultiDimension(AppForm):
                         self.axes.set_zlabel(self.zlabel)
                         self.z_element_label.setText(self.zlabel)
 
-
                 if (self.logx_cb.isChecked()):
                     xuse = math.log(x, 10)
                     self.xlabel = '$log10$ ' + self.xlabel
@@ -452,11 +467,23 @@ class MultiDimension(AppForm):
 
                     self.axes.set_zlabel(self.zlabel)
 
-                self.axes.scatter(xuse, yuse, zuse, marker=raw.at[i, 'Marker'],
-                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                  label=TmpLabel, edgecolors='None')
+
+                x_to_plot.append(xuse)
+                y_to_plot.append(yuse)
+                z_to_plot.append(zuse)
+                label_to_plot.append(label)
+                color_to_plot.append(color)
+                size_to_plot.append(s)
+                alpha_to_plot.append(alpha)
+                marker_to_plot.append(marker)
+
             except(ValueError):
                 pass
+
+
+        for i in range(len(x_to_plot)):
+            self.axes.scatter(x_to_plot[i], y_to_plot[i], z_to_plot[i], marker=marker_to_plot[i], s=size_to_plot[i],
+                              color=color_to_plot[i], alpha=alpha_to_plot[i], label=label_to_plot[i], edgecolors='None')
 
         if (self.legend_cb.isChecked()):
             self.axes.legend(loc=2,prop=fontprop)

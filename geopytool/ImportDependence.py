@@ -50,7 +50,11 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer, Bina
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_selection import VarianceThreshold, SelectKBest, chi2
 from sklearn.metrics.pairwise import euclidean_distances
-from sklearn.decomposition import PCA, FastICA
+from sklearn.decomposition import PCA, FastICA,FactorAnalysis
+
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
 from sklearn import datasets
 from scipy.stats import mode
 from scipy.spatial.distance import *
