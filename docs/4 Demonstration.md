@@ -172,6 +172,13 @@ For example, as the picture below shown,  the original diagram used Nb and Th, n
 
 
 
+
+## Cluster
+
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/05.Cluster.png?raw=true)
+
+
+
 ## Flatten a 2-d data files into 1-d array
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/Flatten.png)
@@ -182,10 +189,27 @@ For example, as the picture below shown,  the original diagram used Nb and Th, n
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/DataTrans.png)
 
 
-## Cluster
-
-![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/05.Cluster.png?raw=true)
+## Factor Analysis (FA) and Principal Component Analysis (PCA)
 
 
+![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/FA_PCA.png?raw=true)
+
+
+<script src="http://vjs.zencdn.net/4.0/video.js"></script>
+
+<video id="pelican-installation" class="video-js vjs-default-skin" controls
+preload="auto" width="683" height="384" poster="/static/screencasts/pelican-installation.png"
+data-setup="{}">
+<source src="https://github.com/GeoPyTool/GeoPyTool/blob/master/img/FA_Video.mp4" type='video/mp4'>
+</video>
+
+
+<script src="http://vjs.zencdn.net/4.0/video.js"></script>
+
+<video id="pelican-installation" class="video-js vjs-default-skin" controls
+preload="auto" width="683" height="384" poster="/static/screencasts/pelican-installation.png"
+data-setup="{}">
+<source src="https://github.com/GeoPyTool/GeoPyTool/blob/master/img/PCA_Video.mp4" type='video/mp4'>
+</video>
 
 
