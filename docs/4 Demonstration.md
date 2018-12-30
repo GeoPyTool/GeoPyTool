@@ -202,11 +202,10 @@ your browser does not support the video tag
 </body>
 
 
-src="https://github.com/GeoPyTool/GeoPyTool/blob/master/img/PCA_Video.mp4
 
 
 <body>
-<video src="https://github.com/GeoPyTool/GeoPyTool/blob/master/img/PCA_Video.mp4 controls="controls">
+<video src="https://github.com/GeoPyTool/GeoPyTool/blob/master/img/PCA_Video.mp4"  controls="controls">
 your browser does not support the video tag
 </video>
 </body>
