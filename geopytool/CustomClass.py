@@ -1,4 +1,4 @@
-version = '0.8.14.12.05'
+version = '0.8.19.1.1'
 
 date = '2019-1-1'
 
@@ -753,7 +753,6 @@ class AppForm(QMainWindow):
         self.create_main_frame()
         self.create_status_bar()
 
-
     def CleanDataFile(self,raw=pd.DataFrame(),checklist=['质量','分数','百分比',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
 
 
@@ -787,8 +786,6 @@ class AppForm(QMainWindow):
         return(raw)
         print(raw.columns.values.tolist())
 
-
-
     def Check(self):
 
         row = self._df.index.tolist()
@@ -810,7 +807,6 @@ class AppForm(QMainWindow):
                     widget.deleteLater()
                 else:
                     self.clearLayout(item.layout())
-
 
     def resizeEvent(self, evt=None):
 
@@ -843,7 +839,6 @@ class AppForm(QMainWindow):
         else:
             reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
                                                                                                       'Your Data mismatch this Function.\n Error infor is:') + text)
-
 
     def DrawLine(self, l=[(41, 0), (41, 3), (45, 3)], color='grey', linewidth=0.5, linestyle='-', linelabel='',
                  alpha=0.5):
@@ -880,7 +875,6 @@ class AppForm(QMainWindow):
     def save_plot_quitely(self,path= '~/',name='Target'):
         self.canvas.print_figure(path + name + '.pdf', dpi=self.dpi)
         self.canvas.print_figure(path + name + '.png', dpi=self.dpi)
-
 
     def create_main_frame(self):
         self.main_frame = QWidget()
@@ -964,6 +958,27 @@ class AppForm(QMainWindow):
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
 
+    def getDataFile(self,CleanOrNot=True):
+        _translate = QtCore.QCoreApplication.translate
+
+        DataFileInput, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
+                                                                  '~/',
+                                                                  'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+        print(DataFileInput)
+
+        raw_input_data=pd.DataFrame()
+
+        if ('csv' in DataFileInput):
+            raw_input_data = pd.read_csv(DataFileInput)
+        elif ('xls' in DataFileInput):
+            raw_input_data = pd.read_excel(DataFileInput)
+
+        if len(raw_input_data)>0:
+            return(raw_input_data,DataFileInput)
+        else:
+            return('Blank')
+
+
     def saveResult(self):
 
 
@@ -989,9 +1004,6 @@ class AppForm(QMainWindow):
                 self.result.to_excel(DataFileOutput, encoding='utf-8')
 
                 # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
-
-
-
 
     def saveDataFile(self):
 
@@ -1035,7 +1047,6 @@ class AppForm(QMainWindow):
 
     def DropUseless(self,df= pd.DataFrame(),droplist = ['Q (Mole)', 'A (Mole)', 'P (Mole)', 'F (Mole)',
                     'Q (Mass)', 'A (Mass)', 'P (Mass)', 'F (Mass)']):
-
         for t in droplist:
             if t in df.columns.values:
                 df = df.drop(t, 1)
@@ -1050,6 +1061,28 @@ class AppForm(QMainWindow):
                 df = df.drop(i, 1)
         df = df.loc[:, (df != 0).any(axis=0)]
         return(df)
+
+
+    def Slim(self,df= pd.DataFrame()):
+
+        ItemsAvalibale = df.columns.values.tolist()
+        if 'Label' in ItemsAvalibale:
+            df = df.set_index('Label')
+
+        df = df.dropna(axis=1,how='all')
+
+        ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width']
+
+        for i in ItemsToTest:
+            if i in ItemsAvalibale:
+                df = df.drop(i, 1)
+
+        df = df.apply(pd.to_numeric, errors='coerce')
+        df = df.dropna(axis='columns')
+
+        return(df)
+
 
     def stateval(self,data=np.ndarray):
         dict={'mean':mean(data),'ptp':ptp(data),'var':var(data),'std':std(data),'cv':mean(data)/std(data)}

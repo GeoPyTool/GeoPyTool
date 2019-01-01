@@ -601,13 +601,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionEn.setText(u'English')
         self.actionLoadLanguage.setText(_translate('MainWindow',u'Load Language'))
 
-
-    def getfile(self):
-        _translate = QtCore.QCoreApplication.translate
-        fileName, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
-                                                         '~/',
-                                                         'All Files (*);;Text Files (*.txt)')  # 设置文件扩展名过滤,注意用双分号间隔
-
     def goGitHub(self):
         webbrowser.open('https://github.com/GeoPyTool/GeoPyTool')
 
