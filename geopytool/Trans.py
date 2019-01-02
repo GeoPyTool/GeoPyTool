@@ -6,6 +6,7 @@ class MyTrans(AppForm):
     Lines = []
     Tags = []
     description = 'Trans'
+    settings_backup=pd.DataFrame()
     unuseful = ['Name',
                 'Mineral',
                 'Author',
@@ -127,14 +128,17 @@ class MyTrans(AppForm):
 
         dataframe =  dataframe.dropna(axis=1,how='all')
 
-
+        self.settings_backup = self._df
 
         ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width']
 
-        for i in ItemsToTest:
-            if i in ItemsAvalibale:
+        for i in ItemsAvalibale:
+            if i in ItemsToTest:
                 dataframe = dataframe.drop(i, 1)
+            elif( i != 'Label'):
+                self.settings_backup = self.settings_backup.drop(i, 1)
+
 
         dataframe = dataframe.apply(pd.to_numeric, errors='coerce')
         dataframe = dataframe.dropna(axis='columns')
@@ -155,6 +159,13 @@ class MyTrans(AppForm):
 
 
     def saveResult(self):
+
+        #self.result self.settings_backup
+
+        #self.result = self.result.merge(self.settings_backup, how='outer')
+
+        self.result = pd.concat([self.result , self.settings_backup], axis=1)
+
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',
                                                           'C:/',
