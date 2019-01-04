@@ -164,7 +164,7 @@ class MyTrans(AppForm):
 
         #self.result = self.result.merge(self.settings_backup, how='outer')
 
-        self.result = pd.concat([self.result , self.settings_backup], axis=1)
+        self.result = pd.concat([self.settings_backup,self.result], axis=1)
 
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',

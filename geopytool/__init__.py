@@ -1395,7 +1395,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.pcapop = MyPCA(df=self.model._df)
-            self.pcapop.PCA_func()
+            try:
+                self.pcapop.Key_Func()
+                self.pcapop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def FA(self):
 
@@ -1413,7 +1417,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.fapop = MyFA(df=self.model._df)
-            self.fapop.FA_func()
+            try:
+                self.fapop.Key_Func()
+                self.fapop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
 
     def LDA(self):

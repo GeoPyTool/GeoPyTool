@@ -1,6 +1,6 @@
-version = '0.8.19.1.2'
+version = '0.8.19.1.5'
 
-date = '2019-1-2'
+date = '2019-1-5'
 
 dpi = 128
 #coding:utf-8
@@ -625,9 +625,6 @@ class CustomQTableView(QtWidgets.QTableView):
     def keyPressEvent(self, event):  # Reimplement the event here
         return
 
-
-
-
 class NewCustomQTableView(QtWidgets.QTableView):
 
     path=''
@@ -668,11 +665,14 @@ class NewCustomQTableView(QtWidgets.QTableView):
         for f in files:
             print('Drop')
 
-
-
 class AppForm(QMainWindow):
     result = pd.DataFrame()
+    Para = pd.DataFrame()
     _df = pd.DataFrame()
+    data_to_test = pd.DataFrame()
+    begin_result = pd.DataFrame()
+    load_result = pd.DataFrame()
+
     _changed = False
 
     xlabel = r'$SiO_2 wt\%$'
@@ -979,8 +979,35 @@ class AppForm(QMainWindow):
             return('Blank')
 
 
-    def saveResult(self):
+    def Key_Func(self):
+        pass
 
+    def loadDataToTest(self):
+        TMP =self.getDataFile()
+        if TMP != 'Blank':
+            self.data_to_test=TMP[0]
+        self.Key_Func()
+
+    def saveDataFile(self):
+
+        # if self.model._changed == True:
+        # print('changed')
+        # print(self.model._df)
+
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                          '文件保存',
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        if (DataFileOutput != ''):
+
+            if ('csv' in DataFileOutput):
+                self.model._df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+
+            elif ('xls' in DataFileOutput):
+                self.model._df.to_excel(DataFileOutput, encoding='utf-8')
+
+    def saveResult(self):
 
         self.result.reset_index
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
@@ -1005,12 +1032,9 @@ class AppForm(QMainWindow):
 
                 # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
 
-    def saveDataFile(self):
+    def savePara(self):
 
-        # if self.model._changed == True:
-        # print('changed')
-        # print(self.model._df)
-
+        self.Para.reset_index
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',
                                                           'C:/',
@@ -1019,10 +1043,19 @@ class AppForm(QMainWindow):
         if (DataFileOutput != ''):
 
             if ('csv' in DataFileOutput):
-                self.model._df.to_csv(DataFileOutput, sep=',', encoding='utf-8')
 
-            elif ('xls' in DataFileOutput):
-                self.model._df.to_excel(DataFileOutput, encoding='utf-8')
+                # DataFileOutput = DataFileOutput[0:-4]
+
+                self.Para.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                # self.Para.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
+
+            elif ('xlsx' in DataFileOutput):
+
+                # DataFileOutput = DataFileOutput[0:-5]
+
+                self.Para.to_excel(DataFileOutput, encoding='utf-8')
+
+                # self.Para.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
 
     def create_action(self, text, slot=None, shortcut=None,
                       icon=None, tip=None, checkable=False,
@@ -1093,6 +1126,28 @@ class AppForm(QMainWindow):
         data=array([data1,data2])
         dict={'cov':cov(data,bias=1),'corrcoef':corrcoef(data)}
         return(dict)
+
+    def Hsim_Distance(self,a=[1,2,3,4],b=[5,6,7,8]):
+        tmp =[]
+        result=0
+        for i in range(min([len(a),len(b)])):
+            tmp.append( 1.0/(1+np.abs(a[i]-b[i])))
+
+        print(tmp)
+        result=np.sum(tmp)/(min([len(a),len(b)]))
+        return(result)
+
+
+    def Close_Distance(self,a=[1,2,3,4],b=[5,6,7,8]):
+        tmp =[]
+        result=0
+        for i in range(min([len(a),len(b)])):
+            tmp.append(  np.power(np.e,-np.abs(a[i]-b[i]) )  )
+
+        print(tmp)
+        result=np.sum(tmp)/(min([len(a),len(b)]))
+        return(result)
+
 
 
 

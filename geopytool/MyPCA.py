@@ -6,6 +6,7 @@ class MyPCA(AppForm):
     Lines = []
     Tags = []
     WholeData = []
+    settings_backup=pd.DataFrame()
     description = 'PCA'
     unuseful = ['Name',
                 'Mineral',
@@ -22,30 +23,46 @@ class MyPCA(AppForm):
     data_to_test =pd.DataFrame()
     switched = False
     text_result = ''
-
+    whole_labels=[]
     pca = PCA(n_components='mle')
+
+    n=6
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle('PCA Data')
         self._df = df
 
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to PCA')
 
+
+
+        self.settings_backup = self._df
+        ItemsToTest = ['Label','Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width']
+        for i in self._df.columns.values.tolist():
+            if i not in ItemsToTest:
+                self.settings_backup = self.settings_backup.drop(i, 1)
+        print(self.settings_backup)
+
+
         self.result_to_fit= self.Slim(self._df)
 
 
-        print(self.result_to_fit)
-        print(self.result_to_fit.shape)
+        #print(self.result_to_fit)
+        #print(self.result_to_fit.shape)
 
         #self.pca=PCA(n_components='mle')
-        self.pca.fit(self.result_to_fit.values)
-        self.evr = (self.pca.explained_variance_ratio_)
-        self.ev = (self.pca.explained_variance_)
-        self.n = (self.pca.n_components_)
-        self.comp = (self.pca.components_)
+        try:
+            self.pca.fit(self.result_to_fit.values)
+            self.evr = (self.pca.explained_variance_ratio_)
+            self.ev = (self.pca.explained_variance_)
+            self.n = (self.pca.n_components_)
+            self.comp = (self.pca.components_)
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
+
         self.create_main_frame()
 
     def create_main_frame(self):
@@ -53,7 +70,7 @@ class MyPCA(AppForm):
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 6.0), dpi=self.dpi)
-        self.setWindowTitle('PCA Result')
+        self.setWindowTitle('Principle Component Analysis')
         self.fig = plt.figure(figsize=(12, 6))
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.9, top=0.9)
         self.canvas = FigureCanvas(self.fig)
@@ -61,7 +78,7 @@ class MyPCA(AppForm):
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.PCA_func)  # int
+        self.legend_cb.stateChanged.connect(self.Key_Func)  # int
 
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -71,6 +88,9 @@ class MyPCA(AppForm):
 
         self.save_result_button = QPushButton('&Save PCA Result')
         self.save_result_button.clicked.connect(self.saveResult)
+
+        self.save_Para_button = QPushButton('&Save PCA Para')
+        self.save_Para_button.clicked.connect(self.savePara)
 
         self.load_data_button = QPushButton('&Load Data to Test')
         self.load_data_button.clicked.connect(self.loadDataToTest)
@@ -84,7 +104,7 @@ class MyPCA(AppForm):
         self.x_element.setValue(0)
         self.x_element.setTracking(True)
         self.x_element.setTickPosition(QSlider.TicksBothSides)
-        self.x_element.valueChanged.connect(self.PCA_func)  # int
+        self.x_element.valueChanged.connect(self.Key_Func)  # int
         self.x_element_label = QLabel('component')
 
         self.y_element = QSlider(Qt.Horizontal)
@@ -92,7 +112,7 @@ class MyPCA(AppForm):
         self.y_element.setValue(1)
         self.y_element.setTracking(True)
         self.y_element.setTickPosition(QSlider.TicksBothSides)
-        self.y_element.valueChanged.connect(self.PCA_func)  # int
+        self.y_element.valueChanged.connect(self.Key_Func)  # int
         self.y_element_label = QLabel('component')
 
         self.z_element = QSlider(Qt.Horizontal)
@@ -100,7 +120,7 @@ class MyPCA(AppForm):
         self.z_element.setValue(2)
         self.z_element.setTracking(True)
         self.z_element.setTickPosition(QSlider.TicksBothSides)
-        self.z_element.valueChanged.connect(self.PCA_func)  # int
+        self.z_element.valueChanged.connect(self.Key_Func)  # int
         self.z_element_label = QLabel('component')
 
 
@@ -120,6 +140,7 @@ class MyPCA(AppForm):
         self.hbox.addWidget(self.load_data_button)
         self.hbox.addWidget(self.save_picture_button)
         self.hbox.addWidget(self.save_result_button)
+        self.hbox.addWidget(self.save_Para_button)
         self.vbox.addLayout(self.hbox)
         self.vbox.addLayout(self.hbox0)
         self.vbox.addLayout(self.hbox2)
@@ -148,14 +169,14 @@ class MyPCA(AppForm):
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
-        self.show()
+        #self.show()
 
     def switch(self):
         self.switched = not(self.switched)
         self.create_main_frame()
-        self.PCA_func()
+        self.Key_Func()
 
-    def PCA_func(self):
+    def Key_Func(self):
 
         a = int(self.x_element.value())
         b = int(self.y_element.value())
@@ -177,7 +198,9 @@ class MyPCA(AppForm):
 
         self.nvs = zip(title, self.comp)
         self.compdict = dict((title, self.comp) for title, self.comp in self.nvs)
-        self.result=pd.DataFrame(self.compdict)
+        self.Para=pd.DataFrame(self.compdict)
+
+
         self.pca_result = self.pca.fit_transform(self.result_to_fit)
 
 
@@ -198,6 +221,7 @@ class MyPCA(AppForm):
                 all_markers.append(marker)
                 all_alpha.append(alpha)
 
+        self.whole_labels = all_labels
 
         if(len(self.data_to_test)>0):
 
@@ -217,7 +241,7 @@ class MyPCA(AppForm):
                     if i not in self._df.columns.values.tolist():
                         self.data_to_test=self.data_to_test.drop(columns=i)
 
-                print(self.data_to_test)
+                #print(self.data_to_test)
 
                 test_labels=[]
                 test_colors=[]
@@ -226,7 +250,7 @@ class MyPCA(AppForm):
 
                 for i in range(len(self.data_to_test)):
 
-                    print(self.data_to_test.at[i, 'Label'])
+                    #print(self.data_to_test.at[i, 'Label'])
                     target = self.data_to_test.at[i, 'Label']
                     color = self.data_to_test.at[i, 'Color']
                     marker = self.data_to_test.at[i, 'Marker']
@@ -238,13 +262,30 @@ class MyPCA(AppForm):
                         test_markers.append(marker)
                         test_alpha.append(alpha)
 
+
+                self.whole_labels = self.whole_labels + test_labels
+
                 self.data_to_test_to_fit= self.Slim(self.data_to_test)
 
-                print(self.data_to_test_to_fit)
-                print(self.data_to_test_to_fit.shape)
+                #print(self.data_to_test_to_fit)
+                #print(self.data_to_test_to_fit.shape)
+
+
+                self.load_settings_backup = self.data_to_test
+                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size',
+                               'Alpha',
+                               'Style', 'Width']
+                for i in self.data_to_test.columns.values.tolist():
+                    if i not in Load_ItemsToTest:
+                        self.load_settings_backup = self.load_settings_backup .drop(i, 1)
+
+                #print(self.load_settings_backup ,self.pca_data_to_test)
+
 
                 try:
                     self.pca_data_to_test = self.pca.transform(self.data_to_test_to_fit)
+
+                    self.load_result = pd.concat([self.load_settings_backup,pd.DataFrame(self.pca_data_to_test)], axis=1)
                     for i in range(len(test_labels)):
                         if (self.switched == False):
                             self.axes.scatter(self.pca_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
@@ -274,6 +315,8 @@ class MyPCA(AppForm):
         self.axes.set_ylabel("component no."+str(b+1))
         self.y_element_label.setText("component no."+str(b+1))
 
+        self.begin_result = pd.concat([self.settings_backup,pd.DataFrame(self.pca_result)], axis=1)
+
         for i in range(len(all_labels)):
             if (self.switched == False):
 
@@ -301,12 +344,32 @@ class MyPCA(AppForm):
         if (self.legend_cb.isChecked()):
             self.axes.legend(loc=2,prop=fontprop)
 
+
+        self.result = pd.concat([self.begin_result , self.load_result], axis=0).set_index('Label')
         self.canvas.draw()
 
-    def loadDataToTest(self):
-        TMP =self.getDataFile()
 
-        if TMP != 'Blank':
-            self.data_to_test=TMP[0]
 
-        self.PCA_func()
+    def Distance_Calculation(self):
+
+        print(self.whole_labels)
+        distance_result={}
+
+        for i in range(len(self.whole_labels)):
+            distance_result[self.whole_labels[i]] = []
+
+        print(distance_result)
+
+
+        self.pca_result[self.result_to_fit.index == self.whole_labels[0], 0]
+
+        print(self.pca_result)
+
+        try:
+            print(self.pca_data_to_test)
+            self.pca_data_to_test[self.data_to_test_to_fit.index == self.whole_labels[0], 0]
+        except Exception as e:
+            pass
+            #self.ErrorEvent(text=repr(e))
+
+
