@@ -51,15 +51,15 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_selection import VarianceThreshold, SelectKBest, chi2
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.decomposition import PCA, FastICA,FactorAnalysis
-
-
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
 from sklearn import datasets
 from scipy.stats import mode
-from scipy.spatial.distance import *
+from scipy.spatial import distance
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.cluster import hierarchy as hc
+
+from itertools import product, combinations, permutations, repeat
+
 from PyQt5.QtWidgets import QMainWindow, QMenu, QSizePolicy, QMessageBox, QWidget, QFileDialog, QAction,QTextEdit, QLineEdit,    QApplication, QPushButton, QSlider, QLabel, QHBoxLayout, QVBoxLayout,QProxyStyle,QStyle,qApp,QCheckBox
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt

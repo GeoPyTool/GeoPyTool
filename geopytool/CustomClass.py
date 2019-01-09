@@ -1,6 +1,6 @@
-version = '0.8.19.1.5'
+version = '0.8.19.1.9'
 
-date = '2019-1-5'
+date = '2019-1-9'
 
 dpi = 128
 #coding:utf-8
@@ -1127,13 +1127,13 @@ class AppForm(QMainWindow):
         dict={'cov':cov(data,bias=1),'corrcoef':corrcoef(data)}
         return(dict)
 
-    def Hsim_Distance(self,a=[1,2,3,4],b=[5,6,7,8]):
+    def Hsim_Distance(self,a=[1,2],b=[5,6,7,8]):
         tmp =[]
         result=0
-        for i in range(min([len(a),len(b)])):
+        for i in range(min(len(a),len(b))):
             tmp.append( 1.0/(1+np.abs(a[i]-b[i])))
 
-        print(tmp)
+        #print(tmp)
         result=np.sum(tmp)/(min([len(a),len(b)]))
         return(result)
 
@@ -1144,7 +1144,7 @@ class AppForm(QMainWindow):
         for i in range(min([len(a),len(b)])):
             tmp.append(  np.power(np.e,-np.abs(a[i]-b[i]) )  )
 
-        print(tmp)
+        #print(tmp)
         result=np.sum(tmp)/(min([len(a),len(b)]))
         return(result)
 

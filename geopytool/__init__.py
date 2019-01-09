@@ -51,14 +51,13 @@ from geopytool.Flatten import MyFlatten
 
 from geopytool.MyFA import MyFA
 
-from geopytool.MyLDA import MyLDA
-
 from geopytool.MyPCA import MyPCA
-
 
 from geopytool.Trans import MyTrans
 
+from geopytool.Dist import MyDist
 
+#from geopytool.MyLDA import MyLDA
 #from geopytool.ICA import MyICA
 #from geopytool.SVM import MySVM
 
@@ -297,6 +296,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTrans = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'Trans',self)
         self.actionTrans.setObjectName('actionTrans')
 
+
+        self.actionDist = QtWidgets.QAction(QIcon(LocationOfMySelf+'/dist.png'),u'Dist',self)
+        self.actionDist.setObjectName('actionDist')
+
         self.actionFA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/fa.png'),u'FA',self)
         self.actionFA.setObjectName('actionFA')
 
@@ -394,6 +397,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionTrans)
         self.menuAdditional.addAction(self.actionFA)
         self.menuAdditional.addAction(self.actionPCA)
+        self.menuAdditional.addAction(self.actionDist)
         #self.menuAdditional.addAction(self.actionLDA)
 
 
@@ -479,6 +483,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPCA.triggered.connect(self.PCA)
         self.actionLDA.triggered.connect(self.LDA)
 
+        self.actionDist.triggered.connect(self.Dist)
 
         #self.actionICA.triggered.connect(self.ICA)
         #self.actionSVM.triggered.connect(self.SVM)
@@ -575,9 +580,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionPCA.setText('5-9 '+_translate('MainWindow',u'PCA'))
 
-        self.actionLDA.setText('5-10 '+_translate('MainWindow',u'LDA'))
+        self.actionDist.setText('5-10 '+_translate('MainWindow',u'Distance'))
 
-
+        #self.actionLDA.setText('5-11 '+_translate('MainWindow',u'LDA'))
 
 
         #self.actionICA.setText('5-8 '+_translate('MainWindow',u'ICA'))
@@ -1335,16 +1340,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         else:
             pass
 
-
-
-
     def Flatten(self):
 
         print('Flatten called \n')
-
-        pass
-
-
         print('self.model._df length: ',len(self.model._df))
 
 
@@ -1376,6 +1374,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df) > 0):
             self.transpop = MyTrans(df=self.model._df)
             self.transpop.Trans()
+
+    def Dist(self):
+
+        print('Dist called \n')
+        print('self.model._df length: ',len(self.model._df))
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+
+            try:
+                self.Distpop = MyDist(df=self.model._df)
+                self.Distpop.Dist()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+
 
 
 
