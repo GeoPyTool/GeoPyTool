@@ -136,12 +136,9 @@ class Trace(AppForm):
         if len(self._given_Standard) > 0:
             self.standard_slider.setValue(len(self.StandardsName))
             self.right_label = QLabel("Self Defined Standard")
-
         else:
-
             self.standard_slider.setValue(0)
             self.right_label = QLabel(self.StandardsName[int(self.standard_slider.value())])
-
 
         self.standard_slider.setTracking(True)
         self.standard_slider.setTickPosition(QSlider.TicksBothSides)

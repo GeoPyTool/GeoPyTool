@@ -71,6 +71,7 @@ from geopytool.REE import REE
 from geopytool.Rose import Rose
 from geopytool.Stereo import Stereo
 from geopytool.TAS import TAS
+from geopytool.Saccani import Saccani
 from geopytool.Temp import *
 from geopytool.Trace import Trace
 from geopytool.XY import XY
@@ -321,6 +322,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
+        self.actionSaccani = QtWidgets.QAction(QIcon(LocationOfMySelf + '/s.png'), u'Saccani Plot', self)
+        self.actionSaccani.setObjectName('actionSaccani')
+
         self.actionClastic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'Clastic',self)
         self.actionClastic.setObjectName("actionClastic")
 
@@ -362,6 +366,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #self.menuGeoChem.addAction(self.actionBivariate)
         self.menuGeoChem.addAction(self.actionCIPW)
         self.menuGeoChem.addAction(self.actionQAPF)
+        self.menuGeoChem.addAction(self.actionSaccani)
 
 
 
@@ -451,6 +456,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionHarker.triggered.connect(self.Harker)
         self.actionHarkerDIY.triggered.connect(self.HarkerDIY)
         self.actionQAPF.triggered.connect(self.QAPF)
+        self.actionSaccani.triggered.connect(self.Saccani)
 
         self.actionStereo.triggered.connect(self.Stereo)
         self.actionRose.triggered.connect(self.Rose)
@@ -546,7 +552,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionHarker.setText('1-6 '+_translate('MainWindow',u'Harker'))
         self.actionCIPW.setText('1-7 '+_translate('MainWindow',u'CIPW'))
         self.actionQAPF.setText('1-8 '+_translate('MainWindow',u'QAPF'))
-        #self.actionBivariate.setText(_translate('MainWindow',u'Bivariate'))
+        self.actionSaccani.setText('1-9 '+_translate('MainWindow',u'Saccani Plot'))
         #self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
 
         self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
@@ -889,25 +895,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.taspop = TAS(df=self.model._df)
-
-
-
-
             try:
                 self.taspop.TAS()
                 self.taspop.show()
-
-
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
-            '''
-                print('Error is ',e)
-            except:
-                
-                self.ErrorEvent()
-            '''
 
+    def Saccani(self):
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
+
+        if (len(self.model._df) > 0):
+            self.sacpop = Saccani(df=self.model._df)
+            self.sacpop.Saccani()
+            self.sacpop.show()
+            try:
+                pass
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def REE(self):
 
