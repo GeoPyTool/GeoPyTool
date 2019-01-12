@@ -913,18 +913,12 @@ class XY(AppForm):
 
         if (int(self.fit_slider.value()) == 0):
             if len(XtoFit)>0:
-
                 Xline = np.linspace(min(XtoFit), max(XtoFit), 30)
-
-
-
                 try:
                     np.polyfit(XtoFit, YtoFit, self.FitLevel)
                 except():
                     fitstatus = False
                     pass
-
-
                 if (fitstatus == True):
                     try:
                         opt, cov = np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)

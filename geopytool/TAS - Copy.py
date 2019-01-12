@@ -93,9 +93,7 @@ class TAS(AppForm):
         self.tag_cb.setChecked(True)
         self.tag_cb.stateChanged.connect(self.TAS)  # int
 
-        self.shape_cb= QCheckBox('&Shape')
-        self.shape_cb.setChecked(False)
-        self.shape_cb.stateChanged.connect(self.TAS)  # int
+
 
         self.slider_left_label = QLabel('Volcanic')
         self.slider_right_label = QLabel('Plutonic')
@@ -113,7 +111,7 @@ class TAS(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.result_button,self.shape_cb, self.legend_cb,self.tag_cb,self.irvine_cb,
+        for w in [self.save_button, self.result_button, self.legend_cb,self.tag_cb,self.irvine_cb,
                   self.slider_left_label, self.slider,self.slider_right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
@@ -177,7 +175,6 @@ class TAS(AppForm):
 
 
         PointLabels = []
-        PointColors = []
         x = []
         y = []
         Locations = [(39, 10), (43, 1.5), (44, 6), (47.5, 3.5), (49.5, 1.5), (49, 5.2), (49, 9.5), (54, 3), (53, 7),
@@ -257,6 +254,7 @@ class TAS(AppForm):
         if (self._changed):
             df =  self.CleanDataFile(self._df)
 
+
             for i in range(len(df)):
                 TmpLabel = ''
                 if (df.at[i, 'Label'] in PointLabels or df.at[i, 'Label'] == ''):
@@ -264,14 +262,6 @@ class TAS(AppForm):
                 else:
                     PointLabels.append(df.at[i, 'Label'])
                     TmpLabel = df.at[i, 'Label']
-
-
-                TmpColor = ''
-                if (df.at[i, 'Color'] in PointColors or df.at[i, 'Color'] == ''):
-                    TmpColor = ''
-                else:
-                    PointColors.append(df.at[i, 'Color'])
-                    TmpColor = df.at[i, 'Color']
 
 
 
@@ -301,65 +291,6 @@ class TAS(AppForm):
                 self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
                                   s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
                                   edgecolors='black')
-
-
-            XtoFit = {}
-            YtoFit = {}
-
-            for i in  PointLabels:
-                XtoFit[i]=[]
-                YtoFit[i]=[]
-
-
-            for i in range(len(df)):
-                Alpha = df.at[i, 'Alpha']
-                Marker = df.at[i, 'Marker']
-                Label = df.at[i, 'Label']
-
-                xtest=df.at[i, 'SiO2']
-                ytest=df.at[i, 'Na2O'] + df.at[i, 'K2O']
-
-                XtoFit[Label].append(xtest)
-                YtoFit[Label].append(ytest)
-
-            if (self.shape_cb.isChecked()):
-                for i in PointLabels:
-
-                    if XtoFit[i] != YtoFit[i]:
-                        xmin, xmax = min(XtoFit[i]), max(XtoFit[i])
-                        ymin, ymax = min(YtoFit[i]), max(YtoFit[i])
-
-                        DensityColorMap = 'Blues'
-                        DensityAlpha = 0.3
-
-                        DensityLineColor = PointColors[PointLabels.index(i)]
-                        DensityLineAlpha = 0.4
-
-                        # Peform the kernel density estimate
-                        xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
-                        # print(self.ShapeGroups)
-                        # command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
-                        # exec(command)
-                        # print(xx, yy)
-                        positions = np.vstack([xx.ravel(), yy.ravel()])
-                        values = np.vstack([XtoFit[i], YtoFit[i]])
-                        kernelstatus = True
-                        try:
-                            st.gaussian_kde(values)
-                        except():
-                            kernelstatus = False
-
-                        if kernelstatus == True:
-                            kernel = st.gaussian_kde(values)
-                            f = np.reshape(kernel(positions).T, xx.shape)
-                            # Contourf plot
-                            cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
-                            ## Or kernel density estimate plot instead of the contourf plot
-                            # self.axes.imshow(np.rot90(f), cmap='Blues', extent=[xmin, xmax, ymin, ymax])
-                            # Contour plot
-                            cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
-                            # Label plot
-                            self.axes.clabel(cset, inline=1, fontsize=10)
 
 
             if (self.irvine_cb.isChecked()):
