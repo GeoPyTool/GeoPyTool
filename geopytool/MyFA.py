@@ -74,6 +74,11 @@ class MyFA(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Key_Func)  # int
 
+        self.shape_cb= QCheckBox('&Shape')
+        self.shape_cb.setChecked(False)
+        self.shape_cb.stateChanged.connect(self.Key_Func)  # int
+
+
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
@@ -130,6 +135,7 @@ class MyFA(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.hbox.addWidget(self.legend_cb)
+        self.hbox.addWidget(self.shape_cb)
         self.hbox.addWidget(self.switch_button)
         self.hbox.addWidget(self.load_data_button)
         self.hbox.addWidget(self.save_picture_button)
@@ -297,6 +303,40 @@ class MyFA(AppForm):
                                               marker=test_markers[i],
                                               label=test_labels[i],
                                               alpha=test_alpha[i])
+                            '''
+                            if (self.shape_cb.isChecked()):
+                                pass
+                                XtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
+                                YtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
+
+                                xmin, xmax = min(XtoFit), max(XtoFit)
+                                ymin, ymax = min(YtoFit), max(YtoFit)
+
+                                DensityColorMap = 'Blues'
+                                DensityAlpha = 0.1
+
+                                DensityLineColor = test_colors[i]
+                                DensityLineAlpha = 0.1
+                                # Peform the kernel density estimate
+                                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                                positions = np.vstack([xx.ravel(), yy.ravel()])
+                                values = np.vstack([XtoFit, YtoFit])
+                                kernelstatus = True
+                                try:
+                                    st.gaussian_kde(values)
+                                except Exception as e:
+                                    self.ErrorEvent(text=repr(e))
+                                    kernelstatus = False
+                                if kernelstatus == True:
+                                    kernel = st.gaussian_kde(values)
+                                    f = np.reshape(kernel(positions).T, xx.shape)
+                                    # Contourf plot
+                                    cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
+                                    # Contour plot
+                                    cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
+                                    # Label plot
+                                    self.axes.clabel(cset, inline=1, fontsize=10)                            
+                            '''
                 except Exception as e:
                     self.ErrorEvent(text=repr(e))
 
@@ -336,6 +376,40 @@ class MyFA(AppForm):
                                   marker=all_markers[i],
                                   label=all_labels[i],
                                   alpha=all_alpha[i])
+
+                if (self.shape_cb.isChecked()):
+                    pass
+                    XtoFit = self.fa_result[self.result_to_fit.index == all_labels[i], a]
+                    YtoFit = self.fa_result[self.result_to_fit.index == all_labels[i], b]
+
+                    xmin, xmax = min(XtoFit), max(XtoFit)
+                    ymin, ymax = min(YtoFit), max(YtoFit)
+
+                    DensityColorMap = 'Blues'
+                    DensityAlpha = 0.3
+
+                    DensityLineColor = all_colors[i]
+                    DensityLineAlpha = 0.3
+                    # Peform the kernel density estimate
+                    xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                    positions = np.vstack([xx.ravel(), yy.ravel()])
+                    values = np.vstack([XtoFit, YtoFit])
+                    kernelstatus = True
+                    try:
+                        st.gaussian_kde(values)
+                    except Exception as e:
+                        self.ErrorEvent(text=repr(e))
+                        kernelstatus = False
+
+                    if kernelstatus == True:
+                        kernel = st.gaussian_kde(values)
+                        f = np.reshape(kernel(positions).T, xx.shape)
+                        # Contourf plot
+                        cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
+                        # Contour plot
+                        cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
+                        # Label plot
+                        self.axes.clabel(cset, inline=1, fontsize=10)
 
 
         if (self.legend_cb.isChecked()):

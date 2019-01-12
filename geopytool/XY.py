@@ -1075,9 +1075,9 @@ class XY(AppForm):
                 kernelstatus = True
                 try:
                     st.gaussian_kde(values)
-                except():
-                    kernelstatus =False
-
+                except Exception as e:
+                    self.ErrorEvent(text=repr(e))
+                    kernelstatus = False
                 if kernelstatus== True:
                     kernel = st.gaussian_kde(values)
                     f = np.reshape(kernel(positions).T, xx.shape)

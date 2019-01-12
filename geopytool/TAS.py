@@ -333,7 +333,7 @@ class TAS(AppForm):
                         DensityAlpha = 0.3
 
                         DensityLineColor = PointColors[PointLabels.index(i)]
-                        DensityLineAlpha = 0.4
+                        DensityLineAlpha = 0.3
 
                         # Peform the kernel density estimate
                         xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
@@ -346,9 +346,9 @@ class TAS(AppForm):
                         kernelstatus = True
                         try:
                             st.gaussian_kde(values)
-                        except():
+                        except Exception as e:
+                            self.ErrorEvent(text=repr(e))
                             kernelstatus = False
-
                         if kernelstatus == True:
                             kernel = st.gaussian_kde(values)
                             f = np.reshape(kernel(positions).T, xx.shape)
