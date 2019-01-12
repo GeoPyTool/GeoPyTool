@@ -984,10 +984,6 @@ class XY(AppForm):
                     except Exception as e:
                         self.ErrorEvent(text=repr(e))
 
-
-
-
-
         elif (int(self.fit_slider.value()) == 1):
 
             if len(YtoFit) > 0:
@@ -1052,7 +1048,6 @@ class XY(AppForm):
 
                     if (self.fit_cb.isChecked()):
                         self.axes.plot(Xline, Yline, 'b-')
-
 
         if (self.shape_cb.isChecked()):
 
@@ -1133,10 +1128,7 @@ class XY(AppForm):
 
 
 
-    def stateval(self,data=np.ndarray):
-        dict={'mean':mean(data),'ptp':ptp(data),'var':var(data),'std':std(data),'cv':mean(data)/std(data)}
 
-        return(dict)
 
     def relation(self,data1=np.ndarray,data2=np.ndarray):
         data=array([data1,data2])
@@ -1146,39 +1138,22 @@ class XY(AppForm):
     def Stat(self):
 
         df=self._df
-
-
         m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
         for i in m:
             if i in df.columns.values:
                 df = df.drop(i, 1)
         df.set_index('Label', inplace=True)
-
         items = df.columns.values
         index = df.index.values
-
         StatResultDict = {}
-
         for i in items:
             StatResultDict[i] = self.stateval(df[i])
-
         StdSortedList = sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std'])
-
         StdSortedList.reverse()
-
-        '''
-        for k in sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std']):
-            print("%s=%s" % (k, StatResultDict[k]))
-        '''
-
-
-
         StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
         StatResultDf['Items']=StatResultDf.index.tolist()
-
         self.tablepop = TabelViewer(df=StatResultDf,title='Statistical Result')
         self.tablepop.show()
-
         self.Intro = StatResultDf
         return(StatResultDf)
 

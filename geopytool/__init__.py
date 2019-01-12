@@ -57,9 +57,8 @@ from geopytool.Trans import MyTrans
 
 from geopytool.Dist import MyDist
 
-#from geopytool.MyLDA import MyLDA
-#from geopytool.ICA import MyICA
-#from geopytool.SVM import MySVM
+from geopytool.Sta import MySta
+
 
 
 
@@ -301,23 +300,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionDist = QtWidgets.QAction(QIcon(LocationOfMySelf+'/dist.png'),u'Dist',self)
         self.actionDist.setObjectName('actionDist')
 
+
+        self.actionStatistics = QtWidgets.QAction(QIcon(LocationOfMySelf+'/statistics.png'), u'TAS',self)
+        self.actionStatistics.setObjectName('actionStatistics')
+
+
         self.actionFA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/fa.png'),u'FA',self)
         self.actionFA.setObjectName('actionFA')
 
         self.actionPCA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/pca.png'),u'PCA',self)
         self.actionPCA.setObjectName('actionPCA')
-
-        self.actionLDA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/LDA.png'),u'LDA',self)
-        self.actionLDA.setObjectName('actionLDA')
-
-
-
-
-        #self.actionICA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/ica.png'),u'ICA',self)
-        #self.actionICA.setObjectName('actionICA')
-
-        #self.actionSVM = QtWidgets.QAction(QIcon(LocationOfMySelf+'/svm.png'),u'SVM',self)
-        #self.actionSVM.setObjectName('actionSVM')
 
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
@@ -403,10 +395,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionFA)
         self.menuAdditional.addAction(self.actionPCA)
         self.menuAdditional.addAction(self.actionDist)
-        #self.menuAdditional.addAction(self.actionLDA)
-
-
-
+        self.menuAdditional.addAction(self.actionStatistics)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -487,9 +476,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionFA.triggered.connect(self.FA)
         self.actionPCA.triggered.connect(self.PCA)
-        self.actionLDA.triggered.connect(self.LDA)
 
         self.actionDist.triggered.connect(self.Dist)
+        self.actionStatistics.triggered.connect(self.Sta)
 
         #self.actionICA.triggered.connect(self.ICA)
         #self.actionSVM.triggered.connect(self.SVM)
@@ -588,13 +577,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionDist.setText('5-10 '+_translate('MainWindow',u'Distance'))
 
-        #self.actionLDA.setText('5-11 '+_translate('MainWindow',u'LDA'))
-
-
-        #self.actionICA.setText('5-8 '+_translate('MainWindow',u'ICA'))
-        #self.actionSVM.setText('5-9 '+_translate('MainWindow',u'SVM'))
-
-
+        self.actionStatistics.setText('5-11 '+_translate('MainWindow',u'Statistics'))
 
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
@@ -873,6 +856,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         #self.model._df.reset_index(drop=True)
 
+        if "Label" in dftosave.columns.values.tolist():
+            dftosave = dftosave.set_index('Label')
 
         if (DataFileOutput != ''):
 
@@ -1400,8 +1385,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.ErrorEvent(text=repr(e))
 
 
+    def Sta(self):
+
+        print('Sta called \n')
+
+        pass
 
 
+        print('self.model._df length: ',len(self.model._df))
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            try:
+                self.stapop = MySta(df=self.model._df)
+                self.stapop.Sta()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
     def PCA(self):
 
@@ -1446,27 +1449,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.fapop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
-
-
-    def LDA(self):
-
-        print('LDA called \n')
-
-        pass
-
-
-        print('self.model._df length: ',len(self.model._df))
-
-
-        if (len(self.model._df)<=0):
-            self.getDataFile()
-            pass
-
-        if (len(self.model._df) > 0):
-            self.ldapop = MyLDA(df=self.model._df)
-            self.ldapop.preLDA()
-
-
 
     def Tri(self):
         pass

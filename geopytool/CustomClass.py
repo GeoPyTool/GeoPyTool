@@ -1,6 +1,6 @@
-version = '0.8.19.1.10'
+version = '0.8.19.1.12'
 
-date = '2019-1-10'
+date = '2019-1-12'
 
 dpi = 128
 #coding:utf-8
@@ -876,6 +876,11 @@ class AppForm(QMainWindow):
         self.canvas.print_figure(path + name + '.pdf', dpi=self.dpi)
         self.canvas.print_figure(path + name + '.png', dpi=self.dpi)
 
+    def stateval(self,data=np.ndarray):
+        dict={'median': nanmedian(data),'mean':nanmean(data),'ptp':ptp(data),'var':nanvar(data),'std':nanstd(data),'cv':nanmean(data)/nanstd(data)}
+
+        return(dict)
+
     def create_main_frame(self):
         self.main_frame = QWidget()
         self.dpi = 128
@@ -999,6 +1004,9 @@ class AppForm(QMainWindow):
                                                           'C:/',
                                                           'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
+        if "Label" in self.model._df.columns.values.tolist():
+            self.model._df=self.model._df.set_index('Label')
+
         if (DataFileOutput != ''):
 
             if ('csv' in DataFileOutput):
@@ -1117,10 +1125,6 @@ class AppForm(QMainWindow):
         return(df)
 
 
-    def stateval(self,data=np.ndarray):
-        dict={'mean':mean(data),'ptp':ptp(data),'var':var(data),'std':std(data),'cv':mean(data)/std(data)}
-
-        return(dict)
 
     def relation(self,data1=np.ndarray,data2=np.ndarray):
         data=array([data1,data2])

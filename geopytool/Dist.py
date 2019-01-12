@@ -197,6 +197,8 @@ class MyDist(AppForm):
 
         #self.result=pd.DataFrame.from_dict(self.WholeResult, orient='index')
         self.result=pd.DataFrame.from_dict(self.WholeResult, orient='index')
+
+        self.result.index.names = ['Label']
         print(self.result)
         #self.result.index.name = 'Distance'
         #self.result.reset_index()
