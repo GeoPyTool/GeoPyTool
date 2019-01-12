@@ -59,7 +59,9 @@ from geopytool.Dist import MyDist
 
 from geopytool.Sta import MySta
 
+from geopytool.ThreeD import MyThreeD
 
+from geopytool.ThreeD_Vispy import MyThreeD_Vispy
 
 
 from geopytool.Pearce import Pearce
@@ -292,6 +294,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionFlatten.setObjectName('actionFlatten')
 
 
+        self.actionThreeD = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'ThreeD',self)
+        self.actionThreeD.setObjectName('actionThreeD')
+
+
+        self.actionThreeD_Vispy = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'ThreeD_Vispy',self)
+        self.actionThreeD_Vispy.setObjectName('actionThreeD_Vispy')
 
         self.actionTrans = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'Trans',self)
         self.actionTrans.setObjectName('actionTrans')
@@ -396,6 +404,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionPCA)
         self.menuAdditional.addAction(self.actionDist)
         self.menuAdditional.addAction(self.actionStatistics)
+        self.menuAdditional.addAction(self.actionThreeD)
+        self.menuAdditional.addAction(self.actionThreeD_Vispy)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -479,6 +489,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionDist.triggered.connect(self.Dist)
         self.actionStatistics.triggered.connect(self.Sta)
+        self.actionThreeD.triggered.connect(self.ThreeD)
+        self.actionThreeD_Vispy.triggered.connect(self.ThreeD_Vispy)
 
         #self.actionICA.triggered.connect(self.ICA)
         #self.actionSVM.triggered.connect(self.SVM)
@@ -579,6 +591,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionStatistics.setText('5-11 '+_translate('MainWindow',u'Statistics'))
 
+
+        self.actionThreeD.setText('5-12 '+_translate('MainWindow',u'ThreeD'))
+        self.actionThreeD_Vispy.setText('5-13 '+_translate('MainWindow',u'ThreeD_Vispy'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -1347,6 +1362,34 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.flattenpop.Flatten()
 
 
+    def ThreeD(self):
+
+        print('ThreeD called \n')
+        print('self.model._df length: ',len(self.model._df))
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.threedpop = MyThreeD(df=self.model._df,DataLocation=self.DataLocation)
+            self.threedpop.ThreeD()
+
+
+    def ThreeD_Vispy(self):
+
+        print('ThreeD_Vispy called \n')
+        print('self.model._df length: ',len(self.model._df))
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.three_Vispydpop = MyThreeD_Vispy(df=self.model._df,DataLocation=self.DataLocation)
+            self.three_Vispydpop.ThreeD()
 
 
     def Trans(self):

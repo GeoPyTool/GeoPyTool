@@ -141,6 +141,17 @@ class MyFlatten(AppForm):
 
     def flattenResult(self):
         self.result=pd.DataFrame(self.result.values.flatten())
+
+        #print(self.originalresult.shape)
+
+        a,b =self.originalresult.shape
+
+        m=list(i for i in range(a))
+        n=list(i for i in range(b))
+
+        location_list= list(product(m,n))
+        #print(location_list)
+
         self.tabelresult=PandasModel(self.result)
         self.tableView.setModel(self.tabelresult)
         self.show()
