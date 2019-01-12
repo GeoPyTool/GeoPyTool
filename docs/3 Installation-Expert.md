@@ -33,12 +33,13 @@ pip3 install scikit-learn
 pip3 install sympy
 pip3 install requests
 pip3 install pyopengl
-pip3 install pyqtgraph
+pip3 install vispy
+pip3 install glumpy
 ```
 
 Or you may try to use one line command to install all the required modules:
 ```Bash
-pip3 install cython numpy scipy matplotlib sympy pandas xlrd pyopengl BeautifulSoup4 pyqt5 scikit-learn requests pyqtgraph
+pip3 install cython numpy scipy matplotlib sympy pandas xlrd pyopengl BeautifulSoup4 pyqt5 scikit-learn requests vispy glumpy
 ```
 ## 1.3 Install GeoPyTool
 
@@ -82,11 +83,12 @@ pip3 install scikit-learn
 pip3 install sympy
 pip3 install requests
 pip3 install pyopengl
-pip3 install pyqtgraph
+pip3 install vispy
+pip3 install glumpy
 ```
 Or you may try to use one line command to install all the required modules:
 ```Bash
-pip3 install cython numpy scipy matplotlib sympy pandas xlrd pyopengl BeautifulSoup4 pyqt5 scikit-learn requests pyqtgraph
+pip3 install cython numpy scipy matplotlib sympy pandas xlrd pyopengl BeautifulSoup4 pyqt5 scikit-learn requests vispy glumpy
 ```
 ## 2.4 Install GeoPyTool
 
@@ -157,12 +159,13 @@ pip3 install scikit-learn
 pip3 install sympy
 pip3 install requests
 pip3 install pyopengl
-pip3 install pyqtgraph
+pip3 install vispy
+pip3 install glumpy
 ```
 
 Or you may try to use one line command to install all the required modules:
 ```Bash
-pip3 install cython numpy scipy matplotlib sympy pandas xlrd pyopengl BeautifulSoup4 pyqt5 scikit-learn requests pyqtgraph
+pip3 install cython numpy scipy matplotlib sympy pandas xlrd pyopengl BeautifulSoup4 pyqt5 scikit-learn requests vispy glumpy
 ```
 
 ## 3.4 Install GeoPyTool
