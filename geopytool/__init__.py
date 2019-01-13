@@ -927,6 +927,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df) > 0):
 
             self.reepop = REE(df=self.model._df,Standard=self.Standard)
+            self.reepop.REE()
+            self.reepop.show()
 
             try:
                 self.reepop.REE()

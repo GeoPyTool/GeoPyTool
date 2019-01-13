@@ -51,6 +51,8 @@ class Trace(AppForm):
 
         #self._df = df
 
+
+        self.data_to_norm = self.CleanDataFile(df)
         self._df = self.CleanDataFile(df)
 
 
@@ -103,11 +105,11 @@ class Trace(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
+        self.save_img_button = QPushButton('&Save Img')
+        self.save_img_button.clicked.connect(self.saveImgFile)
 
-        #self.result_button = QPushButton('&Result')
-        #self.result_button.clicked.connect(self.Trace)
+        self.explain_button = QPushButton('&Norm Result')
+        self.explain_button.clicked.connect(self.Explain)
 
         self.Type_cb = QCheckBox('&Cs-Lu (37 Elements)')
         self.Type_cb.setChecked(True)
@@ -150,7 +152,7 @@ class Trace(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,self.type_slider_left_label, self.type_slider,self.type_slider_right_label,
+        for w in [self.save_img_button,self.explain_button,self.type_slider_left_label, self.type_slider,self.type_slider_right_label,
                   self.legend_cb, self.left_label, self.standard_slider,self.right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
@@ -291,12 +293,14 @@ class Trace(AppForm):
                     tmp = raw.at[i, 'TiO2'] * (
                         47.867 / 79.865) * 10000 / standardchosen[
                         CommonElements[j]]
-
                 else:
                     flag = 0
 
                 if flag == 1:
                     if tmp==tmp:# to delete nan
+
+                        self.data_to_norm.at[i, self.Element[j]] = tmp
+
                         tmpflag = 1
                         a=0
                         try:
@@ -339,11 +343,6 @@ class Trace(AppForm):
             self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
 
-
-
-
-
-
         self.yticks = [Location+i for i in range(count)]
 
         self.yticklabels = [str(np.power(10.0, (Location + i))) for i in range(count)]
@@ -365,3 +364,23 @@ class Trace(AppForm):
         self.OutPutTitle='Trace'
 
         self.OutPutFig=self.fig
+
+
+
+    def Explain(self):
+
+        self.data_to_norm
+
+
+        for i in self.data_to_norm.columns.values.tolist():
+            if i in self.Element:
+                self.data_to_norm = self.data_to_norm.rename(columns={i: i + '_N'})
+            elif i in ['Label', 'Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width']:
+                pass
+            else:
+                self.data_to_norm = self.data_to_norm.drop(i, 1)
+
+        self.OutPutData = self.data_to_norm.set_index('Label')
+        self.tablepop = TabelViewer(df=self.OutPutData,title='Trace Element Norm Result')
+        self.tablepop.show()

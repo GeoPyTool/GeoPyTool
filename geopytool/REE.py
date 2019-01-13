@@ -71,7 +71,23 @@ class REE(AppForm):
         #self._df = df
 
 
+        self.OutPutData = pd.DataFrame()
+        self.LabelList=[]
+        self.algebraDeltaEuList=[]
+        self.geometricDeltaEuList=[]
+        self.LaPrDeltaCeList=[]
+        self.LaNdDeltaCeList=[]
+        self.LaSmList=[]
+        self.LaYbList=[]
+        self.GdYbList=[]
+        self.LREEList=[]
+        self.MREEList=[]
+        self.HREEList=[]
+        self.ALLREEList=[]
+        self.BinHREEList=[]
+        self.BinLREEList=[]
 
+        self.data_to_norm = self.CleanDataFile(df)
 
         self._df = self.CleanDataFile(df)
 
@@ -82,7 +98,7 @@ class REE(AppForm):
 
         if (len(df) > 0):
             self._changed = True
-            # print('DataFrame recieved to REE')
+            # #print('DataFrame recieved to REE')
 
         self.Element = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
         self.WholeData = []
@@ -121,11 +137,11 @@ class REE(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
+        self.save_img_button = QPushButton('&Save Img')
+        self.save_img_button.clicked.connect(self.saveImgFile)
 
-        self.result_button = QPushButton('&Result')
-        self.result_button.clicked.connect(self.Explain)
+        self.explain_button = QPushButton('&Norm Result')
+        self.explain_button.clicked.connect(self.Explain)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
@@ -158,7 +174,7 @@ class REE(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.result_button,
+        for w in [self.save_img_button, self.explain_button,
                   self.legend_cb,  self.left_label, self.standard_slider, self.right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
@@ -196,13 +212,27 @@ class REE(AppForm):
 
 
 
+
         self.axes.spines['right'].set_color('none')
         self.axes.spines['top'].set_color('none')
 
-
-
-
         self.WholeData = []
+
+        self.OutPutData = pd.DataFrame()
+        self.LabelList=[]
+        self.algebraDeltaEuList=[]
+        self.geometricDeltaEuList=[]
+        self.LaPrDeltaCeList=[]
+        self.LaNdDeltaCeList=[]
+        self.LaSmList=[]
+        self.LaYbList=[]
+        self.GdYbList=[]
+        self.LREEList=[]
+        self.MREEList=[]
+        self.HREEList=[]
+        self.ALLREEList=[]
+        self.BinHREEList=[]
+        self.BinLREEList=[]
 
         #raw = self._df
 
@@ -258,11 +288,7 @@ class REE(AppForm):
             TmpLa = raw.at[i, 'La'] / standardchosen['La']
             TmpPr = raw.at[i, 'Pr'] / standardchosen['Pr']
             TmpNd = raw.at[i, 'Nd'] / standardchosen['Nd']
-
             TmpYb = raw.at[i, 'Yb'] / standardchosen['Yb']
-
-
-
 
             algebraEu = 2*TmpEu/(TmpSm+TmpGd)
             geometricEu = TmpEu/np.power((TmpSm*TmpGd),0.5)
@@ -270,12 +296,8 @@ class REE(AppForm):
             firstCe=2*TmpCe/(TmpLa+TmpPr)
             secondCe=3*TmpCe/(2*TmpLa+TmpNd)
 
-
-
             LaYb=TmpLa/TmpYb
-
             LaSm=TmpLa/TmpSm
-
             GdYb=TmpGd/TmpYb
 
 
@@ -295,7 +317,6 @@ class REE(AppForm):
                 elif j in self.HREE:
                     tmpHREEResult += raw.at[i, j]
 
-
                 if j in self.BinLREE:
                     tmpBinLREE += raw.at[i, j]
                 elif j in self.BinHREE:
@@ -308,27 +329,30 @@ class REE(AppForm):
             self.LabelList.append(raw.at[i, 'Label'])
             self.algebraDeltaEuList.append( algebraEu )
             self.geometricDeltaEuList.append( geometricEu )
-
-
             self.LaPrDeltaCeList.append(firstCe)
             self.LaNdDeltaCeList.append(secondCe)
-
             self.LaSmList.append(LaSm)
             self.LaYbList.append(LaYb)
             self.GdYbList.append(GdYb)
-
             self.LREEList.append( tmpLREEResult )
             self.MREEList.append( tmpMREEResult )
             self.HREEList.append( tmpHREEResult )
             self.ALLREEList.append( tmpWholeResult )
-
             self.BinHREEList.append(tmpBinHREE)
             self.BinLREEList.append(tmpBinLREE)
 
+            '''
+            for i in self.data_to_norm.columns.values.tolist():
+                if i not in self.Element:
+                    self.data_to_norm = self.data_to_norm.drop(i, 1)            
+            '''
 
 
             for j in range(len(self.Element)):
+
                 tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
+
+                self.data_to_norm.at[i, self.Element[j]] = tmp
 
                 tmpflag = 1
                 a = 0
@@ -403,6 +427,8 @@ class REE(AppForm):
 
         self.OutPutTitle='REE'
 
+        #print(len(self.algebraDeltaEuList))
+
         self.OutPutData = pd.DataFrame(
             {'Label': self.LabelList,
              'Eu/Eu*(algebra)': self.algebraDeltaEuList,
@@ -424,6 +450,7 @@ class REE(AppForm):
              'ALLREE': self.ALLREEList
              })
 
+        #print('middle ',len(self.OutPutData['Eu/Eu*(algebra)']))
 
 
         '''
@@ -437,5 +464,19 @@ class REE(AppForm):
 
     def Explain(self):
 
-        self.tablepop = TabelViewer(df=self.OutPutData,title='REE Result')
+        self.data_to_norm
+
+
+        for i in self.data_to_norm.columns.values.tolist():
+            if i in self.Element:
+                self.data_to_norm = self.data_to_norm.rename(columns = {i : i+'_N'})
+            #elif i in ['Label','Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha','Style', 'Width']: pass
+            elif i in ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha','Style', 'Width']: pass
+            else:
+                self.data_to_norm = self.data_to_norm.drop(i, 1)
+
+        #print('last',len(self.OutPutData['Eu/Eu*(algebra)']))
+
+        df = pd.concat([self.data_to_norm,self.OutPutData], axis=1).set_index('Label')
+        self.tablepop = TabelViewer(df=df,title='REE Norm Result')
         self.tablepop.show()
