@@ -885,9 +885,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 dftosave.to_excel(DataFileOutput, encoding='utf-8')
 
-
-
-
     def TAS(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
@@ -895,9 +892,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.taspop = TAS(df=self.model._df)
-
-            self.taspop.TAS()
-            self.taspop.show()
             try:
                 self.taspop.TAS()
                 self.taspop.show()

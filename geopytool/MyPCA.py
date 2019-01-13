@@ -391,8 +391,8 @@ class MyPCA(AppForm):
                     xmin, xmax = min(XtoFit), max(XtoFit)
                     ymin, ymax = min(YtoFit), max(YtoFit)
 
-                    DensityColorMap = 'Blues'
-                    DensityAlpha = 0.3
+                    DensityColorMap = 'Greys'
+                    DensityAlpha = 0.1
 
                     DensityLineColor = all_colors[i]
                     DensityLineAlpha = 0.3

@@ -56,10 +56,10 @@ class MyThreeD(AppForm):
         self.fig = plt.figure(figsize=(12, 12))
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.9, top=0.9)
 
-        self.axes = Axes3D(self.fig, elev=-150, azim=110)
-
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
+
+        self.axes = Axes3D(self.fig, elev=-150, azim=110)
 
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 

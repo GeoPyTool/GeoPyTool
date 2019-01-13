@@ -329,8 +329,8 @@ class TAS(AppForm):
                         xmin, xmax = min(XtoFit[i]), max(XtoFit[i])
                         ymin, ymax = min(YtoFit[i]), max(YtoFit[i])
 
-                        DensityColorMap = 'Blues'
-                        DensityAlpha = 0.3
+                        DensityColorMap = 'Greys'
+                        DensityAlpha = 0.1
 
                         DensityLineColor = PointColors[PointLabels.index(i)]
                         DensityLineAlpha = 0.3
