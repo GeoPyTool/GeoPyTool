@@ -12,5 +12,4 @@ requests>=2.18.4
 PyQt5>=5.9.1
 scikit-learn>=0.19.1
 sklearn-pandas>=1.8.0
-glumpy>=1.0.6
 vispy>=0.5.3
