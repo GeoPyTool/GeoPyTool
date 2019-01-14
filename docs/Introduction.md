@@ -25,6 +25,12 @@ I gathered these scripts together, built a GUI and packed them into a standalone
 
 That is the story of how GeoPyTool was born.
 
+## Citation
+
+Please cite this article as:
+
+Yu, Q.-Y., Bagas, L., Yang, P.-H., Zhang, D., GeoPyTool: a cross-platform software solution for common geological calculations and plots, Geoscience Frontiers (2018), doi: 10.1016/j.gsf.2018.08.001.
+
 
 ## Introduction
 
@@ -35,6 +41,17 @@ GeoPyTool is an application based on Python and designed as a solution for geolo
 GeoPyTool contains both traditional routines and newly developed methods.
 Over time, this software will contain more and more functions.
 The function list can be found [here](http://geopytool.com/functions.html).
+
+
+
+## Get GeoPyTool
+
+This section used to be called "Installation".
+While, in fact you almost need no Installation to use the packed application of GeoPyTool. The latest download links can be found at the [Download page](http://geopytool.com/download.html).
+
+
+
+If you want to use GeoPyTool as a module inside Python, then you might need to read the detailed guide at [Installation Guide For Expert](http://geopytool.com/installation-expert.html).
 
 
 ## License
@@ -61,6 +78,9 @@ If you find any bug, I am happy to be told the details and fix it as soon as pos
 
 Please open a issue in [GeoPyTool's repo](https://github.com/GeoPyTool/GeoPyTool/issues/). 
 
+You can share your ideas or problems on [Github](https://github.com/GeoPyTool/GeoPyTool/issues).
+If you encounter problems using GeoPyTool, please screenshot the error message from the cmd or other ternimal window and send it with your post (shown as the sample below).
+
 ## Feedback
 
 If you have some wanted functions, please tell us also opening a issue in [GeoPyTool's repo](https://github.com/GeoPyTool/GeoPyTool/issues/) containing references and sample data. 
@@ -68,15 +88,6 @@ It's best to give a brief introduction, which can save developers' time.
 If you don't understand how that works at all, don't expect us to figure it out by ourselves.
 I am certainly not smarter than you, even much worse than you.
 
-
-## Get GeoPyTool
-
-This section used to be called "Installation".
-While, in fact you almost need no Installation to use the packed application of GeoPyTool. The latest download links can be found at the [Download page](https://github.com/GeoPyTool/GeoPyTool/blob/master/Download.md).
-
-
-
-If you want to use GeoPyTool as a module inside Python, then you might need to read the detailed guide at [Installation Guide For Expert](http://geopytool.com/installation-expert.html).
 
 
 ### For Mac Users
