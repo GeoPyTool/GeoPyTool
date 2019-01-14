@@ -10,7 +10,6 @@ Tags: Doc,English
 
 ## Preface
 
-I am Freddy Yu, also known as CycleUser.
 Few years ago, I had tumor and some other lifelong disease.
 Then I lost the ability to engage in geological field work.
 I hate to be a useless person and hope to contribute to other people and the world.
@@ -26,6 +25,9 @@ I gathered these scripts together, built a GUI and packed them into a standalone
 That is the story of how GeoPyTool was born.
 
 ## Citation
+
+
+Article Here :https://www.sciencedirect.com/science/article/pii/S1674987118301609
 
 Please cite this article as:
 
