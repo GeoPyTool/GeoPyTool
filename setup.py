@@ -45,7 +45,5 @@ setup(name='geopytool',
                         'PyQt5',
                         'scikit-image',
                         'scikit-learn',
-                        'glumpy',
-                        'vispy',
                          ],
      )

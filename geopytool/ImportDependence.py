@@ -21,7 +21,7 @@ import subprocess
 import webbrowser
 import sys
 import sklearn as sk
-import vispy.app, vispy.visuals, vispy.scene,vispy.plot, vispy.io, vispy.color
+#import vispy.app, vispy.visuals, vispy.scene,vispy.plot, vispy.io, vispy.color
 #import sklearn_pandas as skpd
 
 import scipy.stats as st
