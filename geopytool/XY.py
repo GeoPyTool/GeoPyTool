@@ -110,11 +110,39 @@ class XY(AppForm):
         self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
 
-        for i in self.rawitems:
-            if i not in self.unuseful:
-                self.items.append(i)
-            else:
-                pass
+
+
+        dataframe = self._df
+        ItemsAvalibale = self._df.columns.values.tolist()
+        ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width','Label']
+
+        for i in ItemsToTest:
+            if i in ItemsAvalibale:
+                dataframe = dataframe.drop(i, 1)
+
+
+        dataframe_values_only = dataframe.apply(pd.to_numeric, errors='coerce')
+        dataframe_values_only = dataframe_values_only.dropna(axis='columns')
+
+
+        ItemsAvalibale = dataframe_values_only.columns.values.tolist()
+
+        data_columns= ItemsAvalibale
+
+        df= dataframe_values_only
+
+        numdf = (df.drop(data_columns, axis=1).join(df[data_columns].apply(pd.to_numeric, errors='coerce')))
+
+        numdf = numdf[numdf[data_columns].notnull().all(axis=1)]
+
+        ItemsAvalibale = numdf.columns.values.tolist()
+        dataframe_values_only=numdf
+
+        self.items = dataframe_values_only.columns.values.tolist()
+
+        print(self.items)
+
 
         self.create_main_frame()
         self.create_status_bar()
@@ -679,6 +707,7 @@ class XY(AppForm):
         raw = self._df
 
         dataframe = self._df
+
         ItemsAvalibale = self._df.columns.values.tolist()
         ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width','Label']
@@ -687,9 +716,20 @@ class XY(AppForm):
             if i in ItemsAvalibale:
                 dataframe = dataframe.drop(i, 1)
 
-        ItemsAvalibale = dataframe.columns.values.tolist()
 
+        dataframe_values_only = dataframe.apply(pd.to_numeric, errors='coerce')
+        dataframe_values_only = dataframe_values_only.dropna(axis='columns')
+        ItemsAvalibale = dataframe_values_only.columns.values.tolist()
+        data_columns= ItemsAvalibale
 
+        df= dataframe_values_only
+
+        numdf = (df.drop(data_columns, axis=1).join(df[data_columns].apply(pd.to_numeric, errors='coerce')))
+
+        numdf = numdf[numdf[data_columns].notnull().all(axis=1)]
+
+        ItemsAvalibale = numdf.columns.values.tolist()
+        dataframe_values_only=numdf
 
 
 
@@ -826,15 +866,8 @@ class XY(AppForm):
 
 
 
-            if pd.isnull(dataframe.at[i, self.items[a]]) or pd.isnull(dataframe.at[i, self.items[b]]):
-                pass
+                x, y = dataframe_values_only.at[i, self.items[a]], dataframe_values_only.at[i, self.items[b]]
 
-            else:
-                #if dataframe.at[i, self.items[a]]!='nan' and dataframe.at[i, self.items[b]]!='nan':
-
-
-
-                x, y = dataframe.at[i, self.items[a]], dataframe.at[i, self.items[b]]
 
                 if pd.isnull(x) or pd.isnull(y):
                     self.ContainNan = True

@@ -45,6 +45,10 @@ class MyFA(AppForm):
 
 
         self.result_to_fit= self.Slim(self._df)
+
+
+        #print(self.result_to_fit.columns.values.tolist())
+
         try:
             self.fa.fit(self.result_to_fit.values)
             self.comp = (self.fa.components_)
@@ -68,8 +72,6 @@ class MyFA(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
-
-
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Key_Func)  # int
@@ -77,7 +79,6 @@ class MyFA(AppForm):
         self.shape_cb= QCheckBox('&Shape')
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
-
 
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -96,7 +97,6 @@ class MyFA(AppForm):
 
         self.switch_button = QPushButton('&Switch to 2D')
         self.switch_button.clicked.connect(self.switch)
-
 
         self.x_element = QSlider(Qt.Horizontal)
         self.x_element.setRange(0, self.n - 1)
@@ -122,7 +122,6 @@ class MyFA(AppForm):
         self.z_element.valueChanged.connect(self.Key_Func)  # int
         self.z_element_label = QLabel('component')
 
-
         self.vbox = QVBoxLayout()
         self.hbox = QHBoxLayout()
         self.hbox0 = QHBoxLayout()
@@ -130,7 +129,6 @@ class MyFA(AppForm):
         self.hbox2 = QHBoxLayout()
         self.hbox3 = QHBoxLayout()
         self.hbox4 = QHBoxLayout()
-
 
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
