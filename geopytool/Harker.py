@@ -124,6 +124,13 @@ class Harker(AppForm):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
+        self.seter_left_label = QLabel('Left')
+        self.seter_left = QLineEdit(self)
+        self.seter_left.textChanged[str].connect(self.Harker)
+        self.seter_right_label = QLabel('Right')
+        self.seter_right = QLineEdit(self)
+        self.seter_right.textChanged[str].connect(self.Harker)
+
 
         #self.result_button = QPushButton('&Result')
         #self.result_button.clicked.connect(self.Harker)
@@ -139,7 +146,7 @@ class Harker(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.legend_cb]:
+        for w in [self.seter_left_label ,self.seter_left,self.seter_right_label ,self.seter_right,self.save_button, self.legend_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -156,7 +163,13 @@ class Harker(AppForm):
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
+        w=self.width()
+        h=self.height()
 
+        self.seter_left_label.setFixedWidth(w / 20)
+        self.seter_left.setFixedWidth(w / 20)
+        self.seter_right_label.setFixedWidth(w / 20)
+        self.seter_right.setFixedWidth(w / 20)
 
     def Harker(self):
 
@@ -172,44 +185,44 @@ class Harker(AppForm):
         itemstoshow = [r'$Al_2O_3$', r'$MgO$', r'$Fe_{Total}$', r'$CaO$', r'$Na_2O$', r'$K_2O$', r'$TiO_2$', r'$P_2O_5$', r'$SiO_2$', ]
 
         self.axes[0, 0].clear()
-        self.axes[0, 0].set_xlim(45, 75)
+        #self.axes[0, 0].set_xlim(45, 75)
         self.axes[0, 0].set_ylabel(itemstoshow[0])
         self.axes[0,0].set_xticks([45,50,55,60,65,70,75])
         self.axes[0, 0].set_xticklabels('')
 
         self.axes[0, 1].clear()
-        self.axes[0, 1].set_xlim(45, 75)
+        #self.axes[0, 1].set_xlim(45, 75)
         self.axes[0, 1].set_ylabel(itemstoshow[1])
         self.axes[0,1].set_xticks([45,50,55,60,65,70,75])
         self.axes[0, 1].set_xticklabels('')
 
         self.axes[1,0].clear()
-        self.axes[1,0].set_xlim(45, 75)
+        #self.axes[1,0].set_xlim(45, 75)
         self.axes[1,0].set_ylabel(itemstoshow[2])
         self.axes[1,0].set_xticks([45,50,55,60,65,70,75])
         self.axes[1, 0].set_xticklabels('')
 
 
         self.axes[1,1].clear()
-        self.axes[1,1].set_xlim(45, 75)
+        #self.axes[1,1].set_xlim(45, 75)
         self.axes[1,1].set_ylabel(itemstoshow[3])
         self.axes[1,1].set_xticks([45,50,55,60,65,70,75])
         self.axes[1, 1].set_xticklabels('')
 
         self.axes[2,0].clear()
-        self.axes[2,0].set_xlim(45, 75)
+        #self.axes[2,0].set_xlim(45, 75)
         self.axes[2,0].set_ylabel(itemstoshow[4])
         self.axes[2,0].set_xticks([45,50,55,60,65,70,75])
         self.axes[2, 0].set_xticklabels('')
 
         self.axes[2,1].clear()
-        self.axes[2,1].set_xlim(45, 75)
+        #self.axes[2,1].set_xlim(45, 75)
         self.axes[2,1].set_ylabel(itemstoshow[5])
         self.axes[2,1].set_xticks([45,50,55,60,65,70,75])
         self.axes[2, 1].set_xticklabels('')
 
         self.axes[3,0].clear()
-        self.axes[3,0].set_xlim(45, 75)
+        #self.axes[3,0].set_xlim(45, 75)
         self.axes[3,0].set_ylabel(itemstoshow[6])
         self.axes[3, 0].set_xticks([45,50,55,60,65,70,75])
 
@@ -220,7 +233,7 @@ class Harker(AppForm):
 
 
         self.axes[3,1].clear()
-        self.axes[3,1].set_xlim(45, 75)
+        #self.axes[3,1].set_xlim(45, 75)
         self.axes[3,1].set_ylabel(itemstoshow[7])
         self.axes[3, 1].set_xticks([45,50,55,60,65,70,75])
 
@@ -230,7 +243,38 @@ class Harker(AppForm):
 
 
 
+        try:
+            left = float(self.seter_left.text())
+            # if( type(left) == int or type(left)== float or type(left)== np.float ):pass
+            self.axes[0, 1].set_xlim(left=left)
+            self.axes[0, 0].set_xlim(left=left)
+            self.axes[1, 0].set_xlim(left=left)
+            self.axes[1, 1].set_xlim(left=left)
+            self.axes[2, 0].set_xlim(left=left)
+            self.axes[2, 1].set_xlim(left=left)
+            self.axes[3, 0].set_xlim(left=left)
+            self.axes[3, 1].set_xlim(left=left)
+            pass
+        except Exception as e:
+            pass
+            #self.ErrorEvent(text=repr(e))
 
+
+
+        try:
+            right = float(self.seter_right.text())
+            self.axes[0, 1].set_xlim(right=right)
+            self.axes[0, 0].set_xlim(right=right)
+            self.axes[1, 0].set_xlim(right=right)
+            self.axes[1, 1].set_xlim(right=right)
+            self.axes[2, 0].set_xlim(right=right)
+            self.axes[2, 1].set_xlim(right=right)
+            self.axes[3, 0].set_xlim(right=right)
+            self.axes[3, 1].set_xlim(right=right)
+            pass
+        except Exception as e:
+            pass
+            #self.ErrorEvent(text=repr(e))
 
         PointLabels = []
 

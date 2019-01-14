@@ -83,7 +83,7 @@ class XY(AppForm):
     Up = 0
     Down = 0
 
-    FitLevel=3
+    FitLevel=1
     FadeGroups=100
     ShapeGroups=200
 
@@ -440,7 +440,7 @@ class XY(AppForm):
                                                          '~/',
                                                          'PNG Files (*.png);;JPG Files (*.jpg);;SVG Files (*.svg)')  # 设置文件扩展名过滤,注意用双分号间隔
 
-        print(fileName, '\t', filetype)
+        #print(fileName, '\t', filetype)
 
 
         if len(fileName)>0:
@@ -843,12 +843,11 @@ class XY(AppForm):
         self.axes.set_ylabel(ItemsAvalibale[b])
 
         PointLabels = []
-
-
         XtoFit = []
         YtoFit = []
 
 
+        print(raw)
 
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
@@ -865,64 +864,56 @@ class XY(AppForm):
                 TmpLabel = raw.at[i, 'Label']
 
 
+            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
 
-                x, y = dataframe_values_only.at[i, self.items[a]], dataframe_values_only.at[i, self.items[b]]
 
+            try:
+                xuse = x
+                yuse = y
 
-                if pd.isnull(x) or pd.isnull(y):
-                    self.ContainNan = True
-                    pass
+                self.xlabel = self.items[a]
+                self.ylabel = self.items[b]
 
+                if (self.norm_cb.isChecked()):
+
+                    self.sentence = self.reference
+
+                    if self.items[a] in self.Element:
+                        self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+                        xuse = xuse / standardchosen[self.items[a]]
+
+                    if self.items[b] in self.Element:
+                        self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+                        yuse = yuse / standardchosen[self.items[b]]
+
+                if (self.logx_cb.isChecked()):
+                    xuse = math.log(x, 10)
+                    newxlabel = '$log10$( ' + self.xlabel + ')'
+
+                    self.axes.set_xlabel(newxlabel)
                 else:
 
-                    try:
-                        xuse = x
-                        yuse = y
+                    self.axes.set_xlabel(self.xlabel)
 
-                        self.xlabel = self.items[a]
-                        self.ylabel = self.items[b]
+                if (self.logy_cb.isChecked()):
+                    yuse = math.log(y, 10)
 
-                        if (self.norm_cb.isChecked()):
+                    newylabel = '$log10$( ' + self.ylabel + ')'
 
-                            self.sentence = self.reference
+                    self.axes.set_ylabel(newylabel)
+                else:
+                    self.axes.set_ylabel(self.ylabel)
 
-                            if self.items[a] in self.Element:
-                                self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
-                                xuse = xuse / standardchosen[self.items[a]]
+                self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                  label=TmpLabel, edgecolors='black')
 
-                            if self.items[b] in self.Element:
-                                self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
-                                yuse = yuse / standardchosen[self.items[b]]
-
-                        if (self.logx_cb.isChecked()):
-                            xuse = math.log(x, 10)
-                            newxlabel = '$log10$( ' + self.xlabel+')'
-
-                            self.axes.set_xlabel(newxlabel)
-                        else:
-
-                            self.axes.set_xlabel(self.xlabel)
-
-                        if (self.logy_cb.isChecked()):
-                            yuse = math.log(y, 10)
-
-                            newylabel = '$log10$( ' + self.ylabel+')'
-
-                            self.axes.set_ylabel(newylabel)
-                        else:
-                            self.axes.set_ylabel(self.ylabel)
-
-                        self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
-                                          s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                          label=TmpLabel, edgecolors='black')
-
-                        XtoFit.append(xuse)
-                        YtoFit.append(yuse)
+                XtoFit.append(xuse)
+                YtoFit.append(yuse)
 
 
-                    except Exception as e:
-
-                        self.ErrorEvent(text=repr(e))
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
 
 
@@ -934,7 +925,7 @@ class XY(AppForm):
         BoxResultStr=''
         Paralist=[]
 
-        #print(XtoFit, '\n', YtoFit)
+        print(XtoFit, '\n', YtoFit)
 
         if len(XtoFit) != len(YtoFit):
 
@@ -949,9 +940,11 @@ class XY(AppForm):
                 Xline = np.linspace(min(XtoFit), max(XtoFit), 30)
                 try:
                     np.polyfit(XtoFit, YtoFit, self.FitLevel)
-                except():
+                except Exception as e:
+                    self.ErrorEvent(text=repr(e))
                     fitstatus = False
-                    pass
+
+
                 if (fitstatus == True):
                     try:
                         opt, cov = np.polyfit(XtoFit, YtoFit, self.FitLevel, cov=True)
