@@ -141,7 +141,7 @@ class XY(AppForm):
 
         self.items = dataframe_values_only.columns.values.tolist()
 
-        print(self.items)
+        #print(self.items)
 
 
         self.create_main_frame()
@@ -227,8 +227,6 @@ class XY(AppForm):
         self.norm_cb = QCheckBox('&Norm')
         self.norm_cb.setChecked(False)
         self.norm_cb.stateChanged.connect(self.Magic)  # int
-
-
 
         self.standard_slider = QSlider(Qt.Horizontal)
         self.standard_slider.setRange(0, len(self.StandardsName))
@@ -847,8 +845,6 @@ class XY(AppForm):
         YtoFit = []
 
 
-        print(raw)
-
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
 
@@ -877,14 +873,26 @@ class XY(AppForm):
                 if (self.norm_cb.isChecked()):
 
                     self.sentence = self.reference
+                    #print(self.items[a] , self.items[a] in self.Element)
 
-                    if self.items[a] in self.Element:
+                    item_a =self.items[a]
+                    item_b =self.items[b]
+
+                    str_to_check=['ppm','(',')','[',']','wt','\%']
+
+                    for j in str_to_check:
+                        if j in item_a:
+                            item_a=item_a.replace(j, "")
+                        if j in item_b:
+                            item_b=item_b.replace(j, "")
+
+                    if item_a in self.Element:
                         self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
-                        xuse = xuse / standardchosen[self.items[a]]
+                        xuse = xuse / standardchosen[item_a]
 
-                    if self.items[b] in self.Element:
+                    if item_b in self.Element:
                         self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
-                        yuse = yuse / standardchosen[self.items[b]]
+                        yuse = yuse / standardchosen[item_b]
 
                 if (self.logx_cb.isChecked()):
                     xuse = math.log(x, 10)
@@ -911,9 +919,10 @@ class XY(AppForm):
                 XtoFit.append(xuse)
                 YtoFit.append(yuse)
 
-
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
+                #pass
+
 
 
 
@@ -925,7 +934,7 @@ class XY(AppForm):
         BoxResultStr=''
         Paralist=[]
 
-        print(XtoFit, '\n', YtoFit)
+        #print(XtoFit, '\n', YtoFit)
 
         if len(XtoFit) != len(YtoFit):
 

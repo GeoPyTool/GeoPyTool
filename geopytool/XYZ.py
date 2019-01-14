@@ -652,21 +652,36 @@ class XYZ(AppForm):
                     if (self.norm_cb.isChecked()):
                         self.sentence = self.reference
 
-                        if self.items[a] in self.Element:
-                            self.xlabel = self.items[a]+' Norm by '+standardnamechosen
-                            xuse = xuse / standardchosen[self.items[a]]
-                        if self.items[b] in self.Element:
-                            self.ylabel = self.items[b]+' Norm by '+standardnamechosen
-                            yuse = yuse / standardchosen[self.items[b]]
-                        if self.items[c] in self.Element:
-                            self.zlabel = self.items[c]+' Norm by '+standardnamechosen
-                            zuse = zuse / standardchosen[self.items[c]]
+                        item_a = self.items[a]
+                        item_b = self.items[b]
+                        item_c = self.items[c]
+
+                        str_to_check = ['ppm', '(', ')', '[', ']', 'wt', '\%']
+
+                        for j in str_to_check:
+                            if j in item_a:
+                                item_a = item_a.replace(j, "")
+                            if j in item_b:
+                                item_b = item_b.replace(j, "")
+                            if j in item_c:
+                                item_c = item_c.replace(j, "")
+
+                        if item_a in self.Element:
+                            self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+                            xuse = xuse / standardchosen[item_a]
+
+                        if item_b in self.Element:
+                            self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+                            yuse = yuse / standardchosen[item_b]
+
+                        if item_c in self.Element:
+                            self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
+                            zuse = zuse / standardchosen[item_c]
 
                     if (self.logx_cb.isChecked()):
                         xuse = math.log(x, 10)
                         newxlabel = '$log10$('+self.xlabel+')'
                     else:
-
                         newxlabel =  self.xlabel
 
 
@@ -688,12 +703,14 @@ class XYZ(AppForm):
                     TPoints.append(TriPoint((xuse, yuse, zuse), Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'],
                                             Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel))
 
-                except(ValueError):
-                    pass
+
+                except Exception as e:
+                    self.ErrorEvent(text=repr(e))
+                    # pass
 
         self.axes.annotate(newxlabel, xy=(0,0), xytext=(-4, -4),fontsize=6)
         self.axes.annotate(newylabel, xy=(100,0), xytext=(100, -4),fontsize=6)
-        self.axes.annotate(newzlabel , xy=(50,86.7), xytext=(45, 90),fontsize=6)
+        self.axes.annotate(newzlabel, xy=(50,86.7), xytext=(45, 90),fontsize=6)
 
 
 
@@ -701,7 +718,6 @@ class XYZ(AppForm):
             self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
                               label=i.Label, edgecolors='black')
 
-        print("Plotted")
 
 
 
