@@ -24,11 +24,11 @@ Tags: Doc, English, Chinese
 
 ## Citation 引用
 
-Article Here :https://www.sciencedirect.com/science/article/pii/S1674987118301609
+Article Here: [https://www.sciencedirect.com/science/article/pii/S1674987118301609](https://www.sciencedirect.com/science/article/pii/S1674987118301609)
 
 Please cite this article as:
 
-Yu, Q.-Y., Bagas, L., Yang, P.-H., Zhang, D., GeoPyTool: a cross-platform software solution for common geological calculations and plots, Geoscience Frontiers (2018), doi: 10.1016/j.gsf.2018.08.001.
+`Yu, Q.-Y., Bagas, L., Yang, P.-H., Zhang, D., GeoPyTool: a cross-platform software solution for common geological calculations and plots, Geoscience Frontiers (2018), doi: 10.1016/j.gsf.2018.08.001.`
 
 
 ## Introduction 简介
