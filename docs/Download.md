@@ -31,6 +31,28 @@ Please cite this article as:
 `Yu, Q.-Y., Bagas, L., Yang, P.-H., Zhang, D., GeoPyTool: a cross-platform software solution for common geological calculations and plots, Geoscience Frontiers (2018), doi: 10.1016/j.gsf.2018.08.001.`
 
 
+## Update 更新
+
+The old version (before `0.8.19.1.13`) of GeoPyTool use `pyqtgraph`, which has been replaced by `VisPy` now.
+So when you double click the Update***.bat File, you might encounter following error:
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/UpdateProblem.png)
+
+如果你下载的打包文件是`0.8.19.1.13`以前的版本, 在双击更新的时候会遇到上图所示的错误, 这是因为GeoPyTool 所用的一个模块 pyqtgraph 被移除了, 替换成了 VisPy, 而你没更新的旧版本打包内是没有VisPy的.
+所以解决这个问题也很简单, 编辑更新的脚本文件, 改成下面代码部分的形式, 保存后双击运行, 就可以了:
+
+All you need to do is to modify the `UpdateAndRun.bat` to the following form:
+
+```
+GeoPyTool\Q.exe -m pip install pip vispy -U --no-cache-dir
+GeoPyTool\Q.exe -m pip install pip geopytool -U --no-cache-dir
+GeoPyTool\Q.exe -c "import geopytool as gp;gp.main()"
+pause
+```
+
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/FixTheVispy.png)
+
 ## Introduction 简介
 
 
