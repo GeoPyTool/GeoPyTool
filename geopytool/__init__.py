@@ -899,10 +899,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.sacpop = Saccani(df=self.model._df)
-            self.sacpop.Saccani()
-            self.sacpop.show()
+
             try:
-                pass
+                self.sacpop.Saccani()
+                self.sacpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 

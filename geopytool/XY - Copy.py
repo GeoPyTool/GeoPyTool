@@ -98,7 +98,7 @@ class XY(AppForm):
         self.setWindowTitle(self.description)
 
         self.items = []
-        self.raw = df
+
         self._df = df
         self._given_Standard = Standard
 
@@ -107,7 +107,7 @@ class XY(AppForm):
             self._changed = True
             # print('DataFrame recieved to Magic')
 
-
+        self.raw = df
         self.rawitems = self.raw.columns.values.tolist()
 
 
@@ -142,7 +142,7 @@ class XY(AppForm):
         self.items = dataframe_values_only.columns.values.tolist()
 
         #print(self.items)
-        self.dataframe_values_only=dataframe_values_only
+
 
         self.create_main_frame()
         self.create_status_bar()
@@ -841,28 +841,27 @@ class XY(AppForm):
         self.axes.set_ylabel(ItemsAvalibale[b])
 
         PointLabels = []
-        PointColors = []
         XtoFit = []
         YtoFit = []
 
-        df = self.CleanDataFile(self._df)
 
-        for i in range(len(df)):
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+
+
             TmpLabel = ''
-            if (df.at[i, 'Label'] in PointLabels or df.at[i, 'Label'] == ''):
+
+            #   self.WholeData.append(math.log(tmp, 10))
+
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
                 TmpLabel = ''
             else:
-                PointLabels.append(df.at[i, 'Label'])
-                TmpLabel = df.at[i, 'Label']
+                PointLabels.append(raw.at[i, 'Label'])
+                TmpLabel = raw.at[i, 'Label']
 
-            TmpColor = ''
-            if (df.at[i, 'Color'] in PointColors or df.at[i, 'Color'] == ''):
-                TmpColor = ''
-            else:
-                PointColors.append(df.at[i, 'Color'])
-                TmpColor = df.at[i, 'Color']
 
-            x, y = dataframe_values_only.at[i, self.items[a]], dataframe_values_only.at[i, self.items[b]]
+            x, y = raw.at[i, self.items[a]], raw.at[i, self.items[b]]
+
 
             try:
                 xuse = x
@@ -986,6 +985,7 @@ class XY(AppForm):
                                         self.FitLevel - i) + '+\n'
 
 
+
                             elif (int(self.fit_slider.value()) == 1):
 
                                 if (self.FitLevel - i == 0):
@@ -1078,62 +1078,55 @@ class XY(AppForm):
                     if (self.fit_cb.isChecked()):
                         self.axes.plot(Xline, Yline, 'b-')
 
-        XtoFit = {}
-        YtoFit = {}
-
-        for i in PointLabels:
-            XtoFit[i] = []
-            YtoFit[i] = []
-
-        for i in range(len(df)):
-            Alpha = df.at[i, 'Alpha']
-            Marker = df.at[i, 'Marker']
-            Label = df.at[i, 'Label']
-
-            xtest = self.dataframe_values_only.at[i, self.items[a]]
-            ytest = self.dataframe_values_only.at[i, self.items[b]]
-
-            XtoFit[Label].append(xtest)
-            YtoFit[Label].append(ytest)
-
         if (self.shape_cb.isChecked()):
-            for i in PointLabels:
 
-                if XtoFit[i] != YtoFit[i]:
-                    xmin, xmax = min(XtoFit[i]), max(XtoFit[i])
-                    ymin, ymax = min(YtoFit[i]), max(YtoFit[i])
+            if XtoFit != YtoFit:
+                xmin, xmax = min(XtoFit), max(XtoFit)
+                ymin, ymax = min(YtoFit), max(YtoFit)
 
-                    DensityColorMap = 'Greys'
-                    DensityAlpha = 0.1
+                DensityColorMap = 'Blues'
+                DensityAlpha = 0.3
 
-                    DensityLineColor = PointColors[PointLabels.index(i)]
-                    DensityLineAlpha = 0.3
+                DensityLineColor = 'grey'
+                DensityLineAlpha = 0.3
 
-                    # Peform the kernel density estimate
-                    xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
-                    # print(self.ShapeGroups)
-                    # command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
-                    # exec(command)
-                    # print(xx, yy)
-                    positions = np.vstack([xx.ravel(), yy.ravel()])
-                    values = np.vstack([XtoFit[i], YtoFit[i]])
-                    kernelstatus = True
-                    try:
-                        st.gaussian_kde(values)
-                    except Exception as e:
-                        self.ErrorEvent(text=repr(e))
-                        kernelstatus = False
-                    if kernelstatus == True:
-                        kernel = st.gaussian_kde(values)
-                        f = np.reshape(kernel(positions).T, xx.shape)
-                        # Contourf plot
-                        cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
-                        ## Or kernel density estimate plot instead of the contourf plot
-                        # self.axes.imshow(np.rot90(f), cmap='Blues', extent=[xmin, xmax, ymin, ymax])
-                        # Contour plot
-                        cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
-                        # Label plot
-                        self.axes.clabel(cset, inline=1, fontsize=10)
+                # Peform the kernel density estimate
+                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+
+                #print(self.ShapeGroups)
+
+                #command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
+
+                #exec(command)
+
+                #print(xx, yy)
+
+
+                positions = np.vstack([xx.ravel(), yy.ravel()])
+                values = np.vstack([XtoFit,YtoFit])
+
+
+
+                kernelstatus = True
+                try:
+                    st.gaussian_kde(values)
+                except Exception as e:
+                    self.ErrorEvent(text=repr(e))
+                    kernelstatus = False
+                if kernelstatus== True:
+                    kernel = st.gaussian_kde(values)
+                    f = np.reshape(kernel(positions).T, xx.shape)
+                    # Contourf plot
+                    cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
+                    ## Or kernel density estimate plot instead of the contourf plot
+                    #self.axes.imshow(np.rot90(f), cmap='Blues', extent=[xmin, xmax, ymin, ymax])
+                    # Contour plot
+                    cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
+                    # Label plot
+                    self.axes.clabel(cset, inline=1, fontsize=10)
+
+
+
 
         if self.TypeLoaded=='svg':
 

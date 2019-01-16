@@ -44,7 +44,7 @@ class MyPCA(AppForm):
         for i in self._df.columns.values.tolist():
             if i not in ItemsToTest:
                 self.settings_backup = self.settings_backup.drop(i, 1)
-        print(self.settings_backup)
+        #print(self.settings_backup)
 
 
         self.result_to_fit= self.Slim(self._df)
@@ -83,6 +83,10 @@ class MyPCA(AppForm):
         self.shape_cb= QCheckBox('&Shape')
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
+
+        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb.setChecked(False)
+        self.hyperplane_cb.stateChanged.connect(self.Key_Func)  # int
 
 
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
@@ -142,6 +146,7 @@ class MyPCA(AppForm):
         self.vbox.addWidget(self.canvas)
         self.hbox.addWidget(self.legend_cb)
         self.hbox.addWidget(self.shape_cb)
+        self.hbox.addWidget(self.hyperplane_cb)
         self.hbox.addWidget(self.switch_button)
         self.hbox.addWidget(self.load_data_button)
         self.hbox.addWidget(self.save_picture_button)
@@ -416,8 +421,49 @@ class MyPCA(AppForm):
                         # Label plot
                         self.axes.clabel(cset, inline=1, fontsize=10)
 
+
         if (self.legend_cb.isChecked()):
             self.axes.legend(loc=2,prop=fontprop)
+
+        if (self.hyperplane_cb.isChecked()):
+            if (self.switched == False):
+                clf = svm.SVC(C=1.0, kernel='linear')
+                svm_x = self.pca_result[:, a]
+                svm_y = self.pca_result[:, b]
+                svm_z = self.pca_result[:, c]
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
+                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+
+                le = LabelEncoder()
+                le.fit(self.result_to_fit.index)
+                class_label = le.transform(self.result_to_fit.index)
+                svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y), pd.DataFrame(svm_z)], axis=1)
+
+                svm_train = svm_train.values
+
+                # The equation of the separating plane is given by all x so that np.dot(svc.coef_[0], x) + b = 0.
+                zz = lambda x, y: (-clf.intercept_[0] - clf.coef_[0][0] * x - clf.coef_[0][1] * y) / clf.coef_[0][2]
+                clf.fit(svm_train, class_label)
+                self.axes.plot_surface(xx, yy, zz(xx,yy).reshape(xx.shape), color= 'grey', alpha=0.5)
+
+            else:
+                clf = svm.SVC(C=1.0, kernel='linear')
+                svm_x = self.pca_result[:, a]
+                svm_y = self.pca_result[:, b]
+
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
+                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+
+                le = LabelEncoder()
+                le.fit(self.result_to_fit.index)
+                class_label=le.transform(self.result_to_fit.index)
+                svm_train= pd.concat([pd.DataFrame(svm_x),pd.DataFrame(svm_y)], axis=1)
+
+                svm_train=svm_train.values
+                clf.fit(svm_train,class_label)
+                Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+                Z = Z.reshape(xx.shape)
+                self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
 
 
         self.result = pd.concat([self.begin_result , self.load_result], axis=0).set_index('Label')
@@ -427,21 +473,21 @@ class MyPCA(AppForm):
 
     def Distance_Calculation(self):
 
-        print(self.whole_labels)
+        #print(self.whole_labels)
         distance_result={}
 
         for i in range(len(self.whole_labels)):
             distance_result[self.whole_labels[i]] = []
 
-        print(distance_result)
+        #print(distance_result)
 
 
         self.pca_result[self.result_to_fit.index == self.whole_labels[0], 0]
 
-        print(self.pca_result)
+        #print(self.pca_result)
 
         try:
-            print(self.pca_data_to_test)
+            #print(self.pca_data_to_test)
             self.pca_data_to_test[self.data_to_test_to_fit.index == self.whole_labels[0], 0]
         except Exception as e:
             pass
