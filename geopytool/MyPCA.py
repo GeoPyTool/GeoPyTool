@@ -98,6 +98,9 @@ class MyPCA(AppForm):
         self.save_result_button = QPushButton('&Save PCA Result')
         self.save_result_button.clicked.connect(self.saveResult)
 
+        self.save_predict_button = QPushButton('&Save Predict Result')
+        self.save_predict_button.clicked.connect(self.savePredictResult)
+
         self.save_Para_button = QPushButton('&Save PCA Para')
         self.save_Para_button.clicked.connect(self.savePara)
 
@@ -152,6 +155,7 @@ class MyPCA(AppForm):
         self.hbox.addWidget(self.save_picture_button)
         self.hbox.addWidget(self.save_result_button)
         self.hbox.addWidget(self.save_Para_button)
+        self.hbox.addWidget(self.save_predict_button)
         self.vbox.addLayout(self.hbox)
         self.vbox.addLayout(self.hbox0)
         self.vbox.addLayout(self.hbox2)
@@ -380,6 +384,7 @@ class MyPCA(AppForm):
                 self.axes.set_zlabel("component no." + str(c + 1))
                 self.z_element_label.setText("component no." + str(c + 1))
 
+
             else:
 
                 self.axes.scatter(self.pca_result[self.result_to_fit.index == all_labels[i], a],
@@ -466,8 +471,40 @@ class MyPCA(AppForm):
                 self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
 
 
-        self.result = pd.concat([self.begin_result , self.load_result], axis=0).set_index('Label')
+        self.result = pd.concat([self.begin_result , self.load_result], axis=0,sort=False).set_index('Label')
         self.canvas.draw()
+
+
+    def savePredictResult(self):
+
+        try:
+            clf = svm.SVC(C=1.0, kernel='linear')
+            # le = LabelEncoder()
+            # le.fit(self.result_to_fit.index)
+            # class_label = le.transform(self.result_to_fit.index)
+            # clf.fit(self.pca_result, class_label)
+            clf.fit(self.pca_result, self.result_to_fit.index)
+            Z = clf.predict(np.c_[self.pca_data_to_test])
+            predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z})],
+                                       axis=1).set_index('Label')
+            print(predict_result)
+            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                              '文件保存',
+                                                              'C:/',
+                                                              'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+            if (DataFileOutput != ''):
+                if ('csv' in DataFileOutput):
+                    # DataFileOutput = DataFileOutput[0:-4]
+                    predict_result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                    # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
+                elif ('xlsx' in DataFileOutput):
+                    # DataFileOutput = DataFileOutput[0:-5]
+                    predict_result.to_excel(DataFileOutput, encoding='utf-8')
+                    # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
+
+        except Exception as e:
+            msg = 'You need to load another data to run SVM.\n '
+            self.ErrorEvent(text= msg +repr(e) )
 
 
 
