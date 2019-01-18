@@ -1,4 +1,4 @@
-version = '0.8.19.1.24'
+version = '0.8.19.1.25'
 
 date = '2019-1-18'
 
@@ -678,7 +678,7 @@ class AppForm(QMainWindow):
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
     reference = 'Print the reference here.'
-
+    AllLabel = []
     LabelList=[]
     ItemNames = ['Foidolite',
                  'Peridotgabbro',
@@ -741,6 +741,14 @@ class AppForm(QMainWindow):
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to AppForm')
+
+        self.AllLabel=[]
+
+        for i in range(len(self._df)):
+            tmp_label = self._df.at[i, 'Label']
+            if tmp_label not in self.AllLabel:
+                self.AllLabel.append(tmp_label)
+
 
         for i in range(len(self.LocationAreas)):
             tmpi = self.LocationAreas[i] + [self.LocationAreas[i][0]]

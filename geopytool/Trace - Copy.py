@@ -45,8 +45,6 @@ class Trace(AppForm):
                   'Gd': 3.68, 'Tb': 0.67, 'Dy': 4.55, 'Li': 4.3, 'Y': 28, 'Ho': 1.01, 'Er': 2.97, 'Tm': 0.456,
                   'Yb': 3.05, 'Lu': 0.455}, }
 
-    AllLabel = []
-
     def __init__(self, parent=None, df=pd.DataFrame(),Standard={}):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Trace Standardlized Pattern Diagram')
@@ -63,13 +61,6 @@ class Trace(AppForm):
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to Trace')
-
-        self.AllLabel=[]
-
-        for i in range(len(self._df)):
-            tmp_label = self._df.at[i, 'Label']
-            if tmp_label not in self.AllLabel:
-                self.AllLabel.append(tmp_label)
 
         self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr',
                         u'Mo',
@@ -157,33 +148,19 @@ class Trace(AppForm):
         self.left_label= QLabel('Standard' )
 
 
-
-        self.item_left_label= QLabel('Show All' )
-        self.item_slider = QSlider(Qt.Horizontal)
-        self.item_slider.setRange(0, len(self.AllLabel))
-        self.item_slider.setTracking(True)
-        self.item_slider.setTickPosition(QSlider.TicksBothSides)
-        self.item_slider.valueChanged.connect(self.Trace) # int
-
         # Layout with box sizers
         #
-        self.hbox1 = QHBoxLayout()
-        self.hbox2 = QHBoxLayout()
+        self.hbox = QHBoxLayout()
 
         for w in [self.save_img_button,self.explain_button,self.type_slider_left_label, self.type_slider,self.type_slider_right_label,
                   self.legend_cb, self.left_label, self.standard_slider,self.right_label]:
-            self.hbox1.addWidget(w)
-            self.hbox1.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [ self.item_left_label,self.item_slider]:
-            self.hbox2.addWidget(w)
-            self.hbox2.setAlignment(w, Qt.AlignVCenter)
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox1)
-        self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox)
         self.textbox = GrowingTextEdit(self)
         self.vbox.addWidget(self.textbox)
 
@@ -268,9 +245,6 @@ class Trace(AppForm):
 
         slider_value=int(self.standard_slider.value())
 
-
-        item_value=int(self.item_slider.value())
-
         if slider_value < len(self.StandardsName):
             standardnamechosen = self.StandardsName[slider_value]
             standardchosen = self.Standards[standardnamechosen]
@@ -292,141 +266,67 @@ class Trace(AppForm):
 
         self.right_label.setText(right_label_text)
 
-        if item_value == 0:
-            self.item_left_label.setText('Show All')
 
-            for i in range(len(raw)):
-                # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
+        for i in range(len(raw)):
+            # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
 
-                TmpLabel = ''
+            TmpLabel = ''
 
-                LinesX = []
-                LinesY = []
+            LinesX = []
+            LinesY = []
 
-                for j in range(len(CommonElements)):
+            for j in range(len(CommonElements)):
 
-                    flag = 1
+                flag = 1
 
-                    tmp = 1
+                tmp = 1
 
-                    if CommonElements[j] in raw.columns:
-                        tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
+                if CommonElements[j] in raw.columns:
+                    tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
 
-                    elif CommonElements[j] == 'K' and 'K2O' in raw.columns:
-                        tmp = raw.at[i, 'K2O'] * (
-                            2 * 39.0983 / 94.1956) * 10000 / standardchosen[
-                            CommonElements[j]]
+                elif CommonElements[j] == 'K' and 'K2O' in raw.columns:
+                    tmp = raw.at[i, 'K2O'] * (
+                        2 * 39.0983 / 94.1956) * 10000 / standardchosen[
+                        CommonElements[j]]
 
-                    elif CommonElements[j] == 'Ti' and 'TiO2' in raw.columns:
-                        tmp = raw.at[i, 'TiO2'] * (
-                            47.867 / 79.865) * 10000 / standardchosen[
-                            CommonElements[j]]
-                    else:
-                        flag = 0
+                elif CommonElements[j] == 'Ti' and 'TiO2' in raw.columns:
+                    tmp = raw.at[i, 'TiO2'] * (
+                        47.867 / 79.865) * 10000 / standardchosen[
+                        CommonElements[j]]
+                else:
+                    flag = 0
 
-                    if flag == 1:
-                        if tmp==tmp:# to delete nan
+                if flag == 1:
+                    if tmp==tmp:# to delete nan
 
-                            self.data_to_norm.at[i, self.Element[j]] = tmp
+                        self.data_to_norm.at[i, self.Element[j]] = tmp
 
-                            tmpflag = 1
-                            a=0
-                            try:
-                                a=math.log(tmp, 10)
-                            except(ValueError):
-                                tmpflag=0
-                                pass
+                        tmpflag = 1
+                        a=0
+                        try:
+                            a=math.log(tmp, 10)
+                        except(ValueError):
+                            tmpflag=0
+                            pass
 
-                            if(tmpflag==1):
+                        if(tmpflag==1):
 
-                                LinesY.append(a)
-                                LinesX.append(j + 1)
+                            LinesY.append(a)
+                            LinesX.append(j + 1)
 
-                                self.WholeData.append(math.log(tmp, 10))
+                            self.WholeData.append(math.log(tmp, 10))
 
-                                if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                                    TmpLabel = ''
-                                else:
-                                    PointLabels.append(raw.at[i, 'Label'])
-                                    TmpLabel = raw.at[i, 'Label']
+                            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                                TmpLabel = ''
+                            else:
+                                PointLabels.append(raw.at[i, 'Label'])
+                                TmpLabel = raw.at[i, 'Label']
 
-                                self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
-                                                  s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                                  label=TmpLabel, edgecolors='black')
-                self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
-                               linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
-
-
-        else:
-
-            self.item_left_label.setText(self.AllLabel[item_value-1])
-
-            for i in range(len(raw)):
-                # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
-
-                TmpLabel = ''
-
-                LinesX = []
-                LinesY = []
-
-                if raw.at[i, 'Label'] == self.AllLabel[item_value - 1]:
-                    alpha = raw.at[i, 'Alpha']
-                    linewidth = raw.at[i, 'Width']
-                    pointsize = raw.at[i, 'Size']
-                    for j in range(len(CommonElements)):
-
-                        flag = 1
-
-                        tmp = 1
-
-                        if CommonElements[j] in raw.columns:
-                            tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
-
-                        elif CommonElements[j] == 'K' and 'K2O' in raw.columns:
-                            tmp = raw.at[i, 'K2O'] * (
-                                2 * 39.0983 / 94.1956) * 10000 / standardchosen[
-                                CommonElements[j]]
-
-                        elif CommonElements[j] == 'Ti' and 'TiO2' in raw.columns:
-                            tmp = raw.at[i, 'TiO2'] * (
-                                47.867 / 79.865) * 10000 / standardchosen[
-                                CommonElements[j]]
-                        else:
-                            flag = 0
-
-                        if flag == 1:
-                            if tmp==tmp:# to delete nan
-
-                                self.data_to_norm.at[i, self.Element[j]] = tmp
-
-                                tmpflag = 1
-                                a=0
-                                try:
-                                    a=math.log(tmp, 10)
-                                except(ValueError):
-                                    tmpflag=0
-                                    pass
-
-                                if(tmpflag==1):
-
-                                    LinesY.append(a)
-                                    LinesX.append(j + 1)
-
-                                    self.WholeData.append(math.log(tmp, 10))
-
-                                    if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                                        TmpLabel = ''
-                                    else:
-                                        PointLabels.append(raw.at[i, 'Label'])
-                                        TmpLabel = raw.at[i, 'Label']
-
-                                    self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
-                                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                                      label=TmpLabel, edgecolors='black')
-                    self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
-                                   linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
-
-
+                            self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
+                                              s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                              label=TmpLabel, edgecolors='black')
+            self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
+                           linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
 
         Tale = 0
         Head = 0
