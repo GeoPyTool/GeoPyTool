@@ -20,7 +20,7 @@ Tags: Doc, English, Chinese
 
 [OneDrive](https://1drv.ms/u/s!AnIw_Lqr4g5tgTILXh-J2igEU1Nh)
 
-
+#### 如果你使用百度网盘进行下载发现速度比较慢,可以试试 [http://pandownload.com/](http://pandownload.com/) 这个软件
 
 ## Citation 引用
 
