@@ -173,19 +173,22 @@ class XY(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
 
+        self.load_data_button = QPushButton('&Add Data to Compare')
+        self.load_data_button.clicked.connect(self.loadDataToTest)
 
-        self.stat_button = QPushButton('&Stat')
+        self.save_plot_button = QPushButton('&Save IMG')
+        self.save_plot_button .clicked.connect(self.saveImgFile)
+
+        self.stat_button = QPushButton('&Show Stat')
         self.stat_button.clicked.connect(self.Stat)
 
 
-        self.load_button = QPushButton('&Load Basemap')
-        self.load_button.clicked.connect(self.Load)
+        self.load_img_button = QPushButton('&Load Basemap')
+        self.load_img_button.clicked.connect(self.Load)
 
-        self.unload_button = QPushButton('&Unload Basemap')
-        self.unload_button.clicked.connect(self.Unload)
+        self.unload_img_button = QPushButton('&Unload Basemap')
+        self.unload_img_button.clicked.connect(self.Unload)
 
 
         self.legend_cb = QCheckBox('&Legend')
@@ -324,9 +327,14 @@ class XY(AppForm):
         self.hbox3 = QHBoxLayout()
         self.hbox4 = QHBoxLayout()
 
+        w=self.width()
+        h=self.height()
+
+        self.load_data_button.setFixedWidth(w/4)
 
 
-        for w in [self.save_button,self.stat_button,self.legend_cb,self.norm_cb, self.left_label, self.standard_slider,self.right_label,self.shape_cb,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter]:
+
+        for w in [self.load_data_button,self.save_plot_button ,self.stat_button,self.legend_cb,self.norm_cb, self.left_label, self.standard_slider,self.right_label,self.shape_cb,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -340,14 +348,14 @@ class XY(AppForm):
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.load_button, self.width_size_seter_label, self.width_size_seter, self.height_size_seter_label,
+        for w in [self.load_img_button, self.width_size_seter_label, self.width_size_seter, self.height_size_seter_label,
                   self.height_size_seter]:
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignLeft)
 
 
 
-        for w in [self.unload_button,self.Left_size_seter_label, self.Left_size_seter,
+        for w in [self.unload_img_button,self.Left_size_seter_label, self.Left_size_seter,
                   self.Right_size_seter_label,  self.Right_size_seter,self.Down_size_seter_label, self.Down_size_seter,
                   self.Up_size_seter_label ,self.Up_size_seter]:
             self.hbox4.addWidget(w)
@@ -381,7 +389,7 @@ class XY(AppForm):
         self.x_seter.setFixedWidth(w/10)
         self.y_seter.setFixedWidth(w/10)
 
-        self.save_button.setFixedWidth(w/10)
+        self.save_plot_button .setFixedWidth(w/10)
         self.stat_button.setFixedWidth(w/10)
 
         self.standard_slider.setFixedWidth(w/5)
@@ -390,8 +398,8 @@ class XY(AppForm):
 
         self.fit_seter.setFixedWidth(w/20)
 
-        self.load_button.setFixedWidth(w/5)
-        self.unload_button.setFixedWidth(w/5)
+        self.load_img_button.setFixedWidth(w/5)
+        self.unload_img_button.setFixedWidth(w/5)
 
         self.width_size_seter_label.setFixedWidth(w/10)
         self.height_size_seter_label.setFixedWidth(w/10)
@@ -410,7 +418,11 @@ class XY(AppForm):
         self.Down_size_seter.setFixedWidth(w/20)
 
 
-
+    def loadDataToTest(self):
+        TMP =self.getDataFile()
+        if TMP != 'Blank':
+            self.data_to_test=TMP[0]
+        self.Magic()
 
 
     def Read(self, inpoints):
@@ -845,6 +857,26 @@ class XY(AppForm):
         XtoFit = []
         YtoFit = []
 
+        all_labels=[]
+        all_colors=[]
+        all_markers=[]
+        all_alpha=[]
+
+        for i in range(len(self._df)):
+            target = self._df.at[i, 'Label']
+            color = self._df.at[i, 'Color']
+            marker = self._df.at[i, 'Marker']
+            alpha = self._df.at[i, 'Alpha']
+
+            if target not in all_labels:
+                all_labels.append(target)
+                all_colors.append(color)
+                all_markers.append(marker)
+                all_alpha.append(alpha)
+
+        self.whole_labels = all_labels
+
+
         df = self.CleanDataFile(self._df)
 
         for i in range(len(df)):
@@ -1133,7 +1165,30 @@ class XY(AppForm):
                         # Contour plot
                         cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
                         # Label plot
-                        self.axes.clabel(cset, inline=1, fontsize=10)
+                        #self.axes.clabel(cset, inline=1, fontsize=10)
+
+
+        if (len(self.data_to_test) > 0):
+            for i in range(len(self.data_to_test)):
+
+                target = self.data_to_test.at[i, 'Label']
+                if target not in all_labels:
+                    all_labels.append(target)
+                    tmp_label = self.data_to_test.at[i, 'Label']
+                else:
+                    tmp_label=''
+
+                x_load_test = self.data_to_test.at[i, self.items[a]]
+                y_load_test = self.data_to_test.at[i, self.items[b]]
+
+                self.axes.scatter(x_load_test, y_load_test,
+                                  marker=self.data_to_test.at[i, 'Marker'],
+                                  s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'], alpha=self.data_to_test.at[i, 'Alpha'],
+                                  label=tmp_label,
+                                  edgecolors='black')
+
+
+
 
         if self.TypeLoaded=='svg':
 

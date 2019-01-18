@@ -121,8 +121,10 @@ class Harker(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveImgFile)
+
+        
+        self.save_img_button = QPushButton('&Save IMG')
+        self.save_img_button.clicked.connect(self.saveImgFile)
 
         self.seter_left_label = QLabel('Left')
         self.seter_left = QLineEdit(self)
@@ -141,12 +143,13 @@ class Harker(AppForm):
         self.legend_cb.stateChanged.connect(self.Harker)  # int
 
 
+
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.seter_left_label ,self.seter_left,self.seter_right_label ,self.seter_right,self.save_button, self.legend_cb]:
+        for w in [self.seter_left_label ,self.seter_left,self.seter_right_label ,self.seter_right, self.legend_cb,self.save_img_button]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -337,7 +340,6 @@ class Harker(AppForm):
             self.axes[3, 1].scatter(SiO2, P2O5, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
-
 
 
 

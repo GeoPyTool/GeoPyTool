@@ -104,7 +104,7 @@ class MyPCA(AppForm):
         self.save_Para_button = QPushButton('&Save PCA Para')
         self.save_Para_button.clicked.connect(self.savePara)
 
-        self.load_data_button = QPushButton('&Load Data to Test')
+        self.load_data_button = QPushButton('&Add Data to Test')
         self.load_data_button.clicked.connect(self.loadDataToTest)
 
         self.switch_button = QPushButton('&Switch to 2D')
@@ -424,7 +424,7 @@ class MyPCA(AppForm):
                         # Contour plot
                         cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
                         # Label plot
-                        self.axes.clabel(cset, inline=1, fontsize=10)
+                        #self.axes.clabel(cset, inline=1, fontsize=10)
 
 
         if (self.legend_cb.isChecked()):

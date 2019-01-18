@@ -73,10 +73,16 @@ class TAS(AppForm):
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
-        self.save_button = QPushButton('&Save')
+
+
+        self.load_data_button = QPushButton('&Add Data to Compare')
+        self.load_data_button.clicked.connect(self.loadDataToTest)
+
+
+        self.save_button = QPushButton('&Save Img')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        self.result_button = QPushButton('&Result')
+        self.result_button = QPushButton('&Classification Result')
         self.result_button.clicked.connect(self.Explain)
 
         self.legend_cb = QCheckBox('&Legend')
@@ -97,6 +103,12 @@ class TAS(AppForm):
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.TAS)  # int
 
+
+        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb.setChecked(False)
+        self.hyperplane_cb.stateChanged.connect(self.TAS)  # int
+
+
         self.slider_left_label = QLabel('Volcanic')
         self.slider_right_label = QLabel('Plutonic')
 
@@ -113,7 +125,7 @@ class TAS(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.result_button,self.shape_cb, self.legend_cb,self.tag_cb,self.irvine_cb,
+        for w in [self.load_data_button,self.save_button, self.result_button,self.shape_cb,self.legend_cb,self.tag_cb,self.irvine_cb,
                   self.slider_left_label, self.slider,self.slider_right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
@@ -135,16 +147,17 @@ class TAS(AppForm):
 
         self.slider.setFixedWidth(w/10)
 
-
-
-
     def Irvine(self,x, a = 39.0, b = 3.9492, c = -2.1111, d = 0.86096, e = -0.15188, f = 0.012030, g = -(3.3539 / 10000)):
 
         return(a+ b*np.power(x,1) +c*np.power(x,2) +d*np.power(x,3) +e*np.power(x,4) +f*np.power(x,5) +g*np.power(x,6))
         pass
 
 
-
+    def loadDataToTest(self):
+        TMP =self.getDataFile()
+        if TMP != 'Blank':
+            self.data_to_test=TMP[0]
+        self.TAS()
 
 
     def TAS(self, Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
@@ -171,6 +184,27 @@ class TAS(AppForm):
         self.axes.set_yticklabels([0, 5, 10, 15, 20])
 
         self.axes.set_ylim(bottom=0)
+
+
+
+        all_labels=[]
+        all_colors=[]
+        all_markers=[]
+        all_alpha=[]
+
+        for i in range(len(self._df)):
+            target = self._df.at[i, 'Label']
+            color = self._df.at[i, 'Color']
+            marker = self._df.at[i, 'Marker']
+            alpha = self._df.at[i, 'Alpha']
+
+            if target not in all_labels:
+                all_labels.append(target)
+                all_colors.append(color)
+                all_markers.append(marker)
+                all_alpha.append(alpha)
+
+        self.whole_labels = all_labels
 
         YIrvine= np.arange(0,10.2,0.1)
         XIrvine= self.Irvine(YIrvine)
@@ -217,8 +251,6 @@ class TAS(AppForm):
 
             self.setWindowTitle(title)
             self.textbox.setText(self.reference+description)
-
-
 
 
         TagNumber = min(len(Labels), len(Locations))
@@ -306,6 +338,9 @@ class TAS(AppForm):
             XtoFit = {}
             YtoFit = {}
 
+            SVM_X=[]
+            SVM_Y=[]
+
             for i in  PointLabels:
                 XtoFit[i]=[]
                 YtoFit[i]=[]
@@ -321,6 +356,9 @@ class TAS(AppForm):
 
                 XtoFit[Label].append(xtest)
                 YtoFit[Label].append(ytest)
+
+                SVM_X.append(xtest)
+                SVM_Y.append(ytest)
 
             if (self.shape_cb.isChecked()):
                 for i in PointLabels:
@@ -359,18 +397,65 @@ class TAS(AppForm):
                             # Contour plot
                             cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
                             # Label plot
-                            self.axes.clabel(cset, inline=1, fontsize=10)
+                            #self.axes.clabel(cset, inline=1, fontsize=10)
 
 
             if (self.irvine_cb.isChecked()):
                 self.axes.plot(XIrvine, YIrvine,color= 'black', linewidth=1,
                            linestyle=':', alpha=0.6,label='Irvine, Barragar 1971\n')
 
+            if (len(self.data_to_test) > 0):
+                    for i in range(len(self.data_to_test)):
+
+                        target = self.data_to_test.at[i, 'Label']
+                        if target not in all_labels:
+                            all_labels.append(target)
+                            tmp_label = self.data_to_test.at[i, 'Label']
+                        else:
+                            tmp_label=''
+
+                        x_load_test = self.data_to_test.at[i, 'SiO2']
+                        y_load_test = self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']
+
+                        for j in self.ItemNames:
+                            if self.SelectDic[j].contains_point([x_load_test, y_load_test]):
+                                self.LabelList.append(self.data_to_test.at[i, 'Label'])
+                                self.TypeList.append(j)
+
+                                break
+                            pass
+
+                        self.axes.scatter(self.data_to_test.at[i, 'SiO2'], (self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']),
+                                          marker=self.data_to_test.at[i, 'Marker'],
+                                          s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'], alpha=self.data_to_test.at[i, 'Alpha'],
+                                          label=tmp_label,
+                                          edgecolors='black')
+
 
 
             if (self.legend_cb.isChecked()):
                 self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
+            if (self.hyperplane_cb.isChecked()):
+                clf = svm.SVC(C=1.0, kernel='linear')
+
+                svm_x= SVM_X
+                svm_y= SVM_Y
+
+                print(len(svm_x),len(svm_y),len(df.index))
+
+                xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
+                                     np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+
+                le = LabelEncoder()
+                le.fit(df.index)
+                class_label = le.transform(df.index)
+                svm_train= pd.concat([pd.DataFrame(svm_x),pd.DataFrame(svm_y)], axis=1)
+                svm_train=svm_train.values
+                clf.fit(svm_train,class_label)
+                Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+                Z = Z.reshape(xx.shape)
+                self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
 
             self.canvas.draw()
 
