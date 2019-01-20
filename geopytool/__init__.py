@@ -62,6 +62,8 @@ from geopytool.Sta import MySta
 from geopytool.ThreeD import MyThreeD
 
 
+from geopytool.TwoD import MyTwoD
+
 from geopytool.Pearce import Pearce
 from geopytool.QAPF import QAPF
 from geopytool.QFL import QFL
@@ -296,6 +298,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionThreeD.setObjectName('actionThreeD')
 
 
+        self.actionTwoD = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'TwoD',self)
+        self.actionTwoD.setObjectName('actionTwoD')
+
 
         self.actionTrans = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'Trans',self)
         self.actionTrans.setObjectName('actionTrans')
@@ -401,6 +406,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionDist)
         self.menuAdditional.addAction(self.actionStatistics)
         self.menuAdditional.addAction(self.actionThreeD)
+        self.menuAdditional.addAction(self.actionTwoD)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -485,6 +491,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionDist.triggered.connect(self.Dist)
         self.actionStatistics.triggered.connect(self.Sta)
         self.actionThreeD.triggered.connect(self.ThreeD)
+        self.actionTwoD.triggered.connect(self.TwoD)
 
         #self.actionICA.triggered.connect(self.ICA)
         #self.actionSVM.triggered.connect(self.SVM)
@@ -587,6 +594,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.actionThreeD.setText('5-12 '+_translate('MainWindow',u'ThreeD'))
+        self.actionTwoD.setText('5-13 '+_translate('MainWindow',u'TwoD'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -808,6 +816,27 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.model = PandasModel(self.raw)
         self.tableView.setModel(self.model)
 
+    def getDataFiles(self,limit=6):
+        print('get Multiple Data Files  called \n')
+        DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, u'Choose Data File',
+                                                                '~/',
+                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+        # print(DataFileInput,filetype)
+
+        DataFramesList = []
+
+        if len(DataFilesInput) >= 1 :
+            for i in range(len(DataFilesInput)):
+                if i < limit:
+                    if ('csv' in DataFilesInput[i]):
+                        DataFramesList.append(pd.read_csv(DataFilesInput[i]))
+                    elif ('xls' in DataFilesInput[i]):
+                        DataFramesList.append(pd.read_excel(DataFilesInput[i]))
+                else:
+                    #self.ErrorEvent(text='You can only open up to 6 Data Files at a time.')
+                    pass
+
+        return(DataFramesList,DataFilesInput)
 
     def getDataFile(self,CleanOrNot=True):
         _translate = QtCore.QCoreApplication.translate
@@ -849,6 +878,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             else:
                 self.SetUpDataFile()
 
+    def getFileName(self,list=['C:/Users/Fred/Documents/GitHub/Writing/元素数据/Ag.xlsx']):
+        result=[]
+        for i in list:
+            result.append(i.split("/")[-1].split(".")[0])
+        return(result)
     def saveDataFile(self):
 
         # if self.model._changed == True:
@@ -1356,16 +1390,48 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print('ThreeD called \n')
         print('self.model._df length: ',len(self.model._df))
 
+        if (len(self.model._df) > 0):
+            self.ThreeDpop = MyThreeD( DataFiles = [self.model._df],DataLocation= [self.DataLocation])
+            self.ThreeDpop.ThreeD()
+        else:
+            DataFiles, DataLocation = self.getDataFiles()
 
-        if (len(self.model._df)<=0):
-            self.getDataFile()
-            pass
+            print(len(DataFiles),len(DataLocation))
+
+            if len(DataFiles)>0:
+                self.ThreeDpop = MyThreeD( DataFiles = DataFiles,DataLocation= DataLocation)
+                self.ThreeDpop.ThreeD()
+
+
+
+    def TwoD_OLD(self):
+
+        print('TwoD called \n')
+        print('self.model._df length: ',len(self.model._df))
+
+        DataFiles, DataLocation = self.getDataFiles()
+
+        print(len(DataFiles),len(DataLocation))
+
+        if len(DataFiles)>0:
+            self.TwoDpop = MyTwoD( DataFiles = DataFiles,DataLocation= DataLocation)
+            self.TwoDpop.TwoD()
+
+    def TwoD(self):
+        print('TwoD called \n')
+        print('self.model._df length: ',len(self.model._df))
 
         if (len(self.model._df) > 0):
-            self.threedpop = MyThreeD(df=self.model._df,DataLocation=self.DataLocation)
-            self.threedpop.ThreeD()
+            self.TwoDpop = MyTwoD( DataFiles = [self.model._df],DataLocation= [self.DataLocation])
+            self.TwoDpop.TwoD()
+        else:
+            DataFiles, DataLocation = self.getDataFiles()
 
+            print(len(DataFiles),len(DataLocation))
 
+            if len(DataFiles)>0:
+                self.TwoDpop = MyTwoD( DataFiles = DataFiles,DataLocation= DataLocation)
+                self.TwoDpop.TwoD()
 
     def Trans(self):
 

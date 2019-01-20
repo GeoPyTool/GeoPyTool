@@ -1,4 +1,4 @@
-version = '0.8.19.1.25'
+version = '0.8.19.1.26'
 
 date = '2019-1-18'
 
@@ -962,6 +962,16 @@ class AppForm(QMainWindow):
             else:
                 target.addAction(action)
 
+    def exportScene(self):
+        ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                         '文件保存',
+                                                         'C:/',
+                                                         'PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
+
+        pix = QtWidgets.QWidget.grab(self.canvas)
+        #pix.save("./capture.png", "PNG")
+        pix.save(ImgFileOutput)
+
     def saveImgFile(self):
         ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                          '文件保存',
@@ -970,6 +980,7 @@ class AppForm(QMainWindow):
 
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
+            #self.canvas.print_raw(ImgFileOutput, dpi=300)
 
     def getDataFile(self,CleanOrNot=True):
         _translate = QtCore.QCoreApplication.translate
@@ -991,6 +1002,11 @@ class AppForm(QMainWindow):
         else:
             return('Blank')
 
+    def getFileName(self,list=['C:/Users/Fred/Documents/GitHub/Writing/元素数据/Ag.xlsx']):
+        result=[]
+        for i in list:
+            result.append(i.split("/")[-1].split(".")[0])
+        return(result)
 
     def Key_Func(self):
         pass

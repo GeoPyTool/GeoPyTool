@@ -2,10 +2,10 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
 
-class MyThreeD(AppForm):
+class MyTwoD(AppForm):
     Lines = []
     Tags = []
-    description = 'ThreeD'
+    description = 'TwoD'
     unuseful = ['Name',
                 'Mineral',
                 'Author',
@@ -28,15 +28,13 @@ class MyThreeD(AppForm):
         self.DataFiles = DataFiles
         self.DataLocation = DataLocation
         self.Labels = self.getFileName(self.DataLocation)
-        print(self.DataLocation)
-        print(self.Labels)
-        self.setWindowTitle('ThreeD Data Visualization')
+        self.setWindowTitle('TwoD Data Visualization')
 
 
         self.items = []
         if (len(self.DataFiles) > 0):
             self._changed = True
-            # print('DataFrame recieved to ThreeD')
+            # print('DataFrame recieved to TwoD')
 
         self.create_main_frame()
 
@@ -44,7 +42,7 @@ class MyThreeD(AppForm):
         self.resize(800,600)
         self.main_frame = QWidget()
         self.dpi = 128
-        self.setWindowTitle('ThreeD Data Visualization')
+        self.setWindowTitle('TwoD Data Visualization')
 
         self.fig = plt.figure(figsize=(12, 8))
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.6, top=0.9)
@@ -52,8 +50,8 @@ class MyThreeD(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
-        self.axes = Axes3D(self.fig, elev=-150, azim=110)
-        #self.axes = self.fig.add_subplot(111)
+        #self.axes = Axes3D(self.fig, elev=-150, azim=110)
+        self.axes = self.fig.add_subplot(111)
 
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -61,11 +59,11 @@ class MyThreeD(AppForm):
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
-        self.legend_cb.stateChanged.connect(self.ThreeD)  # int
+        self.legend_cb.stateChanged.connect(self.TwoD)  # int
 
         self.log_cb = QCheckBox('&Log')
         self.log_cb.setChecked(True)
-        self.log_cb.stateChanged.connect(self.ThreeD)  # int
+        self.log_cb.stateChanged.connect(self.TwoD)  # int
 
 
         self.cb_list=[]
@@ -87,11 +85,11 @@ class MyThreeD(AppForm):
         w = self.width()
         for i in self.cb_list:
             i.setFixedWidth(w / 8)
-            i.stateChanged.connect(self.ThreeD)  # int
+            i.stateChanged.connect(self.TwoD)  # int
 
         for i in self.setter_list:
             i.setFixedWidth(w / 8)
-            i.textChanged[str].connect(self.ThreeD)  # int
+            i.textChanged[str].connect(self.TwoD)  # int
 
         self.save_img_button = QPushButton('&Save Image')
         #self.save_img_button.clicked.connect(self.saveImgFile)
@@ -123,7 +121,7 @@ class MyThreeD(AppForm):
 
 
 
-    def ThreeD(self):
+    def TwoD(self):
 
         self.axes.clear()
         self.WholeData = []
@@ -134,7 +132,7 @@ class MyThreeD(AppForm):
         for k in self.cb_list:
             if k.isChecked():
                 text= k.text()
-                #print(text)
+                print(text)
 
                 for i in range(len(self.DataFiles)):
                     ItemsAvalibale = self.DataFiles[i].columns.values.tolist()
@@ -152,36 +150,15 @@ class MyThreeD(AppForm):
                     dataframe = dataframe.dropna(axis='columns')
                     dataframe = pd.DataFrame(dataframe.values)
 
-                    self.result = dataframe
-
-                    self.originalresult = self.result
-
-                    self.result = pd.DataFrame(self.result.values.flatten())
-
-                    a, b = self.originalresult.shape
-
-                    m = list(i for i in range(a))
-                    n = list(i for i in range(b))
-
-                    location_list = list(product(m, n))
-
-                    x = []
-                    y = []
-
-                    for k in location_list:
-                        x.append(k[0])
-                        y.append(k[1])
-
                     if (self.log_cb.isChecked()):
-                        zs = np.log10(self.result.values)
+                        zs = np.log10(dataframe.values)
                     else:
-                        zs = self.result.values
-
+                        zs = dataframe.values
                     # print(type(zs),zs.shape)
                     zs = np.matrix(zs)
                     #print(type(zs), zs.shape)
 
-                    #print(self.PureColors[i], self.Labels[i])
+                    print(self.PureColors[i], self.Labels[i])
 
                     alpha = 0.3
 
@@ -193,28 +170,20 @@ class MyThreeD(AppForm):
                         pass
 
                     if (text==self.Labels[i]):
-                        self.axes.matshow(zs, aspect='auto', origin='lower', cmap=self.PureColors[i], alpha=alpha)
-                        #self.axes.imshow(zs, interpolation='nearest',aspect='auto', origin='lower', cmap=self.PureColors[i], alpha=alpha)
+                        #self.axes.matshow(zs, aspect='auto', origin='lower', cmap=self.PureColors[i], alpha=alpha)
+                        self.axes.imshow(zs, interpolation='nearest',aspect='auto', origin='lower', cmap=self.PureColors[i], alpha=alpha)
                         #tmp_matshow= plt.matshow(zs, aspect='auto', origin='lower', cmap=self.PureColors[i], alpha=alpha)
                         #all_matshow.append(tmp_matshow)
+                        print(self.PureColor[i])
+                        self.axes.scatter(-1,-1,  marker= 'o', s=20,c=self.PureColor[i],alpha= 1, label=self.Labels[i])
+                        self.axes.set_xlim(left=0)
+                        self.axes.set_ylim(bottom=0)
 
-                        self.axes.scatter(xs=x, ys=y, zs=zs,  marker='o', s=0.5,c=self.PureColor[i],label=self.Labels[i],alpha=alpha)
 
-                        #self.axes.scatter(-1,-1,  marker= 'o', s=20,c=self.PureColor[i],alpha= 1, label=self.Labels[i])
-                        #self.axes.set_xlim(left=0)
-                        #self.axes.set_ylim(bottom=0)
 
-                        #self.axes.plot_surface(x, y, zs,color=self.PureColor[i],label=self.Labels[i],alpha=alpha)
-
-        scatter_proxy=[]
-        for i in range(min(len(self.PureColors),len(self.Labels))):
-            tmp_line = matplotlib.lines.Line2D([0], [0], linestyle="none", c=self.PureColor[i], marker='o')
-            scatter_proxy.append(tmp_line)
 
         if (self.legend_cb.isChecked()):
-            #self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
-            self.axes.legend(scatter_proxy, self.Labels[0:min(len(self.PureColors),len(self.Labels))], numpoints=1)
-
+            self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
         self.canvas.draw()
         self.show()
 
