@@ -1,6 +1,6 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
-from geopytool.TabelViewer import TabelViewer
+#from geopytool.TabelViewer import TabelViewer
 
 
 class TAS(AppForm):
@@ -58,6 +58,8 @@ class TAS(AppForm):
 
     TypeList=[]
 
+    All_X = []
+    All_Y = []
 
     def create_main_frame(self):
         self.resize(800, 600)
@@ -85,10 +87,18 @@ class TAS(AppForm):
         self.result_button = QPushButton('&Classification Result')
         self.result_button.clicked.connect(self.Explain)
 
+
+        self.save_predict_button_selected = QPushButton('&Predict Result')
+        self.save_predict_button_selected.clicked.connect(self.showPredictResultSelected)
+
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.TAS)  # int
 
+
+        self.show_load_data_cb = QCheckBox('&Show Loaded Data')
+        self.show_load_data_cb.setChecked(True)
+        self.show_load_data_cb.stateChanged.connect(self.TAS)  # int
 
         self.irvine_cb = QCheckBox('&Irvine')
         self.irvine_cb.setChecked(True)
@@ -124,16 +134,21 @@ class TAS(AppForm):
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
+        self.hbox1 = QHBoxLayout()
 
-        for w in [self.load_data_button,self.save_button, self.result_button,self.shape_cb,self.legend_cb,self.tag_cb,self.irvine_cb,
-                  self.slider_left_label, self.slider,self.slider_right_label]:
+        for w in [self.load_data_button,self.save_button, self.result_button, self.save_predict_button_selected]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.legend_cb,self.show_load_data_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb,self.slider_left_label, self.slider,self.slider_right_label]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
+        self.vbox.addLayout(self.hbox1)
         self.textbox = GrowingTextEdit(self)
         self.textbox.setText(self.reference)
 
@@ -404,37 +419,99 @@ class TAS(AppForm):
                 self.axes.plot(XIrvine, YIrvine,color= 'black', linewidth=1,
                            linestyle=':', alpha=0.6,label='Irvine, Barragar 1971\n')
 
+
+
             if (len(self.data_to_test) > 0):
+
+                contained = True
+                missing = 'Miss setting infor:'
+
+                for i in ['Label', 'Color', 'Marker', 'Alpha']:
+                    if i not in self.data_to_test.columns.values.tolist():
+                        contained = False
+                        missing = missing + '\n' + i
+
+                if contained == True:
+                    for i in self.data_to_test.columns.values.tolist():
+                        if i not in self._df.columns.values.tolist():
+                            self.data_to_test = self.data_to_test.drop(columns=i)
+
+                    # print(self.data_to_test)
+
+                    test_labels = []
+                    test_colors = []
+                    test_markers = []
+                    test_alpha = []
+
                     for i in range(len(self.data_to_test)):
 
+                        # print(self.data_to_test.at[i, 'Label'])
                         target = self.data_to_test.at[i, 'Label']
-                        if target not in all_labels:
-                            all_labels.append(target)
-                            tmp_label = self.data_to_test.at[i, 'Label']
-                        else:
-                            tmp_label=''
+                        color = self.data_to_test.at[i, 'Color']
+                        marker = self.data_to_test.at[i, 'Marker']
+                        alpha = self.data_to_test.at[i, 'Alpha']
 
-                        x_load_test = self.data_to_test.at[i, 'SiO2']
-                        y_load_test = self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']
+                        if target not in test_labels and target not in all_labels:
+                            test_labels.append(target)
+                            test_colors.append(color)
+                            test_markers.append(marker)
+                            test_alpha.append(alpha)
 
-                        for j in self.ItemNames:
-                            if self.SelectDic[j].contains_point([x_load_test, y_load_test]):
-                                self.LabelList.append(self.data_to_test.at[i, 'Label'])
-                                self.TypeList.append(j)
+                    self.whole_labels = self.whole_labels + test_labels
 
-                                break
-                            pass
 
-                        self.axes.scatter(self.data_to_test.at[i, 'SiO2'], (self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']),
-                                          marker=self.data_to_test.at[i, 'Marker'],
-                                          s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'], alpha=self.data_to_test.at[i, 'Alpha'],
-                                          label=tmp_label,
-                                          edgecolors='black')
+                    self.load_settings_backup = self.data_to_test
+                    Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color',
+                                        'Size',
+                                        'Alpha',
+                                        'Style', 'Width']
+                    for i in self.data_to_test.columns.values.tolist():
+                        if i not in Load_ItemsToTest:
+                            self.load_settings_backup = self.load_settings_backup.drop(i, 1)
 
+                    print(self.load_settings_backup, self.data_to_test)
+
+                    print(self.load_settings_backup.shape, self.data_to_test.shape)
+
+
+                    try:
+
+                        for i in range(len(self.data_to_test)):
+
+                            target = self.data_to_test.at[i, 'Label']
+                            if target not in all_labels:
+                                all_labels.append(target)
+                                tmp_label = self.data_to_test.at[i, 'Label']
+                            else:
+                                tmp_label=''
+
+                            x_load_test = self.data_to_test.at[i, 'SiO2']
+                            y_load_test = self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']
+
+                            for j in self.ItemNames:
+                                if self.SelectDic[j].contains_point([x_load_test, y_load_test]):
+                                    self.LabelList.append(self.data_to_test.at[i, 'Label'])
+                                    self.TypeList.append(j)
+                                    break
+                                pass
+
+                            if (self.show_load_data_cb.isChecked()):
+                                self.axes.scatter(self.data_to_test.at[i, 'SiO2'], (self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']),
+                                                  marker=self.data_to_test.at[i, 'Marker'],
+                                                  s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'], alpha=self.data_to_test.at[i, 'Alpha'],
+                                                  label=tmp_label,
+                                                  edgecolors='black')
+
+                    except Exception as e:
+                        self.ErrorEvent(text=repr(e))
 
 
             if (self.legend_cb.isChecked()):
                 self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
+
+
+            self.All_X=SVM_X
+            self.All_Y=SVM_Y
 
             if (self.hyperplane_cb.isChecked()):
                 clf = svm.SVC(C=1.0, kernel='linear')
@@ -448,8 +525,8 @@ class TAS(AppForm):
                                      np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
 
                 le = LabelEncoder()
-                le.fit(df.index)
-                class_label = le.transform(df.index)
+                le.fit(self._df.Label)
+                class_label = le.transform(self._df.Label)
                 svm_train= pd.concat([pd.DataFrame(svm_x),pd.DataFrame(svm_y)], axis=1)
                 svm_train=svm_train.values
                 clf.fit(svm_train,class_label)
@@ -472,6 +549,63 @@ class TAS(AppForm):
 
         self.OutPutFig=self.fig
 
+
+    def showPredictResultSelected(self):
+        try:
+            clf = svm.SVC(C=1.0, kernel='linear')
+            svm_x = self.All_X
+            svm_y = self.All_Y
+
+            le = LabelEncoder()
+            le.fit(self._df.Label)
+            #print(len(self._df.Label), self._df.Label)
+
+            class_label = le.transform(self._df.Label)
+            svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y)], axis=1)
+            svm_train = svm_train.values
+            #clf.fit(svm_train, class_label)
+            clf.fit(svm_train, self._df.Label)
+
+            #Z = clf.predict(np.c_[self.data_to_test])
+
+
+
+            xx = self.data_to_test['SiO2']
+            #yy = self.data_to_test.at[ 'Na2O'] + self.data_to_test.at['K2O']
+            yy=[]
+
+            for k in range(len(self.data_to_test)):
+                tmp =self.data_to_test.at[k, 'Na2O'] + self.data_to_test.at[k,'K2O']
+                yy.append(tmp)
+                pass
+
+            Z = clf.predict(np.c_[xx.ravel(), yy])
+
+            predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification With SiO2- Na2O+K2O': Z})],
+                                       axis=1).set_index('Label')
+            print(predict_result)
+
+            self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result')
+            self.predictpop.show()
+
+            '''
+            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self, '文件保存', 'C:/',  'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+            if (DataFileOutput != ''):
+                if ('csv' in DataFileOutput):
+                    # DataFileOutput = DataFileOutput[0:-4]
+                    predict_result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                    # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
+                elif ('xlsx' in DataFileOutput):
+                    # DataFileOutput = DataFileOutput[0:-5]
+                    predict_result.to_excel(DataFileOutput, encoding='utf-8')
+                    # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
+
+
+            '''
+
+        except Exception as e:
+            msg = 'You need to load another data to run SVM.\n '
+            self.ErrorEvent(text= msg +repr(e) )
 
 
 

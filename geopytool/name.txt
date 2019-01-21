@@ -15,7 +15,7 @@ from geopytool.REE import REE
 from geopytool.Rose import Rose
 from geopytool.Stereo import Stereo
 from geopytool.TAS import TAS
-from geopytool.TabelViewer import TabelViewer
+#from geopytool.TabelViewer import TabelViewer
 from geopytool.Temp import Temp
 from geopytool.Trace import Trace
 from geopytool.XY import XY

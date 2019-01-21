@@ -1,6 +1,6 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
-from geopytool.TabelViewer import TabelViewer
+#from geopytool.TabelViewer import TabelViewer
 
 class XY(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
@@ -98,10 +98,16 @@ class XY(AppForm):
         self.setWindowTitle(self.description)
 
         self.items = []
+        self.a_index= 0
+        self.b_index= 1
+
+
         self.raw = df
         self._df = df
         self._given_Standard = Standard
 
+        self.All_X=[]
+        self.All_Y=[]
 
         if (len(df) > 0):
             self._changed = True
@@ -196,6 +202,11 @@ class XY(AppForm):
         self.legend_cb.stateChanged.connect(self.Magic)  # int
 
 
+
+        self.show_load_data_cb = QCheckBox('&Show Loaded Data')
+        self.show_load_data_cb.setChecked(True)
+        self.show_load_data_cb.stateChanged.connect(self.Magic)  # int
+
         self.fit_cb= QCheckBox('&PolyFit')
         self.fit_cb.setChecked(False)
         self.fit_cb.stateChanged.connect(self.Magic)  # int
@@ -247,8 +258,8 @@ class XY(AppForm):
         self.standard_slider.setTickPosition(QSlider.TicksBothSides)
         self.standard_slider.valueChanged.connect(self.Magic)  # int
         self.left_label= QLabel('Standard' )
-        
-        
+
+
 
         self.x_element = QSlider(Qt.Horizontal)
         self.x_element.setRange(0, len(self.items) - 1)
@@ -288,6 +299,23 @@ class XY(AppForm):
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Magic)  # int
 
+
+
+
+        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb.setChecked(False)
+        self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
+
+
+        self.save_predict_button_selected = QPushButton('&Predict Selected')
+        self.save_predict_button_selected.clicked.connect(self.showPredictResultSelected)
+
+        self.save_predict_button = QPushButton('&Predict All')
+        self.save_predict_button.clicked.connect(self.showPredictResult)
+
+        self.load_data_button = QPushButton('&Add Data to Compare')
+        self.load_data_button.clicked.connect(self.loadDataToTest)
+
         self.width_size_seter_label = QLabel('SVG Width')
         self.width_size_seter = QLineEdit(self)
 
@@ -321,6 +349,7 @@ class XY(AppForm):
         #
         # Layout with box sizers
         #
+        self.hbox = QHBoxLayout()
         self.hbox0 = QHBoxLayout()
         self.hbox1 = QHBoxLayout()
         self.hbox2 = QHBoxLayout()
@@ -330,11 +359,16 @@ class XY(AppForm):
         w=self.width()
         h=self.height()
 
-        self.load_data_button.setFixedWidth(w/4)
+        #self.load_data_button.setFixedWidth(w/4)
 
 
 
-        for w in [self.load_data_button,self.save_plot_button ,self.stat_button,self.legend_cb,self.norm_cb, self.left_label, self.standard_slider,self.right_label,self.shape_cb,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter]:
+        for w in [self.save_plot_button ,self.stat_button,self.load_data_button,self.save_predict_button,self.save_predict_button_selected]:
+            self.hbox.addWidget(w)
+            self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+
+        for w in [self.legend_cb,self.show_load_data_cb,self.norm_cb,self.shape_cb, self.hyperplane_cb, self.left_label, self.standard_slider,self.right_label,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -366,6 +400,7 @@ class XY(AppForm):
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox)
         self.vbox.addLayout(self.hbox0)
         self.vbox.addLayout(self.hbox1)
         self.vbox.addLayout(self.hbox2)
@@ -389,8 +424,13 @@ class XY(AppForm):
         self.x_seter.setFixedWidth(w/10)
         self.y_seter.setFixedWidth(w/10)
 
-        self.save_plot_button .setFixedWidth(w/10)
+        '''
+        self.save_plot_button.setFixedWidth(w/10)
         self.stat_button.setFixedWidth(w/10)
+        self.load_data_button.setFixedWidth(w/4)
+        self.save_predict_button_selected.setFixedWidth(w/4)
+        self.save_predict_button.setFixedWidth(w/4)
+        '''
 
         self.standard_slider.setFixedWidth(w/5)
 
@@ -800,6 +840,8 @@ class XY(AppForm):
             self.x_seter.setText(ItemsAvalibale[a])
             self.y_seter.setText(ItemsAvalibale[b])
 
+        self.a_index= a
+        self.b_index= b
 
 
         self.axes.clear()
@@ -1110,12 +1152,12 @@ class XY(AppForm):
                     if (self.fit_cb.isChecked()):
                         self.axes.plot(Xline, Yline, 'b-')
 
-        XtoFit = {}
-        YtoFit = {}
+        XtoFit_dic = {}
+        YtoFit_dic = {}
 
         for i in PointLabels:
-            XtoFit[i] = []
-            YtoFit[i] = []
+            XtoFit_dic[i] = []
+            YtoFit_dic[i] = []
 
         for i in range(len(df)):
             Alpha = df.at[i, 'Alpha']
@@ -1125,15 +1167,15 @@ class XY(AppForm):
             xtest = self.dataframe_values_only.at[i, self.items[a]]
             ytest = self.dataframe_values_only.at[i, self.items[b]]
 
-            XtoFit[Label].append(xtest)
-            YtoFit[Label].append(ytest)
+            XtoFit_dic[Label].append(xtest)
+            YtoFit_dic[Label].append(ytest)
 
         if (self.shape_cb.isChecked()):
             for i in PointLabels:
 
-                if XtoFit[i] != YtoFit[i]:
-                    xmin, xmax = min(XtoFit[i]), max(XtoFit[i])
-                    ymin, ymax = min(YtoFit[i]), max(YtoFit[i])
+                if XtoFit_dic[i] != YtoFit_dic[i]:
+                    xmin, xmax = min(XtoFit_dic[i]), max(XtoFit_dic[i])
+                    ymin, ymax = min(YtoFit_dic[i]), max(YtoFit_dic[i])
 
                     DensityColorMap = 'Greys'
                     DensityAlpha = 0.1
@@ -1148,7 +1190,7 @@ class XY(AppForm):
                     # exec(command)
                     # print(xx, yy)
                     positions = np.vstack([xx.ravel(), yy.ravel()])
-                    values = np.vstack([XtoFit[i], YtoFit[i]])
+                    values = np.vstack([XtoFit_dic[i], YtoFit_dic[i]])
                     kernelstatus = True
                     try:
                         st.gaussian_kde(values)
@@ -1169,28 +1211,86 @@ class XY(AppForm):
 
 
         if (len(self.data_to_test) > 0):
-            for i in range(len(self.data_to_test)):
 
-                target = self.data_to_test.at[i, 'Label']
-                if target not in all_labels:
-                    all_labels.append(target)
-                    tmp_label = self.data_to_test.at[i, 'Label']
-                else:
-                    tmp_label=''
+            contained = True
+            missing = 'Miss setting infor:'
 
-                x_load_test = self.data_to_test.at[i, self.items[a]]
-                y_load_test = self.data_to_test.at[i, self.items[b]]
+            for i in ['Label', 'Color', 'Marker', 'Alpha']:
+                if i not in self.data_to_test.columns.values.tolist():
+                    contained = False
+                    missing = missing + '\n' + i
 
-                self.axes.scatter(x_load_test, y_load_test,
-                                  marker=self.data_to_test.at[i, 'Marker'],
-                                  s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'], alpha=self.data_to_test.at[i, 'Alpha'],
-                                  label=tmp_label,
-                                  edgecolors='black')
+            if contained == True:
+                for i in self.data_to_test.columns.values.tolist():
+                    if i not in self._df.columns.values.tolist():
+                        self.data_to_test = self.data_to_test.drop(columns=i)
+
+                # print(self.data_to_test)
+
+                test_labels = []
+                test_colors = []
+                test_markers = []
+                test_alpha = []
+
+                for i in range(len(self.data_to_test)):
+
+                    # print(self.data_to_test.at[i, 'Label'])
+                    target = self.data_to_test.at[i, 'Label']
+                    color = self.data_to_test.at[i, 'Color']
+                    marker = self.data_to_test.at[i, 'Marker']
+                    alpha = self.data_to_test.at[i, 'Alpha']
+
+                    if target not in test_labels and target not in all_labels:
+                        test_labels.append(target)
+                        test_colors.append(color)
+                        test_markers.append(marker)
+                        test_alpha.append(alpha)
+
+                self.whole_labels = self.whole_labels + test_labels
+
+                self.data_to_test_to_fit = self.Slim(self.data_to_test)
+
+                self.load_settings_backup = self.data_to_test
+                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size',
+                                    'Alpha',
+                                    'Style', 'Width']
+                for i in self.data_to_test.columns.values.tolist():
+                    if i not in Load_ItemsToTest:
+                        self.load_settings_backup = self.load_settings_backup.drop(i, 1)
+
+                print(self.load_settings_backup ,self.data_to_test)
+
+                print(self.load_settings_backup.shape ,self.data_to_test.shape)
+
+
+                #self.load_result = pd.concat([self.load_settings_backup, pd.DataFrame(self.data_to_test_to_fit)], axis=1)
+            try:
+                for i in range(len(self.data_to_test)):
+
+                    target = self.data_to_test.at[i, 'Label']
+                    if target not in all_labels:
+                        all_labels.append(target)
+                        tmp_label = self.data_to_test.at[i, 'Label']
+                    else:
+                        tmp_label=''
+
+
+                    x_load_test = self.data_to_test.at[i, self.items[a]]
+                    y_load_test = self.data_to_test.at[i, self.items[b]]
+
+                    if (self.show_load_data_cb.isChecked()):
+                        self.axes.scatter(x_load_test, y_load_test,
+                                          marker=self.data_to_test.at[i, 'Marker'],
+                                          s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'], alpha=self.data_to_test.at[i, 'Alpha'],
+                                          label=tmp_label,
+                                          edgecolors='black')
+
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
 
 
 
-
-        if self.TypeLoaded=='svg':
+        if (self.TypeLoaded=='svg'):
 
             if self.polygon != 0 and self.polyline != 0 and self.line != 0:
 
@@ -1211,6 +1311,33 @@ class XY(AppForm):
                     # self.DrawLine(self.polyline)
 
 
+        self.All_X=XtoFit
+        self.All_Y=YtoFit
+        if (self.hyperplane_cb.isChecked()):
+
+            if XtoFit != YtoFit:
+                clf = svm.SVC(C=1.0, kernel='linear')
+                svm_x = XtoFit
+                svm_y = YtoFit
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
+                                            np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+
+                le = LabelEncoder()
+                le.fit(self._df.Label)
+                print(len(self._df.Label),self._df.Label)
+
+                class_label=le.transform(self._df.Label)
+                svm_train= pd.concat([pd.DataFrame(svm_x),pd.DataFrame(svm_y)], axis=1)
+
+                svm_train=svm_train.values
+                clf.fit(svm_train,class_label)
+                Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+                Z = Z.reshape(xx.shape)
+                self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+
+
+
+
         if (self.legend_cb.isChecked()):
             self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
@@ -1218,6 +1345,103 @@ class XY(AppForm):
         self.canvas.draw()
 
 
+    def loadDataToTest(self):
+        TMP =self.getDataFile()
+        if TMP != 'Blank':
+            self.data_to_test=TMP[0]
+        self.Magic()
+
+    def showPredictResultSelected(self):
+        try:
+            clf = svm.SVC(C=1.0, kernel='linear')
+            svm_x = self.All_X
+            svm_y = self.All_Y
+
+            le = LabelEncoder()
+            le.fit(self._df.Label)
+            #print(len(self._df.Label), self._df.Label)
+
+            class_label = le.transform(self._df.Label)
+            svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y)], axis=1)
+            svm_train = svm_train.values
+            #clf.fit(svm_train, class_label)
+            clf.fit(svm_train, self._df.Label)
+
+            #Z = clf.predict(np.c_[self.data_to_test])
+
+            xx = self.data_to_test_to_fit[self.items[self.a_index]]
+            yy = self.data_to_test_to_fit[self.items[self.b_index]]
+
+            Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+
+            #Z = clf.predict(np.c_[self.data_to_test_to_fit])
+            predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification With '+ self.items[self.a_index]+','+self.items[self.b_index]: Z})],
+                                       axis=1).set_index('Label')
+            print(predict_result)
+
+
+            self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result With '+ self.items[self.a_index]+','+self.items[self.b_index])
+            self.predictpop.show()
+
+            '''
+            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self, '文件保存', 'C:/',  'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+            if (DataFileOutput != ''):
+                if ('csv' in DataFileOutput):
+                    # DataFileOutput = DataFileOutput[0:-4]
+                    predict_result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                    # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
+                elif ('xlsx' in DataFileOutput):
+                    # DataFileOutput = DataFileOutput[0:-5]
+                    predict_result.to_excel(DataFileOutput, encoding='utf-8')
+                    # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
+
+
+            '''
+
+
+        except Exception as e:
+            msg = 'You need to load another data to run SVM.\n '
+            self.ErrorEvent(text= msg +repr(e) )
+
+
+    def showPredictResult(self):
+        try:
+            clf = svm.SVC(C=1.0, kernel='linear')
+            le = LabelEncoder()
+            le.fit(self._df.Label)
+            #print(len(self._df.Label), self._df.Label)
+
+            #df_values= self._df
+
+            df_values = self.Slim(self._df)
+
+            clf.fit(df_values, self._df.Label)
+            Z = clf.predict(np.c_[self.data_to_test_to_fit])
+            predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z})],
+                                       axis=1).set_index('Label')
+            print(predict_result)
+
+            self.predictAllpop = TabelViewer(df=predict_result, title='SVM Predict Result with All Items')
+            self.predictAllpop.show()
+
+            '''
+            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self, '文件保存', 'C:/',  'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+            if (DataFileOutput != ''):
+                if ('csv' in DataFileOutput):
+                    # DataFileOutput = DataFileOutput[0:-4]
+                    predict_result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                    # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
+                elif ('xlsx' in DataFileOutput):
+                    # DataFileOutput = DataFileOutput[0:-5]
+                    predict_result.to_excel(DataFileOutput, encoding='utf-8')
+                    # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
+
+
+            '''
+
+        except Exception as e:
+            msg = 'You need to load another data to run SVM.\n '
+            self.ErrorEvent(text= msg +repr(e) )
 
 
 

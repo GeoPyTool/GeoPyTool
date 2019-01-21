@@ -78,6 +78,10 @@ class MyFA(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Key_Func)  # int
 
+        self.show_load_data_cb = QCheckBox('&Show Loaded Data')
+        self.show_load_data_cb.setChecked(True)
+        self.show_load_data_cb.stateChanged.connect(self.Key_Func)  # int
+
         self.shape_cb= QCheckBox('&Shape')
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
@@ -94,15 +98,14 @@ class MyFA(AppForm):
         self.save_picture_button = QPushButton('&Save Picture')
         self.save_picture_button.clicked.connect(self.saveImgFile)
 
-        self.save_result_button = QPushButton('&Save FA Result')
-        self.save_result_button.clicked.connect(self.saveResult)
+        self.save_result_button = QPushButton('&Show FA Result')
+        self.save_result_button.clicked.connect(self.showResult)
 
+        self.save_Para_button = QPushButton('&Show FA Para')
+        self.save_Para_button.clicked.connect(self.showPara)
 
-        self.save_predict_button = QPushButton('&Save Predict Result')
-        self.save_predict_button.clicked.connect(self.savePredictResult)
-
-        self.save_Para_button = QPushButton('&Save FA Para')
-        self.save_Para_button.clicked.connect(self.savePara)
+        self.save_predict_button = QPushButton('&Show Predict Result')
+        self.save_predict_button.clicked.connect(self.showPredictResult)
 
         self.load_data_button = QPushButton('&Add Data to Test')
         self.load_data_button.clicked.connect(self.loadDataToTest)
@@ -145,6 +148,7 @@ class MyFA(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.hbox.addWidget(self.legend_cb)
+        self.hbox.addWidget(self.show_load_data_cb)
         self.hbox.addWidget(self.shape_cb)
         self.hbox.addWidget(self.hyperplane_cb)
         self.hbox.addWidget(self.switch_button)
@@ -300,55 +304,57 @@ class MyFA(AppForm):
                     self.load_result = pd.concat([self.load_settings_backup,pd.DataFrame(self.fa_data_to_test)], axis=1)
 
                     for i in range(len(test_labels)):
-                        if (self.switched == False):
-                            self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
-                                              self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
-                                              self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], c],
-                                              color=test_colors[i],
-                                              marker=test_markers[i],
-                                              label=test_labels[i],
-                                              alpha=test_alpha[i])
-                        else:
-                            self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
-                                              self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
-                                              color=test_colors[i],
-                                              marker=test_markers[i],
-                                              label=test_labels[i],
-                                              alpha=test_alpha[i])
-                            '''
-                            if (self.shape_cb.isChecked()):
-                                pass
-                                XtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
-                                YtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
 
-                                xmin, xmax = min(XtoFit), max(XtoFit)
-                                ymin, ymax = min(YtoFit), max(YtoFit)
-
-                                DensityColorMap = 'Blues'
-                                DensityAlpha = 0.1
-
-                                DensityLineColor = test_colors[i]
-                                DensityLineAlpha = 0.1
-                                # Peform the kernel density estimate
-                                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
-                                positions = np.vstack([xx.ravel(), yy.ravel()])
-                                values = np.vstack([XtoFit, YtoFit])
-                                kernelstatus = True
-                                try:
-                                    st.gaussian_kde(values)
-                                except Exception as e:
-                                    self.ErrorEvent(text=repr(e))
-                                    kernelstatus = False
-                                if kernelstatus == True:
-                                    kernel = st.gaussian_kde(values)
-                                    f = np.reshape(kernel(positions).T, xx.shape)
-                                    # Contourf plot
-                                    cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
-                                    # Contour plot
-                                    cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
-                                    # Label plot
-                                    self.axes.clabel(cset, inline=1, fontsize=10)                            
-                            '''
+                        if (self.show_load_data_cb.isChecked()):
+                            if (self.switched == False):
+                                self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
+                                                  self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
+                                                  self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], c],
+                                                  color=test_colors[i],
+                                                  marker=test_markers[i],
+                                                  label=test_labels[i],
+                                                  alpha=test_alpha[i])
+                            else:
+                                self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
+                                                  self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
+                                                  color=test_colors[i],
+                                                  marker=test_markers[i],
+                                                  label=test_labels[i],
+                                                  alpha=test_alpha[i])
+                                '''
+                                if (self.shape_cb.isChecked()):
+                                    pass
+                                    XtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
+                                    YtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
+    
+                                    xmin, xmax = min(XtoFit), max(XtoFit)
+                                    ymin, ymax = min(YtoFit), max(YtoFit)
+    
+                                    DensityColorMap = 'Blues'
+                                    DensityAlpha = 0.1
+    
+                                    DensityLineColor = test_colors[i]
+                                    DensityLineAlpha = 0.1
+                                    # Peform the kernel density estimate
+                                    xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                                    positions = np.vstack([xx.ravel(), yy.ravel()])
+                                    values = np.vstack([XtoFit, YtoFit])
+                                    kernelstatus = True
+                                    try:
+                                        st.gaussian_kde(values)
+                                    except Exception as e:
+                                        self.ErrorEvent(text=repr(e))
+                                        kernelstatus = False
+                                    if kernelstatus == True:
+                                        kernel = st.gaussian_kde(values)
+                                        f = np.reshape(kernel(positions).T, xx.shape)
+                                        # Contourf plot
+                                        cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
+                                        # Contour plot
+                                        cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
+                                        # Label plot
+                                        self.axes.clabel(cset, inline=1, fontsize=10)                            
+                                '''
                 except Exception as e:
                     self.ErrorEvent(text=repr(e))
 
@@ -483,17 +489,21 @@ class MyFA(AppForm):
         self.result = pd.concat([self.begin_result , self.load_result], axis=0).set_index('Label')
         self.canvas.draw()
 
-    def savePredictResult(self):
+    def showPredictResult(self):
         try:
             clf = svm.SVC(C=1.0, kernel='linear')
             clf.fit(self.fa_result, self.result_to_fit.index)
             Z = clf.predict(np.c_[self.fa_data_to_test])
             predict_result = pd.concat([self.load_settings_backup['Label'],  pd.DataFrame({'SVM Classification': Z})], axis=1).set_index('Label')
             print(predict_result)
-            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                              '文件保存',
-                                                              'C:/',
-                                                              'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+
+
+            self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result with All Items')
+            self.predictpop.show()
+
+            '''
+            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self, '文件保存', 'C:/',  'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
             if (DataFileOutput != ''):
                 if ('csv' in DataFileOutput):
                     # DataFileOutput = DataFileOutput[0:-4]
@@ -503,6 +513,9 @@ class MyFA(AppForm):
                     # DataFileOutput = DataFileOutput[0:-5]
                     predict_result.to_excel(DataFileOutput, encoding='utf-8')
                     # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
+
+
+            '''
 
         except Exception as e:
             msg = 'You need to load another data to run SVM.\n '

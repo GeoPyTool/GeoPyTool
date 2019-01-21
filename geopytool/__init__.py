@@ -27,7 +27,7 @@ a tool set for daily geology related task.
 t = 'You are using GeoPyTool ' + version + ', released on' + date + '\n' + sign
 _translate = QtCore.QCoreApplication.translate
 
-from geopytool.TabelViewer import TabelViewer
+from geopytool.CustomClass import TabelViewer
 from geopytool.CIPW import CIPW
 from geopytool.Cluster import Cluster
 from geopytool.Bivariate import Bivariate
@@ -1079,8 +1079,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             pass
 
         if (len(self.model._df) > 0):
-            self.clusterpop = Cluster(df=self.model._df)
-            self.clusterpop.Cluster()
+            try:
+                self.clusterpop = Cluster(df=self.model._df)
+                self.clusterpop.Cluster()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
 
     def Stereo(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1116,6 +1120,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.qflpop = QFL(df=self.model._df)
+            self.qflpop.Tri()
+            self.qflpop.show()
             try:
                 self.qflpop.Tri()
                 self.qflpop.show()
@@ -1488,7 +1494,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.stapop = MySta(df=self.model._df)
                 self.stapop.Sta()
             except Exception as e:
-                self.ErrorEvent(text=repr(e))
+                tmp_msg='\n This is to do Sta on Calculated Distance.\n'
+                self.ErrorEvent(text=tmp_msg+repr(e))
 
     def PCA(self):
 

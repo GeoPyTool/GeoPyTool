@@ -203,10 +203,12 @@ class QFL(AppForm, Tool):
 
         raw = self._df
 
-        raw = self.CleanDataFile(self._df)
+        #raw = self.Slim(self._df)
 
         PointLabels = []
         TPoints = []
+
+        print(raw.columns)
         for i in range(len(raw)):
             TmpLabel = ''
             if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
