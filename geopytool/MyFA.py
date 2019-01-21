@@ -68,7 +68,9 @@ class MyFA(AppForm):
         self.setWindowTitle('Factor Analysis')
 
         self.fig = plt.figure(figsize=(12, 6))
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.9, top=0.9)
+        #self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.9, top=0.9)
+
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
@@ -378,6 +380,7 @@ class MyFA(AppForm):
                 self.z_element_label.setText("component no." + str(c + 1))
 
 
+
             else:
 
                 self.axes.scatter(self.fa_result[self.result_to_fit.index == all_labels[i], a],
@@ -386,6 +389,7 @@ class MyFA(AppForm):
                                   marker=all_markers[i],
                                   label=all_labels[i],
                                   alpha=all_alpha[i])
+
 
                 if (self.shape_cb.isChecked()):
                     pass
@@ -422,8 +426,6 @@ class MyFA(AppForm):
                         #self.axes.clabel(cset, inline=1, fontsize=10)
 
 
-        if (self.legend_cb.isChecked()):
-            self.axes.legend(loc=2,prop=fontprop)
 
 
         if (self.hyperplane_cb.isChecked()):
@@ -468,6 +470,13 @@ class MyFA(AppForm):
                 Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
                 Z = Z.reshape(xx.shape)
                 self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+
+        if (self.legend_cb.isChecked()):
+
+            if (self.switched == False):
+                    self.axes.legend(loc=2, prop=fontprop)
+            else:
+                self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
 
 

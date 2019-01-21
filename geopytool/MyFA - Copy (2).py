@@ -2,7 +2,7 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
 
-class MyPCA(AppForm):
+class MyFA(AppForm):
     Lines = []
     Tags = []
     WholeData = []
@@ -20,12 +20,11 @@ class MyPCA(AppForm):
                 'Style',
                 'Width',
                 'Tag']
-    data_to_test =pd.DataFrame()
+    data_to_test=pd.DataFrame()
     switched = False
     text_result = ''
     whole_labels=[]
-    pca = PCA(n_components='mle')
-
+    fa = FactorAnalysis()
     n=6
 
     def __init__(self, parent=None, df=pd.DataFrame()):
@@ -34,9 +33,7 @@ class MyPCA(AppForm):
 
         if (len(df) > 0):
             self._changed = True
-            # print('DataFrame recieved to PCA')
-
-
+            # print('DataFrame recieved to FA')
 
         self.settings_backup = self._df
         ItemsToTest = ['Label','Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
@@ -44,39 +41,34 @@ class MyPCA(AppForm):
         for i in self._df.columns.values.tolist():
             if i not in ItemsToTest:
                 self.settings_backup = self.settings_backup.drop(i, 1)
-        #print(self.settings_backup)
+        print(self.settings_backup)
 
 
         self.result_to_fit= self.Slim(self._df)
 
 
-        #print(self.result_to_fit)
-        #print(self.result_to_fit.shape)
+        #print(self.result_to_fit.columns.values.tolist())
 
-        #self.pca=PCA(n_components='mle')
         try:
-            self.pca.fit(self.result_to_fit.values)
-            self.evr = (self.pca.explained_variance_ratio_)
-            self.ev = (self.pca.explained_variance_)
-            self.n = (self.pca.n_components_)
-            self.comp = (self.pca.components_)
+            self.fa.fit(self.result_to_fit.values)
+            self.comp = (self.fa.components_)
+            self.n = len(self.comp)
+
         except Exception as e:
             self.ErrorEvent(text=repr(e))
-
         self.create_main_frame()
 
     def create_main_frame(self):
+
         self.resize(800,800)
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 6.0), dpi=self.dpi)
-        self.setWindowTitle('Principle Component Analysis')
+
+        self.setWindowTitle('Factor Analysis')
+
         self.fig = plt.figure(figsize=(12, 6))
-        #self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.9, top=0.9)
-
-
-
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.9, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
@@ -87,6 +79,7 @@ class MyPCA(AppForm):
         self.shape_cb= QCheckBox('&Shape')
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
+
 
         self.hyperplane_cb= QCheckBox('&Hyperplane')
         self.hyperplane_cb.setChecked(False)
@@ -99,13 +92,14 @@ class MyPCA(AppForm):
         self.save_picture_button = QPushButton('&Save Picture')
         self.save_picture_button.clicked.connect(self.saveImgFile)
 
-        self.save_result_button = QPushButton('&Save PCA Result')
+        self.save_result_button = QPushButton('&Save FA Result')
         self.save_result_button.clicked.connect(self.saveResult)
+
 
         self.save_predict_button = QPushButton('&Save Predict Result')
         self.save_predict_button.clicked.connect(self.savePredictResult)
 
-        self.save_Para_button = QPushButton('&Save PCA Para')
+        self.save_Para_button = QPushButton('&Save FA Para')
         self.save_Para_button.clicked.connect(self.savePara)
 
         self.load_data_button = QPushButton('&Add Data to Test')
@@ -113,7 +107,6 @@ class MyPCA(AppForm):
 
         self.switch_button = QPushButton('&Switch to 2D')
         self.switch_button.clicked.connect(self.switch)
-
 
         self.x_element = QSlider(Qt.Horizontal)
         self.x_element.setRange(0, self.n - 1)
@@ -139,7 +132,6 @@ class MyPCA(AppForm):
         self.z_element.valueChanged.connect(self.Key_Func)  # int
         self.z_element_label = QLabel('component')
 
-
         self.vbox = QVBoxLayout()
         self.hbox = QHBoxLayout()
         self.hbox0 = QHBoxLayout()
@@ -147,7 +139,6 @@ class MyPCA(AppForm):
         self.hbox2 = QHBoxLayout()
         self.hbox3 = QHBoxLayout()
         self.hbox4 = QHBoxLayout()
-
 
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
@@ -195,6 +186,7 @@ class MyPCA(AppForm):
         self.create_main_frame()
         self.Key_Func()
 
+
     def Key_Func(self):
 
         a = int(self.x_element.value())
@@ -202,11 +194,10 @@ class MyPCA(AppForm):
         c = int(self.z_element.value())
 
         self.axes.clear()
-        self.pca.fit(self.result_to_fit.values)
-        self.evr = (self.pca.explained_variance_ratio_)
-        self.ev = (self.pca.explained_variance_)
-        self.n = (self.pca.n_components_)
-        self.comp = (self.pca.components_)
+
+        self.fa.fit(self.result_to_fit.values)
+        self.comp = (self.fa.components_)
+
 
         #self.text_result='N Components :' + str(n)+'N Components :' + str(comp)+ '\nExplained Variance Ratio :' + str(evr)+'\nExplained Variance :' + str(ev)
 
@@ -217,11 +208,17 @@ class MyPCA(AppForm):
 
         self.nvs = zip(title, self.comp)
         self.compdict = dict((title, self.comp) for title, self.comp in self.nvs)
+
         self.Para=pd.DataFrame(self.compdict)
 
 
-        self.pca_result = self.pca.fit_transform(self.result_to_fit)
 
+        self.fa_result = self.fa.fit_transform(self.result_to_fit.values)
+
+        self.comp = (self.fa.components_)
+        #self.n = (self.fa.n_components_)
+
+        self.n = len(self.comp)
 
         all_labels=[]
         all_colors=[]
@@ -229,7 +226,7 @@ class MyPCA(AppForm):
         all_alpha=[]
 
         for i in range(len(self._df)):
-            target = self._df.at[i, 'Label']
+            target =self._df.at[i, 'Label']
             color = self._df.at[i, 'Color']
             marker = self._df.at[i, 'Marker']
             alpha = self._df.at[i, 'Alpha']
@@ -253,10 +250,8 @@ class MyPCA(AppForm):
                     missing = missing +'\n' + i
 
             if contained == True:
-                pass
 
                 for i in self.data_to_test.columns.values.tolist():
-
                     if i not in self._df.columns.values.tolist():
                         self.data_to_test=self.data_to_test.drop(columns=i)
 
@@ -267,9 +262,8 @@ class MyPCA(AppForm):
                 test_markers=[]
                 test_alpha=[]
 
-                for i in range(len(self.data_to_test)):
 
-                    #print(self.data_to_test.at[i, 'Label'])
+                for i in range(len(self.data_to_test)):
                     target = self.data_to_test.at[i, 'Label']
                     color = self.data_to_test.at[i, 'Color']
                     marker = self.data_to_test.at[i, 'Marker']
@@ -282,54 +276,48 @@ class MyPCA(AppForm):
                         test_alpha.append(alpha)
 
 
-                self.whole_labels = self.whole_labels + test_labels
+                self.whole_labels = self.whole_labels +test_labels
 
                 self.data_to_test_to_fit= self.Slim(self.data_to_test)
-
-                #print(self.data_to_test_to_fit)
-                #print(self.data_to_test_to_fit.shape)
 
 
                 self.load_settings_backup = self.data_to_test
                 Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size',
-                               'Alpha',
-                               'Style', 'Width']
+                               'Alpha','Style', 'Width']
                 for i in self.data_to_test.columns.values.tolist():
                     if i not in Load_ItemsToTest:
                         self.load_settings_backup = self.load_settings_backup .drop(i, 1)
 
-                #print(self.load_settings_backup ,self.pca_data_to_test)
-
+                #print(self.data_to_test_to_fit)
+                #print(self.data_to_test_to_fit.shape)
 
                 try:
-                    self.pca_data_to_test = self.pca.transform(self.data_to_test_to_fit)
+                    self.fa_data_to_test = self.fa.transform(self.data_to_test_to_fit)
 
-                    self.load_result = pd.concat([self.load_settings_backup,pd.DataFrame(self.pca_data_to_test)], axis=1)
+
+                    self.load_result = pd.concat([self.load_settings_backup,pd.DataFrame(self.fa_data_to_test)], axis=1)
+
                     for i in range(len(test_labels)):
                         if (self.switched == False):
-                            self.axes.scatter(self.pca_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
-                                              self.pca_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
-                                              self.pca_data_to_test[self.data_to_test_to_fit.index == test_labels[i], c],
+                            self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
+                                              self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
+                                              self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], c],
                                               color=test_colors[i],
                                               marker=test_markers[i],
                                               label=test_labels[i],
                                               alpha=test_alpha[i])
-
-
-
                         else:
-                            self.axes.scatter(self.pca_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
-                                              self.pca_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
+                            self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
+                                              self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
                                               color=test_colors[i],
                                               marker=test_markers[i],
                                               label=test_labels[i],
                                               alpha=test_alpha[i])
-
                             '''
                             if (self.shape_cb.isChecked()):
                                 pass
-                                XtoFit = self.pca_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
-                                YtoFit = self.pca_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
+                                XtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
+                                YtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
 
                                 xmin, xmax = min(XtoFit), max(XtoFit)
                                 ymin, ymax = min(YtoFit), max(YtoFit)
@@ -357,11 +345,8 @@ class MyPCA(AppForm):
                                     # Contour plot
                                     cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
                                     # Label plot
-                                    self.axes.clabel(cset, inline=1, fontsize=10)
-
-                            
+                                    self.axes.clabel(cset, inline=1, fontsize=10)                            
                             '''
-
                 except Exception as e:
                     self.ErrorEvent(text=repr(e))
 
@@ -369,41 +354,55 @@ class MyPCA(AppForm):
                 self.ErrorEvent(text=missing)
 
 
-        self.axes.set_xlabel("component no."+str(a+1))
-        self.x_element_label.setText("component no."+str(a+1))
+        #self.axes.set_xlabel("component no."+str(a+1))
+        #self.x_element_label.setText("component no."+str(a+1))
 
-        self.axes.set_ylabel("component no."+str(b+1))
-        self.y_element_label.setText("component no."+str(b+1))
+        all_columns = self.result_to_fit.columns
+        print(all_columns)
 
-        self.begin_result = pd.concat([self.settings_backup,pd.DataFrame(self.pca_result)], axis=1)
+        self.axes.set_xlabel(all_columns[a])
+        self.x_element_label.setText(all_columns[a])
+
+        #self.axes.set_ylabel("component no."+str(b+1))
+        #self.y_element_label.setText("component no."+str(b+1))
+
+        self.axes.set_ylabel(all_columns[b])
+        self.y_element_label.setText(all_columns[b])
+
+
+        self.begin_result = pd.concat([self.settings_backup,pd.DataFrame(self.fa_result)], axis=1)
 
         for i in range(len(all_labels)):
             if (self.switched == False):
 
-                self.axes.scatter(self.pca_result[self.result_to_fit.index == all_labels[i], a],
-                                  self.pca_result[self.result_to_fit.index == all_labels[i], b],
-                                  self.pca_result[self.result_to_fit.index == all_labels[i], c],
+                self.axes.scatter(self.fa_result[self.result_to_fit.index == all_labels[i], a],
+                                  self.fa_result[self.result_to_fit.index == all_labels[i], b],
+                                  self.fa_result[self.result_to_fit.index == all_labels[i], c],
                                   color=all_colors[i],
                                   marker=all_markers[i],
                                   label=all_labels[i],
                                   alpha=all_alpha[i])
 
-                self.axes.set_zlabel("component no." + str(c + 1))
-                self.z_element_label.setText("component no." + str(c + 1))
+                #self.axes.set_zlabel("component no." + str(c + 1))
+                #self.z_element_label.setText("component no." + str(c + 1))
+
+                self.axes.set_zlabel(all_columns[c])
+                self.z_element_label.setText(all_columns[c])
 
 
             else:
 
-                self.axes.scatter(self.pca_result[self.result_to_fit.index == all_labels[i], a],
-                                  self.pca_result[self.result_to_fit.index == all_labels[i], b],
+                self.axes.scatter(self.fa_result[self.result_to_fit.index == all_labels[i], a],
+                                  self.fa_result[self.result_to_fit.index == all_labels[i], b],
                                   color=all_colors[i],
                                   marker=all_markers[i],
                                   label=all_labels[i],
                                   alpha=all_alpha[i])
+
                 if (self.shape_cb.isChecked()):
                     pass
-                    XtoFit = self.pca_result[self.result_to_fit.index == all_labels[i], a]
-                    YtoFit = self.pca_result[self.result_to_fit.index == all_labels[i], b]
+                    XtoFit = self.fa_result[self.result_to_fit.index == all_labels[i], a]
+                    YtoFit = self.fa_result[self.result_to_fit.index == all_labels[i], b]
 
                     xmin, xmax = min(XtoFit), max(XtoFit)
                     ymin, ymax = min(YtoFit), max(YtoFit)
@@ -423,6 +422,7 @@ class MyPCA(AppForm):
                     except Exception as e:
                         self.ErrorEvent(text=repr(e))
                         kernelstatus = False
+
                     if kernelstatus == True:
                         kernel = st.gaussian_kde(values)
                         f = np.reshape(kernel(positions).T, xx.shape)
@@ -434,20 +434,19 @@ class MyPCA(AppForm):
                         #self.axes.clabel(cset, inline=1, fontsize=10)
 
 
-
         if (self.legend_cb.isChecked()):
+            self.axes.legend(loc=2,prop=fontprop)
 
-            if (self.switched == False):
-                    self.axes.legend(loc=2, prop=fontprop)
-            else:
-                self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
         if (self.hyperplane_cb.isChecked()):
+
+            pass
+
             if (self.switched == False):
                 clf = svm.SVC(C=1.0, kernel='linear')
-                svm_x = self.pca_result[:, a]
-                svm_y = self.pca_result[:, b]
-                svm_z = self.pca_result[:, c]
+                svm_x = self.fa_result[:, a]
+                svm_y = self.fa_result[:, b]
+                svm_z = self.fa_result[:, c]
                 xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
                                          np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
 
@@ -465,8 +464,8 @@ class MyPCA(AppForm):
 
             else:
                 clf = svm.SVC(C=1.0, kernel='linear')
-                svm_x = self.pca_result[:, a]
-                svm_y = self.pca_result[:, b]
+                svm_x = self.fa_result[:, a]
+                svm_y = self.fa_result[:, b]
 
                 xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
                                          np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
@@ -483,22 +482,16 @@ class MyPCA(AppForm):
                 self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
 
 
-        self.result = pd.concat([self.begin_result , self.load_result], axis=0,sort=False).set_index('Label')
+
+        self.result = pd.concat([self.begin_result , self.load_result], axis=0).set_index('Label')
         self.canvas.draw()
 
-
     def savePredictResult(self):
-
         try:
             clf = svm.SVC(C=1.0, kernel='linear')
-            # le = LabelEncoder()
-            # le.fit(self.result_to_fit.index)
-            # class_label = le.transform(self.result_to_fit.index)
-            # clf.fit(self.pca_result, class_label)
-            clf.fit(self.pca_result, self.result_to_fit.index)
-            Z = clf.predict(np.c_[self.pca_data_to_test])
-            predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z})],
-                                       axis=1).set_index('Label')
+            clf.fit(self.fa_result, self.result_to_fit.index)
+            Z = clf.predict(np.c_[self.fa_data_to_test])
+            predict_result = pd.concat([self.load_settings_backup['Label'],  pd.DataFrame({'SVM Classification': Z})], axis=1).set_index('Label')
             print(predict_result)
             DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                               '文件保存',
@@ -518,28 +511,52 @@ class MyPCA(AppForm):
             msg = 'You need to load another data to run SVM.\n '
             self.ErrorEvent(text= msg +repr(e) )
 
-
-
     def Distance_Calculation(self):
 
-        #print(self.whole_labels)
+        print(self.whole_labels)
         distance_result={}
 
+        #distance_result[self.whole_labels[i]] = []
+
+        print(distance_result)
+
         for i in range(len(self.whole_labels)):
-            distance_result[self.whole_labels[i]] = []
+            #print(self.whole_labels[i], self.fa_result[self.result_to_fit.index == self.whole_labels[i]][0])
+            print( self.whole_labels[i], len(self.fa_result[self.result_to_fit.index == self.whole_labels[i]]))
 
-        #print(distance_result)
+            pass
 
 
-        self.pca_result[self.result_to_fit.index == self.whole_labels[0], 0]
+        '''
+        for i in range(len(self.whole_labels)):
+            for j in range(len(self.whole_labels)):
+                if i ==j:
+                    pass
+                else:
+                    distance_result[self.whole_labels[i] + ' to ' + self.whole_labels[j]] = []
 
-        #print(self.pca_result)
+                    self.fa_result[self.result_to_fit.index == self.whole_labels[i]]
+
+                    self.fa_result[self.result_to_fit.index == self.whole_labels[j]]
+
+                    for m in range(len(self.fa_result[self.result_to_fit.index == self.whole_labels[i]])):
+                        for n in range(len(self.fa_result[self.result_to_fit.index == self.whole_labels[j]])):
+                            pass
+
+                            self.fa_result[self.result_to_fit.index == self.whole_labels[i]][m]
+
+                            #tmp_dist= self.Hsim_Distance(self.fa_result[self.result_to_fit.index == self.whole_labels[i]][m],self.fa_result[self.result_to_fit.index == self.whole_labels[j]][n])
+                            #print(tmp_dist)
+                            #distance_result[self.whole_labels[i] + ' to ' + self.whole_labels[j]].append(tmp_dist)
+            pass
+        
+        '''
+
+
+        #print(self.fa_result)
 
         try:
-            #print(self.pca_data_to_test)
-            self.pca_data_to_test[self.data_to_test_to_fit.index == self.whole_labels[0], 0]
+            self.fa_data_to_test[self.data_to_test_to_fit.index == self.whole_labels[0], 0]
         except Exception as e:
             pass
-            #self.ErrorEvent(text=repr(e))
-
-
+            # self.ErrorEvent(text=repr(e))
