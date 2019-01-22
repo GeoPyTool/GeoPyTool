@@ -227,6 +227,7 @@ class REE(AppForm):
         self.item_left_label.setMinimumWidth(w/4)
         #self.item_left_label.setMinimumWidth(w/5)
 
+        self.item_left_label.setFixedWidth(w/10)
 
     def REE(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
             Top=6, Y0=-1,
@@ -365,15 +366,30 @@ class REE(AppForm):
                 if i not in self.Element:
                     self.data_to_norm = self.data_to_norm.drop(i, 1)            
             '''
+
+            Y_bottom=0
+            Y_top=0
+
+            for j in range(len(self.Element)):
+                tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
+                self.data_to_norm.at[i, self.Element[j]] = tmp
+                tmpflag = 1
+                a = 0
+                try:
+                    a = math.log(tmp, 10)
+                except(ValueError):
+                    tmpflag = 0
+                    pass
+                if (tmpflag == 1):
+                    if Y_bottom >a:Y_bottom =a
+                    if Y_top<a:Y_top=a
+                    self.axes.set_ylim(Y_bottom,Y_top)
+
             if item_value == 0:
                 self.item_left_label.setText('Show All')
-
                 for j in range(len(self.Element)):
-
                     tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
-
                     self.data_to_norm.at[i, self.Element[j]] = tmp
-
                     tmpflag = 1
                     a = 0
                     try:
@@ -381,12 +397,9 @@ class REE(AppForm):
                     except(ValueError):
                         tmpflag = 0
                         pass
-
                     if (tmpflag == 1):
-
                         LinesY.append(a)
                         LinesX.append(j + 1)
-
                         self.WholeData.append(math.log(tmp, 10))
 
                         if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
@@ -398,16 +411,13 @@ class REE(AppForm):
                         self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
                                           s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                           label=TmpLabel, edgecolors='black')
-
-
-
                 self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
                                linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
+
             else:
                 self.item_left_label.setText(self.AllLabel[item_value-1])
 
                 for j in range(len(self.Element)):
-
                     tmp = raw.at[i, self.Element[j]] / standardchosen[self.Element[j]]
                     self.data_to_norm.at[i, self.Element[j]] = tmp
                     tmpflag = 1
@@ -418,38 +428,24 @@ class REE(AppForm):
                         tmpflag = 0
                         pass
                     if (tmpflag == 1):
-                        LinesY.append(a)
-                        LinesX.append(j + 1)
+
                         self.WholeData.append(math.log(tmp, 10))
                         if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
                             TmpLabel = ''
                         else:
                             PointLabels.append(raw.at[i, 'Label'])
                             TmpLabel = raw.at[i, 'Label']
+                        alpha= raw.at[i, 'Alpha']
+                        linewidth= raw.at[i, 'Width']
+                        pointsize= raw.at[i, 'Size']
 
                         if raw.at[i, 'Label'] == self.AllLabel[item_value - 1]:
-                            alpha= raw.at[i, 'Alpha']
-                            linewidth= raw.at[i, 'Width']
-                            pointsize= raw.at[i, 'Size']
-
+                            LinesY.append(a)
+                            LinesX.append(j + 1)
                             self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
                                               s=pointsize, color=raw.at[i, 'Color'], alpha=alpha,
                                               label=TmpLabel, edgecolors='black')
-
-
-                            self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=linewidth,linestyle=raw.at[i, 'Style'], alpha=alpha)
-
-                        else:
-                            alpha= 0
-                            linewidth= 0
-                            pointsize= 0
-
-                        self.AllAlpha.append(alpha)
-                        self.AllSize.append(pointsize)
-                        self.AllWidth.append(linewidth)
-
-
-                    #self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth= self.AllWidth[i],linestyle=raw.at[i, 'Style'], alpha=self.AllAlpha[i])
+                        self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=linewidth,linestyle=raw.at[i, 'Style'], alpha=alpha)
 
 
 

@@ -141,6 +141,13 @@ class Trace(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Trace)  # int
 
+
+
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.Trace)  # int
+
+
         self.standard_slider = QSlider(Qt.Horizontal)
         self.standard_slider.setRange(0, len(self.StandardsName))
 
@@ -175,7 +182,7 @@ class Trace(AppForm):
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [ self.item_left_label,self.item_slider]:
+        for w in [self.item_left_label,self.item_slider]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
@@ -200,6 +207,7 @@ class Trace(AppForm):
         self.type_slider.setFixedWidth(w/10)
         self.standard_slider.setMinimumWidth(w/4)
         self.right_label.setMinimumWidth(w/10)
+        self.item_left_label.setFixedWidth(w/10)
 
 
 
@@ -292,6 +300,46 @@ class Trace(AppForm):
 
         self.right_label.setText(right_label_text)
 
+        Y_bottom = 0
+        Y_top = 0
+
+        for i in range(len(raw)):
+            for j in range(len(CommonElements)):
+                flag = 1
+                tmp = 1
+                if CommonElements[j] in raw.columns:
+                    tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
+
+                elif CommonElements[j] == 'K' and 'K2O' in raw.columns:
+                    tmp = raw.at[i, 'K2O'] * (
+                            2 * 39.0983 / 94.1956) * 10000 / standardchosen[
+                              CommonElements[j]]
+
+                elif CommonElements[j] == 'Ti' and 'TiO2' in raw.columns:
+                    tmp = raw.at[i, 'TiO2'] * (
+                            47.867 / 79.865) * 10000 / standardchosen[
+                              CommonElements[j]]
+                else:
+                    flag = 0
+
+                if flag == 1:
+                    if tmp == tmp:  # to delete nan
+
+                        self.data_to_norm.at[i, self.Element[j]] = tmp
+
+                        tmpflag = 1
+                        a = 0
+                        try:
+                            a = math.log(tmp, 10)
+                        except(ValueError):
+                            tmpflag = 0
+                            pass
+
+                        if (tmpflag == 1):
+                            if Y_bottom > a: Y_bottom = a
+                            if Y_top < a: Y_top = a
+                            self.axes.set_ylim(Y_bottom, Y_top)
+
         if item_value == 0:
             self.item_left_label.setText('Show All')
 
@@ -304,11 +352,8 @@ class Trace(AppForm):
                 LinesY = []
 
                 for j in range(len(CommonElements)):
-
                     flag = 1
-
                     tmp = 1
-
                     if CommonElements[j] in raw.columns:
                         tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
 
@@ -356,6 +401,13 @@ class Trace(AppForm):
                 self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
                                linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
 
+                if (self.show_data_index_cb.isChecked()):
+                    self.axes.annotate('No' + str(i + 1),
+                                       xy=(LinesX[-1],
+                                           LinesY[-1]),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+
 
         else:
 
@@ -374,11 +426,8 @@ class Trace(AppForm):
                     linewidth = raw.at[i, 'Width']
                     pointsize = raw.at[i, 'Size']
                     for j in range(len(CommonElements)):
-
                         flag = 1
-
                         tmp = 1
-
                         if CommonElements[j] in raw.columns:
                             tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
 
@@ -425,7 +474,12 @@ class Trace(AppForm):
                                                       label=TmpLabel, edgecolors='black')
                     self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
                                    linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
-
+                    if (self.show_data_index_cb.isChecked()):
+                        self.axes.annotate('No' + str(i + 1),
+                                           xy=(LinesX[-1],
+                                               LinesY[-1]),
+                                           color=self._df.at[i, 'Color'],
+                                           alpha=self._df.at[i, 'Alpha'])
 
 
         Tale = 0

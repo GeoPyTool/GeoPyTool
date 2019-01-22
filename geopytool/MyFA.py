@@ -82,6 +82,10 @@ class MyFA(AppForm):
         self.show_load_data_cb.setChecked(True)
         self.show_load_data_cb.stateChanged.connect(self.Key_Func)  # int
 
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.Key_Func)  # int
+
         self.shape_cb= QCheckBox('&Shape')
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
@@ -149,6 +153,7 @@ class MyFA(AppForm):
         self.vbox.addWidget(self.canvas)
         self.hbox.addWidget(self.legend_cb)
         self.hbox.addWidget(self.show_load_data_cb)
+        self.hbox.addWidget(self.show_data_index_cb)
         self.hbox.addWidget(self.shape_cb)
         self.hbox.addWidget(self.hyperplane_cb)
         self.hbox.addWidget(self.switch_button)
@@ -314,6 +319,7 @@ class MyFA(AppForm):
                                                   marker=test_markers[i],
                                                   label=test_labels[i],
                                                   alpha=test_alpha[i])
+
                             else:
                                 self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
                                                   self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
@@ -321,6 +327,8 @@ class MyFA(AppForm):
                                                   marker=test_markers[i],
                                                   label=test_labels[i],
                                                   alpha=test_alpha[i])
+
+
                                 '''
                                 if (self.shape_cb.isChecked()):
                                     pass
@@ -397,6 +405,7 @@ class MyFA(AppForm):
                                   alpha=all_alpha[i])
 
 
+
                 if (self.shape_cb.isChecked()):
                     pass
                     XtoFit = self.fa_result[self.result_to_fit.index == all_labels[i], a]
@@ -432,6 +441,19 @@ class MyFA(AppForm):
                         #self.axes.clabel(cset, inline=1, fontsize=10)
 
 
+        if (self.show_data_index_cb.isChecked()):
+            for i in range(len(self.fa_result)):
+                if (self.switched == True):
+                    self.axes.annotate('No'+str(i+1),
+                                   xy=(self.fa_result[i, a],
+                                    self.fa_result[i, b]),
+                                   color=self._df.at[i,'Color'],
+                                   alpha=self._df.at[i,'Alpha'])
+                else:
+                    self.axes.text(self.fa_result[i, a], self.fa_result[i, b],self.fa_result[i, c], 'No'+str(i+1), size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
+                                   alpha=self._df.at[i, 'Alpha'])
+
+
 
 
         if (self.hyperplane_cb.isChecked()):
@@ -463,8 +485,8 @@ class MyFA(AppForm):
                 svm_x = self.fa_result[:, a]
                 svm_y = self.fa_result[:, b]
 
-                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
-                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
+                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
 
                 le = LabelEncoder()
                 le.fit(self.result_to_fit.index)

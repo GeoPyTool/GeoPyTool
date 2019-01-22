@@ -207,6 +207,17 @@ class XY(AppForm):
         self.show_load_data_cb.setChecked(True)
         self.show_load_data_cb.stateChanged.connect(self.Magic)  # int
 
+
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.Magic)  # int
+
+
+        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb.setChecked(False)
+        self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
+
+
         self.fit_cb= QCheckBox('&PolyFit')
         self.fit_cb.setChecked(False)
         self.fit_cb.stateChanged.connect(self.Magic)  # int
@@ -368,7 +379,7 @@ class XY(AppForm):
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.norm_cb,self.shape_cb, self.hyperplane_cb, self.left_label, self.standard_slider,self.right_label,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb, self.hyperplane_cb, self.left_label, self.standard_slider,self.right_label,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -1319,8 +1330,8 @@ class XY(AppForm):
                 clf = svm.SVC(C=1.0, kernel='linear')
                 svm_x = XtoFit
                 svm_y = YtoFit
-                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
-                                            np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
+                                            np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
 
                 le = LabelEncoder()
                 le.fit(self._df.Label)
@@ -1335,7 +1346,13 @@ class XY(AppForm):
                 Z = Z.reshape(xx.shape)
                 self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
 
-
+        if (self.show_data_index_cb.isChecked()):
+            for i in range(len(self._df)):
+                    self.axes.annotate('No' + str(i+1),
+                                       xy=(self.All_X[i],
+                                           self.All_Y[i]),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
 
 
         if (self.legend_cb.isChecked()):

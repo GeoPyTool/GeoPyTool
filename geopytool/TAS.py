@@ -100,6 +100,10 @@ class TAS(AppForm):
         self.show_load_data_cb.setChecked(True)
         self.show_load_data_cb.stateChanged.connect(self.TAS)  # int
 
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.TAS)  # int
+
         self.irvine_cb = QCheckBox('&Irvine')
         self.irvine_cb.setChecked(True)
         self.irvine_cb.stateChanged.connect(self.TAS)  # int
@@ -140,7 +144,7 @@ class TAS(AppForm):
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb,self.slider_left_label, self.slider,self.slider_right_label]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb,self.slider_left_label, self.slider,self.slider_right_label]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -521,8 +525,8 @@ class TAS(AppForm):
 
                 print(len(svm_x),len(svm_y),len(df.index))
 
-                xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
-                                     np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+                xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
+                                     np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
 
                 le = LabelEncoder()
                 le.fit(self._df.Label)
@@ -533,6 +537,15 @@ class TAS(AppForm):
                 Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
                 Z = Z.reshape(xx.shape)
                 self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+
+            if (self.show_data_index_cb.isChecked()):
+                for i in range(len(self._df)):
+                    self.axes.annotate('No' + str(i + 1),
+                                       xy=(self.All_X[i],
+                                           self.All_Y[i]),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+
 
             self.canvas.draw()
 

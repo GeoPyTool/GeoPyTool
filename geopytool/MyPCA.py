@@ -80,6 +80,7 @@ class MyPCA(AppForm):
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
+
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Key_Func)  # int
@@ -89,9 +90,15 @@ class MyPCA(AppForm):
         self.show_load_data_cb.setChecked(True)
         self.show_load_data_cb.stateChanged.connect(self.Key_Func)  # int
 
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.Key_Func)  # int
+
+
         self.shape_cb= QCheckBox('&Shape')
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
+
 
         self.hyperplane_cb= QCheckBox('&Hyperplane')
         self.hyperplane_cb.setChecked(False)
@@ -158,6 +165,7 @@ class MyPCA(AppForm):
         self.vbox.addWidget(self.canvas)
         self.hbox.addWidget(self.legend_cb)
         self.hbox.addWidget(self.show_load_data_cb)
+        self.hbox.addWidget(self.show_data_index_cb)
         self.hbox.addWidget(self.shape_cb)
         self.hbox.addWidget(self.hyperplane_cb)
         self.hbox.addWidget(self.switch_button)
@@ -452,6 +460,20 @@ class MyPCA(AppForm):
             else:
                 self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
+
+
+        if (self.show_data_index_cb.isChecked()):
+            for i in range(len(self.pca_result)):
+                if (self.switched == True):
+                    self.axes.annotate('No'+str(i+1),
+                                   xy=(self.pca_result[i, a],
+                                       self.pca_result[i, b]),
+                                   color=self._df.at[i,'Color'],
+                                   alpha=self._df.at[i,'Alpha'])
+                else:
+                    self.axes.text(self.pca_result[i, a], self.pca_result[i, b],self.pca_result[i, c], 'No'+str(i+1), size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
+                                   alpha=self._df.at[i, 'Alpha'])
+
         if (self.hyperplane_cb.isChecked()):
             if (self.switched == False):
                 clf = svm.SVC(C=1.0, kernel='linear')
@@ -478,8 +500,8 @@ class MyPCA(AppForm):
                 svm_x = self.pca_result[:, a]
                 svm_y = self.pca_result[:, b]
 
-                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
-                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
+                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
 
                 le = LabelEncoder()
                 le.fit(self.result_to_fit.index)
@@ -557,5 +579,4 @@ class MyPCA(AppForm):
         except Exception as e:
             pass
             #self.ErrorEvent(text=repr(e))
-
 
