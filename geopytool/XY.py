@@ -382,7 +382,7 @@ class XY(AppForm):
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb,self.hyperplane_cb]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
