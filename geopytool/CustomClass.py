@@ -1,4 +1,4 @@
-version = '0.8.19.1.29'
+version = '0.8.19.1.30'
 
 date = '2019-1-22'
 
@@ -770,7 +770,7 @@ class TabelViewer(QMainWindow):
         self.resize(800, 600)
         self.main_frame = QWidget()
 
-        self.save_button = QPushButton('&Save Result')
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveResult)
 
         self.tableView = CustomQTableView(self.main_frame)
@@ -841,7 +841,7 @@ class TabelViewer(QMainWindow):
         self.resize(800, 600)
         self.main_frame = QWidget()
 
-        self.save_button = QPushButton('&Save Result')
+        self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveResult)
 
         self.tableView = CustomQTableView(self.main_frame)
@@ -862,7 +862,7 @@ class TabelViewer(QMainWindow):
 
 
     def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
+        self.status_text = QLabel("Click Save button to save.")
         self.statusBar().addWidget(self.status_text, 1)
 
     def add_actions(self, target, actions):
@@ -1248,7 +1248,7 @@ class AppForm(QMainWindow):
         self.setCentralWidget(self.main_frame)
 
     def create_status_bar(self):
-        self.status_text = QLabel("Click Save button to save your figure.")
+        self.status_text = QLabel("Click Save button to save.")
         self.statusBar().addWidget(self.status_text, 1)
 
     def add_actions(self, target, actions):
@@ -1390,7 +1390,7 @@ class AppForm(QMainWindow):
 
         self.result.reset_index
 
-        self.resultpop = TabelViewer(df=self.result, title='Parameters')
+        self.resultpop = TabelViewer(df=self.result, title='Results')
         self.resultpop.show()
 
 

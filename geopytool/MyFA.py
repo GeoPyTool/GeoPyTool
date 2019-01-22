@@ -24,6 +24,7 @@ class MyFA(AppForm):
     switched = False
     text_result = ''
     whole_labels=[]
+    SVM_labels=[]
     fa = FactorAnalysis()
     n=6
 
@@ -151,21 +152,14 @@ class MyFA(AppForm):
 
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
-        self.hbox.addWidget(self.legend_cb)
-        self.hbox.addWidget(self.show_load_data_cb)
-        self.hbox.addWidget(self.show_data_index_cb)
-        self.hbox.addWidget(self.shape_cb)
-        self.hbox.addWidget(self.hyperplane_cb)
-        self.hbox.addWidget(self.switch_button)
-        self.hbox.addWidget(self.load_data_button)
-        self.hbox.addWidget(self.save_picture_button)
-        self.hbox.addWidget(self.save_result_button)
-        self.hbox.addWidget(self.save_Para_button)
-        self.hbox.addWidget(self.save_predict_button)
-        self.vbox.addLayout(self.hbox)
-        self.vbox.addLayout(self.hbox0)
-        self.vbox.addLayout(self.hbox2)
-        self.vbox.addLayout(self.hbox3)
+
+        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb]:
+            self.hbox0.addWidget(w)
+            self.hbox0.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.switch_button, self.load_data_button, self.save_picture_button, self.save_result_button, self.save_Para_button, self.save_predict_button]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
         for w in [self.x_element_label, self.x_element]:
             self.hbox2.addWidget(w)
@@ -176,6 +170,11 @@ class MyFA(AppForm):
         for w in [self.z_element_label,self.z_element]:
             self.hbox4.addWidget(w)
             self.hbox4.setAlignment(w, Qt.AlignVCenter)
+
+        self.vbox.addLayout(self.hbox0)
+        self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
 
 
         if ( self.switched== False):
@@ -249,6 +248,7 @@ class MyFA(AppForm):
                 all_alpha.append(alpha)
 
         self.whole_labels = all_labels
+        self.SVM_labels = all_labels
 
         if(len(self.data_to_test)>0):
 
@@ -461,7 +461,7 @@ class MyFA(AppForm):
             pass
 
             if (self.switched == False):
-                clf = svm.SVC(C=1.0, kernel='linear')
+                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
                 svm_x = self.fa_result[:, a]
                 svm_y = self.fa_result[:, b]
                 svm_z = self.fa_result[:, c]
@@ -481,7 +481,7 @@ class MyFA(AppForm):
                 self.axes.plot_surface(xx, yy, zz(xx,yy).reshape(xx.shape), color= 'grey', alpha=0.5)
 
             else:
-                clf = svm.SVC(C=1.0, kernel='linear')
+                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
                 svm_x = self.fa_result[:, a]
                 svm_y = self.fa_result[:, b]
 
@@ -513,14 +513,18 @@ class MyFA(AppForm):
 
     def showPredictResult(self):
         try:
-            clf = svm.SVC(C=1.0, kernel='linear')
+            clf = svm.SVC(C=1.0, kernel='linear',probability= True)
             clf.fit(self.fa_result, self.result_to_fit.index)
             Z = clf.predict(np.c_[self.fa_data_to_test])
-            predict_result = pd.concat([self.load_settings_backup['Label'],  pd.DataFrame({'SVM Classification': Z})], axis=1).set_index('Label')
+
+            Z2 = clf.predict_proba(np.c_[self.fa_data_to_test])
+            proba_df = pd.DataFrame(Z2)
+            proba_df.columns = self.SVM_labels
+            predict_result = pd.concat(
+                [self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
+                axis=1).set_index('Label')
+
             print(predict_result)
-
-
-
             self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result with All Items')
             self.predictpop.show()
 

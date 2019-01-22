@@ -24,6 +24,7 @@ class MyPCA(AppForm):
     switched = False
     text_result = ''
     whole_labels=[]
+    SVM_labels=[]
     pca = PCA(n_components='mle')
 
     n=6
@@ -163,21 +164,14 @@ class MyPCA(AppForm):
 
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
-        self.hbox.addWidget(self.legend_cb)
-        self.hbox.addWidget(self.show_load_data_cb)
-        self.hbox.addWidget(self.show_data_index_cb)
-        self.hbox.addWidget(self.shape_cb)
-        self.hbox.addWidget(self.hyperplane_cb)
-        self.hbox.addWidget(self.switch_button)
-        self.hbox.addWidget(self.load_data_button)
-        self.hbox.addWidget(self.save_picture_button)
-        self.hbox.addWidget(self.save_result_button)
-        self.hbox.addWidget(self.save_Para_button)
-        self.hbox.addWidget(self.save_predict_button)
-        self.vbox.addLayout(self.hbox)
-        self.vbox.addLayout(self.hbox0)
-        self.vbox.addLayout(self.hbox2)
-        self.vbox.addLayout(self.hbox3)
+
+        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb]:
+            self.hbox0.addWidget(w)
+            self.hbox0.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.switch_button, self.load_data_button, self.save_picture_button, self.save_result_button, self.save_Para_button, self.save_predict_button]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
         for w in [self.x_element_label, self.x_element]:
             self.hbox2.addWidget(w)
@@ -188,6 +182,12 @@ class MyPCA(AppForm):
         for w in [self.z_element_label,self.z_element]:
             self.hbox4.addWidget(w)
             self.hbox4.setAlignment(w, Qt.AlignVCenter)
+
+
+        self.vbox.addLayout(self.hbox0)
+        self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
 
 
         if ( self.switched== False):
@@ -255,6 +255,7 @@ class MyPCA(AppForm):
                 all_alpha.append(alpha)
 
         self.whole_labels = all_labels
+        self.SVM_labels = all_labels
 
         if(len(self.data_to_test)>0):
 
@@ -294,6 +295,7 @@ class MyPCA(AppForm):
                         test_colors.append(color)
                         test_markers.append(marker)
                         test_alpha.append(alpha)
+
 
 
                 self.whole_labels = self.whole_labels + test_labels
@@ -476,7 +478,7 @@ class MyPCA(AppForm):
 
         if (self.hyperplane_cb.isChecked()):
             if (self.switched == False):
-                clf = svm.SVC(C=1.0, kernel='linear')
+                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
                 svm_x = self.pca_result[:, a]
                 svm_y = self.pca_result[:, b]
                 svm_z = self.pca_result[:, c]
@@ -496,7 +498,7 @@ class MyPCA(AppForm):
                 self.axes.plot_surface(xx, yy, zz(xx,yy).reshape(xx.shape), color= 'grey', alpha=0.5)
 
             else:
-                clf = svm.SVC(C=1.0, kernel='linear')
+                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
                 svm_x = self.pca_result[:, a]
                 svm_y = self.pca_result[:, b]
 
@@ -520,37 +522,36 @@ class MyPCA(AppForm):
 
 
     def showPredictResult(self):
-
         try:
-            clf = svm.SVC(C=1.0, kernel='linear')
-            # le = LabelEncoder()
-            # le.fit(self.result_to_fit.index)
-            # class_label = le.transform(self.result_to_fit.index)
-            # clf.fit(self.pca_result, class_label)
-            clf.fit(self.pca_result, self.result_to_fit.index)
-            Z = clf.predict(np.c_[self.pca_data_to_test])
-            predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z})],
-                                       axis=1).set_index('Label')
-            print(predict_result)
+                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+                clf.fit(self.pca_result, self.result_to_fit.index)
+                Z = clf.predict(np.c_[self.pca_data_to_test])
+
+                Z2 = clf.predict_proba(np.c_[self.pca_data_to_test])
+                proba_df=pd.DataFrame(Z2)
+                proba_df.columns = self.SVM_labels
+                predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}),proba_df],
+                                           axis=1).set_index('Label')
+                print(predict_result)
 
 
-            self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result with All Items')
-            self.predictpop.show()
+                self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result with All Items')
+                self.predictpop.show()
 
-            '''
-            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self, '文件保存', 'C:/',  'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-            if (DataFileOutput != ''):
-                if ('csv' in DataFileOutput):
-                    # DataFileOutput = DataFileOutput[0:-4]
-                    predict_result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-                    # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
-                elif ('xlsx' in DataFileOutput):
-                    # DataFileOutput = DataFileOutput[0:-5]
-                    predict_result.to_excel(DataFileOutput, encoding='utf-8')
-                    # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
-
-
-            '''
+                '''
+                DataFileOutput, ok2 = QFileDialog.getSaveFileName(self, '文件保存', 'C:/',  'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+                if (DataFileOutput != ''):
+                    if ('csv' in DataFileOutput):
+                        # DataFileOutput = DataFileOutput[0:-4]
+                        predict_result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+                        # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
+                    elif ('xlsx' in DataFileOutput):
+                        # DataFileOutput = DataFileOutput[0:-5]
+                        predict_result.to_excel(DataFileOutput, encoding='utf-8')
+                        # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
+    
+    
+                '''
 
         except Exception as e:
             msg = 'You need to load another data to run SVM.\n '

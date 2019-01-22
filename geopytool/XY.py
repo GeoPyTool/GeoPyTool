@@ -92,6 +92,8 @@ class XY(AppForm):
     FlagLoaded=False
     TypeLoaded=''
 
+    whole_labels=[]
+    SVM_labels=[]
 
     def __init__(self, parent=None, df=pd.DataFrame(),Standard={}):
         QMainWindow.__init__(self, parent)
@@ -366,6 +368,7 @@ class XY(AppForm):
         self.hbox2 = QHBoxLayout()
         self.hbox3 = QHBoxLayout()
         self.hbox4 = QHBoxLayout()
+        self.hbox5 = QHBoxLayout()
 
         w=self.width()
         h=self.height()
@@ -379,32 +382,37 @@ class XY(AppForm):
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb, self.hyperplane_cb, self.left_label, self.standard_slider,self.right_label,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.logx_cb,self.x_seter, self.x_element]:
+        for w in [self.left_label, self.standard_slider,self.right_label,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logy_cb,self.y_seter, self.y_element]:
+
+        for w in [self.logx_cb,self.x_seter, self.x_element]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.logy_cb,self.y_seter, self.y_element]:
+            self.hbox3.addWidget(w)
+            self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
 
         for w in [self.load_img_button, self.width_size_seter_label, self.width_size_seter, self.height_size_seter_label,
                   self.height_size_seter]:
-            self.hbox3.addWidget(w)
-            self.hbox3.setAlignment(w, Qt.AlignLeft)
+            self.hbox4.addWidget(w)
+            self.hbox4.setAlignment(w, Qt.AlignLeft)
 
 
 
         for w in [self.unload_img_button,self.Left_size_seter_label, self.Left_size_seter,
                   self.Right_size_seter_label,  self.Right_size_seter,self.Down_size_seter_label, self.Down_size_seter,
                   self.Up_size_seter_label ,self.Up_size_seter]:
-            self.hbox4.addWidget(w)
-            self.hbox4.setAlignment(w, Qt.AlignLeft)
+            self.hbox5.addWidget(w)
+            self.hbox5.setAlignment(w, Qt.AlignLeft)
 
 
 
@@ -417,6 +425,7 @@ class XY(AppForm):
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
         self.vbox.addLayout(self.hbox4)
+        self.vbox.addLayout(self.hbox5)
 
         self.textbox = GrowingTextEdit(self)
 
@@ -921,6 +930,8 @@ class XY(AppForm):
             marker = self._df.at[i, 'Marker']
             alpha = self._df.at[i, 'Alpha']
 
+            if target not in self.SVM_labels:
+                self.SVM_labels.append(target)
             if target not in all_labels:
                 all_labels.append(target)
                 all_colors.append(color)
@@ -1327,7 +1338,7 @@ class XY(AppForm):
         if (self.hyperplane_cb.isChecked()):
 
             if XtoFit != YtoFit:
-                clf = svm.SVC(C=1.0, kernel='linear')
+                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
                 svm_x = XtoFit
                 svm_y = YtoFit
                 xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
@@ -1370,30 +1381,27 @@ class XY(AppForm):
 
     def showPredictResultSelected(self):
         try:
-            clf = svm.SVC(C=1.0, kernel='linear')
+            clf = svm.SVC(C=1.0, kernel='linear',probability= True)
             svm_x = self.All_X
             svm_y = self.All_Y
 
             le = LabelEncoder()
             le.fit(self._df.Label)
-            #print(len(self._df.Label), self._df.Label)
-
             class_label = le.transform(self._df.Label)
             svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y)], axis=1)
             svm_train = svm_train.values
-            #clf.fit(svm_train, class_label)
             clf.fit(svm_train, self._df.Label)
-
-            #Z = clf.predict(np.c_[self.data_to_test])
-
             xx = self.data_to_test_to_fit[self.items[self.a_index]]
             yy = self.data_to_test_to_fit[self.items[self.b_index]]
 
             Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
 
-            #Z = clf.predict(np.c_[self.data_to_test_to_fit])
-            predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification With '+ self.items[self.a_index]+','+self.items[self.b_index]: Z})],
-                                       axis=1).set_index('Label')
+            Z2 = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+            proba_df = pd.DataFrame(Z2)
+            proba_df.columns = self.SVM_labels
+            predict_result = pd.concat(
+                [self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
+                axis=1).set_index('Label')
             print(predict_result)
 
 
@@ -1423,7 +1431,7 @@ class XY(AppForm):
 
     def showPredictResult(self):
         try:
-            clf = svm.SVC(C=1.0, kernel='linear')
+            clf = svm.SVC(C=1.0, kernel='linear',probability= True)
             le = LabelEncoder()
             le.fit(self._df.Label)
             #print(len(self._df.Label), self._df.Label)
@@ -1434,8 +1442,12 @@ class XY(AppForm):
 
             clf.fit(df_values, self._df.Label)
             Z = clf.predict(np.c_[self.data_to_test_to_fit])
-            predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z})],
-                                       axis=1).set_index('Label')
+            Z2 = clf.predict_proba(np.c_[self.data_to_test_to_fit])
+            proba_df = pd.DataFrame(Z2)
+            proba_df.columns = self.SVM_labels
+            predict_result = pd.concat(
+                [self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
+                axis=1).set_index('Label')
             print(predict_result)
 
             self.predictAllpop = TabelViewer(df=predict_result, title='SVM Predict Result with All Items')

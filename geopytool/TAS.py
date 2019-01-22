@@ -61,6 +61,9 @@ class TAS(AppForm):
     All_X = []
     All_Y = []
 
+    whole_labels=[]
+    SVM_labels=[]
+
     def create_main_frame(self):
         self.resize(800, 600)
         self.main_frame = QWidget()
@@ -139,20 +142,26 @@ class TAS(AppForm):
         #
         self.hbox = QHBoxLayout()
         self.hbox1 = QHBoxLayout()
+        self.hbox2 = QHBoxLayout()
 
         for w in [self.load_data_button,self.save_button, self.result_button, self.save_predict_button_selected]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb,self.slider_left_label, self.slider,self.slider_right_label]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.slider_left_label, self.slider,self.slider_right_label]:
+            self.hbox2.addWidget(w)
+            self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
         self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
         self.textbox = GrowingTextEdit(self)
         self.textbox.setText(self.reference)
 
@@ -196,9 +205,6 @@ class TAS(AppForm):
         self.axes.set_xticks([30,40,50,60,70,80,90])
         self.axes.set_xticklabels([30,40,50,60,70,80,90])
 
-
-
-
         self.axes.set_yticks([0, 5, 10, 15, 20])
         self.axes.set_yticklabels([0, 5, 10, 15, 20])
 
@@ -217,6 +223,8 @@ class TAS(AppForm):
             marker = self._df.at[i, 'Marker']
             alpha = self._df.at[i, 'Alpha']
 
+            if target not in self.SVM_labels:
+                self.SVM_labels.append(target)
             if target not in all_labels:
                 all_labels.append(target)
                 all_colors.append(color)
@@ -224,6 +232,7 @@ class TAS(AppForm):
                 all_alpha.append(alpha)
 
         self.whole_labels = all_labels
+
 
         YIrvine= np.arange(0,10.2,0.1)
         XIrvine= self.Irvine(YIrvine)
@@ -518,7 +527,7 @@ class TAS(AppForm):
             self.All_Y=SVM_Y
 
             if (self.hyperplane_cb.isChecked()):
-                clf = svm.SVC(C=1.0, kernel='linear')
+                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
 
                 svm_x= SVM_X
                 svm_y= SVM_Y
@@ -565,37 +574,30 @@ class TAS(AppForm):
 
     def showPredictResultSelected(self):
         try:
-            clf = svm.SVC(C=1.0, kernel='linear')
+            clf = svm.SVC(C=1.0, kernel='linear',probability= True)
             svm_x = self.All_X
             svm_y = self.All_Y
 
             le = LabelEncoder()
             le.fit(self._df.Label)
-            #print(len(self._df.Label), self._df.Label)
-
             class_label = le.transform(self._df.Label)
             svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y)], axis=1)
             svm_train = svm_train.values
-            #clf.fit(svm_train, class_label)
             clf.fit(svm_train, self._df.Label)
-
-            #Z = clf.predict(np.c_[self.data_to_test])
-
-
-
             xx = self.data_to_test['SiO2']
-            #yy = self.data_to_test.at[ 'Na2O'] + self.data_to_test.at['K2O']
             yy=[]
-
             for k in range(len(self.data_to_test)):
                 tmp =self.data_to_test.at[k, 'Na2O'] + self.data_to_test.at[k,'K2O']
                 yy.append(tmp)
                 pass
 
             Z = clf.predict(np.c_[xx.ravel(), yy])
-
-            predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification With SiO2- Na2O+K2O': Z})],
-                                       axis=1).set_index('Label')
+            Z2 = clf.predict_proba(np.c_[xx.ravel(), yy])
+            proba_df = pd.DataFrame(Z2)
+            proba_df.columns = self.SVM_labels
+            predict_result = pd.concat(
+                [self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
+                axis=1).set_index('Label')
             print(predict_result)
 
             self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result')
