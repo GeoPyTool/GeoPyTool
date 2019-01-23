@@ -144,22 +144,19 @@ class TAS(AppForm):
         self.hbox1 = QHBoxLayout()
         self.hbox2 = QHBoxLayout()
 
-        for w in [self.load_data_button,self.save_button, self.result_button, self.save_predict_button_selected]:
-            self.hbox.addWidget(w)
-            self.hbox.setAlignment(w, Qt.AlignVCenter)
-
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb]:
+        for w in [self.load_data_button,self.save_button, self.result_button, self.save_predict_button_selected,self.slider_left_label, self.slider,self.slider_right_label]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.slider_left_label, self.slider,self.slider_right_label]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
+
+
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
-        self.vbox.addLayout(self.hbox)
         self.vbox.addLayout(self.hbox1)
         self.vbox.addLayout(self.hbox2)
         self.textbox = GrowingTextEdit(self)
@@ -173,7 +170,12 @@ class TAS(AppForm):
         w=self.width()
         h=self.height()
 
+
+        self.slider_left_label.setFixedWidth(w/10)
+
         self.slider.setFixedWidth(w/10)
+
+        self.slider_right_label.setFixedWidth(w/10)
 
     def Irvine(self,x, a = 39.0, b = 3.9492, c = -2.1111, d = 0.86096, e = -0.15188, f = 0.012030, g = -(3.3539 / 10000)):
 
@@ -358,15 +360,12 @@ class TAS(AppForm):
                         break
                     pass
 
-                '''
+
                 self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
                   s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
                   edgecolors='black')
+
                 '''
-
-
-
-
                 if df.at[i, 'Color'] == 'w' or df.at[i, 'Color'] =='White':
                     self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
                           s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'],
@@ -376,7 +375,7 @@ class TAS(AppForm):
                     self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
                           s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
                           edgecolors = 'white')
-
+                '''
 
 
 
