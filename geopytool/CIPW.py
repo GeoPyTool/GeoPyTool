@@ -773,7 +773,7 @@ class CIPW(AppForm):
                     Aorc='Corundum'
 
         '''
-
+        AorC = 'None'
         if DataCalculating['Al2O3'] <= 0:
             AorC = 'None'
         else:
