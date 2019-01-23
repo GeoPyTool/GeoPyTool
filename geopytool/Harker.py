@@ -185,7 +185,7 @@ class Harker(AppForm):
         raw = self.CleanDataFile(self._df)
 
 
-        itemstoshow = [r'$Al_2O_3$', r'$MgO$', r'$Fe_{Total}$', r'$CaO$', r'$Na_2O$', r'$K_2O$', r'$TiO_2$', r'$P_2O_5$', r'$SiO_2$', ]
+        itemstoshow = [r'$Al_2O_3$', r'$MgO$', r'$Fe2O3_{Total}$', r'$CaO$', r'$Na_2O$', r'$K_2O$', r'$TiO_2$', r'$P_2O_5$', r'$SiO_2$', ]
 
         self.axes[0, 0].clear()
         #self.axes[0, 0].set_xlim(45, 75)
@@ -305,7 +305,13 @@ class Harker(AppForm):
             if ('Fe2O3' in raw.columns.tolist()):
                 Fe2O3=raw.at[i, 'Fe2O3']
 
-            FeTotal= FeO+Fe2O3
+            FeTotal= FeO/72*80+Fe2O3
+
+            if ('TFeO' in raw.columns.tolist()):
+                FeTotal=raw.at[i, 'TFeO']
+
+            if ('TFe2O3' in raw.columns.tolist()):
+                FeTotal=raw.at[i, 'TFe2O3']
 
 
 
