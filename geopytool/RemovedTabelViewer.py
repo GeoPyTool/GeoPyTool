@@ -156,7 +156,7 @@ class NewCustomQTableView(QtWidgets.QTableView):
             print('Drop')
 
 
-class TabelViewer(QMainWindow):
+class TableViewer(QMainWindow):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
 
     Minerals = ['Quartz',
@@ -449,7 +449,7 @@ class TabelViewer(QMainWindow):
         return action
 
 
-class OldTabelViewer(QMainWindow):
+class OldTableViewer(QMainWindow):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
 
     Minerals = ['Quartz',

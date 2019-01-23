@@ -168,7 +168,7 @@ class MySta(AppForm):
         self.show()
 
         #print(self.settings_backup)
-        #self.tablepop = TabelViewer(df=self.settings_backup,title='Setting Backup')
+        #self.tablepop = TableViewer(df=self.settings_backup,title='Setting Backup')
         #self.tablepop.show()
 
 

@@ -1,6 +1,6 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
-#from geopytool.TabelViewer import TabelViewer
+#from geopytool.TableViewer import TableViewer
 
 
 

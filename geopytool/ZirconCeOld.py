@@ -150,7 +150,7 @@ class ZirconCeOld(QMainWindow):
 
     def showResult(self):
 
-        self.tablepop = TabelViewer(df=self.newdf,title='Zircon Ce Result')
+        self.tablepop = TableViewer(df=self.newdf,title='Zircon Ce Result')
         self.tablepop.show()
 
 

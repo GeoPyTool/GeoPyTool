@@ -47,11 +47,11 @@ class MyICA(AppForm):
 
     def showResultUp(self):
 
-        self.tablepopUp = TabelViewer(df=self.corr1, title='Correlation Matrix of Columns (Top Matrix)')
+        self.tablepopUp = TableViewer(df=self.corr1, title='Correlation Matrix of Columns (Top Matrix)')
         self.tablepopUp.show()
 
     def showResultLeft(self):
-        self.tablepopLeft = TabelViewer(df=self.corr2, title='Correlation Matrix of Rows (Left Matrix)')
+        self.tablepopLeft = TableViewer(df=self.corr2, title='Correlation Matrix of Rows (Left Matrix)')
         self.tablepopLeft.show()
 
     def create_main_frame(self):
@@ -369,7 +369,7 @@ class MyICA(AppForm):
         StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
         StatResultDf['Items']=StatResultDf.index.tolist()
 
-        self.tablepop = TabelViewer(df=StatResultDf,title='Statistical Result')
+        self.tablepop = TableViewer(df=StatResultDf,title='Statistical Result')
         self.tablepop.show()
 
         self.Intro = StatResultDf

@@ -1,6 +1,6 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
-#from geopytool.TabelViewer import TabelViewer
+#from geopytool.TableViewer import TableViewer
 
 class HarkerDIY(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
@@ -978,7 +978,7 @@ class HarkerDIY(AppForm):
         StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
         StatResultDf['Items']=StatResultDf.index.tolist()
 
-        self.tablepop = TabelViewer(df=StatResultDf,title='X-Y Statistical Result')
+        self.tablepop = TableViewer(df=StatResultDf,title='X-Y Statistical Result')
         self.tablepop.show()
 
         self.Intro = StatResultDf

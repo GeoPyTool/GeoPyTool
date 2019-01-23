@@ -539,5 +539,5 @@ class Trace(AppForm):
                 self.data_to_norm = self.data_to_norm.drop(i, 1)
 
         self.OutPutData = self.data_to_norm.set_index('Label')
-        self.tablepop = TabelViewer(df=self.OutPutData,title='Trace Element Norm Result')
+        self.tablepop = TableViewer(df=self.OutPutData,title='Trace Element Norm Result')
         self.tablepop.show()

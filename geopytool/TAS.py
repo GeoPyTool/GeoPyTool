@@ -1,6 +1,6 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
-#from geopytool.TabelViewer import TabelViewer
+#from geopytool.TableViewer import TableViewer
 
 
 class TAS(AppForm):
@@ -643,7 +643,7 @@ class TAS(AppForm):
                 axis=1).set_index('Label')
             print(predict_result)
 
-            self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result')
+            self.predictpop = TableViewer(df=predict_result, title='SVM Predict Result')
             self.predictpop.show()
 
             '''
@@ -672,5 +672,5 @@ class TAS(AppForm):
 
         #self.OutPutData = self.OutPutData.set_index('Label')
 
-        self.tablepop = TabelViewer(df=self.OutPutData,title='TAS Result')
+        self.tablepop = TableViewer(df=self.OutPutData,title='TAS Result')
         self.tablepop.show()

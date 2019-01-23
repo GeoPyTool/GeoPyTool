@@ -1,6 +1,6 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
-#from geopytool.TabelViewer import TabelViewer
+#from geopytool.TableViewer import TableViewer
 
 class XY(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
@@ -1439,7 +1439,7 @@ class XY(AppForm):
             print(predict_result)
 
 
-            self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result With '+ self.items[self.a_index]+','+self.items[self.b_index])
+            self.predictpop = TableViewer(df=predict_result, title='SVM Predict Result With '+ self.items[self.a_index]+','+self.items[self.b_index])
             self.predictpop.show()
 
             '''
@@ -1484,7 +1484,7 @@ class XY(AppForm):
                 axis=1).set_index('Label')
             print(predict_result)
 
-            self.predictAllpop = TabelViewer(df=predict_result, title='SVM Predict Result with All Items')
+            self.predictAllpop = TableViewer(df=predict_result, title='SVM Predict Result with All Items')
             self.predictAllpop.show()
 
             '''
@@ -1530,7 +1530,7 @@ class XY(AppForm):
         StdSortedList.reverse()
         StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
         StatResultDf['Items']=StatResultDf.index.tolist()
-        self.tablepop = TabelViewer(df=StatResultDf,title='Statistical Result')
+        self.tablepop = TableViewer(df=StatResultDf,title='Statistical Result')
         self.tablepop.show()
         self.Intro = StatResultDf
         return(StatResultDf)

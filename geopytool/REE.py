@@ -568,5 +568,5 @@ class REE(AppForm):
         #print('last',len(self.OutPutData['Eu/Eu*(algebra)']))
 
         df = pd.concat([self.data_to_norm,self.OutPutData], axis=1).set_index('Label')
-        self.tablepop = TabelViewer(df=df,title='REE Norm Result')
+        self.tablepop = TableViewer(df=df,title='REE Norm Result')
         self.tablepop.show()

@@ -162,7 +162,7 @@ class ZirconCe(QMainWindow):
 
     def showResult(self):
 
-        self.tablepop = TabelViewer(df=self.newdf, title='Zircon Ce4_3 Ratio Result')
+        self.tablepop = TableViewer(df=self.newdf, title='Zircon Ce4_3 Ratio Result')
         self.tablepop.show()
 
     def create_action(self, text, slot=None, shortcut=None,

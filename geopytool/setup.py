@@ -28,7 +28,7 @@ setup(name='geopytool',
       },
       include_package_data=True,
 
-      #py_modules=['CIPW','Cluster','geopytool/CustomClass','Harker','IMP','Magic','MudStone','MultiDimension','OldCustomClass','Pearce','PlotModel','QAPF','QFL','QmFLt','REE','Rose','Stereo','TAS','TabelViewer','Temp','Test','Trace','XY','XYZ','ZirconCe','cli'],
+      #py_modules=['CIPW','Cluster','geopytool/CustomClass','Harker','IMP','Magic','MudStone','MultiDimension','OldCustomClass','Pearce','PlotModel','QAPF','QFL','QmFLt','REE','Rose','Stereo','TAS','TableViewer','Temp','Test','Trace','XY','XYZ','ZirconCe','cli'],
 
       #py_modules=['geopytool.CustomClass'],
 

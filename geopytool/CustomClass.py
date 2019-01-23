@@ -1,4 +1,4 @@
-version = '0.8.19.1.36'
+version = '0.8.19.1.37'
 
 date = '2019-1-22'
 
@@ -7,7 +7,7 @@ dpi = 128
 
 from geopytool.ImportDependence import *
 
-#from geopytool.TabelViewer import TabelViewer
+#from geopytool.TableViewer import TableViewer
 
 
 
@@ -669,7 +669,7 @@ class NewCustomQTableView(QtWidgets.QTableView):
         for f in files:
             print('Drop')
 
-class TabelViewer(QMainWindow):
+class TableViewer(QMainWindow):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
 
     Minerals = ['Quartz',
@@ -842,7 +842,7 @@ class TabelViewer(QMainWindow):
         self.main_frame = QWidget()
 
         self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveResult)
+        self.save_button.clicked.connect(self.saveDataFile)
 
         self.tableView = CustomQTableView(self.main_frame)
         self.tableView.setObjectName('tableView')
@@ -893,56 +893,6 @@ class TabelViewer(QMainWindow):
 
             elif ('xls' in DataFileOutput):
                 self.model._df.to_excel(DataFileOutput, encoding='utf-8')
-
-    def saveResult(self):
-
-        self.result.reset_index
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          '文件保存',
-                                                          'C:/',
-                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ('csv' in DataFileOutput):
-
-                # DataFileOutput = DataFileOutput[0:-4]
-
-                self.result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-                # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
-
-            elif ('xlsx' in DataFileOutput):
-
-                # DataFileOutput = DataFileOutput[0:-5]
-
-                self.result.to_excel(DataFileOutput, encoding='utf-8')
-
-                # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
-
-    def savePara(self):
-
-        self.Para.reset_index
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
-                                                          '文件保存',
-                                                          'C:/',
-                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-
-        if (DataFileOutput != ''):
-
-            if ('csv' in DataFileOutput):
-
-                # DataFileOutput = DataFileOutput[0:-4]
-
-                self.Para.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-                # self.Para.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
-
-            elif ('xlsx' in DataFileOutput):
-
-                # DataFileOutput = DataFileOutput[0:-5]
-
-                self.Para.to_excel(DataFileOutput, encoding='utf-8')
-
-                # self.Para.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
 
     def create_action(self, text, slot=None, shortcut=None,
                       icon=None, tip=None, checkable=False,
@@ -1391,7 +1341,7 @@ class AppForm(QMainWindow):
 
         self.result.reset_index
 
-        self.resultpop = TabelViewer(df=self.result, title='Results')
+        self.resultpop = TableViewer(df=self.result, title='Results')
         self.resultpop.show()
 
 
@@ -1399,7 +1349,7 @@ class AppForm(QMainWindow):
 
         self.Para.reset_index
 
-        self.parapop = TabelViewer(df=self.Para, title='Parameters')
+        self.parapop = TableViewer(df=self.Para, title='Parameters')
         self.parapop.show()
 
     def create_action(self, text, slot=None, shortcut=None,

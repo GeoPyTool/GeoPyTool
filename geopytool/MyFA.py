@@ -529,7 +529,7 @@ class MyFA(AppForm):
                 axis=1).set_index('Label')
 
             print(predict_result)
-            self.predictpop = TabelViewer(df=predict_result, title='SVM Predict Result with All Items')
+            self.predictpop = TableViewer(df=predict_result, title='SVM Predict Result with All Items')
             self.predictpop.show()
 
             '''
