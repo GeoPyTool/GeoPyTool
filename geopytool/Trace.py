@@ -177,8 +177,9 @@ class Trace(AppForm):
         self.hbox1 = QHBoxLayout()
         self.hbox2 = QHBoxLayout()
 
-        for w in [self.save_img_button,self.explain_button,self.type_slider_left_label, self.type_slider,self.type_slider_right_label,
-                  self.legend_cb, self.left_label, self.standard_slider,self.right_label]:
+        for w in [self.save_img_button,self.explain_button,self.legend_cb,self.show_data_index_cb,
+                  self.type_slider_left_label, self.type_slider,self.type_slider_right_label,
+                  self.left_label, self.standard_slider,self.right_label]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -338,7 +339,8 @@ class Trace(AppForm):
                         if (tmpflag == 1):
                             if Y_bottom > a: Y_bottom = a
                             if Y_top < a: Y_top = a
-                            self.axes.set_ylim(Y_bottom, Y_top)
+
+        self.axes.set_ylim(Y_bottom, Y_top)
 
         if item_value == 0:
             self.item_left_label.setText('Show All')
@@ -407,6 +409,7 @@ class Trace(AppForm):
                                            LinesY[-1]),
                                        color=self._df.at[i, 'Color'],
                                        alpha=self._df.at[i, 'Alpha'])
+
 
 
         else:
@@ -487,7 +490,7 @@ class Trace(AppForm):
 
         if (len(self.WholeData) > 0):
             Tale = min(self.WholeData)
-            Head = max(self.WholeData)
+            Head = max(self.WholeData)+0.5
 
         Location = round(Tale - (Head - Tale) / 5)
 

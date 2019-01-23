@@ -161,6 +161,11 @@ class REE(AppForm):
 
 
 
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.REE)  # int
+
+
         self.standard_slider = QSlider(Qt.Horizontal)
         self.standard_slider.setRange(0, len(self.StandardsName))
 
@@ -195,7 +200,7 @@ class REE(AppForm):
         self.hbox1 = QHBoxLayout()
         self.hbox2 = QHBoxLayout()
 
-        for w in [self.save_img_button, self.explain_button, self.legend_cb,self.standard_left_label, self.standard_slider, self.standard_right_label]:
+        for w in [self.save_img_button, self.explain_button, self.legend_cb,self.show_data_index_cb,self.standard_left_label, self.standard_slider, self.standard_right_label]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -383,7 +388,8 @@ class REE(AppForm):
                 if (tmpflag == 1):
                     if Y_bottom >a:Y_bottom =a
                     if Y_top<a:Y_top=a
-                    self.axes.set_ylim(Y_bottom,Y_top)
+
+            self.axes.set_ylim(Y_bottom, Y_top+1)
 
             if item_value == 0:
                 self.item_left_label.setText('Show All')
@@ -398,11 +404,10 @@ class REE(AppForm):
                         tmpflag = 0
                         pass
                     if (tmpflag == 1):
-                        LinesY.append(a)
-                        LinesX.append(j + 1)
-                        self.WholeData.append(math.log(tmp, 10))
-
                         if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
+                            LinesY.append(a)
+                            LinesX.append(j + 1)
+                            self.WholeData.append(math.log(tmp, 10))
                             TmpLabel = ''
                         else:
                             PointLabels.append(raw.at[i, 'Label'])
@@ -413,6 +418,14 @@ class REE(AppForm):
                                           label=TmpLabel, edgecolors='black')
                 self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
                                linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
+
+                if (self.show_data_index_cb.isChecked()):
+                    self.axes.annotate('No' + str(i + 1),
+                                       xy=(LinesX[-1],
+                                           LinesY[-1]),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+
 
             else:
                 self.item_left_label.setText(self.AllLabel[item_value-1])
@@ -428,8 +441,6 @@ class REE(AppForm):
                         tmpflag = 0
                         pass
                     if (tmpflag == 1):
-
-                        self.WholeData.append(math.log(tmp, 10))
                         if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
                             TmpLabel = ''
                         else:
@@ -442,12 +453,22 @@ class REE(AppForm):
                         if raw.at[i, 'Label'] == self.AllLabel[item_value - 1]:
                             LinesY.append(a)
                             LinesX.append(j + 1)
+                            self.WholeData.append(math.log(tmp, 10))
                             self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
                                               s=pointsize, color=raw.at[i, 'Color'], alpha=alpha,
                                               label=TmpLabel, edgecolors='black')
                         self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=linewidth,linestyle=raw.at[i, 'Style'], alpha=alpha)
 
+                print(LinesX,LinesY)
 
+                if (self.show_data_index_cb.isChecked()):
+
+
+                    if len(LinesX)>0 and  len(LinesY)>0:
+                        self.axes.annotate('No' + str(i + 1),
+                                           xy=(LinesX[-1], LinesY[-1]),
+                                           color=self._df.at[i, 'Color'],
+                                           alpha=self._df.at[i, 'Alpha'])
 
 
         Tale = 0
@@ -455,7 +476,7 @@ class REE(AppForm):
 
         if (len(self.WholeData) > 0):
             Tale = min(self.WholeData)
-            Head = max(self.WholeData)
+            Head = max(self.WholeData)+0.5
 
         Location = round(Tale - (Head - Tale) / 5)
 

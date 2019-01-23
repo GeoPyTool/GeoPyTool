@@ -333,7 +333,8 @@ class MyPCA(AppForm):
                                                   color=test_colors[i],
                                                   marker=test_markers[i],
                                                   label=test_labels[i],
-                                                  alpha=test_alpha[i])
+                                                  alpha=test_alpha[i],
+                                                  edgecolors='black')
 
 
 
@@ -343,7 +344,8 @@ class MyPCA(AppForm):
                                                   color=test_colors[i],
                                                   marker=test_markers[i],
                                                   label=test_labels[i],
-                                                  alpha=test_alpha[i])
+                                                  alpha=test_alpha[i],
+                                                  edgecolors='black')
 
                             '''
                             if (self.shape_cb.isChecked()):
@@ -406,7 +408,8 @@ class MyPCA(AppForm):
                                   color=all_colors[i],
                                   marker=all_markers[i],
                                   label=all_labels[i],
-                                  alpha=all_alpha[i])
+                                  alpha=all_alpha[i],
+                                  edgecolors='black')
 
                 self.axes.set_zlabel("component no." + str(c + 1))
                 self.z_element_label.setText("component no." + str(c + 1))
@@ -419,7 +422,9 @@ class MyPCA(AppForm):
                                   color=all_colors[i],
                                   marker=all_markers[i],
                                   label=all_labels[i],
-                                  alpha=all_alpha[i])
+                                  alpha=all_alpha[i],
+                                  edgecolors='black')
+
                 if (self.shape_cb.isChecked()):
                     pass
                     XtoFit = self.pca_result[self.result_to_fit.index == all_labels[i], a]

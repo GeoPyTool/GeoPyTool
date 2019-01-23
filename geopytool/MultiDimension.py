@@ -507,7 +507,7 @@ class MultiDimension(AppForm):
 
         for i in range(len(x_to_plot)):
             self.axes.scatter(x_to_plot[i], y_to_plot[i], z_to_plot[i], marker=marker_to_plot[i], s=size_to_plot[i],
-                              color=color_to_plot[i], alpha=alpha_to_plot[i], label=label_to_plot[i], edgecolors='None')
+                              color=color_to_plot[i], alpha=alpha_to_plot[i], label=label_to_plot[i], edgecolors='black')
 
         if (self.legend_cb.isChecked()):
             self.axes.legend(loc=2,prop=fontprop)

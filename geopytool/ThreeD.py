@@ -198,7 +198,7 @@ class MyThreeD(AppForm):
                         #tmp_matshow= plt.matshow(zs, aspect='auto', origin='lower', cmap=self.PureColors[i], alpha=alpha)
                         #all_matshow.append(tmp_matshow)
 
-                        self.axes.scatter(xs=x, ys=y, zs=zs,  marker='o', s=0.5,c=self.PureColor[i],label=self.Labels[i],alpha=alpha)
+                        self.axes.scatter(xs=x, ys=y, zs=zs,  marker='o', s=0.5,c=self.PureColor[i],label=self.Labels[i],alpha=alpha,edgecolors='black')
 
                         #self.axes.scatter(-1,-1,  marker= 'o', s=20,c=self.PureColor[i],alpha= 1, label=self.Labels[i])
                         #self.axes.set_xlim(left=0)

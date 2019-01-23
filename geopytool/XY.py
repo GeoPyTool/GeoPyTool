@@ -1012,6 +1012,18 @@ class XY(AppForm):
                 self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
                                   s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                   label=TmpLabel, edgecolors='black')
+                '''
+
+                if raw.at[i, 'Color'] == 'w' or raw.at[i, 'Color'] =='White':
+                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel, edgecolors='black')
+                else:
+                    self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
+                                      s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
+                                      label=TmpLabel,
+                                      edgecolors='white')
+                '''
 
                 XtoFit.append(xuse)
                 YtoFit.append(yuse)
@@ -1301,11 +1313,33 @@ class XY(AppForm):
                     y_load_test = self.data_to_test.at[i, self.items[b]]
 
                     if (self.show_load_data_cb.isChecked()):
+
                         self.axes.scatter(x_load_test, y_load_test,
                                           marker=self.data_to_test.at[i, 'Marker'],
-                                          s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'], alpha=self.data_to_test.at[i, 'Alpha'],
+                                          s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
+                                          alpha=self.data_to_test.at[i, 'Alpha'],
                                           label=tmp_label,
                                           edgecolors='black')
+
+                        '''
+                        if raw.at[i, 'Color'] == 'w' or raw.at[i, 'Color'] == 'White':
+                            self.axes.scatter(x_load_test, y_load_test,
+                                              marker=self.data_to_test.at[i, 'Marker'],
+                                              s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
+                                              alpha=self.data_to_test.at[i, 'Alpha'],
+                                              label=tmp_label,
+                                              edgecolors='black')
+                        else:
+                            self.axes.scatter(x_load_test, y_load_test,
+                                              marker=self.data_to_test.at[i, 'Marker'],
+                                              s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
+                                              alpha=self.data_to_test.at[i, 'Alpha'],
+                                              label=tmp_label,
+                                              edgecolors='white')
+                                              
+                        '''
+
+
 
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
