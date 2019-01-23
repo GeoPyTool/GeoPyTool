@@ -1,4 +1,4 @@
-version = '0.8.19.1.35'
+version = '0.8.19.1.36'
 
 date = '2019-1-22'
 
@@ -1181,7 +1181,8 @@ class AppForm(QMainWindow):
         self.canvas.print_figure(path + name + '.png', dpi=self.dpi)
 
     def stateval(self,data=np.ndarray):
-        dict={'median': nanmedian(data),'mean':nanmean(data),'ptp':ptp(data),'var':nanvar(data),'std':nanstd(data),'cv':nanmean(data)/nanstd(data)}
+        #print(type(data),data)
+        dict={'min': min(data),'max': max(data),'median': nanmedian(data), 'mean':nanmean(data), 'ptp':ptp(data), 'var':nanvar(data), 'std':nanstd(data), 'cv':nanmean(data)/nanstd(data)}
 
         return(dict)
 

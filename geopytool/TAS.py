@@ -65,7 +65,7 @@ class TAS(AppForm):
     SVM_labels=[]
 
     def create_main_frame(self):
-        self.resize(800, 600)
+        self.resize(1000, 800)
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((18.0, 12.0), dpi=self.dpi)
@@ -374,7 +374,7 @@ class TAS(AppForm):
                 else:
                     self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
                           s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
-                          edgecolors = 'white')
+                          edgecolors = df.at[i, 'Color'])
                 '''
 
 
@@ -553,9 +553,9 @@ class TAS(AppForm):
                                                       color=self.data_to_test.at[i, 'Color'],
                                                       alpha=self.data_to_test.at[i, 'Alpha'],
                                                       label=tmp_label,
-                                                      edgecolors='white')
-
+                                                      edgecolors=self.data_to_test.at[i, 'Color'])
                                 '''
+
 
 
                     except Exception as e:

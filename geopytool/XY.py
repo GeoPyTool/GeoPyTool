@@ -1525,7 +1525,7 @@ class XY(AppForm):
         index = df.index.values
         StatResultDict = {}
         for i in items:
-            StatResultDict[i] = self.stateval(df[i])
+            StatResultDict[i] = self.stateval(df[i].values)
         StdSortedList = sorted(StatResultDict.keys(), key=lambda x: StatResultDict[x]['std'])
         StdSortedList.reverse()
         StatResultDf = pd.DataFrame.from_dict(StatResultDict, orient='index')
