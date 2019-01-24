@@ -1,5 +1,5 @@
 Title: Download
-Date: 2019-1-13 11:02:14
+Date: 2019-1-24 10:05:25
 Category: Doc
 Tags: Doc, English, Chinese
 
@@ -7,18 +7,14 @@ Tags: Doc, English, Chinese
 ># GeoPyTool 打包的可执行程序下载链接
 
 
-### GeoPyTool pack for Windows:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1orrXwPam_nS7WvdWhDOtiw)
+### GeoPyTool packs:
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1ewNlNrDQNjtCLS9ibBPW5Q#list/path=%2Fsharelink1763171575-261348695782281%2FRelease&parentPath=%2Fsharelink1763171575-261348695782281)
 
-[OneDrive](https://1drv.ms/u/s!AnIw_Lqr4g5tgTG4UU04d2IbBdGh)
+[OneDrive](https://1drv.ms/f/s!AnIw_Lqr4g5tgTMqT9tXxIK9PYNI)
 
+###### Notice that you need to download the Right Version for Your Platform! Download the Windows Pack if you are using Windows, same to the Mac users.
 
-
-
-### GeoPyTool app for macOS:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/18sgEQlGVUVX-Ko86DoxPHw)
-
-[OneDrive](https://1drv.ms/u/s!AnIw_Lqr4g5tgTILXh-J2igEU1Nh)
+###### 请一定注意下载正确的平台版本, 你的操作系统是啥就下载对应版本,下错了平台不一致的打包文件是不能用的!
 
 #### 如果你使用百度网盘进行下载发现速度比较慢,可以试试 [http://pandownload.com/](http://pandownload.com/) 这个软件
 
