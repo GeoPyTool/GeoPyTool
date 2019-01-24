@@ -297,7 +297,14 @@ class Harker(AppForm):
 
             Al2O3, MgO, FeO, Fe2O3, CaO, Na2O, K2O, TiO2, P2O5, SiO2 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
-            Al2O3, MgO,CaO, Na2O, K2O, TiO2, P2O5, SiO2 = raw.at[i,'Al2O3'],raw.at[i, 'MgO'],raw.at[i,'CaO'],raw.at[i, 'Na2O'],raw.at[i, 'K2O'],raw.at[i, 'TiO2'],raw.at[i, 'P2O5'],raw.at[i, 'SiO2']
+            Al2O3 = raw.at[i,'Al2O3']
+            MgO = raw.at[i, 'MgO']
+            CaO = raw.at[i,'CaO']
+            Na2O = raw.at[i, 'Na2O']
+            K2O = raw.at[i, 'K2O']
+            TiO2 = raw.at[i, 'TiO2']
+            P2O5 = raw.at[i, 'P2O5']
+            SiO2 = raw.at[i, 'SiO2']
 
             if ('FeO' in raw.columns.tolist()):
                 FeO=raw.at[i, 'FeO']
@@ -335,11 +342,11 @@ class Harker(AppForm):
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
 
-            self.axes[2, 1].scatter(SiO2, TiO2, marker=raw.at[i, 'Marker'],
+            self.axes[2, 1].scatter(SiO2, K2O, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
 
-            self.axes[3, 0].scatter(SiO2, K2O, marker=raw.at[i, 'Marker'],
+            self.axes[3, 0].scatter(SiO2, TiO2, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
 

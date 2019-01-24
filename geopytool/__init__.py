@@ -72,6 +72,7 @@ from geopytool.REE import REE
 from geopytool.Rose import Rose
 from geopytool.Stereo import Stereo
 from geopytool.TAS import TAS
+from geopytool.K2OSiO2 import K2OSiO2
 from geopytool.Saccani import Saccani
 from geopytool.Temp import *
 from geopytool.Trace import Trace
@@ -250,6 +251,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionHarkerDIY.setObjectName('actionHarkerDIY')
 
 
+        self.actionK2OSiO2 = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'K2OSiO2',self)
+        self.actionK2OSiO2.setObjectName('actionK2OSiO2')
+
+
         self.actionStereo = QtWidgets.QAction(QIcon(LocationOfMySelf+'/structure.png'),u'Stereo',self)
         self.actionStereo.setObjectName('actionStereo')
 
@@ -368,6 +373,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionCIPW)
         self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionSaccani)
+        self.menuGeoChem.addAction(self.actionK2OSiO2)
 
 
 
@@ -457,6 +463,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionHarkerDIY.triggered.connect(self.HarkerDIY)
         self.actionQAPF.triggered.connect(self.QAPF)
         self.actionSaccani.triggered.connect(self.Saccani)
+        self.actionK2OSiO2.triggered.connect(self.K2OSiO2)
 
         self.actionStereo.triggered.connect(self.Stereo)
         self.actionRose.triggered.connect(self.Rose)
@@ -555,6 +562,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCIPW.setText('1-7 '+_translate('MainWindow',u'CIPW'))
         self.actionQAPF.setText('1-8 '+_translate('MainWindow',u'QAPF'))
         self.actionSaccani.setText('1-9 '+_translate('MainWindow',u'Saccani Plot'))
+        self.actionK2OSiO2.setText('1-10 '+_translate('MainWindow',u'K2O-SiO2'))
         #self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
 
         self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
@@ -1257,6 +1265,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.karisotopepop.Magic()
                 self.karisotopepop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+    def K2OSiO2(self):
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
+
+        if (len(self.model._df) > 0):
+            self.taspop = K2OSiO2(df=self.model._df)
+            try:
+                self.taspop.K2OSiO2()
+                self.taspop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 

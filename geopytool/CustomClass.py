@@ -1,6 +1,6 @@
-version = '0.8.19.1.37'
+version = '0.8.19.1.38'
 
-date = '2019-1-22'
+date = '2019-1-24'
 
 dpi = 128
 #coding:utf-8
@@ -1472,6 +1472,8 @@ class PlotModel(FigureCanvas):
 
         self.axes.plot(x, y, color=color, linewidth=linewidth, linestyle=linestyle, label=linelabel, alpha=alpha)
         return (x, y)
+
+
 
     def TAS(self, df=pd.DataFrame(), Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
             Top=19, Y0=1, Y1=19, Y_Gap=19, FontSize=12, xLabel=r'$SiO_2 wt\%$', yLabel=r'$na_2O + K_2O wt\%$'):
