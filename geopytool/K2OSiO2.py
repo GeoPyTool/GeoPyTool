@@ -173,7 +173,7 @@ class K2OSiO2(AppForm):
         y = []
 
 
-        title = '$K_2O-SiO_2$ diagram'
+        title = 'K2O-SiO2diagram'
         self.setWindowTitle(title)
         self.textbox.setText(self.reference)
 

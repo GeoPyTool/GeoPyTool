@@ -61,6 +61,7 @@ class REE(AppForm):
 
     BinLREEList = []
     BinHREEList = []
+    L_HREEList=[]
 
     ALLREEList=[]
     AllAlpha = []
@@ -91,6 +92,7 @@ class REE(AppForm):
         self.ALLREEList=[]
         self.BinHREEList=[]
         self.BinLREEList=[]
+        self.L_HREEList=[]
 
         self.data_to_norm = self.CleanDataFile(df)
 
@@ -258,6 +260,7 @@ class REE(AppForm):
         self.ALLREEList=[]
         self.BinHREEList=[]
         self.BinLREEList=[]
+        self.L_HREEList=[]
 
         self.AllAlpha=[]
         self.AllWidth = []
@@ -365,6 +368,7 @@ class REE(AppForm):
             self.ALLREEList.append( tmpWholeResult )
             self.BinHREEList.append(tmpBinHREE)
             self.BinLREEList.append(tmpBinLREE)
+            self.L_HREEList.append(tmpBinLREE/tmpBinHREE)
 
             '''
             for i in self.data_to_norm.columns.values.tolist():
@@ -405,14 +409,14 @@ class REE(AppForm):
                         pass
                     if (tmpflag == 1):
                         if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
-                            LinesY.append(a)
-                            LinesX.append(j + 1)
                             self.WholeData.append(math.log(tmp, 10))
                             TmpLabel = ''
                         else:
                             PointLabels.append(raw.at[i, 'Label'])
                             TmpLabel = raw.at[i, 'Label']
 
+                        LinesY.append(a)
+                        LinesX.append(j + 1)
                         self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
                                           s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                           label=TmpLabel, edgecolors='black')
@@ -536,6 +540,7 @@ class REE(AppForm):
              'trisection HREE': self.HREEList,
              'bisection LREE': self.BinLREEList,
              'bisection HREE': self.BinHREEList,
+             'LREE/HREE':self.L_HREEList,
 
              'ALLREE': self.ALLREEList
              })
