@@ -1,6 +1,6 @@
-version = '0.8.19.1.40'
+version = '0.8.19.1.41'
 
-date = '2019-1-27'
+date = '2019-1-29'
 
 dpi = 128
 #coding:utf-8

@@ -225,8 +225,6 @@ class TAS(AppForm):
             marker = self._df.at[i, 'Marker']
             alpha = self._df.at[i, 'Alpha']
 
-            if target not in self.SVM_labels:
-                self.SVM_labels.append(target)
             if target not in all_labels:
                 all_labels.append(target)
                 all_colors.append(color)
@@ -620,7 +618,6 @@ class TAS(AppForm):
             clf = svm.SVC(C=1.0, kernel='linear',probability= True)
             svm_x = self.All_X
             svm_y = self.All_Y
-
             le = LabelEncoder()
             le.fit(self._df.Label)
             class_label = le.transform(self._df.Label)
@@ -636,8 +633,12 @@ class TAS(AppForm):
 
             Z = clf.predict(np.c_[xx.ravel(), yy])
             Z2 = clf.predict_proba(np.c_[xx.ravel(), yy])
+
+            for i in Z2:
+                print(i)
+
             proba_df = pd.DataFrame(Z2)
-            proba_df.columns = self.SVM_labels
+            proba_df.columns = clf.classes_
             predict_result = pd.concat(
                 [self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
                 axis=1).set_index('Label')

@@ -93,7 +93,6 @@ class XY(AppForm):
     TypeLoaded=''
 
     whole_labels=[]
-    SVM_labels=[]
 
     def __init__(self, parent=None, df=pd.DataFrame(),Standard={}):
         QMainWindow.__init__(self, parent)
@@ -170,7 +169,7 @@ class XY(AppForm):
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
 
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.13, bottom=0.2, right=0.7, top=0.9)
 
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -930,8 +929,7 @@ class XY(AppForm):
             marker = self._df.at[i, 'Marker']
             alpha = self._df.at[i, 'Alpha']
 
-            if target not in self.SVM_labels:
-                self.SVM_labels.append(target)
+
             if target not in all_labels:
                 all_labels.append(target)
                 all_colors.append(color)
@@ -1432,7 +1430,7 @@ class XY(AppForm):
 
             Z2 = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])
             proba_df = pd.DataFrame(Z2)
-            proba_df.columns = self.SVM_labels
+            proba_df.columns = clf.classes_
             predict_result = pd.concat(
                 [self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
                 axis=1).set_index('Label')
@@ -1468,17 +1466,13 @@ class XY(AppForm):
             clf = svm.SVC(C=1.0, kernel='linear',probability= True)
             le = LabelEncoder()
             le.fit(self._df.Label)
-            #print(len(self._df.Label), self._df.Label)
-
-            #df_values= self._df
-
             df_values = self.Slim(self._df)
 
             clf.fit(df_values, self._df.Label)
             Z = clf.predict(np.c_[self.data_to_test_to_fit])
             Z2 = clf.predict_proba(np.c_[self.data_to_test_to_fit])
             proba_df = pd.DataFrame(Z2)
-            proba_df.columns = self.SVM_labels
+            proba_df.columns = clf.classes_
             predict_result = pd.concat(
                 [self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
                 axis=1).set_index('Label')

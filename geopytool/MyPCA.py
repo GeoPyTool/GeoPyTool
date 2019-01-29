@@ -24,7 +24,6 @@ class MyPCA(AppForm):
     switched = False
     text_result = ''
     whole_labels=[]
-    SVM_labels=[]
     pca = PCA(n_components='mle')
 
     n=6
@@ -255,7 +254,6 @@ class MyPCA(AppForm):
                 all_alpha.append(alpha)
 
         self.whole_labels = all_labels
-        self.SVM_labels = all_labels
 
         if(len(self.data_to_test)>0):
 
@@ -534,7 +532,7 @@ class MyPCA(AppForm):
 
                 Z2 = clf.predict_proba(np.c_[self.pca_data_to_test])
                 proba_df=pd.DataFrame(Z2)
-                proba_df.columns = self.SVM_labels
+                proba_df.columns = clf.classes_
                 predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}),proba_df],
                                            axis=1).set_index('Label')
                 print(predict_result)
