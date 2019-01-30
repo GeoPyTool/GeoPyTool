@@ -189,9 +189,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionClose.setObjectName('actionClose')
         self.actionClose.setShortcut('Ctrl+T')
 
-        #self.actionSet = QtWidgets.QAction(QIcon(LocationOfMySelf + '/set.png'), u'Set', self)
-        #self.actionSet.setObjectName('actionSet')
-        #self.actionSet.setShortcut('Ctrl+F')
+        self.actionSet = QtWidgets.QAction(QIcon(LocationOfMySelf + '/set.png'), u'Set', self)
+        self.actionSet.setObjectName('actionSet')
+        self.actionSet.setShortcut('Ctrl+F')
 
         self.actionSave = QtWidgets.QAction(QIcon(LocationOfMySelf+'/save.png'), u'Save',self)
         self.actionSave.setObjectName('actionSave')
@@ -356,7 +356,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionClose)
-        #self.menuFile.addAction(self.actionSet)
+        self.menuFile.addAction(self.actionSet)
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionQuit)
 
@@ -507,7 +507,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionClose.triggered.connect(self.clearDataFile)
-        #self.actionSet.triggered.connect(self.SetUpDataFile)
+        self.actionSet.triggered.connect(self.SetUpDataFile)
         self.actionSave.triggered.connect(self.saveDataFile)
         self.actionQuit.triggered.connect(qApp.quit)
 
@@ -549,7 +549,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionOpen.setText(_translate('MainWindow', u'Open Data'))
         self.actionClose.setText(_translate('MainWindow', u'Close Data'))
-        #self.actionSet.setText(_translate('MainWindow', u'Set Format'))
+        self.actionSet.setText(_translate('MainWindow', u'Set Format'))
         self.actionSave.setText(_translate('MainWindow', u'Save Data'))
         self.actionQuit.setText(_translate('MainWindow', u'Quit App'))
 
@@ -884,7 +884,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 #reply = QMessageBox.information(self, _translate('MainWindow', 'Ready'), _translate('MainWindow', 'Everything fine and no need to set up.'))
 
             else:
-                self.SetUpDataFile()
+                pass
+                #self.SetUpDataFile()
 
     def getFileName(self,list=['C:/Users/Fred/Documents/GitHub/Writing/元素数据/Ag.xlsx']):
         result=[]

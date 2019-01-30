@@ -171,10 +171,17 @@ class MyTwoD(AppForm):
 
                     if (text==self.Labels[i]):
                         #self.axes.matshow(zs, aspect='auto', origin='lower', cmap=self.PureColors[i], alpha=alpha)
+
+                        #m = mean(zs)
+                        #new_zs = zs/m
+                        #print(new_zs)
+
                         self.axes.imshow(zs, interpolation='nearest',aspect='auto', origin='lower', cmap=self.PureColors[i], alpha=alpha)
+
+
                         #tmp_matshow= plt.matshow(zs, aspect='auto', origin='lower', cmap=self.PureColors[i], alpha=alpha)
                         #all_matshow.append(tmp_matshow)
-                        print(self.PureColor[i])
+                        #print(self.PureColor[i])
                         self.axes.scatter(-1,-1,  marker= 'o', s=20,c=self.PureColor[i],alpha= 1, label=self.Labels[i],edgecolors='black')
                         self.axes.set_xlim(left=0)
                         self.axes.set_ylim(bottom=0)
