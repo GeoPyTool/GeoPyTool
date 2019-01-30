@@ -64,6 +64,8 @@ from geopytool.ThreeD import MyThreeD
 
 from geopytool.TwoD import MyTwoD
 
+from geopytool.TwoD_Grey import MyTwoD_Grey
+
 from geopytool.Pearce import Pearce
 from geopytool.QAPF import QAPF
 from geopytool.QFL import QFL
@@ -307,6 +309,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTwoD.setObjectName('actionTwoD')
 
 
+
+        self.actionTwoD_Grey = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'TwoD Grey',self)
+        self.actionTwoD_Grey.setObjectName('actionTwoD_Grey')
+
+
         self.actionTrans = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'Trans',self)
         self.actionTrans.setObjectName('actionTrans')
 
@@ -413,6 +420,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionStatistics)
         self.menuAdditional.addAction(self.actionThreeD)
         self.menuAdditional.addAction(self.actionTwoD)
+        self.menuAdditional.addAction(self.actionTwoD_Grey)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -499,6 +507,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionStatistics.triggered.connect(self.Sta)
         self.actionThreeD.triggered.connect(self.ThreeD)
         self.actionTwoD.triggered.connect(self.TwoD)
+        self.actionTwoD_Grey.triggered.connect(self.TwoD_Grey)
 
         #self.actionICA.triggered.connect(self.ICA)
         #self.actionSVM.triggered.connect(self.SVM)
@@ -603,6 +612,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionThreeD.setText('5-12 '+_translate('MainWindow',u'ThreeD'))
         self.actionTwoD.setText('5-13 '+_translate('MainWindow',u'TwoD'))
+        self.actionTwoD_Grey.setText('5-14 '+_translate('MainWindow',u'TwoD Grey'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -1431,20 +1441,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.ThreeDpop.ThreeD()
 
 
-
-    def TwoD_OLD(self):
-
-        print('TwoD called \n')
-        print('self.model._df length: ',len(self.model._df))
-
-        DataFiles, DataLocation = self.getDataFiles()
-
-        print(len(DataFiles),len(DataLocation))
-
-        if len(DataFiles)>0:
-            self.TwoDpop = MyTwoD( DataFiles = DataFiles,DataLocation= DataLocation)
-            self.TwoDpop.TwoD()
-
     def TwoD(self):
         print('TwoD called \n')
         print('self.model._df length: ',len(self.model._df))
@@ -1459,6 +1455,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             if len(DataFiles)>0:
                 self.TwoDpop = MyTwoD( DataFiles = DataFiles,DataLocation= DataLocation)
+                self.TwoDpop.TwoD()
+
+
+    def TwoD_Grey(self):
+        print('TwoD_Grey called \n')
+        print('self.model._df length: ',len(self.model._df))
+
+        if (len(self.model._df) > 0):
+            self.TwoDpop = MyTwoD_Grey( DataFiles = [self.model._df],DataLocation= [self.DataLocation])
+            self.TwoDpop.TwoD()
+        else:
+            DataFiles, DataLocation = self.getDataFiles()
+
+            print(len(DataFiles),len(DataLocation))
+
+            if len(DataFiles)>0:
+                self.TwoDpop = MyTwoD_Grey( DataFiles = DataFiles,DataLocation= DataLocation)
                 self.TwoDpop.TwoD()
 
     def Trans(self):

@@ -98,6 +98,10 @@ class XY(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.description)
 
+
+        self.FileName_Hint='XY'
+
+
         self.items = []
         self.a_index= 0
         self.b_index= 1

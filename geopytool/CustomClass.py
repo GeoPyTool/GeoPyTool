@@ -1,4 +1,4 @@
-version = '0.8.19.1.42'
+version = '0.8.19.1.43'
 
 date = '2019-1-30'
 
@@ -971,7 +971,7 @@ class AppForm(QMainWindow):
     SelectDic = {}
 
     Standard=''
-
+    FileName_Hint = ''
     WholeResult = {}
     OutPutCheck= True
     OutPutTitle = 'Blank Title'
@@ -982,7 +982,7 @@ class AppForm(QMainWindow):
     def __init__(self, parent=None, df=pd.DataFrame()):
         QWidget.__init__(self, parent)
         self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
-
+        self.FileName_Hint = ''
         self._df = df
         if (len(df) > 0):
             self._changed = True
@@ -1219,7 +1219,7 @@ class AppForm(QMainWindow):
         #pix.save("./capture.png", "PNG")
         pix.save(ImgFileOutput)
 
-    def saveImgFile(self):
+    def OLDsaveImgFile(self):
         ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                          '文件保存',
                                                          'C:/',
@@ -1228,6 +1228,20 @@ class AppForm(QMainWindow):
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
             #self.canvas.print_raw(ImgFileOutput, dpi=300)
+
+
+    def saveImgFile(self):
+        ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                         '文件保存',
+                                                         'C:/'+self.FileName_Hint,
+                                                         'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
+
+        if (ImgFileOutput != ''):
+            self.canvas.print_figure(ImgFileOutput, dpi=300)
+            #self.canvas.print_raw(ImgFileOutput, dpi=300)
+
+
+
 
     def getDataFile(self,CleanOrNot=True):
         _translate = QtCore.QCoreApplication.translate
@@ -1272,7 +1286,7 @@ class AppForm(QMainWindow):
 
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',
-                                                          'C:/',
+                                                          'C:/'+self.FileName_Hint,
                                                           'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
         if "Label" in self.model._df.columns.values.tolist():

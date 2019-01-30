@@ -77,6 +77,8 @@ class REE(AppForm):
 
 
 
+        self.FileName_Hint='REE'
+
         self.OutPutData = pd.DataFrame()
         self.LabelList=[]
         self.algebraDeltaEuList=[]

@@ -76,6 +76,8 @@ class Harker(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Harker diagram')
 
+        self.FileName_Hint='Harker'
+
         self.items = []
 
         self._df = df

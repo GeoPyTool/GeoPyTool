@@ -188,6 +188,8 @@ class QAPF(AppForm, Tool):
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
 
+
+        self.FileName_Hint='QAPF'
         self._df = df
         if (len(df) > 0):
             self._changed = True

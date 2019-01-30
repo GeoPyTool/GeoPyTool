@@ -32,6 +32,8 @@ class MyPCA(AppForm):
         QMainWindow.__init__(self, parent)
         self._df = df
 
+        self.FileName_Hint='PCA'
+
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to PCA')

@@ -51,6 +51,8 @@ class Trace(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Trace Standardlized Pattern Diagram')
 
+
+        self.FileName_Hint='Trace'
         #self._df = df
 
 

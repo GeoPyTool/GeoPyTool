@@ -5,6 +5,7 @@ from geopytool.CustomClass import *
 class MyTwoD(AppForm):
     Lines = []
     Tags = []
+    FileName_Hint=''
     description = 'TwoD'
     unuseful = ['Name',
                 'Mineral',
@@ -25,6 +26,7 @@ class MyTwoD(AppForm):
     def __init__(self, parent=None,  DataFiles =[pd.DataFrame()],DataLocation='DataLocation'):
         QMainWindow.__init__(self, parent)
 
+        self.FileName_Hint=''
         self.DataFiles = DataFiles
         self.DataLocation = DataLocation
         self.Labels = self.getFileName(self.DataLocation)
@@ -66,6 +68,14 @@ class MyTwoD(AppForm):
         self.log_cb.stateChanged.connect(self.TwoD)  # int
 
 
+        self.y_flip_cb = QCheckBox('&Flip Y')
+        self.y_flip_cb.setChecked(False)
+        self.y_flip_cb.stateChanged.connect(self.TwoD)  # int
+
+        self.x_flip_cb = QCheckBox('&Flip X')
+        self.x_flip_cb.setChecked(False)
+        self.x_flip_cb.stateChanged.connect(self.TwoD)  # int
+
         self.cb_list=[]
 
         self.setter_list=[]
@@ -92,8 +102,8 @@ class MyTwoD(AppForm):
             i.textChanged[str].connect(self.TwoD)  # int
 
         self.save_img_button = QPushButton('&Save Image')
-        #self.save_img_button.clicked.connect(self.saveImgFile)
-        self.save_img_button.clicked.connect(self.exportScene)
+        self.save_img_button.clicked.connect(self.saveImgFile)
+        #self.save_img_button.clicked.connect(self.exportScene)
 
         self.vbox = QVBoxLayout()
         self.hbox1 =QHBoxLayout()
@@ -102,8 +112,10 @@ class MyTwoD(AppForm):
 
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
-        self.hbox1.addWidget(self.log_cb)
         self.hbox1.addWidget(self.legend_cb)
+        self.hbox1.addWidget(self.log_cb)
+        self.hbox1.addWidget(self.x_flip_cb)
+        self.hbox1.addWidget(self.y_flip_cb)
         self.hbox1.addWidget(self.save_img_button)
 
         for i in self.cb_list:
@@ -123,6 +135,7 @@ class MyTwoD(AppForm):
 
     def TwoD(self):
 
+        self.FileName_Hint=''
         self.axes.clear()
         self.WholeData = []
 
@@ -132,7 +145,9 @@ class MyTwoD(AppForm):
         for k in self.cb_list:
             if k.isChecked():
                 text= k.text()
-                print(text)
+
+                self.FileName_Hint+=text
+                #print(text)
 
                 for i in range(len(self.DataFiles)):
                     ItemsAvalibale = self.DataFiles[i].columns.values.tolist()
@@ -191,8 +206,35 @@ class MyTwoD(AppForm):
 
         if (self.legend_cb.isChecked()):
             self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
+
+        xlim = self.axes.get_xlim()
+        ylim = self.axes.get_ylim()
+
+        print(xlim, ylim)
+
+        if (self.x_flip_cb.isChecked()):
+            self.axes.set_xlim(max(xlim), min(xlim))
+        else:
+            self.axes.set_xlim(min(xlim), max(xlim))
+
+        if (self.y_flip_cb.isChecked()):
+            self.axes.set_ylim(max(ylim), min(ylim))
+        else:
+            self.axes.set_ylim(min(ylim), max(ylim))
+
         self.canvas.draw()
         self.show()
+
+
+    def saveImgFile(self):
+        ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
+                                                         '文件保存',
+                                                         'C:/'+self.FileName_Hint,
+                                                         'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
+
+        if (ImgFileOutput != ''):
+            self.canvas.print_figure(ImgFileOutput, dpi=300)
+            #self.canvas.print_raw(ImgFileOutput, dpi=300)
 
 
 

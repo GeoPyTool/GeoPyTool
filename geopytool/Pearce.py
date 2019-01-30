@@ -65,6 +65,9 @@ class Pearce(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.title)
 
+
+        self.FileName_Hint='Pearce'
+
         self._df = df
         if (len(df) > 0):
             self._changed = True

@@ -196,7 +196,8 @@ class TAS(AppForm):
         self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Plutonic (Wilson et al. 1989)')
         self.axes.clear()
         #self.axes.axis('off')
-        
+
+        self.FileName_Hint='TAS'
         
         self.axes.set_xlabel(self.xlabel)
         self.axes.set_ylabel(self.ylabel)

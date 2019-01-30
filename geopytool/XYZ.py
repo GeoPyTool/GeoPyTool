@@ -95,6 +95,9 @@ class XYZ(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.description)
 
+
+        self.FileName_Hint='XYZ'
+
         self.items = []
 
         self._df = df

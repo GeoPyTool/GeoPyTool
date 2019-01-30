@@ -146,6 +146,8 @@ class CIPW(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('CIPW Norm Result')
 
+
+        self.FileName_Hint='CIPW'
         self._df = df
         #self.raw = df
 
