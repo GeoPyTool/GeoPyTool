@@ -191,7 +191,7 @@ class MyDist(AppForm):
 
                     #print(tmp_result)
 
-            self.WholeResult[self.Distance_Type[slider_value] +' '+ str(i[0])+' and '+str(i[1])]=tmp_result
+            self.WholeResult[str(i[0])+'_'+str(i[1])]=tmp_result
 
         #print(self.WholeResult)
 
@@ -199,10 +199,24 @@ class MyDist(AppForm):
         self.result=pd.DataFrame.from_dict(self.WholeResult, orient='index')
 
         self.result.index.names = ['Label']
-        print(self.result)
+
+        Distance_Chosen= self.Distance_Type[slider_value]
+        Columns_List=[]
+
+        for i in range(len(self.result.columns)):
+            if i ==0:
+                Columns_List.append(Distance_Chosen)
+            else:
+                Columns_List.append('')
+
+        self.result.columns = Columns_List
+        print(self.result.columns.values)
+
+
+        #print(self.result)
         #self.result.index.name = 'Distance'
         #self.result.reset_index()
-        print(self.result)
+        #print(self.result)
         self.tabelresult = PandasModel(self.result)
         self.tableView.setModel(self.tabelresult)
         self.show()

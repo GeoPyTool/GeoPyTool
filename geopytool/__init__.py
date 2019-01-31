@@ -1502,7 +1502,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             pass
 
         if (len(self.model._df) > 0):
-
             try:
                 self.Distpop = MyDist(df=self.model._df)
                 self.Distpop.Dist()
