@@ -76,6 +76,7 @@ from geopytool.Stereo import Stereo
 from geopytool.TAS import TAS
 from geopytool.K2OSiO2 import K2OSiO2
 from geopytool.Saccani import Saccani
+from geopytool.Raman import Raman
 from geopytool.Temp import *
 from geopytool.Trace import Trace
 from geopytool.XY import XY
@@ -338,6 +339,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSaccani = QtWidgets.QAction(QIcon(LocationOfMySelf + '/s.png'), u'Saccani Plot', self)
         self.actionSaccani.setObjectName('actionSaccani')
 
+        self.actionRaman = QtWidgets.QAction(QIcon(LocationOfMySelf + '/r.png'), u'Raman Strength', self)
+        self.actionRaman.setObjectName('actionRaman')
+
         self.actionClastic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'Clastic',self)
         self.actionClastic.setObjectName("actionClastic")
 
@@ -381,6 +385,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionSaccani)
         self.menuGeoChem.addAction(self.actionK2OSiO2)
+        self.menuGeoChem.addAction(self.actionRaman)
 
 
 
@@ -472,6 +477,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQAPF.triggered.connect(self.QAPF)
         self.actionSaccani.triggered.connect(self.Saccani)
         self.actionK2OSiO2.triggered.connect(self.K2OSiO2)
+        self.actionRaman.triggered.connect(self.Raman)
 
         self.actionStereo.triggered.connect(self.Stereo)
         self.actionRose.triggered.connect(self.Rose)
@@ -572,6 +578,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQAPF.setText('1-8 '+_translate('MainWindow',u'QAPF'))
         self.actionSaccani.setText('1-9 '+_translate('MainWindow',u'Saccani Plot'))
         self.actionK2OSiO2.setText('1-10 '+_translate('MainWindow',u'K2O-SiO2'))
+        self.actionRaman.setText('1-11 '+_translate('MainWindow',u'Raman Strength'))
         #self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
 
         self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
@@ -958,6 +965,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.sacpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
+
+
+    def Raman(self):
+
+        print('self.model._df length: ',len(self.raw))
+        if (len(self.raw) <= 0):
+            self.getDataFile()
+
+        if (len(self.raw) > 0):
+            self.ramanpop = Raman(df=self.raw,filename= self.DataLocation)
+
+            self.ramanpop.Raman()
+            self.ramanpop.show()
+            try:
+                self.ramanpop.Raman()
+                self.ramanpop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
 
     def REE(self):
 

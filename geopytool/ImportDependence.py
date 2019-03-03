@@ -61,6 +61,7 @@ from scipy.stats import mode
 from scipy.spatial import distance
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.cluster import hierarchy as hc
+from scipy.signal import find_peaks,find_peaks_cwt,fftconvolve
 
 from itertools import product, combinations, permutations, repeat
 

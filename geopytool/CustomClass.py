@@ -1,6 +1,6 @@
-version = '0.8.19.2.1'
+version = '0.8.19.3.1'
 
-date = '2019-2-1'
+date = '2019-3-1'
 
 dpi = 128
 #coding:utf-8
@@ -727,6 +727,7 @@ class TableViewer(QMainWindow):
     Para = pd.DataFrame()
     _df = pd.DataFrame()
     data_to_test = pd.DataFrame()
+    data_to_test_location =''
     begin_result = pd.DataFrame()
     load_result = pd.DataFrame()
 
@@ -916,6 +917,7 @@ class AppForm(QMainWindow):
     Para = pd.DataFrame()
     _df = pd.DataFrame()
     data_to_test = pd.DataFrame()
+    data_to_test_location =''
     begin_result = pd.DataFrame()
     load_result = pd.DataFrame()
 
@@ -1241,6 +1243,28 @@ class AppForm(QMainWindow):
             #self.canvas.print_raw(ImgFileOutput, dpi=300)
 
 
+    def getDataFiles(self,limit=6):
+        print('get Multiple Data Files  called \n')
+        DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, u'Choose Data File',
+                                                                '~/',
+                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+        # print(DataFileInput,filetype)
+
+        DataFramesList = []
+
+        if len(DataFilesInput) >= 1 :
+            for i in range(len(DataFilesInput)):
+                if i < limit:
+                    if ('csv' in DataFilesInput[i]):
+                        DataFramesList.append(pd.read_csv(DataFilesInput[i]))
+                    elif ('xls' in DataFilesInput[i]):
+                        DataFramesList.append(pd.read_excel(DataFilesInput[i]))
+                else:
+                    #self.ErrorEvent(text='You can only open up to 6 Data Files at a time.')
+                    pass
+
+        return(DataFramesList,DataFilesInput)
+
 
 
     def getDataFile(self,CleanOrNot=True):
@@ -1267,6 +1291,7 @@ class AppForm(QMainWindow):
         result=[]
         for i in list:
             result.append(i.split("/")[-1].split(".")[0])
+        print(result)
         return(result)
 
     def Key_Func(self):
@@ -1276,6 +1301,7 @@ class AppForm(QMainWindow):
         TMP =self.getDataFile()
         if TMP != 'Blank':
             self.data_to_test=TMP[0]
+            self.data_to_test_location=TMP[1]
         self.Key_Func()
 
     def saveDataFile(self):

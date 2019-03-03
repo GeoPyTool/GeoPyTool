@@ -23,32 +23,32 @@
         <translation type="obsolete">退出</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="536"/>
+        <location filename="__init__.py" line="559"/>
         <source>Data File</source>
         <translation>データファイル</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="537"/>
+        <location filename="__init__.py" line="560"/>
         <source>Geochemistry</source>
         <translation>地球化学</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="539"/>
+        <location filename="__init__.py" line="562"/>
         <source>Structure</source>
         <translation>構造地質學</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="538"/>
+        <location filename="__init__.py" line="561"/>
         <source>Calculation</source>
         <translation type="unfinished">パラメータ計算</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="595"/>
+        <location filename="__init__.py" line="620"/>
         <source>Statistics</source>
         <translation type="unfinished">統計分析</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="562"/>
+        <location filename="__init__.py" line="587"/>
         <source>Stereo</source>
         <translation>ポールレッドフラットプロジェクション</translation>
     </message>
@@ -58,102 +58,102 @@
         <translation type="obsolete">測試</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="542"/>
+        <location filename="__init__.py" line="565"/>
         <source>Help</source>
         <translation type="unfinished">中文專欄</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="545"/>
+        <location filename="__init__.py" line="568"/>
         <source>Open Data</source>
         <translation>データのインポート</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="548"/>
+        <location filename="__init__.py" line="571"/>
         <source>Save Data</source>
         <translation>データを保存する</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="552"/>
+        <location filename="__init__.py" line="575"/>
         <source>TAS</source>
         <translation>TAS 図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="553"/>
+        <location filename="__init__.py" line="576"/>
         <source>Trace</source>
         <translation>トレース要素スパイダー図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="554"/>
+        <location filename="__init__.py" line="577"/>
         <source>REE</source>
         <translation>希土類元素図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="555"/>
+        <location filename="__init__.py" line="578"/>
         <source>Pearce</source>
         <translation>Pearce 図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="556"/>
+        <location filename="__init__.py" line="579"/>
         <source>Harker</source>
         <translation>Harker 図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="558"/>
+        <location filename="__init__.py" line="581"/>
         <source>QAPF</source>
         <translation>QAPF 図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="563"/>
+        <location filename="__init__.py" line="588"/>
         <source>Rose</source>
         <translation>バラ</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="565"/>
+        <location filename="__init__.py" line="590"/>
         <source>QFL</source>
         <translation>QFL 図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="566"/>
+        <location filename="__init__.py" line="591"/>
         <source>QmFLt</source>
         <translation>QmFLt 図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="557"/>
+        <location filename="__init__.py" line="580"/>
         <source>CIPW</source>
         <translation>CIPW</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="570"/>
+        <location filename="__init__.py" line="595"/>
         <source>ZirconCe</source>
         <translation>ジルコン Ce 酸素fugacity</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="572"/>
+        <location filename="__init__.py" line="597"/>
         <source>ZirconTiTemp</source>
         <translation>ジルコン Ti 溫度計</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="573"/>
+        <location filename="__init__.py" line="598"/>
         <source>RutileZrTemp</source>
         <translation>ルチル Zr 溫度計</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="580"/>
+        <location filename="__init__.py" line="605"/>
         <source>Cluster</source>
         <translation>クラスター分析</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="578"/>
+        <location filename="__init__.py" line="603"/>
         <source>X-Y plot</source>
         <translation>X-Y 図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="579"/>
+        <location filename="__init__.py" line="604"/>
         <source>X-Y-Z plot</source>
         <translation>三角図</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="603"/>
+        <location filename="__init__.py" line="629"/>
         <source>Github</source>
         <translation>Github</translation>
     </message>
@@ -173,22 +173,22 @@
         <translation type="obsolete">英語</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="655"/>
+        <location filename="__init__.py" line="681"/>
         <source>You are using GeoPyTool </source>
         <translation>あなたは使用しています GeoPyTool</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="655"/>
+        <location filename="__init__.py" line="681"/>
         <source>released on </source>
         <translation>リリース時間： </translation>
     </message>
     <message>
-        <location filename="__init__.py" line="1324"/>
+        <location filename="__init__.py" line="1411"/>
         <source>Choose Data File</source>
         <translation>選擇數據文件</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="1305"/>
+        <location filename="__init__.py" line="1392"/>
         <source>Save Data File</source>
         <translation>存儲數據文件</translation>
     </message>
@@ -198,7 +198,7 @@
         <translation type="obsolete">GeoPyTool，一站式跨平臺的地質學日常工作解決方案。</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="125"/>
+        <location filename="__init__.py" line="129"/>
         <source>GeoPyTool</source>
         <translation>GeoPyTool</translation>
     </message>
@@ -213,7 +213,7 @@
         <translation type="obsolete">中文論壇</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="602"/>
+        <location filename="__init__.py" line="628"/>
         <source>English Forum</source>
         <translation>英文論壇</translation>
     </message>
@@ -223,38 +223,38 @@
         <translation type="obsolete">是否訪問下載鏈接檢查更新？</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="681"/>
+        <location filename="__init__.py" line="707"/>
         <source>Version</source>
         <translation>檢查更新</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="665"/>
+        <location filename="__init__.py" line="691"/>
         <source>New version available.
  Download and update?</source>
         <translation>發現新版本，是否前往下載？</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="681"/>
+        <location filename="__init__.py" line="707"/>
         <source>This is the latest version.</source>
         <translation>已經是最新版本。</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="594"/>
+        <location filename="__init__.py" line="570"/>
         <source>Set Format</source>
-        <translation type="obsolete">設置數據</translation>
+        <translation type="unfinished">設置數據</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="549"/>
+        <location filename="__init__.py" line="572"/>
         <source>Quit App</source>
         <translation>退出程序</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="601"/>
+        <location filename="__init__.py" line="627"/>
         <source>Check Update</source>
         <translation>檢查更新</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="543"/>
+        <location filename="__init__.py" line="566"/>
         <source>Language</source>
         <translation>語言</translation>
     </message>
@@ -274,128 +274,128 @@
         <translation type="obsolete">繁體中文</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="614"/>
+        <location filename="__init__.py" line="640"/>
         <source>Load Language</source>
         <translation>ロード言語</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="746"/>
+        <location filename="__init__.py" line="772"/>
         <source>Choose Language File</source>
         <translation>言語ファイルを選択</translation>
     </message>
     <message>
-        <location filename="__init__.py" line="540"/>
+        <location filename="__init__.py" line="563"/>
         <source>Sedimentary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="567"/>
+        <location filename="__init__.py" line="592"/>
         <source>Clastic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="568"/>
+        <location filename="__init__.py" line="593"/>
         <source>CIA and ICV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="571"/>
+        <location filename="__init__.py" line="596"/>
         <source>ZirconCeOld</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="551"/>
+        <location filename="__init__.py" line="574"/>
         <source>Auto</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="581"/>
+        <location filename="__init__.py" line="606"/>
         <source>MultiDimension</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="574"/>
+        <location filename="__init__.py" line="599"/>
         <source>Rb-Sr IsoTope</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="575"/>
+        <location filename="__init__.py" line="600"/>
         <source>Sm-Nd IsoTope</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="646"/>
+        <location filename="__init__.py" line="672"/>
         <source>NetWork Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="646"/>
+        <location filename="__init__.py" line="672"/>
         <source>Net work unavailable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="655"/>
+        <location filename="__init__.py" line="681"/>
         <source>Version Online is </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="1162"/>
+        <location filename="__init__.py" line="1236"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="813"/>
+        <location filename="__init__.py" line="839"/>
         <source>Ready</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="809"/>
+        <location filename="__init__.py" line="835"/>
         <source>Everything fine and no need to set up.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="813"/>
+        <location filename="__init__.py" line="839"/>
         <source>Items added, Modify in the Table to set up details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="1162"/>
+        <location filename="__init__.py" line="1236"/>
         <source>Your data contain no Q/A/P/F data.
  Maybe you need to run CIPW first?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="541"/>
+        <location filename="__init__.py" line="564"/>
         <source>Additional Functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="546"/>
+        <location filename="__init__.py" line="569"/>
         <source>Close Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="583"/>
+        <location filename="__init__.py" line="608"/>
         <source>Combine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="591"/>
+        <location filename="__init__.py" line="616"/>
         <source>PCA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="585"/>
+        <location filename="__init__.py" line="610"/>
         <source>Flatten</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="587"/>
+        <location filename="__init__.py" line="612"/>
         <source>Trans</source>
         <translation type="unfinished"></translation>
     </message>
     <message encoding="UTF-8">
-        <location filename="__init__.py" line="759"/>
+        <location filename="__init__.py" line="785"/>
         <source>Your Data mismatch this Function.
  Some Items missing?
  Or maybe there are blanks in items names?
@@ -403,34 +403,49 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="762"/>
+        <location filename="__init__.py" line="788"/>
         <source>Your Data mismatch this Function.
  Error infor is:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="559"/>
+        <location filename="__init__.py" line="582"/>
         <source>Saccani Plot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="589"/>
+        <location filename="__init__.py" line="614"/>
         <source>FA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="593"/>
+        <location filename="__init__.py" line="618"/>
         <source>Distance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="598"/>
+        <location filename="__init__.py" line="623"/>
         <source>ThreeD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="__init__.py" line="599"/>
-        <source>ThreeD_Vispy</source>
+        <location filename="__init__.py" line="583"/>
+        <source>K2O-SiO2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="__init__.py" line="584"/>
+        <source>Raman Strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="__init__.py" line="624"/>
+        <source>TwoD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="__init__.py" line="625"/>
+        <source>TwoD Grey</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
