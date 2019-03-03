@@ -206,26 +206,26 @@ class Raman(AppForm):
                     self.xmin = min(self.xmin,min(self.data_to_test[i].Shift))
                     self.xmax = max(self.xmax,max(self.data_to_test[i].Shift))
 
-                if self.show_data_peak_cb.isChecked():
-                    try:
-                        threshold = float(self.seter.text())
-                        if 0 < threshold <= 1:
-                            load_indexes, _ = find_peaks(self.data_to_test[i].Strength, prominence=max(self.data_to_test[i].Strength) * threshold)
-                        else:
+                    if self.show_data_peak_cb.isChecked():
+                        try:
+                            threshold = float(self.seter.text())
+                            if 0 < threshold <= 1:
+                                load_indexes, _ = find_peaks(self.data_to_test[i].Strength, prominence=max(self.data_to_test[i].Strength) * threshold)
+                            else:
+                                load_indexes, _ = find_peaks(self.data_to_test[i].Strength, prominence=max(self.data_to_test[i].Strength) * 0.03)
+                        except Exception as e:
                             load_indexes, _ = find_peaks(self.data_to_test[i].Strength, prominence=max(self.data_to_test[i].Strength) * 0.03)
-                    except Exception as e:
-                        load_indexes, _ = find_peaks(self.data_to_test[i].Strength, prominence=max(self.data_to_test[i].Strength) * 0.03)
-                    for j in load_indexes:
-                        pass
-                        self.axes.annotate(str(int(np.round(self.data_to_test[i].Shift[j]))),
-                                           xy=(self.data_to_test[i].Shift[j], self.data_to_test[i].Strength[j]),rotation=45, color=self.PureColor[i+1],
-                                           alpha=self.Alpha, fontsize=6, xytext=(16, 16),
-                                           textcoords='offset points',
-                                           ha='right', va='bottom',
-                                           bbox=dict(boxstyle='round,pad=0.2', fc=self.PureColor[0], alpha=0.1),
-                                           arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-                        self.axes.scatter(self.data_to_test[i].Shift[j], self.data_to_test[i].Strength[j], color= self.PureColor[i+1],
-                                          alpha=self.Alpha)
+                        for j in load_indexes:
+                            pass
+                            self.axes.annotate(str(int(np.round(self.data_to_test[i].Shift[j]))),
+                                               xy=(self.data_to_test[i].Shift[j], self.data_to_test[i].Strength[j]),rotation=45, color=self.PureColor[i+1],
+                                               alpha=self.Alpha, fontsize=6, xytext=(16, 16),
+                                               textcoords='offset points',
+                                               ha='right', va='bottom',
+                                               bbox=dict(boxstyle='round,pad=0.2', fc=self.PureColor[i+1], alpha=0.1),
+                                               arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+                            self.axes.scatter(self.data_to_test[i].Shift[j], self.data_to_test[i].Strength[j], color= self.PureColor[i+1],
+                                              alpha=self.Alpha)
 
 
 
