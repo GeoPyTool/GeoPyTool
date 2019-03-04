@@ -4,7 +4,6 @@ python:
   - "3.6"
 # command to install dependencies
 install:
-  - sudo apt install libqt5widgets5 libqt5gui5 libqt5core5a qt5-default qt5-qmake realpath wget g++
   - pip install -r requirements.txt
 # command to run tests
 script:
@@ -14,5 +13,5 @@ script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then sh -e /etc/init.d/xvfb start; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok )& fi
   - sleep 3 # give xvfb some time to start
-  - sleep 3 # give xvfb some time to start
-  - python setup.py install
+#  - python setup.py install
+  - pip install geopytool
