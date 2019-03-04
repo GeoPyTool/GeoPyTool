@@ -1,7 +1,6 @@
 dist: xenial
 language: python
 python:
-  - "3.5"
   - "3.6"
 # command to install dependencies
 install:
@@ -10,7 +9,8 @@ install:
 script:
 #  - pip install geopytool
 #  - pytest # or py.test for Python versions 3.5 and below
-  - "export DISPLAY=:99.0"
+#  - "export DISPLAY=:99.0"
+  - export DISPLAY=":1"
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then sh -e /etc/init.d/xvfb start; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok )& fi
   - sleep 3 # give xvfb some time to start
