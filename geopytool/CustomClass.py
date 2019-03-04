@@ -1,6 +1,6 @@
-version = '0.8.19.3.3'
+version = '0.8.19.3.4'
 
-date = '2019-3-3'
+date = '2019-3-4'
 
 dpi = 128
 #coding:utf-8
@@ -584,7 +584,8 @@ class PandasModel(QtCore.QAbstractTableModel):
             dtype = self._df[col].dtype
             if dtype != object:
                 value = None if value == '' else dtype.type(value)
-        self._df.set_value(row, col, value)
+        #self._df.set_value(row, col, value)
+        self._df.at[row,col]= value
         self._changed = True
         # self.emit(QtCore.SIGNAL('dataChanged()'))
         return True

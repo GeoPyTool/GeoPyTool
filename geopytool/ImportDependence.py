@@ -75,6 +75,7 @@ from matplotlib.font_manager import ttfFontProperty
 from matplotlib.figure import Figure
 from matplotlib import colors
 from matplotlib import cm
+from matplotlib.patches import Rectangle
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT as NavigationToolbar
 from matplotlib import ft2font

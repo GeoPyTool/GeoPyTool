@@ -4,7 +4,6 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
-
 LocationOfMySelf=os.path.dirname(__file__)
 
 #print(LocationOfMySelf,' init')
@@ -77,6 +76,9 @@ from geopytool.TAS import TAS
 from geopytool.K2OSiO2 import K2OSiO2
 from geopytool.Saccani import Saccani
 from geopytool.Raman import Raman
+from geopytool.FluidInclusion import FluidInclusion
+from geopytool.MyHist import MyHist
+
 from geopytool.Temp import *
 from geopytool.Trace import Trace
 from geopytool.XY import XY
@@ -323,9 +325,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionDist.setObjectName('actionDist')
 
 
-        self.actionStatistics = QtWidgets.QAction(QIcon(LocationOfMySelf+'/statistics.png'), u'TAS',self)
+        self.actionStatistics = QtWidgets.QAction(QIcon(LocationOfMySelf+'/statistics.png'), u'Statistics',self)
         self.actionStatistics.setObjectName('actionStatistics')
 
+        self.actionMyHist = QtWidgets.QAction(QIcon(LocationOfMySelf+'/h.png'), u'Histogram',self)
+        self.actionMyHist.setObjectName('actionMyHist')
 
         self.actionFA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/fa.png'),u'FA',self)
         self.actionFA.setObjectName('actionFA')
@@ -341,6 +345,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionRaman = QtWidgets.QAction(QIcon(LocationOfMySelf + '/r.png'), u'Raman Strength', self)
         self.actionRaman.setObjectName('actionRaman')
+
+        self.actionFluidInclusion = QtWidgets.QAction(QIcon(LocationOfMySelf + '/f.png'), u'Fluid Inclusion', self)
+        self.actionFluidInclusion.setObjectName('actionFluidInclusion')
+
 
         self.actionClastic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'Clastic',self)
         self.actionClastic.setObjectName("actionClastic")
@@ -386,6 +394,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionSaccani)
         self.menuGeoChem.addAction(self.actionK2OSiO2)
         self.menuGeoChem.addAction(self.actionRaman)
+        self.menuGeoChem.addAction(self.actionFluidInclusion)
 
 
 
@@ -426,6 +435,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionThreeD)
         self.menuAdditional.addAction(self.actionTwoD)
         self.menuAdditional.addAction(self.actionTwoD_Grey)
+        self.menuAdditional.addAction(self.actionMyHist)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -478,6 +488,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSaccani.triggered.connect(self.Saccani)
         self.actionK2OSiO2.triggered.connect(self.K2OSiO2)
         self.actionRaman.triggered.connect(self.Raman)
+        self.actionFluidInclusion.triggered.connect(self.FluidInclusion)
 
         self.actionStereo.triggered.connect(self.Stereo)
         self.actionRose.triggered.connect(self.Rose)
@@ -514,6 +525,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionThreeD.triggered.connect(self.ThreeD)
         self.actionTwoD.triggered.connect(self.TwoD)
         self.actionTwoD_Grey.triggered.connect(self.TwoD_Grey)
+        self.actionMyHist.triggered.connect(self.MyHist)
 
         #self.actionICA.triggered.connect(self.ICA)
         #self.actionSVM.triggered.connect(self.SVM)
@@ -579,6 +591,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSaccani.setText('1-9 '+_translate('MainWindow',u'Saccani Plot'))
         self.actionK2OSiO2.setText('1-10 '+_translate('MainWindow',u'K2O-SiO2'))
         self.actionRaman.setText('1-11 '+_translate('MainWindow',u'Raman Strength'))
+        self.actionFluidInclusion.setText('1-12 '+_translate('MainWindow',u'Fluid Inclusion'))
         #self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
 
         self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
@@ -620,6 +633,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionThreeD.setText('5-12 '+_translate('MainWindow',u'ThreeD'))
         self.actionTwoD.setText('5-13 '+_translate('MainWindow',u'TwoD'))
         self.actionTwoD_Grey.setText('5-14 '+_translate('MainWindow',u'TwoD Grey'))
+
+        self.actionMyHist.setText('5-15 '+_translate('MainWindow',u'Histogram'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -975,14 +990,43 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.raw) > 0):
             self.ramanpop = Raman(df=self.raw,filename= self.DataLocation)
-
-            self.ramanpop.Raman()
-            self.ramanpop.show()
             try:
                 self.ramanpop.Raman()
                 self.ramanpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
+
+    def FluidInclusion(self):
+        print('self.model._df length: ',len(self.raw))
+        if (len(self.raw) <= 0):
+            self.getDataFile()
+
+        if (len(self.raw) > 0):
+            self.FluidInclusionpop = FluidInclusion(df=self.raw,filename= self.DataLocation)
+
+            try:
+                self.FluidInclusionpop.FluidInclusion()
+                self.FluidInclusionpop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+    def MyHist(self):
+
+        print('self.model._df length: ',len(self.raw))
+        if (len(self.raw) <= 0):
+            self.getDataFile()
+
+        if (len(self.raw) > 0):
+            self.MyHistpop = MyHist(df=self.raw,filename= self.DataLocation)
+
+            try:
+                self.MyHistpop.MyHist()
+                self.MyHistpop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+
+
 
 
     def REE(self):
