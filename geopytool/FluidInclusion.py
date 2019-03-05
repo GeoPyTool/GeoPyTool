@@ -10,7 +10,8 @@ class FluidInclusion(AppForm):
     xlabel = r'Homogenization Temperature'
     ylabel = r'Frequency'
 
-    reference = 'Yu, Q.-Y., Bagas, L., Yang, P.-H., Zhang, D., GeoPyTool: a cross-platform software solution for common geological calculations and plots, Geoscience Frontiers (2018), doi: 10.1016/j.gsf.2018.08.001..'
+    reference = 'Wang Zhenyi Research on Fluid Inclusions of the Gejiu Tin-Copper Polymetallic Deposit 王振义. 个旧锡铜多金属矿床流体包裹体特征研究[D].'
+
 
     whole_labels = []
     all_labels = []
