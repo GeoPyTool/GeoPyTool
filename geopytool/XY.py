@@ -1435,8 +1435,13 @@ class XY(AppForm):
             Z2 = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])
             proba_df = pd.DataFrame(Z2)
             proba_df.columns = clf.classes_
+
+
+            proba_list = []
+            for i in range(len(proba_df)):
+                proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
             predict_result = pd.concat(
-                [self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
+                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
                 axis=1).set_index('Label')
             print(predict_result)
 
@@ -1455,8 +1460,6 @@ class XY(AppForm):
                     # DataFileOutput = DataFileOutput[0:-5]
                     predict_result.to_excel(DataFileOutput, encoding='utf-8')
                     # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
-
-
             '''
 
 
@@ -1477,28 +1480,18 @@ class XY(AppForm):
             Z2 = clf.predict_proba(np.c_[self.data_to_test_to_fit])
             proba_df = pd.DataFrame(Z2)
             proba_df.columns = clf.classes_
+
+            proba_list = []
+            for i in range(len(proba_df)):
+                proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
             predict_result = pd.concat(
-                [self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
+                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
                 axis=1).set_index('Label')
             print(predict_result)
 
             self.predictAllpop = TableViewer(df=predict_result, title='SVM Predict Result with All Items')
             self.predictAllpop.show()
 
-            '''
-            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self, '文件保存', 'C:/',  'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-            if (DataFileOutput != ''):
-                if ('csv' in DataFileOutput):
-                    # DataFileOutput = DataFileOutput[0:-4]
-                    predict_result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-                    # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
-                elif ('xlsx' in DataFileOutput):
-                    # DataFileOutput = DataFileOutput[0:-5]
-                    predict_result.to_excel(DataFileOutput, encoding='utf-8')
-                    # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
-
-
-            '''
 
         except Exception as e:
             msg = 'You need to load another data to run SVM.\n '

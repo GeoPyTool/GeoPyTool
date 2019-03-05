@@ -29,9 +29,8 @@ _translate = QtCore.QCoreApplication.translate
 from geopytool.CustomClass import TableViewer
 from geopytool.CIPW import CIPW
 from geopytool.Cluster import Cluster
-from geopytool.Bivariate import Bivariate
 from geopytool.Harker import Harker
-from geopytool.HarkerDIY import HarkerDIY
+from geopytool.HarkerOld import HarkerOld
 
 #from geopytool.Magic import Magic
 
@@ -246,14 +245,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPearce = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'Pearce',self)
         self.actionPearce.setObjectName('actionPearce')
 
-        self.actionBivariate = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'Bivariate',self)
-        self.actionBivariate.setObjectName('actionBivariate')
 
         self.actionHarker = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'Harker',self)
         self.actionHarker.setObjectName('actionHarker')
 
-        self.actionHarkerDIY = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'HarkerDIY',self)
-        self.actionHarkerDIY.setObjectName('actionHarkerDIY')
+        self.actionHarkerOld = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'HarkerOld',self)
+        self.actionHarkerOld.setObjectName('actionHarkerOld')
 
 
         self.actionK2OSiO2 = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'K2OSiO2',self)
@@ -387,14 +384,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionRee)
         self.menuGeoChem.addAction(self.actionPearce)
         self.menuGeoChem.addAction(self.actionHarker)
-        #self.menuGeoChem.addAction(self.actionHarkerDIY)
-        #self.menuGeoChem.addAction(self.actionBivariate)
         self.menuGeoChem.addAction(self.actionCIPW)
         self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionSaccani)
         self.menuGeoChem.addAction(self.actionK2OSiO2)
         self.menuGeoChem.addAction(self.actionRaman)
         self.menuGeoChem.addAction(self.actionFluidInclusion)
+
+
+        self.menuGeoChem.addAction(self.actionHarkerOld)
 
 
 
@@ -481,9 +479,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTrace.triggered.connect(self.Trace)
         self.actionRee.triggered.connect(self.REE)
         self.actionPearce.triggered.connect(self.Pearce)
-        self.actionBivariate.triggered.connect(self.Bivariate)
         self.actionHarker.triggered.connect(self.Harker)
-        self.actionHarkerDIY.triggered.connect(self.HarkerDIY)
+        self.actionHarkerOld.triggered.connect(self.HarkerOld)
         self.actionQAPF.triggered.connect(self.QAPF)
         self.actionSaccani.triggered.connect(self.Saccani)
         self.actionK2OSiO2.triggered.connect(self.K2OSiO2)
@@ -592,7 +589,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionK2OSiO2.setText('1-10 '+_translate('MainWindow',u'K2O-SiO2'))
         self.actionRaman.setText('1-11 '+_translate('MainWindow',u'Raman Strength'))
         self.actionFluidInclusion.setText('1-12 '+_translate('MainWindow',u'Fluid Inclusion'))
-        #self.actionHarkerDIY.setText(_translate('MainWindow',u'HarkerDIY'))
+        self.actionHarkerOld.setText('1-13 '+_translate('MainWindow',u'Harker Classical'))
 
         self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
         self.actionRose.setText('2-2 '+_translate('MainWindow',u'Rose'))
@@ -1082,18 +1079,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
-    def Bivariate(self):
-        print('self.model._df length: ',len(self.model._df))
-        if (len(self.model._df)<=0):
-            self.getDataFile()
-        if (len(self.model._df) > 0):
-            self.bivariatepop = Bivariate(df=self.model._df)
-            try:
-                self.bivariatepop.Bivariate()
-                self.bivariatepop.show()
-            except Exception as e:
-                self.ErrorEvent(text=repr(e))
-
     def Harker(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
@@ -1106,15 +1091,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
-    def HarkerDIY(self):
+    def HarkerOld(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
         if (len(self.model._df) > 0):
-            self.harkerdiypop = HarkerDIY(df=self.model._df)
+            self.harkeroldpop = HarkerOld(df=self.model._df)
             try:
-                self.harkerdiypop.Magic()
-                self.harkerdiypop.show()
+                self.harkeroldpop.HarkerOld()
+                self.harkeroldpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 

@@ -535,10 +535,15 @@ class MyPCA(AppForm):
                 Z2 = clf.predict_proba(np.c_[self.pca_data_to_test])
                 proba_df=pd.DataFrame(Z2)
                 proba_df.columns = clf.classes_
-                predict_result = pd.concat([self.load_settings_backup['Label'], pd.DataFrame({'SVM Classification': Z}),proba_df],
-                                           axis=1).set_index('Label')
-                print(predict_result)
 
+                proba_list = []
+                for i in range(len(proba_df)):
+                    proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
+                predict_result = pd.concat(
+                    [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}),
+                     pd.DataFrame({'Confidence probability': proba_list})],
+                    axis=1).set_index('Label')
+                print(predict_result)
 
                 self.predictpop = TableViewer(df=predict_result, title='SVM Predict Result with All Items')
                 self.predictpop.show()
