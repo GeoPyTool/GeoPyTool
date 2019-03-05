@@ -316,20 +316,31 @@ class FluidInclusion(AppForm):
         density_list=[]
         p_ore_list=[]
         p_salt_list=[]
+        depth_fluid_list=[]
+        depth_host_list=[]
         for i in range(min(len(salt_used_in_calc),len(Th_list),len(Tm_list))):
             d_tmp=np.NaN
             po_tmp=np.NaN
             ps_tmp=np.NaN
+            depth_fluid_tmp =np.NaN
+            depth_host_rmp =np.NaN
             if abs(salt_used_in_calc[i]) >= 0 and abs(Th_list[i]) >= 0 and abs(Tm_list[i]) >= 0:
                 d_tmp = self.DensitySalt(salt_used_in_calc[i],Th_list[i])
                 po_tmp= self.PressureOre(salt_used_in_calc[i],Th_list[i])
                 ps_tmp= self.PressureSalt(salt_used_in_calc[i],Th_list[i])
+
+                depth_fluid_tmp =self.DepthFluid(po_tmp/10.0)
+                depth_host_rmp =self.DepthHostRock(po_tmp/10.0)
+
             density_list.append(d_tmp)
-            p_ore_list.append(po_tmp*np.power(10,2))
+            p_ore_list.append(po_tmp/10.0)
             p_salt_list.append(ps_tmp*np.power(10,2))
 
+            depth_fluid_list.append(depth_fluid_tmp)
+            depth_host_list.append(depth_host_rmp)
 
-        CalcDict={'Liquid Density g/cm^3)':density_list,'Ore-forming Pressure(K Pa)':p_ore_list, 'Liquid Pressure(K Pa)':p_salt_list }
+
+        CalcDict={'Liquid Density g/cm^3)':density_list,'Ore-forming Pressure(M Pa)':p_ore_list, 'Liquid Pressure(K Pa)':p_salt_list,'Depth by Fluid Pressure(km)':depth_fluid_list,'Depth of Host(km)':depth_host_list }
         CalcData = pd.DataFrame(CalcDict)
 
         self.OutPutData = pd.concat([self.OutPutData,CalcData], axis=1).set_index('Label')
@@ -432,7 +443,7 @@ class FluidInclusion(AppForm):
         return (result)
 
     def PressureSalt(self,W_NaCl,Th):
-        # NaCl-H2O 溶液包裹体均一压力公式(Bain, 1964; Haas, 1976)
+        # NaCl-H2O 溶液包裹体均一压力公式(Bain, 1964; Haas, 1976) 单位是bar, 即 10^5 Pa
         result = 0
         w=W_NaCl
         T=Th
@@ -461,7 +472,7 @@ class FluidInclusion(AppForm):
 
         delta = z*z -2.937* (10**(5))
 
-        LnPg= e0+e1/z +e2*delta* (np.power(np.e, e3*em*delta*delta)- 1)/z+e4* np.power(np.e, e5*em*Y)
+        LnPg= e0+e1/z +e2*delta* (np.power(np.e, e3*em*delta*delta)- 1)/z+e4* np.power(10, e5*Y)
 
         result= np.power(np.e,LnPg)
 
@@ -475,3 +486,37 @@ class FluidInclusion(AppForm):
         result = 41.749 - 1.2125 * t + 0.0136213 * t * t - 7.52333 * (10**( -5)) * t * t * t + 2.19664 * (10**( -7)) * t * t * t * t - 2.82583 *(10**(-10)) * t * t * t * t * t + 1.27231 * (10**( -13)) * t * t * t * t * t * t
 
         return(result)
+
+
+    def DepthFluid(self,Pressure_Ore_Forming=20):
+
+        #断裂带流体压力与成矿深度之间的关系式（孙丰月，2000）
+        #H 代表成矿深度（km），P 代表成矿压力（MPa）即 10^6 Pa。
+
+        p=Pressure_Ore_Forming
+        H=0
+
+        if p <40:
+            H=p/10.0
+        elif 40<=p<220:
+            H=(0.0868/(1/p+0.00388) +2)
+        elif 220<=p<=370:
+            H= 11+ (np.e**(p-221.95) )/79.075
+        else: #p>370Mpa
+            H=0.0331385*p+4.19898
+
+        result = H
+
+        return (result)
+
+    def DepthHostRock(self,Pressure_Ore_Forming=20,rough=2.7,g=9.8):
+
+        #静岩压力与深度的关系式 （孙丰月，2000）
+        #P 为成矿压力（Mpa）即 10^6 Pa，rough 𝜌为上覆岩石的密度，取 2.7g/cm3,g 为重力加速度，取 9.8m/s2
+        result = 0
+        p=Pressure_Ore_Forming
+        rough=rough
+        g=g
+        H=p/(rough*g)
+        result=H
+        return (result)
