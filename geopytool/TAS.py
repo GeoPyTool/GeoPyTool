@@ -371,6 +371,36 @@ class TAS(AppForm):
                 xtest=df.at[i, 'SiO2']
                 ytest=df.at[i, 'Na2O'] + df.at[i, 'K2O']
 
+
+                loi_list=['LOI','loi','Loi']
+                all_list=['Total','total','TOTAL','ALL','All','all']
+
+
+
+
+                Loi_flag = False
+
+                for k in all_list:
+                    if k in self._df_back.columns.values:
+                        de_loi =  self._df_back.at[i,k]
+                        xtest = xtest / de_loi
+                        ytest = ytest / de_loi
+                        Loi_flag= True
+                        break
+                    else:
+                        Loi_flag = False
+
+
+                if Loi_flag == False:
+                    for j in loi_list:
+                        if k in self._df_back.columns.values:
+                            de_loi = 100- self._df_back.at[i,j]
+                            xtest = xtest / de_loi
+                            ytest = ytest / de_loi
+
+
+
+
                 for j in self.ItemNames:
                     if self.SelectDic[j].contains_point([xtest,ytest]):
 
@@ -545,6 +575,35 @@ class TAS(AppForm):
 
                             x_load_test = self.data_to_test.at[i, 'SiO2']
                             y_load_test = self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']
+
+                            if 'LOI' in self.data_to_test_back.columns.values:
+                                de_loi= 100- self.data_to_test_back.at[i, 'LOI']
+                                x_load_test=x_load_test/de_loi
+                                y_load_test=y_load_test/de_loi
+
+                            loi_list = ['LOI', 'loi', 'Loi']
+                            all_list = ['Total', 'total', 'TOTAL', 'ALL', 'All', 'all']
+
+                            Loi_flag= False
+
+                            for k in all_list:
+                                if k in self.data_to_test_back.columns.values:
+                                    de_loi = self.data_to_test_back.at[i, k]
+                                    x_load_test = x_load_test / de_loi
+                                    y_load_test = y_load_test / de_loi
+
+                                    Loi_flag = True
+                                    break
+
+                                else:
+                                    Loi_flag = False
+
+                            if  Loi_flag==False :
+                                for j in loi_list:
+                                    if j in self.data_to_test_back.columns.values:
+                                        de_loi = 100- self.data_to_test_back.at[i, j]
+                                        x_load_test = x_load_test / de_loi
+                                        y_load_test = y_load_test / de_loi
 
                             for j in self.ItemNames:
                                 if self.SelectDic[j].contains_point([x_load_test, y_load_test]):

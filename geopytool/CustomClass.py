@@ -1,6 +1,6 @@
-version = '0.8.19.3.9'
+version = '0.8.19.3.91'
 
-date = '2019-3-6'
+date = '2019-3-7'
 
 dpi = 128
 #coding:utf-8
@@ -1300,6 +1300,9 @@ class AppForm(QMainWindow):
 
     def Key_Func(self):
         pass
+
+
+
 
     def loadDataToTest(self):
         TMP =self.getDataFile()

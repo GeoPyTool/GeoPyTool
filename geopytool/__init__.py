@@ -252,6 +252,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionHarkerOld = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider.png'),u'HarkerOld',self)
         self.actionHarkerOld.setObjectName('actionHarkerOld')
 
+        self.actionRemoveLOI= QtWidgets.QAction(QIcon(LocationOfMySelf+'/fire.png'),u'RemoveLOI',self)
+        self.actionRemoveLOI.setObjectName('actionRemoveLOI')
+
 
         self.actionK2OSiO2 = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'K2OSiO2',self)
         self.actionK2OSiO2.setObjectName('actionK2OSiO2')
@@ -378,6 +381,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
 
+        self.menuGeoChem.addAction(self.actionRemoveLOI)
         self.menuGeoChem.addAction(self.actionAuto)
         self.menuGeoChem.addAction(self.actionTAS)
         self.menuGeoChem.addAction(self.actionTrace)
@@ -513,6 +517,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionFlatten.triggered.connect(self.Flatten)
 
         self.actionTrans.triggered.connect(self.Trans)
+        self.actionRemoveLOI.triggered.connect(self.RemoveLOI)
 
         self.actionFA.triggered.connect(self.FA)
         self.actionPCA.triggered.connect(self.PCA)
@@ -577,6 +582,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSave.setText(_translate('MainWindow', u'Save Data'))
         self.actionQuit.setText(_translate('MainWindow', u'Quit App'))
 
+
+
+        self.actionRemoveLOI.setText('1-0 '+_translate('MainWindow',u'Remove LOI'))
         self.actionAuto.setText('1-1 '+_translate('MainWindow', u'Auto'))
         self.actionTAS.setText('1-2 '+ _translate('MainWindow',u'TAS'))
         self.actionTrace.setText('1-3 '+_translate('MainWindow',u'Trace'))
@@ -921,6 +929,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         for i in list:
             result.append(i.split("/")[-1].split(".")[0])
         return(result)
+
     def saveDataFile(self):
 
         # if self.model._changed == True:
@@ -949,6 +958,43 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             elif ('xls' in DataFileOutput):
 
                 dftosave.to_excel(DataFileOutput, encoding='utf-8')
+
+    def RemoveLOI(self):
+
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+
+        if (len(self.model._df) > 0):
+
+            loi_list = ['LOI', 'loi', 'Loi']
+            all_list = ['Total', 'total', 'TOTAL', 'ALL', 'All', 'all']
+            itemstocheck = ['Total', 'total', 'TOTAL', 'ALL', 'All', 'all','Al2O3', 'MgO', 'FeO', 'Fe2O3', 'CaO', 'Na2O', 'K2O', 'TiO2', 'P2O5', 'SiO2','TFe2O3','MnO2','TFeO']
+
+            for i in range(len(self.model._df)):
+                Loi_flag = False
+
+                for k in all_list:
+                    if k in self.model._df.columns.values:
+                        de_loi = self.model._df.iloc[i][k]
+                        for m in itemstocheck:
+                            if m in self.model._df.columns.values:
+                                self.model._df.at[i,m]= 100* self.model._df.at[i,m]/de_loi
+                        Loi_flag= True
+                        break
+                    else:
+                        Loi_flag = False
+
+
+                if Loi_flag == False:
+                    for j in loi_list:
+                        if j in self.model._df.columns.values:
+                            de_loi =  100 - self.model._df.iloc[i][k]
+                            for m in itemstocheck:
+                                if m in self.model._df.columns.values:
+                                    self.model._df.at[i,m] = 100 * self.model._df.at[i,m] / de_loi
+
+
 
     def TAS(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1536,25 +1582,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def Trans(self):
 
         print('Trans called \n')
-
-        pass
-
-
-        print('self.model._df length: ',len(self.model._df))
-
-
         if (len(self.model._df)<=0):
             self.getDataFile()
             pass
-
         if (len(self.model._df) > 0):
             self.transpop = MyTrans(df=self.model._df)
             self.transpop.Trans()
 
+
+
+
     def Dist(self):
 
         print('Dist called \n')
-        print('self.model._df length: ',len(self.model._df))
 
         if (len(self.model._df)<=0):
             self.getDataFile()
