@@ -1,4 +1,4 @@
-version = '0.8.19.3.8'
+version = '0.8.19.3.9'
 
 date = '2019-3-6'
 
@@ -917,6 +917,7 @@ class AppForm(QMainWindow):
     result = pd.DataFrame()
     Para = pd.DataFrame()
     _df = pd.DataFrame()
+    _df_back = pd.DataFrame()
     data_to_test = pd.DataFrame()
     data_to_test_location =''
     begin_result = pd.DataFrame()
@@ -928,6 +929,7 @@ class AppForm(QMainWindow):
     ylabel = r'$Na_2O + K_2O wt\%$'
     reference = 'Print the reference here.'
     AllLabel = []
+    IndexList=[]
     LabelList=[]
     ItemNames = ['Foidolite',
                  'Peridotgabbro',
@@ -987,6 +989,7 @@ class AppForm(QMainWindow):
         self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
         self.FileName_Hint = ''
         self._df = df
+        self._df_back = df
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to AppForm')

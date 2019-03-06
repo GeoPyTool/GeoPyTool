@@ -232,6 +232,15 @@ class TAS(AppForm):
         all_markers=[]
         all_alpha=[]
 
+
+        self.OutPutData = pd.DataFrame()
+        self.LabelList=[]
+        self.IndexList=[]
+        self.TypeList=[]
+        self.RiedmanList=[]
+
+
+
         for i in range(len(self._df)):
             target = self._df.at[i, 'Label']
             color = self._df.at[i, 'Color']
@@ -370,7 +379,10 @@ class TAS(AppForm):
 
                         self.RiedmanList.append(round( ytest**2/(xtest-43) + 0.001, 2))
 
-
+                        if 'Index' in self._df_back.columns.values:
+                            self.IndexList.append(self._df_back.at[i, 'Index'])
+                        else:
+                            self.IndexList.append('No ' + str(i))
 
 
 
@@ -465,28 +477,10 @@ class TAS(AppForm):
                 self.axes.plot(XIrvine, YIrvine,color= 'black', linewidth=1,
                            linestyle=':', alpha=0.6,label='Irvine, Barragar 1971\n')
 
-            '''
-            if (self.riedman_cb.isChecked()):
-
-                XRiedman = np.arange(43, 80, 0.1)
-                YRiedman_1 = 3.3*np.sqrt(XRiedman-43)
-                YRiedman_2 = 9*np.sqrt(XRiedman-43)
-
-
-                self.axes.plot(XRiedman, YRiedman_1,color= 'black', linewidth=1,
-                           linestyle='-.', alpha=0.6,label='Riedman Index= 3.3\n')
-
-                self.axes.plot(XRiedman, YRiedman_2,color= 'black', linewidth=1,
-                           linestyle='-.', alpha=0.6,label='Riedman Index= 9\n')
-
-                #y^2= a (x-43), a =3.3,9
-
-            '''
-
 
 
             if (len(self.data_to_test) > 0):
-
+                self.data_to_test_back= self.data_to_test
                 contained = True
                 missing = 'Miss setting infor:'
 
@@ -556,8 +550,15 @@ class TAS(AppForm):
                                 if self.SelectDic[j].contains_point([x_load_test, y_load_test]):
                                     self.LabelList.append(self.data_to_test.at[i, 'Label'])
                                     self.TypeList.append(j)
-
                                     self.RiedmanList.append(round(y_load_test ** 2 / (x_load_test - 43) + 0.001, 2))
+
+
+
+                                    if 'Index' in self.data_to_test_back.columns.values:
+                                        self.IndexList.append(self.data_to_test_back.at[i, 'Index'])
+                                    else:
+                                        self.IndexList.append('No '+str(i))
+
                                     break
                                 pass
 
@@ -634,6 +635,7 @@ class TAS(AppForm):
 
         self.OutPutData = pd.DataFrame(
             {'Label': self.LabelList,
+             'Index':self.IndexList,
              'RockType': self.TypeList,
              'Riedman Index': self.RiedmanList
              })

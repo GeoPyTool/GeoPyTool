@@ -957,6 +957,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.taspop = TAS(df=self.model._df)
+
+            self.taspop.TAS()
+            self.taspop.show()
+
             try:
                 self.taspop.TAS()
                 self.taspop.show()
