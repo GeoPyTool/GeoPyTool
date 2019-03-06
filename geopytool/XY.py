@@ -109,6 +109,7 @@ class XY(AppForm):
 
         self.raw = df
         self._df = df
+        self._df_back=df
         self._given_Standard = Standard
 
         self.All_X=[]
@@ -1394,12 +1395,23 @@ class XY(AppForm):
                 self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
 
         if (self.show_data_index_cb.isChecked()):
-            for i in range(len(self._df)):
-                    self.axes.annotate('No' + str(i+1),
+
+            if 'Index' in self._df_back.columns.values:
+
+                for i in range(len(self._df)):
+                    self.axes.annotate(self._df_back.at[i, 'Index'],
                                        xy=(self.All_X[i],
                                            self.All_Y[i]),
                                        color=self._df.at[i, 'Color'],
                                        alpha=self._df.at[i, 'Alpha'])
+
+            else:
+                for i in range(len(self._df)):
+                        self.axes.annotate('No' + str(i+1),
+                                           xy=(self.All_X[i],
+                                               self.All_Y[i]),
+                                           color=self._df.at[i, 'Color'],
+                                           alpha=self._df.at[i, 'Alpha'])
 
 
         if (self.legend_cb.isChecked()):

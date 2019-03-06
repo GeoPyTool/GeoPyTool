@@ -100,6 +100,7 @@ class XYZ(AppForm):
 
         self.items = []
 
+        self._df_back = df
         self._df = df
         self._given_Standard = Standard
 
@@ -226,6 +227,12 @@ class XYZ(AppForm):
         self.logx_cb.setChecked(False)
         self.logx_cb.stateChanged.connect(self.Magic)  # int
 
+
+
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.Magic)  # int
+
         self.y_element = QSlider(Qt.Horizontal)
         self.y_element.setRange(0, len(self.items) - 1)
         self.y_element.setValue(1)
@@ -282,7 +289,7 @@ class XYZ(AppForm):
 
 
         for w in [self.save_button,self.stat_button, self.load_button, self.unload_button,
-                  self.legend_cb, self.norm_cb, self.left_label, self.standard_slider,self.right_label]:
+                  self.legend_cb,self.show_data_index_cb, self.norm_cb, self.left_label, self.standard_slider,self.right_label]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -716,13 +723,26 @@ class XYZ(AppForm):
         self.axes.annotate(newzlabel, xy=(50,86.7), xytext=(45, 90),fontsize=6)
 
 
+        for i in range(len(TPoints)):
+            self.axes.scatter(TPoints[i].X, TPoints[i].Y, marker=TPoints[i].Marker, s=TPoints[i].Size,
+                              color=TPoints[i].Color, alpha=TPoints[i].Alpha,
+                              label=TPoints[i].Label, edgecolors='black')
 
-        for i in TPoints:
-            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
-                              label=i.Label, edgecolors='black')
+            if (self.show_data_index_cb.isChecked()):
 
+                if 'Index' in self._df_back.columns.values:
 
-
+                    self.axes.annotate(str(self._df_back.at[i, 'Index']),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+                else:
+                    self.axes.annotate('No' + str(i + 1),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
 
         self.textbox.setText(self.sentence)
 

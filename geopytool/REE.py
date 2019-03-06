@@ -76,6 +76,8 @@ class REE(AppForm):
 
 
 
+        self._df_back= df
+
 
         self.FileName_Hint='REE'
 
@@ -97,6 +99,7 @@ class REE(AppForm):
         self.L_HREEList=[]
 
         self.data_to_norm = self.CleanDataFile(df)
+
 
         self._df = self.CleanDataFile(df)
 
@@ -426,11 +429,21 @@ class REE(AppForm):
                                linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
 
                 if (self.show_data_index_cb.isChecked()):
-                    self.axes.annotate('No' + str(i + 1),
-                                       xy=(LinesX[-1],
-                                           LinesY[-1]),
-                                       color=self._df.at[i, 'Color'],
-                                       alpha=self._df.at[i, 'Alpha'])
+
+                    if 'Index' in self._df_back.columns.values:
+                        self.axes.annotate(self._df_back.at[i, 'Index'],
+                                           xy=(LinesX[-1], LinesY[-1]),
+                                           color=self._df.at[i, 'Color'],
+                                           alpha=self._df.at[i, 'Alpha'])
+                    else:
+                        self.axes.annotate('No' + str(i + 1),
+                                           xy=(LinesX[-1],
+                                               LinesY[-1]),
+                                           color=self._df.at[i, 'Color'],
+                                           alpha=self._df.at[i, 'Alpha'])
+
+
+
 
 
             else:
@@ -469,12 +482,17 @@ class REE(AppForm):
 
                 if (self.show_data_index_cb.isChecked()):
 
-
-                    if len(LinesX)>0 and  len(LinesY)>0:
-                        self.axes.annotate('No' + str(i + 1),
-                                           xy=(LinesX[-1], LinesY[-1]),
-                                           color=self._df.at[i, 'Color'],
-                                           alpha=self._df.at[i, 'Alpha'])
+                    if len(LinesX) > 0 and len(LinesY) > 0:
+                        if 'Index' in self._df_back.columns.values:
+                            self.axes.annotate(self._df_back.at[i, 'Index'],
+                                               xy=(LinesX[-1], LinesY[-1]),
+                                               color=self._df.at[i, 'Color'],
+                                               alpha=self._df.at[i, 'Alpha'])
+                        else:
+                            self.axes.annotate('No' + str(i + 1),
+                                               xy=(LinesX[-1], LinesY[-1]),
+                                               color=self._df.at[i, 'Color'],
+                                               alpha=self._df.at[i, 'Alpha'])
 
 
         Tale = 0

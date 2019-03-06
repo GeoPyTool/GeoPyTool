@@ -1565,7 +1565,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
     def Sta(self):
-
+        #Sta on Calculated Distance
         print('Sta called \n')
 
         pass
@@ -1578,7 +1578,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.getDataFile()
             pass
 
+
         if (len(self.model._df) > 0):
+
+            self.stapop = MySta(df=self.model._df)
+            self.stapop.Sta()
+
             try:
                 self.stapop = MySta(df=self.model._df)
                 self.stapop.Sta()

@@ -58,6 +58,8 @@ class TAS(AppForm):
 
     TypeList=[]
 
+    RiedmanList=[]
+
     All_X = []
     All_Y = []
 
@@ -112,6 +114,11 @@ class TAS(AppForm):
         self.irvine_cb.stateChanged.connect(self.TAS)  # int
 
 
+        self.riedman_cb = QCheckBox('&Riedman')
+        self.riedman_cb.setChecked(True)
+        self.riedman_cb.stateChanged.connect(self.TAS)  # int
+
+
         self.tag_cb = QCheckBox('&Tag')
         self.tag_cb.setChecked(True)
         self.tag_cb.stateChanged.connect(self.TAS)  # int
@@ -148,7 +155,7 @@ class TAS(AppForm):
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb ]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
@@ -181,6 +188,11 @@ class TAS(AppForm):
 
         return(a+ b*np.power(x,1) +c*np.power(x,2) +d*np.power(x,3) +e*np.power(x,4) +f*np.power(x,5) +g*np.power(x,6))
         pass
+
+    def Riedman(self,x=46,r_1=3.3,r_2=0):
+        y_1= r_1*np.sqrt(x-43)
+        y_2= r_2*np.sqrt(x-43)
+        return(y_1,y_2)
 
 
     def loadDataToTest(self):
@@ -356,6 +368,12 @@ class TAS(AppForm):
                         self.LabelList.append(Label)
                         self.TypeList.append(j)
 
+                        self.RiedmanList.append(round( ytest**2/(xtest-43) + 0.001, 2))
+
+
+
+
+
                         break
                     pass
 
@@ -447,6 +465,24 @@ class TAS(AppForm):
                 self.axes.plot(XIrvine, YIrvine,color= 'black', linewidth=1,
                            linestyle=':', alpha=0.6,label='Irvine, Barragar 1971\n')
 
+            '''
+            if (self.riedman_cb.isChecked()):
+
+                XRiedman = np.arange(43, 80, 0.1)
+                YRiedman_1 = 3.3*np.sqrt(XRiedman-43)
+                YRiedman_2 = 9*np.sqrt(XRiedman-43)
+
+
+                self.axes.plot(XRiedman, YRiedman_1,color= 'black', linewidth=1,
+                           linestyle='-.', alpha=0.6,label='Riedman Index= 3.3\n')
+
+                self.axes.plot(XRiedman, YRiedman_2,color= 'black', linewidth=1,
+                           linestyle='-.', alpha=0.6,label='Riedman Index= 9\n')
+
+                #y^2= a (x-43), a =3.3,9
+
+            '''
+
 
 
             if (len(self.data_to_test) > 0):
@@ -520,6 +556,8 @@ class TAS(AppForm):
                                 if self.SelectDic[j].contains_point([x_load_test, y_load_test]):
                                     self.LabelList.append(self.data_to_test.at[i, 'Label'])
                                     self.TypeList.append(j)
+
+                                    self.RiedmanList.append(round(y_load_test ** 2 / (x_load_test - 43) + 0.001, 2))
                                     break
                                 pass
 
@@ -533,28 +571,6 @@ class TAS(AppForm):
                                                   alpha=self.data_to_test.at[i, 'Alpha'],
                                                   label=tmp_label,
                                                   edgecolors='black')
-
-                                '''
-                                if self.data_to_test.at[i, 'Color'] == 'w' or self.data_to_test.at[i, 'Color'] == 'White':
-                                    self.axes.scatter(self.data_to_test.at[i, 'SiO2'], (
-                                                self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']),
-                                                      marker=self.data_to_test.at[i, 'Marker'],
-                                                      s=self.data_to_test.at[i, 'Size'],
-                                                      color=self.data_to_test.at[i, 'Color'],
-                                                      alpha=self.data_to_test.at[i, 'Alpha'],
-                                                      label=tmp_label,
-                                                      edgecolors='black')
-                                else:
-                                    self.axes.scatter(self.data_to_test.at[i, 'SiO2'], (
-                                                self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']),
-                                                      marker=self.data_to_test.at[i, 'Marker'],
-                                                      s=self.data_to_test.at[i, 'Size'],
-                                                      color=self.data_to_test.at[i, 'Color'],
-                                                      alpha=self.data_to_test.at[i, 'Alpha'],
-                                                      label=tmp_label,
-                                                      edgecolors=self.data_to_test.at[i, 'Color'])
-                                '''
-
 
 
                     except Exception as e:
@@ -590,12 +606,22 @@ class TAS(AppForm):
                 self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
 
             if (self.show_data_index_cb.isChecked()):
-                for i in range(len(self._df)):
-                    self.axes.annotate('No' + str(i + 1),
-                                       xy=(self.All_X[i],
-                                           self.All_Y[i]),
-                                       color=self._df.at[i, 'Color'],
-                                       alpha=self._df.at[i, 'Alpha'])
+
+                if 'Index' in self._df.columns.values:
+
+                    for i in range(len(self._df)):
+                        self.axes.annotate(self._df.at[i, 'Index'],
+                                           xy=(self.All_X[i],
+                                               self.All_Y[i]),
+                                           color=self._df.at[i, 'Color'],
+                                           alpha=self._df.at[i, 'Alpha'])
+                else:
+                    for i in range(len(self._df)):
+                        self.axes.annotate('No' + str(i + 1),
+                                           xy=(self.All_X[i],
+                                               self.All_Y[i]),
+                                           color=self._df.at[i, 'Color'],
+                                           alpha=self._df.at[i, 'Alpha'])
 
 
             self.canvas.draw()
@@ -608,7 +634,8 @@ class TAS(AppForm):
 
         self.OutPutData = pd.DataFrame(
             {'Label': self.LabelList,
-             'RockType': self.TypeList
+             'RockType': self.TypeList,
+             'Riedman Index': self.RiedmanList
              })
 
         self.OutPutFig=self.fig

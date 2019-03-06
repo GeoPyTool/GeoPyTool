@@ -596,15 +596,31 @@ class Harker(AppForm):
 
 
         if (self.show_data_index_cb.isChecked()):
-            for i in range(len(self._df)):
-                Al2O3_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.Al2O3[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
-                MgO_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.MgO[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
-                FeTotal_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], FeTotal_list[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
-                CaO_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.CaO[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
-                Na2O_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.Na2O[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
-                K2O_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.K2O[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
-                TiO2_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.TiO2[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
-                P2O5_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.P2O5[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+
+            if 'Index' in self._df.columns.values:
+
+                for i in range(len(self._df)):
+                    Al2O3_plot.annotate(self._df.at[i, 'Index'],  xy=(raw.SiO2[i], raw.Al2O3[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    MgO_plot.annotate(self._df.at[i, 'Index'],  xy=(raw.SiO2[i], raw.MgO[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    FeTotal_plot.annotate(self._df.at[i, 'Index'],  xy=(raw.SiO2[i], FeTotal_list[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    CaO_plot.annotate(self._df.at[i, 'Index'],  xy=(raw.SiO2[i], raw.CaO[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    Na2O_plot.annotate(self._df.at[i, 'Index'],  xy=(raw.SiO2[i], raw.Na2O[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    K2O_plot.annotate(self._df.at[i, 'Index'],  xy=(raw.SiO2[i], raw.K2O[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    TiO2_plot.annotate(self._df.at[i, 'Index'],  xy=(raw.SiO2[i], raw.TiO2[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    P2O5_plot.annotate(self._df.at[i, 'Index'],  xy=(raw.SiO2[i], raw.P2O5[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+
+
+            else:
+
+                for i in range(len(self._df)):
+                    Al2O3_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.Al2O3[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    MgO_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.MgO[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    FeTotal_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], FeTotal_list[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    CaO_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.CaO[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    Na2O_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.Na2O[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    K2O_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.K2O[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    TiO2_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.TiO2[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
+                    P2O5_plot.annotate('No' + str(i+1),  xy=(raw.SiO2[i], raw.P2O5[i]),  color=self._df.at[i, 'Color'], alpha=self._df.at[i, 'Alpha'])
 
 
 

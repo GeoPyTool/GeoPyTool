@@ -43,6 +43,7 @@ class QFL(AppForm, Tool):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Q-F-L')
 
+        self._df_back = df
         self._df = df
         if (len(df) > 0):
             self._changed = True
@@ -87,12 +88,15 @@ class QFL(AppForm, Tool):
         self.Tag_cb.setChecked(True)
         self.Tag_cb.stateChanged.connect(self.Tri)  # int
 
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.Tri)  # int
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.legend_cb, self.Tag_cb]:
+        for w in [self.save_button, self.draw_button, self.legend_cb,self.show_data_index_cb , self.Tag_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -220,9 +224,27 @@ class QFL(AppForm, Tool):
                                     Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                     Label=TmpLabel))
 
-        for i in TPoints:
-            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
-                              label=i.Label, edgecolors='black')
+        for i in range(len(TPoints)):
+            self.axes.scatter(TPoints[i].X, TPoints[i].Y, marker=TPoints[i].Marker, s=TPoints[i].Size, color=TPoints[i].Color, alpha=TPoints[i].Alpha,
+                              label=TPoints[i].Label, edgecolors='black')
+
+
+            if (self.show_data_index_cb.isChecked()):
+
+                if 'Index' in self._df_back.columns.values:
+
+                    self.axes.annotate(str(self._df_back.at[i, 'Index']),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+                else:
+                    self.axes.annotate('No' + str(i + 1),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+
 
         if (self.Tag_cb.isChecked()):
             for i in self.Tags:
@@ -232,6 +254,9 @@ class QFL(AppForm, Tool):
 
         if (self.legend_cb.isChecked()):
             self.axes.legend(bbox_to_anchor=(1, 1), loc=2, borderaxespad=0, prop=fontprop)
+
+
+
 
         self.canvas.draw()
 

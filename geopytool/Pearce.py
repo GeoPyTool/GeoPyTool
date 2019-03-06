@@ -107,13 +107,16 @@ class Pearce(AppForm):
         self.detail_cb.stateChanged.connect(self.Pearce)  # int
 
 
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.Pearce)  # int
 
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.legend_cb,  self.detail_cb]:
+        for w in [self.save_button, self.legend_cb,  self.detail_cb,self.show_data_index_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -347,6 +350,18 @@ class Pearce(AppForm):
                 self.axes[0, 0].scatter(math.log(xa, 10), math.log(ya, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
+
+                if (self.show_data_index_cb.isChecked()):
+                    if 'Index' in self._df.columns.values:
+                        self.axes[0, 0].annotate(self._df.at[i, 'Index'],
+                                                 xy=(math.log(xa, 10), math.log(ya, 10)),
+                                                 color=self._df.at[i, 'Color'],
+                                                 alpha=self._df.at[i, 'Alpha'])
+                    else:
+                        self.axes[0, 0].annotate('No' + str(i + 1),
+                                                 xy=(math.log(xa, 10), math.log(ya, 10)),
+                                                 color=self._df.at[i, 'Color'],
+                                                 alpha=self._df.at[i, 'Alpha'])
             except:
                 pass
 
@@ -354,6 +369,18 @@ class Pearce(AppForm):
                 self.axes[0, 1].scatter(math.log(xb, 10), math.log(yb, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
+
+                if (self.show_data_index_cb.isChecked()):
+                    if 'Index' in self._df.columns.values:
+                        self.axes[0, 1].annotate(self._df.at[i, 'Index'],
+                                                 xy=(math.log(xb, 10), math.log(yb, 10)),
+                                                 color=self._df.at[i, 'Color'],
+                                                 alpha=self._df.at[i, 'Alpha'])
+                    else:
+                        self.axes[0, 1].annotate('No' + str(i + 1),
+                                                 xy=(math.log(xb, 10), math.log(yb, 10)),
+                                                 color=self._df.at[i, 'Color'],
+                                                 alpha=self._df.at[i, 'Alpha'])
             except:
                 pass
 
@@ -361,6 +388,18 @@ class Pearce(AppForm):
                 self.axes[1, 0].scatter(math.log(xc, 10), math.log(yc, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
+
+                if (self.show_data_index_cb.isChecked()):
+                    if 'Index' in self._df.columns.values:
+                        self.axes[1, 0].annotate(self._df.at[i, 'Index'],
+                                                 xy=(math.log(xc, 10), math.log(yc, 10)),
+                                                 color=self._df.at[i, 'Color'],
+                                                 alpha=self._df.at[i, 'Alpha'])
+                    else:
+                        self.axes[1, 0].annotate('No' + str(i + 1),
+                                                 xy=(math.log(xc, 10), math.log(yc, 10)),
+                                                 color=self._df.at[i, 'Color'],
+                                                 alpha=self._df.at[i, 'Alpha'])
             except:
                 pass
 
@@ -368,8 +407,21 @@ class Pearce(AppForm):
                 self.axes[1, 1].scatter(math.log(xd, 10), math.log(yd, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
                                     label=TmpLabel, edgecolors='black')
+
+                if (self.show_data_index_cb.isChecked()):
+                    if 'Index' in self._df.columns.values:
+                        self.axes[1, 1].annotate(self._df.at[i, 'Index'],
+                                                 xy=(math.log(xd, 10), math.log(yd, 10)),
+                                                 color=self._df.at[i, 'Color'],
+                                                 alpha=self._df.at[i, 'Alpha'])
+                    else:
+                        self.axes[1, 1].annotate('No' + str(i + 1),
+                                                 xy=(math.log(xd, 10), math.log(yd, 10)),
+                                                 color=self._df.at[i, 'Color'],
+                                                 alpha=self._df.at[i, 'Alpha'])
             except:
                 pass
+
 
 
 

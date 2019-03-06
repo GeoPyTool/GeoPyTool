@@ -31,6 +31,7 @@ class MyPCA(AppForm):
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self._df = df
+        self._df_back = df
 
         self.FileName_Hint='PCA'
 
@@ -472,14 +473,30 @@ class MyPCA(AppForm):
         if (self.show_data_index_cb.isChecked()):
             for i in range(len(self.pca_result)):
                 if (self.switched == True):
-                    self.axes.annotate('No'+str(i+1),
+
+
+                    if 'Index' in self._df_back.columns.values:
+                        self.axes.annotate(self._df_back.at[i, 'Index'],
                                    xy=(self.pca_result[i, a],
                                        self.pca_result[i, b]),
                                    color=self._df.at[i,'Color'],
                                    alpha=self._df.at[i,'Alpha'])
+
+                    else:
+                        self.axes.annotate('No'+str(i+1),
+                                       xy=(self.pca_result[i, a],
+                                           self.pca_result[i, b]),
+                                       color=self._df.at[i,'Color'],
+                                       alpha=self._df.at[i,'Alpha'])
                 else:
-                    self.axes.text(self.pca_result[i, a], self.pca_result[i, b],self.pca_result[i, c], 'No'+str(i+1), size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
-                                   alpha=self._df.at[i, 'Alpha'])
+
+                    if 'Index' in self._df_back.columns.values:
+                        self.axes.text(self.pca_result[i, a], self.pca_result[i, b],self.pca_result[i, c],self._df_back.at[i, 'Index'], size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+
+                    else:
+                        self.axes.text(self.pca_result[i, a], self.pca_result[i, b],self.pca_result[i, c], 'No'+str(i+1), size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
 
         if (self.hyperplane_cb.isChecked()):
             if (self.switched == False):

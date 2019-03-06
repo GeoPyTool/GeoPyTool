@@ -80,6 +80,11 @@ class Saccani(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Saccani)  # int
 
+
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.Saccani)  # int
+
         self.standard_slider = QSlider(Qt.Horizontal)
         self.standard_slider.setRange(0, len(self.StandardsName)-1)
         self.standard_slider.setValue(0)
@@ -94,7 +99,7 @@ class Saccani(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.legend_cb,self.left_label ,self.standard_slider,self.right_label]:
+        for w in [self.save_button, self.legend_cb,self.show_data_index_cb,self.left_label ,self.standard_slider,self.right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -177,10 +182,29 @@ class Saccani(AppForm):
 
 
 
+
+
+
             if (self.legend_cb.isChecked()):
                 self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
+            if (self.show_data_index_cb.isChecked()):
 
+                if 'Index' in self._df.columns.values:
+
+                    for i in range(len(self._df)):
+                        self.axes.annotate(self._df.at[i, 'Index'],
+                                           xy=(np.log10(df.at[i, 'Nb']/standardchosen['Nb']),
+                                               np.log10(df.at[i, 'Th']/standardchosen['Th'])),
+                                           color=self._df.at[i, 'Color'],
+                                           alpha=self._df.at[i, 'Alpha'])
+                else:
+                    for i in range(len(self._df)):
+                        self.axes.annotate('No' + str(i + 1),
+                                           xy=(np.log10(df.at[i, 'Nb']/standardchosen['Nb']),
+                                               np.log10(df.at[i, 'Th']/standardchosen['Th'])),
+                                           color=self._df.at[i, 'Color'],
+                                           alpha=self._df.at[i, 'Alpha'])
             self.canvas.draw()
 
 

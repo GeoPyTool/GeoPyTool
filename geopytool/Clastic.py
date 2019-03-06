@@ -98,7 +98,7 @@ class Clastic(AppForm, Tool):
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Sand-Silt-Clay')
-
+        self._df_back = df
         self._df = df
         if (len(df) > 0):
             self._changed = True
@@ -120,7 +120,7 @@ class Clastic(AppForm, Tool):
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.6, top=0.9)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.7, top=0.9)
 
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -144,12 +144,17 @@ class Clastic(AppForm, Tool):
         self.Tag_cb.setChecked(True)
         self.Tag_cb.stateChanged.connect(self.Tri)  # int
 
+
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.Tri)  # int
+
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.legend_cb, self.Tag_cb]:
+        for w in [self.save_button, self.draw_button, self.legend_cb,self.show_data_index_cb , self.Tag_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -283,9 +288,28 @@ class Clastic(AppForm, Tool):
             #         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
             #         Label=TmpLabel))
 
-        for i in TPoints:
-            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
-                              label=i.Label, edgecolors='black')
+
+
+        for i in range(len(TPoints)):
+            self.axes.scatter(TPoints[i].X, TPoints[i].Y, marker=TPoints[i].Marker, s=TPoints[i].Size, color=TPoints[i].Color, alpha=TPoints[i].Alpha,
+                              label=TPoints[i].Label, edgecolors='black')
+
+
+            if (self.show_data_index_cb.isChecked()):
+
+                if 'Index' in self._df_back.columns.values:
+
+                    self.axes.annotate(str(self._df_back.at[i, 'Index']),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+                else:
+                    self.axes.annotate('No' + str(i + 1),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
 
         if (self.Tag_cb.isChecked()):
             for i in self.Tags:
