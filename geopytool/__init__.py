@@ -961,15 +961,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def RemoveLOI(self):
 
+        _translate = QtCore.QCoreApplication.translate
+
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
+
+        self.model._df_back= self.model._df
 
         if (len(self.model._df) > 0):
 
             loi_list = ['LOI', 'loi', 'Loi']
             all_list = ['Total', 'total', 'TOTAL', 'ALL', 'All', 'all']
-            itemstocheck = ['Total', 'total', 'TOTAL', 'ALL', 'All', 'all','Al2O3', 'MgO', 'FeO', 'Fe2O3', 'CaO', 'Na2O', 'K2O', 'TiO2', 'P2O5', 'SiO2','TFe2O3','MnO2','TFeO']
+            itemstocheck = ['Total', 'total', 'TOTAL', 'ALL', 'All', 'all','Al2O3', 'MgO', 'FeO', 'Fe2O3', 'CaO', 'Na2O', 'K2O', 'TiO2', 'P2O5', 'SiO2','TFe2O3','MnO','TFeO']
 
             for i in range(len(self.model._df)):
                 Loi_flag = False
@@ -986,13 +990,38 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         Loi_flag = False
 
 
-                if Loi_flag == False:
-                    for j in loi_list:
+                for j in loi_list:
+                    if Loi_flag == False:
                         if j in self.model._df.columns.values:
                             de_loi =  100 - self.model._df.iloc[i][k]
                             for m in itemstocheck:
                                 if m in self.model._df.columns.values:
                                     self.model._df.at[i,m] = 100 * self.model._df.at[i,m] / de_loi
+
+                                    Loi_flag = True
+                                    break
+                                else:
+                                    Loi_flag = False
+
+                if Loi_flag == False:
+                    tmp_all=0
+                    for m in itemstocheck:
+                        if m in self.model._df.columns.values:
+                            tmp_all = tmp_all+ self.model._df.at[i,m]
+                    if round(tmp_all) != 100:
+                        print(tmp_all)
+                        for m in itemstocheck:
+                            if m in self.model._df.columns.values:
+                                self.model._df.at[i, m] = 100 * self.model._df.at[i, m] / tmp_all
+
+            reply = QMessageBox.information(self, _translate('MainWindow', 'Done'), _translate('MainWindow',
+                                                                                          'LOI has been removed!:'))
+
+
+
+
+
+
 
 
 

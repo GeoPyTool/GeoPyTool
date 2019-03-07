@@ -371,12 +371,12 @@ class TAS(AppForm):
                 xtest=df.at[i, 'SiO2']
                 ytest=df.at[i, 'Na2O'] + df.at[i, 'K2O']
 
-
-                loi_list=['LOI','loi','Loi']
+                '''
+                                loi_list=['LOI','loi','Loi']
                 all_list=['Total','total','TOTAL','ALL','All','all']
 
-
-
+                itemstocheck = ['Total', 'total', 'TOTAL', 'ALL', 'All', 'all', 'Al2O3', 'MgO', 'FeO', 'Fe2O3', 'CaO',
+                                'Na2O', 'K2O', 'TiO2', 'P2O5', 'SiO2', 'TFe2O3', 'MnO', 'TFeO']
 
                 Loi_flag = False
 
@@ -390,15 +390,32 @@ class TAS(AppForm):
                     else:
                         Loi_flag = False
 
-
-                if Loi_flag == False:
-                    for j in loi_list:
-                        if k in self._df_back.columns.values:
+                for j in loi_list:
+                    if Loi_flag == False:
+                        if j in self._df_back.columns.values:
                             de_loi = 100- self._df_back.at[i,j]
                             xtest = xtest / de_loi
                             ytest = ytest / de_loi
+                        Loi_flag= True
+                        break
+                    else:
+                        Loi_flag = False
+                        
+                if Loi_flag == False:
+                    tmp_all=0
+                    for m in itemstocheck:
+                        if m in self.model._df.columns.values:
+                            tmp_all = tmp_all+ self.model._df.at[i,m]
 
+                    if round(tmp_all) != 100:
+                        print(tmp_all)
+                        xtest = xtest / tmp_all
+                        ytest = ytest / tmp_all
 
+                
+                
+                
+                '''
 
 
                 for j in self.ItemNames:
