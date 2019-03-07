@@ -384,7 +384,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.menuFile.addAction(self.actionFlatten)
         self.menuFile.addAction(self.actionTrans)
-        self.menuFile.addAction(self.actionReFormat)
+        #self.menuFile.addAction(self.actionReFormat)
 
 
 
@@ -877,7 +877,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             for i in range(len(DataFilesInput)):
                 if i < limit:
                     if ('csv' in DataFilesInput[i]):
-                        DataFramesList.append(pd.read_csv(DataFilesInput[i]), engine='python')
+                        DataFramesList.append(pd.read_csv(DataFilesInput[i], engine='python'))
                     elif ('xls' in DataFilesInput[i]):
                         DataFramesList.append(pd.read_excel(DataFilesInput[i]))
                 else:
