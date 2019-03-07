@@ -349,7 +349,7 @@ class Pearce(AppForm):
             try:
                 self.axes[0, 0].scatter(math.log(xa, 10), math.log(ya, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
                 if (self.show_data_index_cb.isChecked()):
                     if 'Index' in self._df.columns.values:
@@ -368,7 +368,7 @@ class Pearce(AppForm):
             try:
                 self.axes[0, 1].scatter(math.log(xb, 10), math.log(yb, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
                 if (self.show_data_index_cb.isChecked()):
                     if 'Index' in self._df.columns.values:
@@ -387,7 +387,7 @@ class Pearce(AppForm):
             try:
                 self.axes[1, 0].scatter(math.log(xc, 10), math.log(yc, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
                 if (self.show_data_index_cb.isChecked()):
                     if 'Index' in self._df.columns.values:
@@ -406,7 +406,7 @@ class Pearce(AppForm):
             try:
                 self.axes[1, 1].scatter(math.log(xd, 10), math.log(yd, 10), marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
                 if (self.show_data_index_cb.isChecked()):
                     if 'Index' in self._df.columns.values:

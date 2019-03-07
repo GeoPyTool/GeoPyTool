@@ -754,8 +754,6 @@ class QAPF(AppForm, Tool):
 
         for i in range(len(raw)):
 
-
-
             if 'A (Volume)' in raw.columns.values:
                 q = raw.at[i, 'Q (Volume)']
                 f = raw.at[i, 'F (Volume)']
@@ -786,7 +784,7 @@ class QAPF(AppForm, Tool):
 
         for i in TPoints:
             self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
-                              label=i.Label, edgecolors='black')
+                              label=i.Label)
 
 
 

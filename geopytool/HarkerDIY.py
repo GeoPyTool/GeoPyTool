@@ -884,7 +884,7 @@ class HarkerDIY(AppForm):
 
                     self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
                                       s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel, edgecolors='black')
+                                      label=TmpLabel)
 
                     XtoFit.append(xuse)
                     YtoFit.append(yuse)

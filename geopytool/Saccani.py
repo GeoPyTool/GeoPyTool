@@ -177,8 +177,7 @@ class Saccani(AppForm):
 
 
                 self.axes.scatter(np.log10(df.at[i, 'Nb']/standardchosen['Nb']), np.log10(df.at[i, 'Th']/standardchosen['Th']), marker=df.at[i, 'Marker'],
-                                  s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
-                                  edgecolors='black')
+                                  s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel)
 
 
 

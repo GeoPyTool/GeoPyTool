@@ -326,35 +326,35 @@ class HarkerOld(AppForm):
 
             self.axes[0, 0].scatter(SiO2, Al2O3, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
             self.axes[0, 1].scatter(SiO2, MgO, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
             self.axes[1, 0].scatter(SiO2, FeTotal, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
             self.axes[1, 1].scatter(SiO2, CaO, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
             self.axes[2, 0].scatter(SiO2, Na2O, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
             self.axes[2, 1].scatter(SiO2, K2O, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
             self.axes[3, 0].scatter(SiO2, TiO2, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
             self.axes[3, 1].scatter(SiO2, P2O5, marker=raw.at[i, 'Marker'],
                                     s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                    label=TmpLabel, edgecolors='black')
+                                    label=TmpLabel)
 
 
 

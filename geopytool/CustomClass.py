@@ -1,4 +1,4 @@
-version = '0.8.19.3.93'
+version = '0.8.19.3.94'
 
 date = '2019-3-7'
 
@@ -1578,8 +1578,7 @@ class PlotModel(FigureCanvas):
                 Label = TmpLabel
 
                 self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
-                                  s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
-                                  edgecolors='black')
+                                  s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel)
 
             # self.axes.savefig('tas.png', dpi=300, bbox_inches='tight')
             # self.axes.savefig('tas.svg', dpi=300, bbox_inches='tight')

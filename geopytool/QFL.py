@@ -226,7 +226,7 @@ class QFL(AppForm, Tool):
 
         for i in range(len(TPoints)):
             self.axes.scatter(TPoints[i].X, TPoints[i].Y, marker=TPoints[i].Marker, s=TPoints[i].Size, color=TPoints[i].Color, alpha=TPoints[i].Alpha,
-                              label=TPoints[i].Label, edgecolors='black')
+                              label=TPoints[i].Label)
 
 
             if (self.show_data_index_cb.isChecked()):

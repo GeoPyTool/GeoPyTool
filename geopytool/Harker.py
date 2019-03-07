@@ -348,21 +348,21 @@ class Harker(AppForm):
                 FeTotal=raw.at[i, 'TFe2O3']
 
             Al2O3_plot.scatter(SiO2, Al2O3, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'], color=raw.at[i, 'Color'],
-                               alpha=raw.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                               alpha=raw.at[i, 'Alpha'], label=TmpLabel)
             MgO_plot.scatter(SiO2, MgO, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'], color=raw.at[i, 'Color'],
-                             alpha=raw.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                             alpha=raw.at[i, 'Alpha'], label=TmpLabel)
             FeTotal_plot.scatter(SiO2, FeTotal, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'],
-                                 color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                                 color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'], label=TmpLabel)
             CaO_plot.scatter(SiO2, CaO, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'], color=raw.at[i, 'Color'],
-                             alpha=raw.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                             alpha=raw.at[i, 'Alpha'], label=TmpLabel)
             Na2O_plot.scatter(SiO2, Na2O, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'], color=raw.at[i, 'Color'],
-                             alpha=raw.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                             alpha=raw.at[i, 'Alpha'], label=TmpLabel)
             K2O_plot.scatter(SiO2, K2O, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'], color=raw.at[i, 'Color'],
-                              alpha=raw.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                              alpha=raw.at[i, 'Alpha'], label=TmpLabel)
             TiO2_plot.scatter(SiO2, TiO2, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'], color=raw.at[i, 'Color'],
-                              alpha=raw.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                              alpha=raw.at[i, 'Alpha'], label=TmpLabel)
             P2O5_plot.scatter(SiO2, P2O5, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'], color=raw.at[i, 'Color'],
-                              alpha=raw.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                              alpha=raw.at[i, 'Alpha'], label=TmpLabel)
 
 
         Al2O3_dic = {}
@@ -569,29 +569,29 @@ class Harker(AppForm):
 
                     Al2O3_plot.scatter(SiO2, Al2O3, marker=self.data_to_test.at[i, 'Marker'],
                                        s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                       alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                                       alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel)
                     MgO_plot.scatter(SiO2, MgO, marker=self.data_to_test.at[i, 'Marker'],
                                      s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                     alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                                     alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel)
                     FeTotal_plot.scatter(SiO2, FeTotal, marker=self.data_to_test.at[i, 'Marker'],
                                          s=self.data_to_test.at[i, 'Size'],
                                          color=self.data_to_test.at[i, 'Color'], alpha=self.data_to_test.at[i, 'Alpha'],
-                                         label=TmpLabel, edgecolors='black')
+                                         label=TmpLabel)
                     CaO_plot.scatter(SiO2, CaO, marker=self.data_to_test.at[i, 'Marker'],
                                      s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                     alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                                     alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel)
                     Na2O_plot.scatter(SiO2, Na2O, marker=self.data_to_test.at[i, 'Marker'],
                                      s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                     alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                                     alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel)
                     K2O_plot.scatter(SiO2, K2O, marker=self.data_to_test.at[i, 'Marker'],
                                       s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                      alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                                      alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel)
                     TiO2_plot.scatter(SiO2, TiO2, marker=self.data_to_test.at[i, 'Marker'],
                                       s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                      alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                                      alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel)
                     P2O5_plot.scatter(SiO2, P2O5, marker=self.data_to_test.at[i, 'Marker'],
                                       s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                      alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel, edgecolors='black')
+                                      alpha=self.data_to_test.at[i, 'Alpha'], label=TmpLabel)
 
 
 

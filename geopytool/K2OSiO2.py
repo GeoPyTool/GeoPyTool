@@ -247,8 +247,7 @@ class K2OSiO2(AppForm):
 
 
                 self.axes.scatter(df.at[i, 'SiO2'], df.at[i, 'K2O'], marker=df.at[i, 'Marker'],
-                  s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
-                  edgecolors='black')
+                  s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel)
 
 
 
@@ -401,8 +400,7 @@ class K2OSiO2(AppForm):
                                                   s=self.data_to_test.at[i, 'Size'],
                                                   color=self.data_to_test.at[i, 'Color'],
                                                   alpha=self.data_to_test.at[i, 'Alpha'],
-                                                  label=tmp_label,
-                                                  edgecolors='black')
+                                                  label=tmp_label)
 
 
 

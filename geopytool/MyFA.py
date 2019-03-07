@@ -322,8 +322,7 @@ class MyFA(AppForm):
                                                   color=test_colors[i],
                                                   marker=test_markers[i],
                                                   label=test_labels[i],
-                                                  alpha=test_alpha[i],
-                                                  edgecolors='black')
+                                                  alpha=test_alpha[i])
 
                             else:
                                 self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
@@ -331,8 +330,7 @@ class MyFA(AppForm):
                                                   color=test_colors[i],
                                                   marker=test_markers[i],
                                                   label=test_labels[i],
-                                                  alpha=test_alpha[i],
-                                                  edgecolors='black')
+                                                  alpha=test_alpha[i])
 
 
                                 '''
@@ -394,8 +392,7 @@ class MyFA(AppForm):
                                   color=all_colors[i],
                                   marker=all_markers[i],
                                   label=all_labels[i],
-                                  alpha=all_alpha[i],
-                                  edgecolors='black')
+                                  alpha=all_alpha[i])
 
                 self.axes.set_zlabel("component no." + str(c + 1))
                 self.z_element_label.setText("component no." + str(c + 1))
@@ -409,8 +406,7 @@ class MyFA(AppForm):
                                   color=all_colors[i],
                                   marker=all_markers[i],
                                   label=all_labels[i],
-                                  alpha=all_alpha[i],
-                                  edgecolors='black')
+                                  alpha=all_alpha[i])
 
 
 

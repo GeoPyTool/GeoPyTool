@@ -1014,7 +1014,7 @@ class XY(AppForm):
 
                 self.axes.scatter(xuse, yuse, marker=raw.at[i, 'Marker'],
                                   s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                  label=TmpLabel, edgecolors='black')
+                                  label=TmpLabel)
                 '''
 
                 if raw.at[i, 'Color'] == 'w' or raw.at[i, 'Color'] =='White':
@@ -1321,8 +1321,7 @@ class XY(AppForm):
                                           marker=self.data_to_test.at[i, 'Marker'],
                                           s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
                                           alpha=self.data_to_test.at[i, 'Alpha'],
-                                          label=tmp_label,
-                                          edgecolors='black')
+                                          label=tmp_label)
 
                         '''
                         if raw.at[i, 'Color'] == 'w' or raw.at[i, 'Color'] == 'White':

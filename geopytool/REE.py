@@ -424,7 +424,7 @@ class REE(AppForm):
                         LinesX.append(j + 1)
                         self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
                                           s=raw.at[i, 'Size'], color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                          label=TmpLabel, edgecolors='black')
+                                          label=TmpLabel)
                 self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=raw.at[i, 'Width'],
                                linestyle=raw.at[i, 'Style'], alpha=raw.at[i, 'Alpha'])
 
@@ -475,7 +475,7 @@ class REE(AppForm):
                             self.WholeData.append(math.log(tmp, 10))
                             self.axes.scatter(j + 1, math.log(tmp, 10), marker=raw.at[i, 'Marker'],
                                               s=pointsize, color=raw.at[i, 'Color'], alpha=alpha,
-                                              label=TmpLabel, edgecolors='black')
+                                              label=TmpLabel)
                         self.axes.plot(LinesX, LinesY, color=raw.at[i, 'Color'], linewidth=linewidth,linestyle=raw.at[i, 'Style'], alpha=alpha)
 
                 print(LinesX,LinesY)
