@@ -201,14 +201,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSave.setObjectName('actionSave')
         self.actionSave.setShortcut('Ctrl+S')
 
+        self.actionCombine = QtWidgets.QAction(QIcon(LocationOfMySelf+'/combine.png'),u'Combine',self)
+        self.actionCombine.setObjectName('actionCombine')
+        self.actionCombine.setShortcut('Alt+C')
+
+        self.actionFlatten = QtWidgets.QAction(QIcon(LocationOfMySelf+'/flatten.png'),u'Flatten',self)
+        self.actionFlatten.setObjectName('actionFlatten')
+        self.actionFlatten.setShortcut('Alt+F')
+
+        self.actionTrans = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'Trans',self)
+        self.actionTrans.setObjectName('actionTrans')
+        self.actionTrans.setShortcut('Alt+T')
+
+
+        self.actionReFormat = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'ReFormat',self)
+        self.actionReFormat.setObjectName('actionReFormat')
+        self.actionReFormat.setShortcut('Alt+R')
+
         self.actionQuit = QtWidgets.QAction(QIcon(LocationOfMySelf+'/quit.png'), u'Quit',self)
         self.actionQuit.setObjectName('actionQuit')
         self.actionQuit.setShortcut('Ctrl+Q')
-
-
-
-
-
 
 
         self.actionWeb = QtWidgets.QAction(QIcon(LocationOfMySelf+'/forum.png'), u'English Forum',self)
@@ -296,13 +308,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMultiDimension = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'MultiDimension',self)
         self.actionMultiDimension.setObjectName('actionMultiDimension')
 
-        self.actionCombine = QtWidgets.QAction(QIcon(LocationOfMySelf+'/combine.png'),u'Combine',self)
-        self.actionCombine.setObjectName('actionCombine')
-
-
-        self.actionFlatten = QtWidgets.QAction(QIcon(LocationOfMySelf+'/flatten.png'),u'Flatten',self)
-        self.actionFlatten.setObjectName('actionFlatten')
-
 
         self.actionThreeD = QtWidgets.QAction(QIcon(LocationOfMySelf+'/multiple.png'),u'ThreeD',self)
         self.actionThreeD.setObjectName('actionThreeD')
@@ -315,10 +320,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionTwoD_Grey = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'TwoD Grey',self)
         self.actionTwoD_Grey.setObjectName('actionTwoD_Grey')
-
-
-        self.actionTrans = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'Trans',self)
-        self.actionTrans.setObjectName('actionTrans')
 
 
         self.actionDist = QtWidgets.QAction(QIcon(LocationOfMySelf+'/dist.png'),u'Dist',self)
@@ -377,8 +378,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuFile.addAction(self.actionClose)
         self.menuFile.addAction(self.actionSet)
         self.menuFile.addAction(self.actionSave)
-        self.menuFile.addAction(self.actionQuit)
 
+        self.menuFile.addAction(self.actionCombine)
+
+
+        self.menuFile.addAction(self.actionFlatten)
+        self.menuFile.addAction(self.actionTrans)
+        self.menuFile.addAction(self.actionReFormat)
+
+
+
+        self.menuFile.addAction(self.actionQuit)
 
 
         self.menuGeoChem.addAction(self.actionRemoveLOI)
@@ -425,11 +435,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionXYZ)
         self.menuAdditional.addAction(self.actionCluster)
         self.menuAdditional.addAction(self.actionMultiDimension)
-
-        self.menuAdditional.addAction(self.actionCombine)
-
-        self.menuAdditional.addAction(self.actionFlatten)
-        self.menuAdditional.addAction(self.actionTrans)
         self.menuAdditional.addAction(self.actionFA)
         self.menuAdditional.addAction(self.actionPCA)
         self.menuAdditional.addAction(self.actionDist)
@@ -478,6 +483,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menuLanguage.menuAction())
         self.menubar.addSeparator()
 
+        self.actionCombine.triggered.connect(self.Combine)
+        self.actionFlatten.triggered.connect(self.Flatten)
+        self.actionTrans.triggered.connect(self.Trans)
+        self.actionReFormat.triggered.connect(self.ReFormat)
 
         self.actionTAS.triggered.connect(self.TAS)
         self.actionTrace.triggered.connect(self.Trace)
@@ -509,14 +518,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.actionMultiDimension.triggered.connect(self.MultiDimension)
-
-        self.actionCombine.triggered.connect(self.Combine)
-
-
-
-        self.actionFlatten.triggered.connect(self.Flatten)
-
-        self.actionTrans.triggered.connect(self.Trans)
         self.actionRemoveLOI.triggered.connect(self.RemoveLOI)
 
         self.actionFA.triggered.connect(self.FA)
@@ -576,6 +577,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuHelp.setTitle(_translate('MainWindow', u'Help'))
         self.menuLanguage.setTitle(_translate('MainWindow', u'Language'))
 
+
+        self.actionCombine.setText(_translate('MainWindow', u'Combine'))
+
+        self.actionFlatten.setText(_translate('MainWindow',u'Flatten'))
+
+        self.actionTrans.setText(_translate('MainWindow',u'Trans'))
+
+        self.actionReFormat.setText(_translate('MainWindow',u'ReFormat'))
+
         self.actionOpen.setText(_translate('MainWindow', u'Open Data'))
         self.actionClose.setText(_translate('MainWindow', u'Close Data'))
         self.actionSet.setText(_translate('MainWindow', u'Set Format'))
@@ -618,26 +628,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCluster.setText('5-3 '+_translate('MainWindow',u'Cluster'))
         self.actionMultiDimension.setText('5-4 '+_translate('MainWindow',u'MultiDimension'))
 
-        self.actionCombine.setText('5-5 ' + _translate('MainWindow', u'Combine'))
 
-        self.actionFlatten.setText('5-6 '+_translate('MainWindow',u'Flatten'))
+        self.actionFA.setText('5-5 '+_translate('MainWindow',u'FA'))
 
-        self.actionTrans.setText('5-7 '+_translate('MainWindow',u'Trans'))
+        self.actionPCA.setText('5-6 '+_translate('MainWindow',u'PCA'))
 
-        self.actionFA.setText('5-8 '+_translate('MainWindow',u'FA'))
+        self.actionDist.setText('5-7 '+_translate('MainWindow',u'Distance'))
 
-        self.actionPCA.setText('5-9 '+_translate('MainWindow',u'PCA'))
-
-        self.actionDist.setText('5-10 '+_translate('MainWindow',u'Distance'))
-
-        self.actionStatistics.setText('5-11 '+_translate('MainWindow',u'Statistics'))
+        self.actionStatistics.setText('5-8 '+_translate('MainWindow',u'Statistics'))
 
 
-        self.actionThreeD.setText('5-12 '+_translate('MainWindow',u'ThreeD'))
-        self.actionTwoD.setText('5-13 '+_translate('MainWindow',u'TwoD'))
-        self.actionTwoD_Grey.setText('5-14 '+_translate('MainWindow',u'TwoD Grey'))
+        self.actionThreeD.setText('5-9 '+_translate('MainWindow',u'ThreeD'))
+        self.actionTwoD.setText('5-10 '+_translate('MainWindow',u'TwoD'))
+        self.actionTwoD_Grey.setText('5-11 '+_translate('MainWindow',u'TwoD Grey'))
 
-        self.actionMyHist.setText('5-15 '+_translate('MainWindow',u'Histogram'))
+        self.actionMyHist.setText('5-12 '+_translate('MainWindow',u'Histogram'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -872,7 +877,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             for i in range(len(DataFilesInput)):
                 if i < limit:
                     if ('csv' in DataFilesInput[i]):
-                        DataFramesList.append(pd.read_csv(DataFilesInput[i]))
+                        DataFramesList.append(pd.read_csv(DataFilesInput[i]), engine='python')
                     elif ('xls' in DataFilesInput[i]):
                         DataFramesList.append(pd.read_excel(DataFilesInput[i]))
                 else:
@@ -893,7 +898,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print(self.DataLocation )
 
         if ('csv' in DataFileInput):
-            self.raw = pd.read_csv(DataFileInput)
+            self.raw = pd.read_csv(DataFileInput, engine='python')
         elif ('xls' in DataFileInput):
             self.raw = pd.read_excel(DataFileInput)
         # #print(self.raw)
@@ -957,6 +962,110 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 dftosave.to_excel(DataFileOutput, encoding='utf-8')
 
+
+    def OldCombine(self):
+
+        print('Combine called \n')
+
+        pass
+
+        DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
+                                                              '~/',
+                                                              'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+        # #print(DataFileInput,filetype)
+
+
+        DataFramesList=[]
+
+        if len(DataFilesInput)>1:
+            for i in DataFilesInput:
+                if ('csv' in i):
+                    DataFramesList.append(pd.read_csv(i), engine='python')
+                elif ('xls' in i):
+                    DataFramesList.append(pd.read_excel(i))
+                pass
+
+        #result = pd.concat(DataFramesList,axis=1,sort=False)
+
+        result = pd.concat(DataFramesList, ignore_index=True, sort=False)
+
+
+        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,_translate('MainWindow', u'Save Data File'),
+                                                          'C:/',
+                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
+
+        dftosave = result
+        if (DataFileOutput != ''):
+            dftosave.reset_index(drop=True)
+            if ('csv' in DataFileOutput):
+                dftosave.to_csv(DataFileOutput, sep=',', encoding='utf-8')
+            elif ('xls' in DataFileOutput):
+                dftosave.to_excel(DataFileOutput, encoding='utf-8')
+
+    def Combine(self):
+
+        print('Combine called \n')
+
+        pass
+
+        DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
+                                                                '~/',
+                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+        # #print(DataFileInput,filetype)
+
+        DataFramesList = []
+
+        if len(DataFilesInput) > 1:
+            for i in DataFilesInput:
+                if ('csv' in i):
+                    DataFramesList.append(pd.read_csv(i), engine='python')
+                elif ('xls' in i):
+                    DataFramesList.append(pd.read_excel(i))
+                pass
+
+            # result = pd.concat(DataFramesList,axis=1,sort=False)
+
+            result = pd.concat(DataFramesList, ignore_index=True, sort=False)
+
+            print('self.model._df length: ', len(result))
+
+            if (len(result) > 0):
+                self.Combinepop = MyCombine(df=result)
+                self.Combinepop.Combine()
+
+
+        else:
+            pass
+
+    def Flatten(self):
+
+        print('Flatten called \n')
+        print('self.model._df length: ',len(self.model._df))
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.flattenpop = MyFlatten(df=self.model._df)
+            self.flattenpop.Flatten()
+
+    def Trans(self):
+
+        print('Trans called \n')
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+        if (len(self.model._df) > 0):
+            self.transpop = MyTrans(df=self.model._df)
+            self.transpop.Trans()
+
+    def ReFormat(self):
+        print('ReFormat called \n')
+
+        Datas= self.getDataFiles()
+
     def RemoveLOI(self):
 
         _translate = QtCore.QCoreApplication.translate
@@ -1015,14 +1124,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             reply = QMessageBox.information(self, _translate('MainWindow', 'Done'), _translate('MainWindow',
                                                                                           'LOI has been removed!:'))
 
-
-
-
-
-
-
-
-
     def TAS(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
@@ -1040,7 +1141,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
-
     def Saccani(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df) <= 0):
@@ -1054,7 +1154,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.sacpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
-
 
     def Raman(self):
 
@@ -1098,10 +1197,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.MyHistpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
-
-
-
-
 
     def REE(self):
 
@@ -1235,7 +1330,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.clusterpop.Cluster()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
-
 
     def Stereo(self):
         print('self.model._df length: ',len(self.model._df))
@@ -1450,7 +1544,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
-
     def MultiDimension(self):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
@@ -1463,97 +1556,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.mdpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
-
-
-    def OldCombine(self):
-
-        print('Combine called \n')
-
-        pass
-
-        DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
-                                                              '~/',
-                                                              'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
-        # #print(DataFileInput,filetype)
-
-
-        DataFramesList=[]
-
-        if len(DataFilesInput)>1:
-            for i in DataFilesInput:
-                if ('csv' in i):
-                    DataFramesList.append(pd.read_csv(i))
-                elif ('xls' in i):
-                    DataFramesList.append(pd.read_excel(i))
-                pass
-
-        #result = pd.concat(DataFramesList,axis=1,sort=False)
-
-        result = pd.concat(DataFramesList, ignore_index=True, sort=False)
-
-
-        DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,_translate('MainWindow', u'Save Data File'),
-                                                          'C:/',
-                                                          'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-
-        dftosave = result
-        if (DataFileOutput != ''):
-            dftosave.reset_index(drop=True)
-            if ('csv' in DataFileOutput):
-                dftosave.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-            elif ('xls' in DataFileOutput):
-                dftosave.to_excel(DataFileOutput, encoding='utf-8')
-
-
-    def Combine(self):
-
-        print('Combine called \n')
-
-        pass
-
-        DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
-                                                                '~/',
-                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
-        # #print(DataFileInput,filetype)
-
-        DataFramesList = []
-
-        if len(DataFilesInput) > 1:
-            for i in DataFilesInput:
-                if ('csv' in i):
-                    DataFramesList.append(pd.read_csv(i))
-                elif ('xls' in i):
-                    DataFramesList.append(pd.read_excel(i))
-                pass
-
-            # result = pd.concat(DataFramesList,axis=1,sort=False)
-
-            result = pd.concat(DataFramesList, ignore_index=True, sort=False)
-
-            print('self.model._df length: ', len(result))
-
-            if (len(result) > 0):
-                self.Combinepop = MyCombine(df=result)
-                self.Combinepop.Combine()
-
-
-        else:
-            pass
-
-    def Flatten(self):
-
-        print('Flatten called \n')
-        print('self.model._df length: ',len(self.model._df))
-
-
-        if (len(self.model._df)<=0):
-            self.getDataFile()
-            pass
-
-        if (len(self.model._df) > 0):
-            self.flattenpop = MyFlatten(df=self.model._df)
-            self.flattenpop.Flatten()
-
 
     def ThreeD(self):
 
@@ -1572,7 +1574,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.ThreeDpop = MyThreeD( DataFiles = DataFiles,DataLocation= DataLocation)
                 self.ThreeDpop.ThreeD()
 
-
     def TwoD(self):
         print('TwoD called \n')
         print('self.model._df length: ',len(self.model._df))
@@ -1588,7 +1589,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             if len(DataFiles)>0:
                 self.TwoDpop = MyTwoD( DataFiles = DataFiles,DataLocation= DataLocation)
                 self.TwoDpop.TwoD()
-
 
     def TwoD_Grey(self):
         print('TwoD_Grey called \n')
@@ -1606,19 +1606,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.TwoDpop = MyTwoD_Grey( DataFiles = DataFiles,DataLocation= DataLocation)
                 self.TwoDpop.TwoD()
 
-    def Trans(self):
-
-        print('Trans called \n')
-        if (len(self.model._df)<=0):
-            self.getDataFile()
-            pass
-        if (len(self.model._df) > 0):
-            self.transpop = MyTrans(df=self.model._df)
-            self.transpop.Trans()
-
-
-
-
     def Dist(self):
 
         print('Dist called \n')
@@ -1633,7 +1620,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.Distpop.Dist()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
-
 
     def Sta(self):
         #Sta on Calculated Distance
@@ -1821,8 +1807,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             else:
                 pass
-
-
 
 
 
