@@ -582,8 +582,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSave.setText(_translate('MainWindow', u'Save Data'))
         self.actionQuit.setText(_translate('MainWindow', u'Quit App'))
 
-
-
         self.actionRemoveLOI.setText('1-0 '+_translate('MainWindow',u'Remove LOI'))
         self.actionAuto.setText('1-1 '+_translate('MainWindow', u'Auto'))
         self.actionTAS.setText('1-2 '+ _translate('MainWindow',u'TAS'))

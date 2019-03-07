@@ -1,4 +1,4 @@
-version = '0.8.19.3.94'
+version = '0.8.19.3.95'
 
 date = '2019-3-7'
 
@@ -8,7 +8,6 @@ dpi = 128
 from geopytool.ImportDependence import *
 
 #from geopytool.TableViewer import TableViewer
-
 
 
 class GrowingTextEdit(QtWidgets.QTextEdit):

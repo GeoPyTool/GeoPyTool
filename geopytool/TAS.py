@@ -371,51 +371,6 @@ class TAS(AppForm):
                 xtest=df.at[i, 'SiO2']
                 ytest=df.at[i, 'Na2O'] + df.at[i, 'K2O']
 
-                '''
-                                loi_list=['LOI','loi','Loi']
-                all_list=['Total','total','TOTAL','ALL','All','all']
-
-                itemstocheck = ['Total', 'total', 'TOTAL', 'ALL', 'All', 'all', 'Al2O3', 'MgO', 'FeO', 'Fe2O3', 'CaO',
-                                'Na2O', 'K2O', 'TiO2', 'P2O5', 'SiO2', 'TFe2O3', 'MnO', 'TFeO']
-
-                Loi_flag = False
-
-                for k in all_list:
-                    if k in self._df_back.columns.values:
-                        de_loi =  self._df_back.at[i,k]
-                        xtest = xtest / de_loi
-                        ytest = ytest / de_loi
-                        Loi_flag= True
-                        break
-                    else:
-                        Loi_flag = False
-
-                for j in loi_list:
-                    if Loi_flag == False:
-                        if j in self._df_back.columns.values:
-                            de_loi = 100- self._df_back.at[i,j]
-                            xtest = xtest / de_loi
-                            ytest = ytest / de_loi
-                        Loi_flag= True
-                        break
-                    else:
-                        Loi_flag = False
-                        
-                if Loi_flag == False:
-                    tmp_all=0
-                    for m in itemstocheck:
-                        if m in self.model._df.columns.values:
-                            tmp_all = tmp_all+ self.model._df.at[i,m]
-
-                    if round(tmp_all) != 100:
-                        print(tmp_all)
-                        xtest = xtest / tmp_all
-                        ytest = ytest / tmp_all
-
-                
-                
-                
-                '''
 
 
                 for j in self.ItemNames:
@@ -430,9 +385,6 @@ class TAS(AppForm):
                             self.IndexList.append(self._df_back.at[i, 'Index'])
                         else:
                             self.IndexList.append('No ' + str(i))
-
-
-
                         break
                     pass
 
@@ -440,19 +392,6 @@ class TAS(AppForm):
                 self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
                   s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel)
                   #edgecolors='black')
-
-                '''
-                if df.at[i, 'Color'] == 'w' or df.at[i, 'Color'] =='White':
-                    self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
-                          s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'],
-                          label=TmpLabel,
-                          edgecolors='black')
-                else:
-                    self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],
-                          s=df.at[i, 'Size'], color=df.at[i, 'Color'], alpha=df.at[i, 'Alpha'], label=TmpLabel,
-                          edgecolors = df.at[i, 'Color'])
-                '''
-
 
 
             XtoFit = {}
@@ -593,50 +532,22 @@ class TAS(AppForm):
                             x_load_test = self.data_to_test.at[i, 'SiO2']
                             y_load_test = self.data_to_test.at[i, 'Na2O'] + self.data_to_test.at[i, 'K2O']
 
-                            if 'LOI' in self.data_to_test_back.columns.values:
-                                de_loi= 100- self.data_to_test_back.at[i, 'LOI']
-                                x_load_test=x_load_test/de_loi
-                                y_load_test=y_load_test/de_loi
 
-                            loi_list = ['LOI', 'loi', 'Loi']
-                            all_list = ['Total', 'total', 'TOTAL', 'ALL', 'All', 'all']
-
-                            Loi_flag= False
-
-                            for k in all_list:
-                                if k in self.data_to_test_back.columns.values:
-                                    de_loi = self.data_to_test_back.at[i, k]
-                                    x_load_test = x_load_test / de_loi
-                                    y_load_test = y_load_test / de_loi
-
-                                    Loi_flag = True
-                                    break
-
-                                else:
-                                    Loi_flag = False
-
-                            if  Loi_flag==False :
-                                for j in loi_list:
-                                    if j in self.data_to_test_back.columns.values:
-                                        de_loi = 100- self.data_to_test_back.at[i, j]
-                                        x_load_test = x_load_test / de_loi
-                                        y_load_test = y_load_test / de_loi
 
                             for j in self.ItemNames:
                                 if self.SelectDic[j].contains_point([x_load_test, y_load_test]):
                                     self.LabelList.append(self.data_to_test.at[i, 'Label'])
                                     self.TypeList.append(j)
+
+
+                                    print(self.data_to_test.at[i, 'Label'],j)
                                     self.RiedmanList.append(round(y_load_test ** 2 / (x_load_test - 43) + 0.001, 2))
-
-
 
                                     if 'Index' in self.data_to_test_back.columns.values:
                                         self.IndexList.append(self.data_to_test_back.at[i, 'Index'])
                                     else:
                                         self.IndexList.append('No '+str(i))
-
                                     break
-                                pass
 
                             if (self.show_load_data_cb.isChecked()):
 
