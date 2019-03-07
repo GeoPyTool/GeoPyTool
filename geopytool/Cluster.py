@@ -272,15 +272,24 @@ class Cluster(AppForm):
             XstickList=[i for i in range(len(XLabelList))]
             YstickList=[i for i in range(len(YLabelList))]
 
+
+            #myfont = matplotlib.font_manager.FontProperties(fname=r'\wqy.ttf', size=14)
+            #wqy.ttf
+            fontprop = font_manager.FontProperties(family='sans-serif',
+                                                   size=9,
+                                                   fname=ttfFontProp.fname,
+                                                   stretch=ttfFontProp.stretch,
+                                                   style=ttfFontProp.style,
+                                                   variant=ttfFontProp.variant,
+                                                   weight=ttfFontProp.weight)
+
             axmatrix.set_xticks(XstickList)
-            axmatrix.set_xticklabels( XLabelList, minor=False)
+            axmatrix.set_xticklabels( XLabelList,fontproperties =fontprop,  minor=False)
 
 
 
             axmatrix.set_yticks(YstickList)
-            axmatrix.set_yticklabels( YLabelList, minor=False)
-
-
+            axmatrix.set_yticklabels( YLabelList,fontproperties =fontprop,  minor=False)
 
             if self.ShowCorr_cb.isChecked():
                 pass
