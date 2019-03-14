@@ -131,12 +131,22 @@ class MyHist(AppForm):
         return(df)
 
     def MyHist(self):
+
+        fontprop = font_manager.FontProperties(family='sans-serif',
+                                               size=9,
+                                               fname=ttfFontProp.fname,
+                                               stretch=ttfFontProp.stretch,
+                                               style=ttfFontProp.style,
+                                               variant=ttfFontProp.variant,
+                                               weight=ttfFontProp.weight)
+
+
         self.setWindowTitle('Hist')
         self.textbox.setText(self.reference)
         self.axes.clear()
         #self.axes.axis('off')
-        self.axes.set_xlabel(self.xlabel)
-        self.axes.set_ylabel(self.ylabel)
+        self.axes.set_xlabel(self.xlabel,fontproperties =fontprop)
+        self.axes.set_ylabel(self.ylabel,fontproperties =fontprop)
         ##self.axes.spines['top'].set_color('none')
 
         a = int(self.x_element.value())

@@ -191,7 +191,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionClose = QtWidgets.QAction(QIcon(LocationOfMySelf+'/close.png'), u'Close',self)
         self.actionClose.setObjectName('actionClose')
-        self.actionClose.setShortcut('Ctrl+T')
+        self.actionClose.setShortcut('Ctrl+N')
 
         self.actionSet = QtWidgets.QAction(QIcon(LocationOfMySelf + '/set.png'), u'Set', self)
         self.actionSet.setObjectName('actionSet')
@@ -205,13 +205,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCombine.setObjectName('actionCombine')
         self.actionCombine.setShortcut('Alt+C')
 
+        self.actionCombine_transverse = QtWidgets.QAction(QIcon(LocationOfMySelf+'/combine.png'),u'Combine_transverse',self)
+        self.actionCombine_transverse.setObjectName('actionCombine_transverse')
+        self.actionCombine_transverse.setShortcut('Alt+T')
+
         self.actionFlatten = QtWidgets.QAction(QIcon(LocationOfMySelf+'/flatten.png'),u'Flatten',self)
         self.actionFlatten.setObjectName('actionFlatten')
         self.actionFlatten.setShortcut('Alt+F')
 
         self.actionTrans = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'Trans',self)
         self.actionTrans.setObjectName('actionTrans')
-        self.actionTrans.setShortcut('Alt+T')
+        self.actionTrans.setShortcut('Ctrl+T')
 
 
         self.actionReFormat = QtWidgets.QAction(QIcon(LocationOfMySelf+'/trans.png'),u'ReFormat',self)
@@ -380,6 +384,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuFile.addAction(self.actionSave)
 
         self.menuFile.addAction(self.actionCombine)
+        self.menuFile.addAction(self.actionCombine_transverse)
 
 
         self.menuFile.addAction(self.actionFlatten)
@@ -407,7 +412,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.menuGeoChem.addAction(self.actionHarkerOld)
-
 
 
 
@@ -484,6 +488,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addSeparator()
 
         self.actionCombine.triggered.connect(self.Combine)
+        self.actionCombine_transverse.triggered.connect(self.Combine_transverse)
         self.actionFlatten.triggered.connect(self.Flatten)
         self.actionTrans.triggered.connect(self.Trans)
         self.actionReFormat.triggered.connect(self.ReFormat)
@@ -579,6 +584,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.actionCombine.setText(_translate('MainWindow', u'Combine'))
+        self.actionCombine_transverse.setText(_translate('MainWindow', u'Combine_transverse'))
 
         self.actionFlatten.setText(_translate('MainWindow',u'Flatten'))
 
@@ -605,7 +611,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionK2OSiO2.setText('1-10 '+_translate('MainWindow',u'K2O-SiO2'))
         self.actionRaman.setText('1-11 '+_translate('MainWindow',u'Raman Strength'))
         self.actionFluidInclusion.setText('1-12 '+_translate('MainWindow',u'Fluid Inclusion'))
-        self.actionHarkerOld.setText('1-13 '+_translate('MainWindow',u'Harker Classical'))
+        self.actionHarkerOld.setText('1-14 '+_translate('MainWindow',u'Harker Classical'))
 
         self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
         self.actionRose.setText('2-2 '+_translate('MainWindow',u'Rose'))
@@ -1018,7 +1024,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if len(DataFilesInput) > 1:
             for i in DataFilesInput:
                 if ('csv' in i):
-                    DataFramesList.append(pd.read_csv(i), engine='python')
+                    DataFramesList.append(pd.read_csv(i, engine='python'))
                 elif ('xls' in i):
                     DataFramesList.append(pd.read_excel(i))
                 pass
@@ -1034,8 +1040,45 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.Combinepop.Combine()
 
 
-        else:
-            pass
+    def getFileName(self,list=['C:/Users/Fred/Documents/GitHub/Writing/元素数据/Ag.xlsx']):
+        result=[]
+        for i in list:
+            result.append(i.split("/")[-1].split(".")[0])
+        #print(result)
+        return(result)
+
+    def Combine_transverse(self):
+        print('Combine called \n')
+        DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
+                                                                '~/',
+                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+        DataFramesList = []
+        filenamelist = self.getFileName(DataFilesInput)
+        if len(DataFilesInput) > 1:
+            for i in range(len(DataFilesInput)):
+                tmpdf=pd.DataFrame()
+                if ('csv' in DataFilesInput[i]):
+                    tmpdf=pd.read_csv(DataFilesInput[i], engine='python')
+                elif ('xls' in DataFilesInput[i]):
+                    tmpdf=pd.read_excel(DataFilesInput[i])
+                #name_list = tmpdf.columns.values.tolist()
+                tmpname_dic={}
+                tmpname_list =[]
+                oldname_list=tmpdf.columns.values.tolist()
+                for k in oldname_list:
+                    tmpname_list.append(filenamelist[i]+k)
+                    tmpname_dic[k]=filenamelist[i]+' '+k
+                print(tmpname_dic)
+                tmpdf = tmpdf.rename(index=str, columns=tmpname_dic)
+                DataFramesList.append(tmpdf)
+            # result = pd.concat(DataFramesList,axis=1,sort=False)
+            result = pd.concat(DataFramesList,axis=1, ignore_index=False, sort=False)
+            print('self.model._df length: ', len(result))
+            if (len(result) > 0):
+                self.Combinepop = MyCombine(df=result)
+                self.Combinepop.Combine()
+
+
 
     def Flatten(self):
 
@@ -1168,6 +1211,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.ramanpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
+
 
     def FluidInclusion(self):
         print('self.model._df length: ',len(self.raw))

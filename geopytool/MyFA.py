@@ -526,7 +526,7 @@ class MyFA(AppForm):
 
 
 
-        self.result = pd.concat([self.begin_result , self.load_result], axis=0).set_index('Label')
+        self.result = pd.concat([self.begin_result , self.load_result],sort=False, axis=0).set_index('Label')
         self.canvas.draw()
 
     def showPredictResult(self):
