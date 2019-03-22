@@ -75,6 +75,8 @@ class Harker(AppForm):
 
     itemstocheck = ['Al2O3', 'MgO', 'FeO', 'Fe2O3','CaO', 'Na2O', 'K2O', 'TiO2', 'P2O5', 'SiO2']
 
+    FitLevel=1
+
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Harker diagram')
@@ -173,20 +175,40 @@ class Harker(AppForm):
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Harker)  # int
 
+        self.fit_cb= QCheckBox('&PolyFit')
+        self.fit_cb.setChecked(False)
+        self.fit_cb.stateChanged.connect(self.Harker)  # int
+
+        self.fit_seter = QLineEdit(self)
+        self.fit_seter.textChanged[str].connect(self.FitChanged)
+
+        self.fit_slider_label = QLabel('y= f(x) EXP')
+        self.fit_slider = QSlider(Qt.Vertical)
+        self.fit_slider.setRange(0, 1)
+        self.fit_slider.setValue(0)
+        self.fit_slider.setTracking(True)
+        self.fit_slider.setTickPosition(QSlider.TicksBothSides)
+        self.fit_slider.valueChanged.connect(self.Harker)  # int
 
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
+        self.hbox1 = QHBoxLayout()
 
-        for w in [self.seter_left_label ,self.seter_left,self.seter_right_label ,self.seter_right, self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb,self.save_img_button,self.load_data_button,self.save_predict_button]:
+        for w in [ self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.seter_left_label ,self.seter_left,self.seter_right_label ,self.seter_right,self.fit_cb,self.fit_slider,self.fit_slider_label ,self.fit_seter,self.save_img_button,self.load_data_button,self.save_predict_button]:
+            self.hbox1.addWidget(w)
+            self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
         self.vbox.addLayout(self.hbox)
+        self.vbox.addLayout(self.hbox1)
 
 
         self.textbox = GrowingTextEdit(self)
@@ -203,6 +225,18 @@ class Harker(AppForm):
         self.seter_left.setFixedWidth(w / 20)
         self.seter_right_label.setFixedWidth(w / 20)
         self.seter_right.setFixedWidth(w / 20)
+        self.fit_slider.setFixedWidth(w / 20)
+        self.fit_seter.setFixedWidth(w / 20)
+
+
+    def FitChanged(self, text):
+        try:
+            self.FitLevel = float(text)
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
+
+        self.Harker()
+
 
     def Harker(self):
 
@@ -377,6 +411,8 @@ class Harker(AppForm):
         FeTotal_list=[]
 
 
+
+
         print(self.BaseData)
 
         for i in PointLabels:
@@ -435,6 +471,160 @@ class Harker(AppForm):
             SiO2_dic[Label].append(SiO2_test)
             FeTotal_dic[Label].append(FeTotal_test)
             FeTotal_list.append(FeTotal_test)
+
+
+        for i in range(len(PointLabels)):
+            pass
+
+            Al2O3_dic[PointLabels[i]]
+            MgO_dic[PointLabels[i]]
+            CaO_dic[PointLabels[i]]
+            Na2O_dic[PointLabels[i]]
+            K2O_dic[PointLabels[i]]
+            TiO2_dic[PointLabels[i]]
+            P2O5_dic[PointLabels[i]]
+            FeTotal_dic[PointLabels[i]]
+
+            fitstatus = True
+            if (int(self.fit_slider.value()) == 0):
+                SiO2_line = np.linspace(min(SiO2_dic[PointLabels[i]]), max(SiO2_dic[PointLabels[i]]), 30)
+                try:
+                    np.polyfit(SiO2_dic[PointLabels[i]], Al2O3_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(SiO2_dic[PointLabels[i]], MgO_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(SiO2_dic[PointLabels[i]], FeTotal_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(SiO2_dic[PointLabels[i]], CaO_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(SiO2_dic[PointLabels[i]], Na2O_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(SiO2_dic[PointLabels[i]], K2O_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(SiO2_dic[PointLabels[i]], TiO2_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(SiO2_dic[PointLabels[i]], P2O5_dic[PointLabels[i]], self.FitLevel)
+                except Exception as e:
+                    self.ErrorEvent(text=repr(e))
+                    fitstatus = False
+
+                if (fitstatus == True):
+                    try:
+                        #opt, cov = np.polyfit(SiO2_dic[PointLabels[i]], Al2O3_dic[PointLabels[i]], self.FitLevel, cov=True)
+
+                        opt1, cov1 =np.polyfit(SiO2_dic[PointLabels[i]], Al2O3_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt2, cov2 =np.polyfit(SiO2_dic[PointLabels[i]], MgO_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt3, cov3 =np.polyfit(SiO2_dic[PointLabels[i]], FeTotal_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt4, cov4 =np.polyfit(SiO2_dic[PointLabels[i]], CaO_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt5, cov5 =np.polyfit(SiO2_dic[PointLabels[i]], Na2O_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt6, cov6 =np.polyfit(SiO2_dic[PointLabels[i]], K2O_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt7, cov7 =np.polyfit(SiO2_dic[PointLabels[i]], TiO2_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt8, cov8 =np.polyfit(SiO2_dic[PointLabels[i]], P2O5_dic[PointLabels[i]], self.FitLevel, cov=True)
+
+
+                        self.fit_slider_label.setText('y= f(x) EXP')
+
+
+                        p1 = np.poly1d(opt1)
+                        p2 = np.poly1d(opt2)
+                        p3 = np.poly1d(opt3)
+                        p4 = np.poly1d(opt4)
+                        p5 = np.poly1d(opt5)
+                        p6 = np.poly1d(opt6)
+                        p7 = np.poly1d(opt7)
+                        p8 = np.poly1d(opt8)
+
+                        Y1 = p1(SiO2_line)
+                        Y2 = p2(SiO2_line)
+                        Y3 = p3(SiO2_line)
+                        Y4 = p4(SiO2_line)
+                        Y5 = p5(SiO2_line)
+                        Y6 = p6(SiO2_line)
+                        Y7 = p7(SiO2_line)
+                        Y8 = p8(SiO2_line)
+
+                        if (self.fit_cb.isChecked()):
+                            Al2O3_plot.plot(SiO2_line, Y1, color= PointColors[i])
+                            MgO_plot.plot(SiO2_line, Y2, color= PointColors[i])
+                            FeTotal_plot.plot(SiO2_line, Y3, color= PointColors[i])
+                            CaO_plot.plot(SiO2_line, Y4, color= PointColors[i])
+                            Na2O_plot.plot(SiO2_line, Y5, color= PointColors[i])
+                            K2O_plot.plot(SiO2_line, Y6, color= PointColors[i])
+                            TiO2_plot.plot(SiO2_line, Y7, color= PointColors[i])
+                            P2O5_plot.plot(SiO2_line, Y8, color= PointColors[i])
+
+                    except Exception as e:
+                        self.ErrorEvent(text=repr(e))
+            elif (int(self.fit_slider.value()) == 1):
+
+
+                SiO2_line = np.linspace(min(SiO2_dic[PointLabels[i]]), max(SiO2_dic[PointLabels[i]]), 30)
+                Al2O3_line = np.linspace(min(Al2O3_dic[PointLabels[i]]), max(Al2O3_dic[PointLabels[i]]), 30)
+                MgO_line = np.linspace(min(MgO_dic[PointLabels[i]]), max(MgO_dic[PointLabels[i]]), 30)
+                FeTotal_line = np.linspace(min(FeTotal_dic[PointLabels[i]]), max(FeTotal_dic[PointLabels[i]]), 30)
+                CaO_line = np.linspace(min(CaO_dic[PointLabels[i]]), max(CaO_dic[PointLabels[i]]), 30)
+                Na2O_line = np.linspace(min(Na2O_dic[PointLabels[i]]), max(Na2O_dic[PointLabels[i]]), 30)
+                K2O_line = np.linspace(min(K2O_dic[PointLabels[i]]), max(K2O_dic[PointLabels[i]]), 30)
+                TiO2_line = np.linspace(min(TiO2_dic[PointLabels[i]]), max(TiO2_dic[PointLabels[i]]), 30)
+                P2O5_line = np.linspace(min(P2O5_dic[PointLabels[i]]), max(P2O5_dic[PointLabels[i]]), 30)
+
+                try:
+                    np.polyfit(Al2O3_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(MgO_dic[PointLabels[i]], SiO2_dic[PointLabels[i]],self.FitLevel)
+                    np.polyfit(FeTotal_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(CaO_dic[PointLabels[i]],  SiO2_dic[PointLabels[i]],self.FitLevel)
+                    np.polyfit(Na2O_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(K2O_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(TiO2_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel)
+                    np.polyfit(P2O5_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel)
+                except Exception as e:
+                    self.ErrorEvent(text=repr(e))
+                    fitstatus = False
+
+                if (fitstatus == True):
+                    try:
+                        #opt, cov = np.polyfit(Al2O3_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel, cov=True)
+
+                        opt1, cov1 =np.polyfit(Al2O3_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt2, cov2 =np.polyfit(MgO_dic[PointLabels[i]], SiO2_dic[PointLabels[i]],self.FitLevel, cov=True)
+                        opt3, cov3 =np.polyfit(FeTotal_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt4, cov4 =np.polyfit(CaO_dic[PointLabels[i]],  SiO2_dic[PointLabels[i]],self.FitLevel, cov=True)
+                        opt5, cov5 =np.polyfit(Na2O_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt6, cov6 =np.polyfit(K2O_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt7, cov7 =np.polyfit(TiO2_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel, cov=True)
+                        opt8, cov8 =np.polyfit(P2O5_dic[PointLabels[i]], SiO2_dic[PointLabels[i]], self.FitLevel, cov=True)
+
+
+                        self.fit_slider_label.setText('x= f(y) EXP')
+
+
+                        p1 = np.poly1d(opt1)
+                        p2 = np.poly1d(opt2)
+                        p3 = np.poly1d(opt3)
+                        p4 = np.poly1d(opt4)
+                        p5 = np.poly1d(opt5)
+                        p6 = np.poly1d(opt6)
+                        p7 = np.poly1d(opt7)
+                        p8 = np.poly1d(opt8)
+
+                        X1 = p1(Al2O3_line)
+                        X2 = p2(MgO_line)
+                        X3 = p3(FeTotal_line)
+                        X4 = p4(CaO_line)
+                        X5 = p5(Na2O_line)
+                        X6 = p6(K2O_line)
+                        X7 = p7(TiO2_line)
+                        X8 = p8(P2O5_line)
+
+                        if (self.fit_cb.isChecked()):
+
+                            Al2O3_plot.plot(X1, Al2O3_line,color= PointColors[i])
+                            MgO_plot.plot(X2,MgO_line, color= PointColors[i])
+                            FeTotal_plot.plot(X3,FeTotal_line, color= PointColors[i])
+                            CaO_plot.plot(X4, CaO_line,color= PointColors[i])
+                            Na2O_plot.plot(X5,Na2O_line, color= PointColors[i])
+                            K2O_plot.plot(X6,K2O_line, color= PointColors[i])
+                            TiO2_plot.plot(X7,TiO2_line, color= PointColors[i])
+                            P2O5_plot.plot(X8,P2O5_line, color= PointColors[i])
+
+                    except Exception as e:
+                        self.ErrorEvent(text=repr(e))
+
+
+                pass
 
         if (self.shape_cb.isChecked()):
             for i in PointLabels:

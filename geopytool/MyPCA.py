@@ -486,8 +486,10 @@ class MyPCA(AppForm):
                                        alpha=self._df.at[i,'Alpha'])
                 else:
 
+                    #size = self._df.at[i, 'Size']
+
                     if 'Index' in self._df_back.columns.values:
-                        self.axes.text(self.pca_result[i, a], self.pca_result[i, b],self.pca_result[i, c],self._df_back.at[i, 'Index'], size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
+                        self.axes.text(self.pca_result[i, a], self.pca_result[i, b],self.pca_result[i, c],self._df_back.at[i, 'Index'], size= self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
                                        alpha=self._df.at[i, 'Alpha'])
 
                     else:
