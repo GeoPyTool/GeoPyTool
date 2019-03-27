@@ -58,7 +58,7 @@ class TAS(AppForm):
 
     TypeList=[]
 
-    RiedmanList=[]
+    RittmanList=[]
 
     All_X = []
     All_Y = []
@@ -114,7 +114,7 @@ class TAS(AppForm):
         self.irvine_cb.stateChanged.connect(self.TAS)  # int
 
 
-        self.riedman_cb = QCheckBox('&Riedman')
+        self.riedman_cb = QCheckBox('&Rittman')
         self.riedman_cb.setChecked(True)
         self.riedman_cb.stateChanged.connect(self.TAS)  # int
 
@@ -189,7 +189,7 @@ class TAS(AppForm):
         return(a+ b*np.power(x,1) +c*np.power(x,2) +d*np.power(x,3) +e*np.power(x,4) +f*np.power(x,5) +g*np.power(x,6))
         pass
 
-    def Riedman(self,x=46,r_1=3.3,r_2=0):
+    def Rittman(self,x=46,r_1=3.3,r_2=0):
         y_1= r_1*np.sqrt(x-43)
         y_2= r_2*np.sqrt(x-43)
         return(y_1,y_2)
@@ -237,7 +237,7 @@ class TAS(AppForm):
         self.LabelList=[]
         self.IndexList=[]
         self.TypeList=[]
-        self.RiedmanList=[]
+        self.RittmanList=[]
 
 
 
@@ -379,7 +379,7 @@ class TAS(AppForm):
                         self.LabelList.append(Label)
                         self.TypeList.append(j)
 
-                        self.RiedmanList.append(round( ytest**2/(xtest-43) + 0.001, 2))
+                        self.RittmanList.append(round( ytest**2/(xtest-43) + 0.001, 2))
 
                         if 'Index' in self._df_back.columns.values:
                             self.IndexList.append(self._df_back.at[i, 'Index'])
@@ -541,7 +541,7 @@ class TAS(AppForm):
 
 
                                     print(self.data_to_test.at[i, 'Label'],j)
-                                    self.RiedmanList.append(round(y_load_test ** 2 / (x_load_test - 43) + 0.001, 2))
+                                    self.RittmanList.append(round(y_load_test ** 2 / (x_load_test - 43) + 0.001, 2))
 
                                     if 'Index' in self.data_to_test_back.columns.values:
                                         self.IndexList.append(self.data_to_test_back.at[i, 'Index'])
@@ -624,7 +624,7 @@ class TAS(AppForm):
             {'Label': self.LabelList,
              'Index':self.IndexList,
              'RockType': self.TypeList,
-             'Riedman Index': self.RiedmanList
+             'Rittman Index': self.RittmanList
              })
 
         self.OutPutFig=self.fig
