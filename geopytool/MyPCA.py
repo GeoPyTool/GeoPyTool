@@ -25,6 +25,7 @@ class MyPCA(AppForm):
     text_result = ''
     whole_labels=[]
     pca = PCA(n_components='mle')
+    #pca = PCA(n_components=3)
 
     n=6
 
@@ -129,6 +130,13 @@ class MyPCA(AppForm):
         self.switch_button = QPushButton('&Switch to 2D')
         self.switch_button.clicked.connect(self.switch)
 
+        self.kernel_select = QSlider(Qt.Horizontal)
+        self.kernel_select.setRange(0, len(self.kernel_list)-1)
+        self.kernel_select.setValue(0)
+        self.kernel_select.setTracking(True)
+        self.kernel_select.setTickPosition(QSlider.TicksBothSides)
+        self.kernel_select.valueChanged.connect(self.Key_Func)  # int
+        self.kernel_select_label = QLabel('Kernel')
 
         self.x_element = QSlider(Qt.Horizontal)
         self.x_element.setRange(0, self.n - 1)
@@ -167,7 +175,7 @@ class MyPCA(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
 
-        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb]:
+        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb,self.kernel_select_label,self.kernel_select ]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -216,6 +224,9 @@ class MyPCA(AppForm):
         a = int(self.x_element.value())
         b = int(self.y_element.value())
         c = int(self.z_element.value())
+
+        k_s = int(self.kernel_select.value())
+        self.kernel_select_label.setText(self.kernel_list[k_s])
 
         self.axes.clear()
         self.pca.fit(self.result_to_fit.values)
@@ -498,7 +509,7 @@ class MyPCA(AppForm):
 
         if (self.hyperplane_cb.isChecked()):
             if (self.switched == False):
-                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+                clf = svm.SVC(C=1.0, kernel= self.kernel_list[k_s],probability= True)
                 svm_x = self.pca_result[:, a]
                 svm_y = self.pca_result[:, b]
                 svm_z = self.pca_result[:, c]
@@ -511,14 +522,14 @@ class MyPCA(AppForm):
                 svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y), pd.DataFrame(svm_z)], axis=1)
 
                 svm_train = svm_train.values
-
-                # The equation of the separating plane is given by all x so that np.dot(svc.coef_[0], x) + b = 0.
-                zz = lambda x, y: (-clf.intercept_[0] - clf.coef_[0][0] * x - clf.coef_[0][1] * y) / clf.coef_[0][2]
-                clf.fit(svm_train, class_label)
-                self.axes.plot_surface(xx, yy, zz(xx,yy).reshape(xx.shape), color= 'grey', alpha=0.5)
+                if k_s==0:
+                    # The equation of the separating plane is given by all x so that np.dot(svc.coef_[0], x) + b = 0.
+                    zz = lambda x, y: (-clf.intercept_[0] - clf.coef_[0][0] * x - clf.coef_[0][1] * y) / clf.coef_[0][2]
+                    clf.fit(svm_train, class_label)
+                    self.axes.plot_surface(xx, yy, zz(xx,yy).reshape(xx.shape), color= 'grey', alpha=0.5)
 
             else:
-                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+                clf = svm.SVC(C=1.0, kernel= self.kernel_list[k_s],probability= True)
                 svm_x = self.pca_result[:, a]
                 svm_y = self.pca_result[:, b]
 
@@ -542,8 +553,10 @@ class MyPCA(AppForm):
 
 
     def showPredictResult(self):
+
+        k_s = int(self.kernel_select.value())
         try:
-                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+                clf = svm.SVC(C=1.0, kernel= self.kernel_list[k_s],probability= True)
                 clf.fit(self.pca_result, self.result_to_fit.index)
                 Z = clf.predict(np.c_[self.pca_data_to_test])
 

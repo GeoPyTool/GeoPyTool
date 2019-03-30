@@ -123,6 +123,16 @@ class MyFA(AppForm):
         self.switch_button = QPushButton('&Switch to 2D')
         self.switch_button.clicked.connect(self.switch)
 
+
+        self.kernel_select = QSlider(Qt.Horizontal)
+        self.kernel_select.setRange(0, len(self.kernel_list)-1)
+        self.kernel_select.setValue(0)
+        self.kernel_select.setTracking(True)
+        self.kernel_select.setTickPosition(QSlider.TicksBothSides)
+        self.kernel_select.valueChanged.connect(self.Key_Func)  # int
+        self.kernel_select_label = QLabel('Kernel')
+
+
         self.x_element = QSlider(Qt.Horizontal)
         self.x_element.setRange(0, self.n - 1)
         self.x_element.setValue(0)
@@ -158,7 +168,7 @@ class MyFA(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
 
-        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb]:
+        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb,self.kernel_select_label,self.kernel_select ]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -207,6 +217,8 @@ class MyFA(AppForm):
         a = int(self.x_element.value())
         b = int(self.y_element.value())
         c = int(self.z_element.value())
+
+        k_s = int(self.kernel_select.value())
 
         self.axes.clear()
 
@@ -374,6 +386,7 @@ class MyFA(AppForm):
                 self.ErrorEvent(text=missing)
 
 
+        self.kernel_select_label.setText(self.kernel_list[k_s])
         self.axes.set_xlabel("component no."+str(a+1))
         self.x_element_label.setText("component no."+str(a+1))
 
@@ -479,7 +492,7 @@ class MyFA(AppForm):
             pass
 
             if (self.switched == False):
-                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+                clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s],probability= True)
                 svm_x = self.fa_result[:, a]
                 svm_y = self.fa_result[:, b]
                 svm_z = self.fa_result[:, c]
@@ -493,13 +506,14 @@ class MyFA(AppForm):
 
                 svm_train = svm_train.values
 
-                # The equation of the separating plane is given by all x so that np.dot(svc.coef_[0], x) + b = 0.
-                zz = lambda x, y: (-clf.intercept_[0] - clf.coef_[0][0] * x - clf.coef_[0][1] * y) / clf.coef_[0][2]
-                clf.fit(svm_train, class_label)
-                self.axes.plot_surface(xx, yy, zz(xx,yy).reshape(xx.shape), color= 'grey', alpha=0.5)
+                if k_s==0:
+                    # The equation of the separating plane is given by all x so that np.dot(svc.coef_[0], x) + b = 0.
+                    zz = lambda x, y: (-clf.intercept_[0] - clf.coef_[0][0] * x - clf.coef_[0][1] * y) / clf.coef_[0][2]
+                    clf.fit(svm_train, class_label)
+                    self.axes.plot_surface(xx, yy, zz(xx,yy).reshape(xx.shape), color= 'grey', alpha=0.5)
 
             else:
-                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+                clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s],probability= True)
                 svm_x = self.fa_result[:, a]
                 svm_y = self.fa_result[:, b]
 
@@ -530,8 +544,12 @@ class MyFA(AppForm):
         self.canvas.draw()
 
     def showPredictResult(self):
+
+
+        k_s = int(self.kernel_select.value())
+
         try:
-            clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
             clf.fit(self.fa_result, self.result_to_fit.index)
             Z = clf.predict(np.c_[self.fa_data_to_test])
 

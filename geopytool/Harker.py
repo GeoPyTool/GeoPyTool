@@ -190,13 +190,24 @@ class Harker(AppForm):
         self.fit_slider.setTickPosition(QSlider.TicksBothSides)
         self.fit_slider.valueChanged.connect(self.Harker)  # int
 
+
+
+        self.kernel_select = QSlider(Qt.Horizontal)
+        self.kernel_select.setRange(0, len(self.kernel_list)-1)
+        self.kernel_select.setValue(0)
+        self.kernel_select.setTracking(True)
+        self.kernel_select.setTickPosition(QSlider.TicksBothSides)
+        self.kernel_select.valueChanged.connect(self.Harker)  # int
+        self.kernel_select_label = QLabel('Kernel')
+
+
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
         self.hbox1 = QHBoxLayout()
 
-        for w in [ self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb]:
+        for w in [ self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb,self.kernel_select_label,self.kernel_select ]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -239,6 +250,10 @@ class Harker(AppForm):
 
 
     def Harker(self):
+
+
+        k_s = int(self.kernel_select.value())
+        self.kernel_select_label.setText(self.kernel_list[k_s])
 
         self.WholeData = []
 
@@ -837,9 +852,10 @@ class Harker(AppForm):
 
     def DrawHyperPlane(self,svm_x=[1,2,3],svm_y =[4,5,6],target_label = [1,1,0]):
 
-        try:
 
-            clf = svm.SVC(C=1.0, kernel='linear', probability=True)
+        k_s = int(self.kernel_select.value())
+        try:
+            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
             xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
                                  np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
 
@@ -857,7 +873,7 @@ class Harker(AppForm):
 
         except:
             pass
-            return(False)
+            return(False,0)
 
     def DrawContourf(self,xlist=[1,2,3],ylist=[4,5,6]):
 
@@ -884,12 +900,14 @@ class Harker(AppForm):
 
     def showPredictResult(self):
 
+        k_s = int(self.kernel_select.value())
+
         if len(self.data_to_test) > 0:
 
             df=self.CleanDataFile(self._df)
             df_to_fit=self.Slim(self.CleanDataFile(self.data_to_test))
 
-            clf = svm.SVC(C=1.0, kernel='linear', probability=True)
+            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
             le = LabelEncoder()
             le.fit(self._df.Label)
             df_values = self.Slim(df)

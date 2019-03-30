@@ -380,13 +380,20 @@ class XY(AppForm):
         #self.load_data_button.setFixedWidth(w/4)
 
 
+        self.kernel_select = QSlider(Qt.Horizontal)
+        self.kernel_select.setRange(0, len(self.kernel_list)-1)
+        self.kernel_select.setValue(0)
+        self.kernel_select.setTracking(True)
+        self.kernel_select.setTickPosition(QSlider.TicksBothSides)
+        self.kernel_select.valueChanged.connect(self.Magic)  # int
+        self.kernel_select_label = QLabel('Kernel')
 
         for w in [self.save_plot_button ,self.stat_button,self.load_data_button,self.save_predict_button,self.save_predict_button_selected]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb,self.hyperplane_cb]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -767,7 +774,8 @@ class XY(AppForm):
 
     def Magic(self):
 
-
+        k_s = int(self.kernel_select.value())
+        self.kernel_select_label.setText(self.kernel_list[k_s])
 
 
         self.WholeData = []
@@ -1373,8 +1381,9 @@ class XY(AppForm):
         self.All_Y=YtoFit
         if (self.hyperplane_cb.isChecked()):
 
+
             if XtoFit != YtoFit:
-                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+                clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
                 svm_x = XtoFit
                 svm_y = YtoFit
                 xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
@@ -1427,8 +1436,10 @@ class XY(AppForm):
         self.Magic()
 
     def showPredictResultSelected(self):
+
+        k_s = int(self.kernel_select.value())
         try:
-            clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
             svm_x = self.All_X
             svm_y = self.All_Y
 
@@ -1480,8 +1491,9 @@ class XY(AppForm):
 
 
     def showPredictResult(self):
+        k_s = int(self.kernel_select.value())
         try:
-            clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
             le = LabelEncoder()
             le.fit(self._df.Label)
             df_values = self.Slim(self._df)

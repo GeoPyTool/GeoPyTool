@@ -1,4 +1,4 @@
-version = '0.8.19.4.101'
+version = '0.8.19.4.102'
 
 date = '2019-3-25'
 
@@ -922,6 +922,7 @@ class AppForm(QMainWindow):
     begin_result = pd.DataFrame()
     load_result = pd.DataFrame()
 
+    kernel_list = ['linear','rbf','sigmoid','poly']
     _changed = False
 
     xlabel = r'$SiO_2 wt\%$'

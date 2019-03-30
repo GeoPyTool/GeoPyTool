@@ -143,6 +143,13 @@ class TAS(AppForm):
         self.slider.setTickPosition(QSlider.TicksBothSides)
         self.slider.valueChanged.connect(self.TAS)  # int
 
+        self.kernel_select = QSlider(Qt.Horizontal)
+        self.kernel_select.setRange(0, len(self.kernel_list)-1)
+        self.kernel_select.setValue(0)
+        self.kernel_select.setTracking(True)
+        self.kernel_select.setTickPosition(QSlider.TicksBothSides)
+        self.kernel_select.valueChanged.connect(self.TAS)  # int
+        self.kernel_select_label = QLabel('Kernel')
 
         #
         # Layout with box sizers
@@ -155,7 +162,7 @@ class TAS(AppForm):
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.tag_cb,self.irvine_cb ]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select ,self.tag_cb,self.irvine_cb ]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
@@ -205,6 +212,13 @@ class TAS(AppForm):
     def TAS(self, Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
             Top=19, Y0=1, Y1=19, Y_Gap=19, FontSize=12, xlabel=r'$SiO_2 wt\%$', ylabel=r'$Na_2O + K_2O wt\%$', width=12,
             height=12, dpi=300):
+
+
+
+        k_s = int(self.kernel_select.value())
+        self.kernel_select_label.setText(self.kernel_list[k_s])
+
+
         self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Plutonic (Wilson et al. 1989)')
         self.axes.clear()
         #self.axes.axis('off')
@@ -573,7 +587,7 @@ class TAS(AppForm):
             self.All_Y=SVM_Y
 
             if (self.hyperplane_cb.isChecked()):
-                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+                clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
 
                 svm_x= SVM_X
                 svm_y= SVM_Y
@@ -631,8 +645,10 @@ class TAS(AppForm):
 
 
     def showPredictResultSelected(self):
+
+        k_s = int(self.kernel_select.value())
         try:
-            clf = svm.SVC(C=1.0, kernel='linear',probability= True)
+            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
             svm_x = self.All_X
             svm_y = self.All_Y
             le = LabelEncoder()
