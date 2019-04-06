@@ -818,7 +818,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         flag = 0
         ItemsAvalibale = self.model._df.columns.values.tolist()
 
-        ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
+        ItemsToTest = ['Label', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width','Index']
 
         LabelList = []
         MarkerList = []
@@ -827,6 +827,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         AlphaList = []
         StyleList = []
         WidthList = []
+        IndexList = []
 
         for i in range(len(self.model._df)):
             LabelList.append('Group1')
@@ -836,8 +837,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             AlphaList.append(0.6)
             StyleList.append('-')
             WidthList.append(1)
+            IndexList.append(i+1)
 
         data = {'Label': LabelList,
+                'Index': IndexList,
                 'Marker': MarkerList,
                 'Color': ColorList,
                 'Size': SizeList,
