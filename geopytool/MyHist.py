@@ -18,7 +18,7 @@ class MyHist(AppForm):
     all_markers = []
     all_alpha = []
     all_data_list = []
-    bin_width=1
+    bin_width=0
     kde_bin_width=1
 
     def __init__(self, parent=None, df=pd.DataFrame(),filename= '/'):
@@ -117,10 +117,10 @@ class MyHist(AppForm):
             self.bin_width = float(text)
         except Exception as e:
             self.ErrorEvent(text=repr(e))
-            self.bin_width=1
+            self.bin_width=0
 
         if self.bin_width<=0:
-            self.bin_width=0.1
+            self.bin_width=0
         self.MyHist()
 
     def KDEBinWidthChanged(self, text):
@@ -196,15 +196,21 @@ class MyHist(AppForm):
 
             if self.bar_cb.isChecked():
                 if (self.density_cb.isChecked()):
-                    self.axes.hist(self.all_data_list,density=True, facecolor= 'grey', alpha= 0.6,bins=int(step/self.bin_width),
+                    if self.bin_width==0:
+                        self.axes.hist(self.all_data_list,density=True, facecolor= 'grey', alpha= 0.6,
+                                       label=self.getFileName([self.filename]), edgecolor='k')
+                    else:
+                        self.axes.hist(self.all_data_list,density=True, facecolor= 'grey', alpha= 0.6,bins=int(step/self.bin_width),
                                        label=self.getFileName([self.filename]), edgecolor='k')
                 else:
-                    self.axes.hist(self.all_data_list,density=False, facecolor= 'grey', alpha= 0.6,bins=int(step/self.bin_width),
+                    if self.bin_width==0:
+                        self.axes.hist(self.all_data_list,density=False, facecolor= 'grey', alpha= 0.6,
+                                       label=self.getFileName([self.filename]), edgecolor='k')
+                    else:
+                        self.axes.hist(self.all_data_list,density=False, facecolor= 'grey', alpha= 0.6,bins=int(step/self.bin_width),
                                    label=self.getFileName([self.filename]), edgecolor='k')
 
         else:
-
-
 
             for i in range(len(self._df)):
                 target = self._df.at[i, 'Label']
@@ -248,8 +254,16 @@ class MyHist(AppForm):
                 if (self.density_cb.isChecked()):
                     self.axes.set_ylabel(self.ylabel+' Density')
                     if self.bar_cb.isChecked():
-                        N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=True, edgecolor='k', bins=int(step/self.bin_width),
-                                                      alpha=0.6)
+
+                        if self.bin_width == 0:
+                            N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=True,
+                                                              edgecolor='k', alpha=0.6)
+
+                        else:
+                            N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=True,
+                                                              edgecolor='k', bins=int(step / self.bin_width),
+                                                              alpha=0.6)
+
 
                     for t in range(len(self.all_data_list)):
                         xs = np.linspace(min(self.all_data_list[t]), max(self.all_data_list[t]), 1000)
@@ -270,7 +284,12 @@ class MyHist(AppForm):
                                        alpha=self.all_alpha[t])
                 else:
                     if self.bar_cb.isChecked():
-                        N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=True, edgecolor='k', bins=int(step/self.bin_width),
+                        if self.bin_width == 0:
+                            N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=True,
+                                                              edgecolor='k',alpha=0.6)
+                        else:
+                            N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=True,
+                                                              edgecolor='k', bins=int(step / self.bin_width),
                                                               alpha=0.6)
                     #patches[i].set_facecolor('red')
 
@@ -292,22 +311,51 @@ class MyHist(AppForm):
                     for k in range(len(self.all_labels)):
                         if (self.density_cb.isChecked()):
                             self.axes.set_ylabel(self.ylabel+' Density')
-                            self.axes.hist(self.all_data_list[k], density=True, facecolor=self.all_colors[k],
-                                               alpha=self.all_alpha[k], label=self.all_labels[k], edgecolor='k', bins=int(step/self.bin_width))
+
+                            if self.bin_width == 0:
+                                self.axes.hist(self.all_data_list[k], density=True, facecolor=self.all_colors[k],
+                                               alpha=self.all_alpha[k], label=self.all_labels[k], edgecolor='k')
+
+                            else:
+                                self.axes.hist(self.all_data_list[k], density=True, facecolor=self.all_colors[k],
+                                               alpha=self.all_alpha[k], label=self.all_labels[k], edgecolor='k',
+                                               bins=int(step / self.bin_width))
+
                         else:
-                            self.axes.hist(self.all_data_list[k], density=False, facecolor=self.all_colors[k],
-                                               alpha=self.all_alpha[k], label=self.all_labels[k], edgecolor='k',bins=int(step/self.bin_width))
+                            if self.bin_width == 0:
+                                self.axes.hist(self.all_data_list[k], density=False, facecolor=self.all_colors[k],
+                                               alpha=self.all_alpha[k], label=self.all_labels[k], edgecolor='k')
+
+                            else:
+                                self.axes.hist(self.all_data_list[k], density=False, facecolor=self.all_colors[k],
+                                               alpha=self.all_alpha[k], label=self.all_labels[k], edgecolor='k',
+                                               bins=int(step / self.bin_width))
+
 
 
                 else:
                     if (self.density_cb.isChecked()):
                         self.axes.set_ylabel(self.ylabel+' Density')
-                        N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=False,
-                                                              edgecolor='k', alpha=0.6, bins=int(step/self.bin_width))
+
+
+                        if self.bin_width == 0:
+                            N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=False,
+                                                              edgecolor='k', alpha=0.6)
+                        else:
+
+                            N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=False,
+                                                              edgecolor='k', alpha=0.6, bins=int(step / self.bin_width))
+
 
                     else:
-                        N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=False,
-                                                              edgecolor='k', alpha=0.6, bins=int(step/self.bin_width))
+                        if self.bin_width == 0:
+                            N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=False,
+                                                              edgecolor='k', alpha=0.6)
+                        else:
+                            N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=False,
+                                                              edgecolor='k', alpha=0.6, bins=int(step / self.bin_width))
+
+
 
                         #patches[i].set_facecolor('red')
 
