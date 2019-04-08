@@ -1,7 +1,7 @@
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
-class Trace(AppForm):
+class OldTrace(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
               30, 31, 32, 33, 34, 35, 36, 37]
     xticklabels = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
@@ -10,10 +10,10 @@ class Trace(AppForm):
                    u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
 
 
-    itemstocheck = ['Cs', 'Tl', 'Rb', 'Ba', 'W', 'Th', 'U', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Pb', 'Pr', 'Mo',
+    itemstocheck = ['Cs', 'Tl', 'Rb', 'Ba', 'W', 'Th', '', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Pb', 'Pr', 'Mo',
                    'Sr', 'P', 'Nd', 'F', 'Sm', 'Zr', 'Hf', 'E', 'Sn', 'Sb', 'Ti', 'Gd', 'Tb', 'Dy',
                    'Li',
-                   'Y', 'Ho', 'Er', 'Tm', 'Yb', 'Lu','K2O','']
+                   'Y', 'Ho', 'Er', 'Tm', 'Yb', 'L']
 
     StandardsName = ['PM','OIB', 'EMORB', 'C1',  'NMORB','UCC_Rudnick & Gao2003']
     reference = 'Reference: Sun, S. S., and Mcdonough, W. F., 1989, UCC_Rudnick & Gao2003'
@@ -60,12 +60,11 @@ class Trace(AppForm):
 
 
         self.FileName_Hint='Trace'
-        self._df = df
+        #self._df = df
         self._df_back =df
-        #self.data_to_norm = df
 
         self.data_to_norm = self.CleanDataFile(df)
-        #self._df = self.CleanDataFile(df)
+        self._df = self.CleanDataFile(df)
 
 
         self._given_Standard = self.Standard
@@ -231,36 +230,33 @@ class Trace(AppForm):
 
 
         if (int(self.type_slider.value()) == 0):
-            Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
+            self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
                             u'Pr', u'Mo',
                             u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb',
                             u'Dy', u'Li', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
 
-            text='Cs-Lu '
+            CommonElements = [i for i in self.Element if i in self._df.columns]
+            self.Element = CommonElements
+            self.xticks = [i for i in range(1,len(CommonElements)+2)]
+            self.xticklabels = CommonElements
+
+            self.setWindowTitle('Trace Standardlized Pattern Diagram Cs-Lu '+ str(len(CommonElements)+1) +' Elements')
+
 
 
         else:
-            Element = [u'Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd',
+            self.Type_cb.setText('&Rb-Lu (26 Elements)')
+            self.Element = [u'Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd',
                             u'Zr', u'Hf',
                             u'Sm', u'Eu', u'Ti', u'Tb', u'Dy', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
 
+            CommonElements = [i for i in self.Element if i in self._df.columns]
+            self.Element = CommonElements
+            self.xticks = [i for i in range(1,len(CommonElements)+2)]
+            self.xticklabels = CommonElements
 
-            text='Rb-Lu '
+            self.setWindowTitle('Trace Standardlized Pattern Diagram Rb-Lu '+ str(len(CommonElements)+1) +' Elements')
 
-        #CommonElements = [i for i in self._df.columns if i in Element]
-
-        CommonElements=[]
-
-        for i in range(len(Element)):
-            if Element[i] in self._df.columns:
-                CommonElements.append(Element[i])
-                print(i,Element[i])
-
-        self.Element = CommonElements
-        self.xticks = [i for i in range(1, len(CommonElements) + 2)]
-        self.xticklabels = CommonElements
-
-        self.setWindowTitle('Trace Standardlized Pattern Diagram '+text + str(len(CommonElements)) + ' Elements')
 
 
 
@@ -324,6 +320,15 @@ class Trace(AppForm):
                 if CommonElements[j] in raw.columns:
                     tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
 
+                elif CommonElements[j] == 'K' and 'K2O' in raw.columns:
+                    tmp = raw.at[i, 'K2O'] * (
+                            2 * 39.0983 / 94.1956) * 10000 / standardchosen[
+                              CommonElements[j]]
+
+                elif CommonElements[j] == 'Ti' and 'TiO2' in raw.columns:
+                    tmp = raw.at[i, 'TiO2'] * (
+                            47.867 / 79.865) * 10000 / standardchosen[
+                              CommonElements[j]]
                 else:
                     flag = 0
 
@@ -363,6 +368,15 @@ class Trace(AppForm):
                     if CommonElements[j] in raw.columns:
                         tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
 
+                    elif CommonElements[j] == 'K' and 'K2O' in raw.columns:
+                        tmp = raw.at[i, 'K2O'] * (
+                            2 * 39.0983 / 94.1956) * 10000 / standardchosen[
+                            CommonElements[j]]
+
+                    elif CommonElements[j] == 'Ti' and 'TiO2' in raw.columns:
+                        tmp = raw.at[i, 'TiO2'] * (
+                            47.867 / 79.865) * 10000 / standardchosen[
+                            CommonElements[j]]
                     else:
                         flag = 0
 
@@ -437,6 +451,15 @@ class Trace(AppForm):
                         if CommonElements[j] in raw.columns:
                             tmp = raw.at[i, CommonElements[j]] / standardchosen[CommonElements[j]]
 
+                        elif CommonElements[j] == 'K' and 'K2O' in raw.columns:
+                            tmp = raw.at[i, 'K2O'] * (
+                                2 * 39.0983 / 94.1956) * 10000 / standardchosen[
+                                CommonElements[j]]
+
+                        elif CommonElements[j] == 'Ti' and 'TiO2' in raw.columns:
+                            tmp = raw.at[i, 'TiO2'] * (
+                                47.867 / 79.865) * 10000 / standardchosen[
+                                CommonElements[j]]
                         else:
                             flag = 0
 

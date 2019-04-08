@@ -1,6 +1,6 @@
-version = '0.8.19.4.105'
+version = '0.8.19.4.106'
 
-date = '2019-4-6'
+date = '2019-4-8'
 
 dpi = 128
 #coding:utf-8
@@ -1022,7 +1022,7 @@ class AppForm(QMainWindow):
 
         for i in raw.dtypes.index:
             if raw.dtypes[i] != float and raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha', 'Style','Width', 'Label']:
-                print(i)
+                print(raw.dtypes[i],i,'droped')
                 raw = raw.drop(i, 1)
 
         for i in raw.columns.values.tolist():

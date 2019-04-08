@@ -18,11 +18,11 @@ class MyHist(AppForm):
     all_markers = []
     all_alpha = []
     all_data_list = []
-
+    bin_width=1
+    kde_bin_width=1
 
     def __init__(self, parent=None, df=pd.DataFrame(),filename= '/'):
         QWidget.__init__(self, parent)
-
         self.setWindowTitle('Hist')
         self.FileName_Hint = ''
         self._df = df
@@ -31,11 +31,8 @@ class MyHist(AppForm):
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to AppForm')
-
         self.create_main_frame()
         self.create_status_bar()
-
-
 
     def create_main_frame(self):
         self.resize(1000, 800)
@@ -49,10 +46,7 @@ class MyHist(AppForm):
         self.axes.axis('off')
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
-
         # Other GUI controls
-
-
         self.save_button = QPushButton('&Save Img')
         self.save_button.clicked.connect(self.saveImgFile)
 
@@ -60,6 +54,9 @@ class MyHist(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.MyHist)  # int
 
+        self.bar_cb = QCheckBox('&Bars')
+        self.bar_cb.setChecked(True)
+        self.bar_cb.stateChanged.connect(self.MyHist)  # int
 
         self.density_cb = QCheckBox('&Density')
         self.density_cb.setChecked(True)
@@ -69,19 +66,25 @@ class MyHist(AppForm):
         self.stack_cb.setChecked(True)
         self.stack_cb.stateChanged.connect(self.MyHist)  # int
 
-
         self.combine_cb = QCheckBox('&Combine')
         self.combine_cb.setChecked(False)
         self.combine_cb.stateChanged.connect(self.MyHist)  # int
-
 
         self.overlap_cb = QCheckBox('&Overlap')
         self.overlap_cb.setChecked(False)
         self.overlap_cb.stateChanged.connect(self.MyHist)  # int
 
+        self.bin_width_setter_label =  QLabel('BarBinWidth')
+        self.bin_width_setter  = QLineEdit(self)
+        self.bin_width_setter.textChanged[str].connect(self.BarBinWidthChanged)
+
+        self.kde_bin_width_setter_label =  QLabel('KDEBinWidth')
+        self.kde_bin_width_setter  = QLineEdit(self)
+        self.kde_bin_width_setter.textChanged[str].connect(self.KDEBinWidthChanged)
+
         self.clean_df = self.Slim(self._df)
 
-        print(self.clean_df )
+        #print(self.clean_df )
 
         self.x_element = QSlider(Qt.Horizontal)
         self.x_element.setRange(0, len(self.clean_df.columns.values.tolist() ) - 1)
@@ -91,10 +94,9 @@ class MyHist(AppForm):
         self.x_element.valueChanged.connect(self.MyHist)  # int
         self.x_element_label = QLabel('component')
 
-
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,self.legend_cb,self.density_cb,self.stack_cb,self.overlap_cb,self.combine_cb,self.x_element_label,self.x_element]:
+        for w in [self.save_button,self.legend_cb,self.bar_cb,self.density_cb,self.stack_cb,self.overlap_cb,self.combine_cb,self.x_element_label,self.x_element,self.bin_width_setter_label,self.bin_width_setter,self.kde_bin_width_setter_label,self.kde_bin_width_setter]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -110,6 +112,28 @@ class MyHist(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
+    def BarBinWidthChanged(self, text):
+        try:
+            self.bin_width = float(text)
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
+            self.bin_width=1
+
+        if self.bin_width<=0:
+            self.bin_width=0.1
+        self.MyHist()
+
+    def KDEBinWidthChanged(self, text):
+        try:
+            self.kde_bin_width = float(text)
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
+            self.kde_bin_width=1
+
+        if self.kde_bin_width<=0:
+            self.kde_bin_width=0.1
+
+        self.MyHist()
 
     def Slim(self,df= pd.DataFrame()):
 
@@ -160,21 +184,27 @@ class MyHist(AppForm):
         self.all_alpha=[]
         self.all_data_list=[]
 
+        print(self.bin_width)
+        print(self.kde_bin_width)
 
         if (self.combine_cb.isChecked()):
-
             self.all_data_list = self._df[items[a]]
 
+            xmax= max(self.all_data_list)
+            xmin= min(self.all_data_list)
+            step = xmax-xmin
 
-            if (self.density_cb.isChecked()):
-                self.axes.hist(self.all_data_list,density=True, facecolor= 'grey', alpha= 0.6,
-                           label=self.getFileName([self.filename]), edgecolor='k')
-            else:
-                self.axes.hist(self.all_data_list, density=False, facecolor= 'grey', alpha= 0.6,
-                           label=self.getFileName([self.filename]), edgecolor='k')
-
+            if self.bar_cb.isChecked():
+                if (self.density_cb.isChecked()):
+                    self.axes.hist(self.all_data_list,density=True, facecolor= 'grey', alpha= 0.6,bins=int(step/self.bin_width),
+                                       label=self.getFileName([self.filename]), edgecolor='k')
+                else:
+                    self.axes.hist(self.all_data_list,density=False, facecolor= 'grey', alpha= 0.6,bins=int(step/self.bin_width),
+                                   label=self.getFileName([self.filename]), edgecolor='k')
 
         else:
+
+
 
             for i in range(len(self._df)):
                 target = self._df.at[i, 'Label']
@@ -196,69 +226,102 @@ class MyHist(AppForm):
                     target = self._df.at[i, 'Label']
                     if target == j:
                         tmp_data_list.append(self._df.at[i,items[a]])
-
                 self.all_data_list.append(tmp_data_list)
+
+
+            xmax= 0
+            xmin= 0
+            step = 1
+
+            for i in self.all_data_list:
+                for j in i:
+                    if j >= xmax:
+                        xmax=j
+                    if j <= xmin:
+                        xmin =j
+
+            step = xmax-xmin
+
 
             if (self.stack_cb.isChecked()):
                 pass
-
                 if (self.density_cb.isChecked()):
-
                     self.axes.set_ylabel(self.ylabel+' Density')
+                    if self.bar_cb.isChecked():
+                        N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=True, edgecolor='k', bins=int(step/self.bin_width),
+                                                      alpha=0.6)
 
-                    N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=True,edgecolor='k',alpha= 0.6)
+                    for t in range(len(self.all_data_list)):
+                        xs = np.linspace(min(self.all_data_list[t]), max(self.all_data_list[t]), 1000)
+                        '''
+                        density = gaussian_kde(self.all_data_list[t])
+                        density.covariance_factor = lambda: .25
+                        #density.set_bandwidth(bw_method='silverman')
+                        density._compute_covariance()
+                        self.axes.plot(xs, density(xs), color=self.all_colors[t], label=self.all_labels[t],
+                                       alpha=self.all_alpha[t])
+                        '''
+                        kde = KernelDensity(bandwidth=self.kde_bin_width, kernel='gaussian')
+                        #print(np.array(self.all_data_list[t]).reshape(-1, 1))
+                        kde.fit(np.array(self.all_data_list[t]).reshape(-1, 1))
+                        # score_samples returns the log of the probability density
+                        logprob = kde.score_samples(xs.reshape(-1, 1))
+                        self.axes.plot(xs, np.exp(logprob), color=self.all_colors[t], label=self.all_labels[t],
+                                       alpha=self.all_alpha[t])
                 else:
-                    N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=True,edgecolor='k',alpha= 0.6)
-
-
+                    if self.bar_cb.isChecked():
+                        N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=True, edgecolor='k', bins=int(step/self.bin_width),
+                                                              alpha=0.6)
                     #patches[i].set_facecolor('red')
-                width = (bins[1] - bins[0]) * 0.4
 
                 tmp_label_check=[]
-                for k in range(len(patches)):
-                    for p in patches[k]:
-                        p.set_facecolor(self.all_colors[k])
-                        p.set_alpha(self.all_alpha[k])
 
-                        if self.all_labels[k] not in tmp_label_check:
-                            tmp_label_check.append(self.all_labels[k])
-                            p.set_label(self.all_labels[k])
+                if self.bar_cb.isChecked():
+                    if len(self.all_labels)>1:
+                        for k in range(len(patches)):
+                            for p in patches[k]:
+                                p.set_facecolor(self.all_colors[k])
+                                p.set_alpha(self.all_alpha[k])
 
+                                if self.all_labels[k] not in tmp_label_check:
+                                    tmp_label_check.append(self.all_labels[k])
+                                    p.set_label(self.all_labels[k])
 
             else:
-
                 if (self.overlap_cb.isChecked()):
                     for k in range(len(self.all_labels)):
-
                         if (self.density_cb.isChecked()):
-
                             self.axes.set_ylabel(self.ylabel+' Density')
-
-                            self.axes.hist(self.all_data_list[k], density=True, facecolor= self.all_colors[k], alpha= self.all_alpha[k],label=self.all_labels[k],edgecolor ='k')
+                            self.axes.hist(self.all_data_list[k], density=True, facecolor=self.all_colors[k],
+                                               alpha=self.all_alpha[k], label=self.all_labels[k], edgecolor='k', bins=int(step/self.bin_width))
                         else:
-                            self.axes.hist(self.all_data_list[k], density=False, facecolor= self.all_colors[k], alpha= self.all_alpha[k],label=self.all_labels[k],edgecolor ='k')
+                            self.axes.hist(self.all_data_list[k], density=False, facecolor=self.all_colors[k],
+                                               alpha=self.all_alpha[k], label=self.all_labels[k], edgecolor='k',bins=int(step/self.bin_width))
+
 
                 else:
                     if (self.density_cb.isChecked()):
-
                         self.axes.set_ylabel(self.ylabel+' Density')
+                        N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=False,
+                                                              edgecolor='k', alpha=0.6, bins=int(step/self.bin_width))
 
-                        N, bins, patches = self.axes.hist(self.all_data_list, density=True, stacked=False,edgecolor='k',alpha= 0.6)
                     else:
-                        N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=False,edgecolor='k',alpha= 0.6)
-
+                        N, bins, patches = self.axes.hist(self.all_data_list, density=False, stacked=False,
+                                                              edgecolor='k', alpha=0.6, bins=int(step/self.bin_width))
 
                         #patches[i].set_facecolor('red')
 
                     tmp_label_check=[]
-                    for k in range(len(patches)):
-                        for p in patches[k]:
-                            p.set_facecolor(self.all_colors[k])
-                            p.set_alpha(self.all_alpha[k])
 
-                            if self.all_labels[k] not in tmp_label_check:
-                                tmp_label_check.append(self.all_labels[k])
-                                p.set_label(self.all_labels[k])
+                    if len(self.all_labels) > 1:
+                        for k in range(len(patches)):
+                            for p in patches[k]:
+                                p.set_facecolor(self.all_colors[k])
+                                p.set_alpha(self.all_alpha[k])
+
+                                if self.all_labels[k] not in tmp_label_check:
+                                    tmp_label_check.append(self.all_labels[k])
+                                    p.set_label(self.all_labels[k])
 
 
 

@@ -79,6 +79,7 @@ from geopytool.FluidInclusion import FluidInclusion
 from geopytool.MyHist import MyHist
 
 from geopytool.Temp import *
+from geopytool.OldTrace import OldTrace
 from geopytool.Trace import Trace
 from geopytool.XY import XY
 from geopytool.XYZ import XYZ
@@ -255,6 +256,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTrace = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider2.png'), u'Trace',self)
         self.actionTrace.setObjectName('actionTrace')
 
+
+        self.actionOldTrace = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider2.png'), u'OldTrace',self)
+        self.actionOldTrace.setObjectName('actionOldTrace')
+
+
         self.actionRee = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider2.png'), u'Ree',self)
         self.actionRee.setObjectName('actionRee')
 
@@ -412,6 +418,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.menuGeoChem.addAction(self.actionHarkerOld)
+        self.menuGeoChem.addAction(self.actionOldTrace)
 
 
 
@@ -495,6 +502,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionTAS.triggered.connect(self.TAS)
         self.actionTrace.triggered.connect(self.Trace)
+        self.actionOldTrace.triggered.connect(self.OldTrace)
         self.actionRee.triggered.connect(self.REE)
         self.actionPearce.triggered.connect(self.Pearce)
         self.actionHarker.triggered.connect(self.Harker)
@@ -612,6 +620,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionRaman.setText('1-11 '+_translate('MainWindow',u'Raman Strength'))
         self.actionFluidInclusion.setText('1-12 '+_translate('MainWindow',u'Fluid Inclusion'))
         self.actionHarkerOld.setText('1-14 '+_translate('MainWindow',u'Harker Classical'))
+        self.actionOldTrace.setText('1-15 '+_translate('MainWindow',u'OldTrace'))
 
         self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
         self.actionRose.setText('2-2 '+_translate('MainWindow',u'Rose'))
@@ -648,7 +657,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTwoD.setText('5-10 '+_translate('MainWindow',u'TwoD'))
         self.actionTwoD_Grey.setText('5-11 '+_translate('MainWindow',u'TwoD Grey'))
 
-        self.actionMyHist.setText('5-12 '+_translate('MainWindow',u'Histogram'))
+        self.actionMyHist.setText('5-12 '+_translate('MainWindow',u'Histogram + KDE Curve'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -1239,6 +1248,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.raw) > 0):
             self.MyHistpop = MyHist(df=self.raw,filename= self.DataLocation)
 
+            self.MyHistpop.MyHist()
+            self.MyHistpop.show()
             try:
                 self.MyHistpop.MyHist()
                 self.MyHistpop.show()
@@ -1282,6 +1293,27 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.tracepop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
+
+
+
+    def OldTrace(self):
+
+        print('self.model._df length: ',len(self.model._df))
+
+
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+
+        if (len(self.model._df) > 0):
+            self.OldTracepop = OldTrace(df=self.model._df,Standard=self.Standard)
+            try:
+                self.OldTracepop.Trace()
+                self.OldTracepop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+
 
     def Pearce(self):
 

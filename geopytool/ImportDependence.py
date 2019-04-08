@@ -48,7 +48,7 @@ import csv
 from xml.dom import minidom
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer, Binarizer,LabelEncoder, OneHotEncoder, Imputer,  PolynomialFeatures, FunctionTransformer
-from sklearn.neighbors import NearestNeighbors
+from sklearn.neighbors import NearestNeighbors,KernelDensity
 from sklearn.feature_selection import VarianceThreshold, SelectKBest, chi2
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.decomposition import PCA, FastICA,FactorAnalysis
@@ -57,7 +57,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn import svm
 
 from sklearn import datasets
-from scipy.stats import mode
+from scipy.stats import mode,gaussian_kde
 from scipy.spatial import distance
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.cluster import hierarchy as hc
