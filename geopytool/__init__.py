@@ -79,7 +79,7 @@ from geopytool.FluidInclusion import FluidInclusion
 from geopytool.MyHist import MyHist
 
 from geopytool.Temp import *
-from geopytool.OldTrace import OldTrace
+from geopytool.TraceNew import TraceNew
 from geopytool.Trace import Trace
 from geopytool.XY import XY
 from geopytool.XYZ import XYZ
@@ -257,8 +257,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTrace.setObjectName('actionTrace')
 
 
-        self.actionOldTrace = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider2.png'), u'OldTrace',self)
-        self.actionOldTrace.setObjectName('actionOldTrace')
+        self.actionTraceNew = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider2.png'), u'TraceNew',self)
+        self.actionTraceNew.setObjectName('actionTraceNew')
 
 
         self.actionRee = QtWidgets.QAction(QIcon(LocationOfMySelf+'/spider2.png'), u'Ree',self)
@@ -418,7 +418,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
         self.menuGeoChem.addAction(self.actionHarkerOld)
-        self.menuGeoChem.addAction(self.actionOldTrace)
+        self.menuGeoChem.addAction(self.actionTraceNew)
 
 
 
@@ -502,7 +502,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionTAS.triggered.connect(self.TAS)
         self.actionTrace.triggered.connect(self.Trace)
-        self.actionOldTrace.triggered.connect(self.OldTrace)
+        self.actionTraceNew.triggered.connect(self.TraceNew)
         self.actionRee.triggered.connect(self.REE)
         self.actionPearce.triggered.connect(self.Pearce)
         self.actionHarker.triggered.connect(self.Harker)
@@ -620,7 +620,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionRaman.setText('1-11 '+_translate('MainWindow',u'Raman Strength'))
         self.actionFluidInclusion.setText('1-12 '+_translate('MainWindow',u'Fluid Inclusion'))
         self.actionHarkerOld.setText('1-14 '+_translate('MainWindow',u'Harker Classical'))
-        self.actionOldTrace.setText('1-15 '+_translate('MainWindow',u'OldTrace'))
+        self.actionTraceNew.setText('1-15 '+_translate('MainWindow',u'TraceNew'))
 
         self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
         self.actionRose.setText('2-2 '+_translate('MainWindow',u'Rose'))
@@ -1296,7 +1296,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
 
 
-    def OldTrace(self):
+    def TraceNew(self):
 
         print('self.model._df length: ',len(self.model._df))
 
@@ -1306,10 +1306,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.getDataFile()
 
         if (len(self.model._df) > 0):
-            self.OldTracepop = OldTrace(df=self.model._df,Standard=self.Standard)
+            self.TraceNewpop = TraceNew(df=self.model._df,Standard=self.Standard)
             try:
-                self.OldTracepop.Trace()
-                self.OldTracepop.show()
+                self.TraceNewpop.Trace()
+                self.TraceNewpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
@@ -1809,14 +1809,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 tassilent = TAS(df=df)
 
-                if (tassilent.Check() == True):
-                    tassilent.TAS()
-                    tassilent.GetResult()
-                    # TotalResult.append(tassilent.OutPutFig)
+                tassilent.TAS()
+                tassilent.GetResult()
+                # TotalResult.append(tassilent.OutPutFig)
 
-                    pdf.savefig(tassilent.OutPutFig)
+                pdf.savefig(tassilent.OutPutFig)
 
-                    AutoResult = pd.concat([tassilent.OutPutData, AutoResult], axis=1)
+                AutoResult = pd.concat([tassilent.OutPutData, AutoResult], axis=1)
+
+
 
                 reesilent = REE(df=df,Standard=self.Standard)
 
@@ -1840,21 +1841,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
                 harkersilent = Harker(df=df)
 
-                if (harkersilent.Check() == True):
-                    harkersilent.Harker()
-                    harkersilent.GetResult()
-                    TotalResult.append(harkersilent.OutPutFig)
+                harkersilent.Harker()
+                harkersilent.GetResult()
+                TotalResult.append(harkersilent.OutPutFig)
 
-                    pdf.savefig(harkersilent.OutPutFig)
+                pdf.savefig(harkersilent.OutPutFig)
 
                 pearcesilent = Pearce(df=df)
 
-                if (pearcesilent.Check() == True):
-                    pearcesilent.Pearce()
-                    pearcesilent.GetResult()
-                    TotalResult.append(pearcesilent.OutPutFig)
+                pearcesilent.Pearce()
+                pearcesilent.GetResult()
+                TotalResult.append(pearcesilent.OutPutFig)
 
-                    pdf.savefig(pearcesilent.OutPutFig)
+                pdf.savefig(pearcesilent.OutPutFig)
 
                 AutoResult = AutoResult.T.groupby(level=0).first().T
 
