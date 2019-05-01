@@ -7,7 +7,8 @@ Tags: Doc,English
 
 [![Build Status](https://travis-ci.org/GeoPyTool/GeoPyTool.svg?branch=master)](https://travis-ci.org/GeoPyTool/GeoPyTool)
 
-[Click Here to Join the Discussion in Slack](https://join.slack.com/t/geopytool/shared_invite/enQtNjE2ODQ2ODMyNzIxLTc0ZWI3NGRmOWNmNjZhZjUwZGJlNTdmYzFjYzYwNmU4Yzc4NmJkZGFjM2VkMTlhZWExYThlZTQwNDVmODBlMjg)
+### [Click Here](https://github.com/GeoPyTool/GeoPyTool/issues/new) to get the latest link to [join the GeoPyTool Slack](https://geopytool.slack.com/)
+
 
 ## Preface
 

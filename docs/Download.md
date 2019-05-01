@@ -6,7 +6,7 @@ Tags: Doc, English, Chinese
 #GeoPyTool Application Download Links
 ># GeoPyTool 打包的可执行程序下载链接
 
-[Click Here to Join the Discussion in Slack](https://join.slack.com/t/geopytool/shared_invite/enQtNjE2ODQ2ODMyNzIxLTc0ZWI3NGRmOWNmNjZhZjUwZGJlNTdmYzFjYzYwNmU4Yzc4NmJkZGFjM2VkMTlhZWExYThlZTQwNDVmODBlMjg)
+### [Click Here](https://github.com/GeoPyTool/GeoPyTool/issues/new) to get the latest link to [join the GeoPyTool Slack](https://geopytool.slack.com/)
 
 ### GeoPyTool packs:
 [Baidu Download 百度网盘](https://pan.baidu.com/s/1ewNlNrDQNjtCLS9ibBPW5Q#list/path=%2Fsharelink1763171575-261348695782281%2FRelease&parentPath=%2Fsharelink1763171575-261348695782281)
