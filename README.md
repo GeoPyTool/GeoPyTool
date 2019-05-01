@@ -7,7 +7,11 @@ Tags: Doc,English
 
 [![Build Status](https://travis-ci.org/GeoPyTool/GeoPyTool.svg?branch=master)](https://travis-ci.org/GeoPyTool/GeoPyTool)
 
-### [Click Here](https://github.com/GeoPyTool/GeoPyTool/issues/new) to get the latest link to [join the GeoPyTool Slack](https://geopytool.slack.com/)
+[Click Here to Join the Slack of GeoPyTool 点击该链接加入 Slack 上的 GeoPyTool 讨论](https://join.slack.com/t/geopytool/shared_invite/enQtNjE2ODQ2ODMyNzIxLTc0ZWI3NGRmOWNmNjZhZjUwZGJlNTdmYzFjYzYwNmU4Yzc4NmJkZGFjM2VkMTlhZWExYThlZTQwNDVmODBlMjg)
+
+This link is created at 2019-5-1 and will be valid till 2019-5-31 
+
+上面的链接创建于2019年5月1日，在2019年5月31日前有效。
 
 
 ## Preface
