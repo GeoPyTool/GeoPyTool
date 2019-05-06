@@ -2,7 +2,7 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 from geopytool.QAPF import *
 
-class CIPW(AppForm):
+class Niggli(AppForm):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
     Minerals = ['Quartz',
                 'Zircon',
@@ -102,6 +102,29 @@ class CIPW(AppForm):
                  'Ni': 58.6934,
                  'Cr': 51.9961,
                  'Zr': 91.224}
+
+    CationNumber  = {'SiO2': 1,
+                 'TiO2': 1,
+                 'Al2O3': 2,
+                 'Fe2O3': 2,
+                 'FeO': 1,
+                 'MnO': 1,
+                 'MgO': 1,
+                 'CaO': 1,
+                 'Na2O': 2,
+                 'K2O': 2,
+                 'P2O5': 2,
+                 'CO2': 1,
+                 'SO3': 1,
+                 'S': 0,
+                 'F': 0,
+                 'Cl': 0,
+                 'Sr': 1,
+                 'Ba': 1,
+                 'Ni': 1,
+                 'Cr': 1,
+                 'Zr': 1}
+
     Elements  = ['SiO2',
                  'TiO2',
                  'Al2O3',
@@ -144,10 +167,10 @@ class CIPW(AppForm):
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
-        self.setWindowTitle('CIPW Norm Result')
+        self.setWindowTitle('Niggli Norm Result')
 
 
-        self.FileName_Hint='CIPW'
+        self.FileName_Hint='Niggli'
         self._df = df
         #self.raw = df
 
@@ -223,7 +246,7 @@ class CIPW(AppForm):
         self.setCentralWidget(self.main_frame)
 
 
-    def CIPW(self):
+    def Niggli(self):
         self.ResultMole=[]
         self.ResultWeight=[]
         self.ResultVolume=[]
@@ -299,7 +322,6 @@ class CIPW(AppForm):
         self.tableViewWeight.setModel(self.modelWeight)
         self.tableViewVolume.setModel(self.modelVolume)
         self.tableViewCalced.setModel(self.modelCalced)
-
         self.WholeResult = pd.concat([self.FinalResultMole,self.FinalResultWeight,self.FinalResultVolume,self.FinalResultCalced], axis=1,sort=False )
         self.OutPutData = self.WholeResult
 
@@ -351,12 +373,13 @@ class CIPW(AppForm):
         DataVolume.update({'Marker': m['Marker']})
         DataCalced.update({'Marker': m['Marker']})
 
-        WholeMass = 0
-        EachMole = {}
+
+        WholeCation = 0
+        EachCation = {}
 
         for j in self.Elements:
             '''
-            Get the Whole Mole of the dataset
+            Get the Whole Cation  of the dataset
             '''
 
             try:
@@ -377,21 +400,20 @@ class CIPW(AppForm):
                 TMP = T_TMP / ((2 * 91.224) / 123.22200000000001 * 10000)
             else:
                 TMP = T_TMP
-            V = TMP
+
+            V = TMP * self.CationNumber[j] / self.BaseMass[j]
             try:
-                WholeMass += float(V)
+                WholeCation += float(V)
             except ValueError:
                 pass
 
+        print(WholeCation)
 
-
-        WeightCorrectionFactor = (100 / WholeMass)
 
         for j in self.Elements:
             '''
-            Get the Mole percentage of each element
+            Get the Cation percentage of each element
             '''
-
             try:
                 T_TMP = m[j]
             except(KeyError):
@@ -417,16 +439,16 @@ class CIPW(AppForm):
                 TMP = T_TMP
 
             try:
-                M = TMP / self.BaseMass[j] * WeightCorrectionFactor
+                #C = TMP * self.CationNumber[j] / self.BaseMass[j] /WholeCation
+                C = TMP  / self.BaseMass[j] /WholeCation
+                print(C*100)
             except TypeError:
                 pass
 
-            # M= TMP/NewMass(j) * WeightCorrectionFactor
+            EachCation.update({j: C})
 
-            EachMole.update({j: M})
-        # self.DataMole.append(EachMole)
 
-        DataCalculating = EachMole
+        DataCalculating = EachCation
 
         Fe3 = DataCalculating['Fe2O3']
         Fe2 = DataCalculating['FeO']
@@ -1621,10 +1643,10 @@ class CIPW(AppForm):
 
 
                 #self.newdf.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-                self.newdf.to_csv(DataFileOutput + '-cipw-mole.csv', sep=',', encoding='utf-8')
-                self.newdf1.to_csv(DataFileOutput + '-cipw-mass.csv', sep=',', encoding='utf-8')
-                self.newdf2.to_csv(DataFileOutput + '-cipw-volume.csv', sep=',', encoding='utf-8')
-                self.newdf3.to_csv(DataFileOutput + '-cipw-index.csv', sep=',', encoding='utf-8')
+                self.newdf.to_csv(DataFileOutput + '-Niggli-mole.csv', sep=',', encoding='utf-8')
+                self.newdf1.to_csv(DataFileOutput + '-Niggli-mass.csv', sep=',', encoding='utf-8')
+                self.newdf2.to_csv(DataFileOutput + '-Niggli-volume.csv', sep=',', encoding='utf-8')
+                self.newdf3.to_csv(DataFileOutput + '-Niggli-index.csv', sep=',', encoding='utf-8')
                 
 
             elif ('xlsx' in DataFileOutput):
@@ -1633,7 +1655,7 @@ class CIPW(AppForm):
 
                 #self.newdf.to_excel(DataFileOutput, encoding='utf-8')
 
-                self.newdf.to_excel(DataFileOutput + '-cipw-mole.xlsx',  encoding='utf-8')
-                self.newdf1.to_excel(DataFileOutput + '-cipw-mass.xlsx',  encoding='utf-8')
-                self.newdf2.to_excel(DataFileOutput + '-cipw-volume.xlsx',  encoding='utf-8')
-                self.newdf3.to_excel(DataFileOutput + '-cipw-index.xlsx', encoding='utf-8')
+                self.newdf.to_excel(DataFileOutput + '-Niggli-mole.xlsx',  encoding='utf-8')
+                self.newdf1.to_excel(DataFileOutput + '-Niggli-mass.xlsx',  encoding='utf-8')
+                self.newdf2.to_excel(DataFileOutput + '-Niggli-volume.xlsx',  encoding='utf-8')
+                self.newdf3.to_excel(DataFileOutput + '-Niggli-index.xlsx', encoding='utf-8')

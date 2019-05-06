@@ -28,6 +28,7 @@ _translate = QtCore.QCoreApplication.translate
 
 from geopytool.CustomClass import TableViewer
 from geopytool.CIPW import CIPW
+from geopytool.Niggli import Niggli
 from geopytool.Cluster import Cluster
 from geopytool.Harker import Harker
 from geopytool.HarkerOld import HarkerOld
@@ -297,6 +298,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCIPW = QtWidgets.QAction(QIcon(LocationOfMySelf+'/calc.png'),u'CIPW',self)
         self.actionCIPW.setObjectName('actionCIPW')
 
+        self.actionNiggli = QtWidgets.QAction(QIcon(LocationOfMySelf+'/calc.png'),u'Niggli',self)
+        self.actionNiggli.setObjectName('actionNiggli')
+
         self.actionZirconCe = QtWidgets.QAction(QIcon(LocationOfMySelf+'/calc.png'),u'ZirconCe',self)
         self.actionZirconCe.setObjectName('actionZirconCe')
 
@@ -410,6 +414,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionPearce)
         self.menuGeoChem.addAction(self.actionHarker)
         self.menuGeoChem.addAction(self.actionCIPW)
+        #self.menuGeoChem.addAction(self.actionNiggli)
         self.menuGeoChem.addAction(self.actionQAPF)
         self.menuGeoChem.addAction(self.actionSaccani)
         self.menuGeoChem.addAction(self.actionK2OSiO2)
@@ -522,6 +527,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionCIA.triggered.connect(self.CIA)
 
         self.actionCIPW.triggered.connect(self.CIPW)
+        self.actionNiggli.triggered.connect(self.Niggli)
         self.actionZirconCe.triggered.connect(self.ZirconCe)
         self.actionZirconCeOld.triggered.connect(self.ZirconCeOld)
         self.actionZirconTiTemp.triggered.connect(self.ZirconTiTemp)
@@ -614,11 +620,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPearce.setText('1-5 '+_translate('MainWindow',u'Pearce'))
         self.actionHarker.setText('1-6 '+_translate('MainWindow',u'Harker'))
         self.actionCIPW.setText('1-7 '+_translate('MainWindow',u'CIPW'))
-        self.actionQAPF.setText('1-8 '+_translate('MainWindow',u'QAPF'))
-        self.actionSaccani.setText('1-9 '+_translate('MainWindow',u'Saccani Plot'))
-        self.actionK2OSiO2.setText('1-10 '+_translate('MainWindow',u'K2O-SiO2'))
-        self.actionRaman.setText('1-11 '+_translate('MainWindow',u'Raman Strength'))
-        self.actionFluidInclusion.setText('1-12 '+_translate('MainWindow',u'Fluid Inclusion'))
+        #self.actionNiggli.setText('1-8 '+_translate('MainWindow',u'Niggli'))
+        self.actionQAPF.setText('1-9 '+_translate('MainWindow',u'QAPF'))
+        self.actionSaccani.setText('1-10 '+_translate('MainWindow',u'Saccani Plot'))
+        self.actionK2OSiO2.setText('1-11 '+_translate('MainWindow',u'K2O-SiO2'))
+        self.actionRaman.setText('1-12 '+_translate('MainWindow',u'Raman Strength'))
+        self.actionFluidInclusion.setText('1-13 '+_translate('MainWindow',u'Fluid Inclusion'))
         self.actionHarkerOld.setText('1-14 '+_translate('MainWindow',u'Harker Classical'))
         self.actionTraceNew.setText('1-15 '+_translate('MainWindow',u'TraceNew'))
 
@@ -1367,6 +1374,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 self.cipwpop.show()
             except():
                 self.ErrorEvent()
+
+    def Niggli(self):
+
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
+        if (len(self.model._df) > 0):
+            self.Nigglipop = Niggli(df=self.model._df)
+
+            try:
+                self.Nigglipop.Niggli()
+                self.Nigglipop.show()
+            except():
+                self.ErrorEvent()
+
 
     def ZirconTiTemp(self):
 

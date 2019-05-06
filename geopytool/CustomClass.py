@@ -1,13 +1,14 @@
-version = '0.8.19.4.108'
+version = '0.8.19.5.100'
 
-date = '2019-4-9'
+date = '2019-5-6'
 
 dpi = 128
-#coding:utf-8
+# coding:utf-8
 
 from geopytool.ImportDependence import *
 
-#from geopytool.TableViewer import TableViewer
+
+# from geopytool.TableViewer import TableViewer
 
 
 class GrowingTextEdit(QtWidgets.QTextEdit):
@@ -23,6 +24,7 @@ class GrowingTextEdit(QtWidgets.QTextEdit):
         docHeight = self.document().size().height()
         if self.heightMin <= docHeight <= self.heightMax:
             self.setMinimumHeight(docHeight)
+
 
 class Tool():
     def TriToBin(self, x, y, z):
@@ -185,6 +187,7 @@ class Tool():
         return (a, b)
         # plt.fill(a, b, Color=Color, Alpha=Alpha, )
 
+
 class Point():
     '''
     a Point class
@@ -226,6 +229,7 @@ class Point():
         self.Alpha = Alpha
         self.Marker = Marker
         self.Label = Label
+
 
 class Points():
     '''
@@ -272,6 +276,7 @@ class Points():
         self.Label = Label
         self.FontSize = FontSize
 
+
 class Tag():
     '''
     a class for Tag put on canvas
@@ -301,6 +306,7 @@ class Tag():
         self.X_offset = X_offset
         self.Y_offset = Y_offset
         self.FontSize = FontSize
+
 
 class Line():
     '''
@@ -402,6 +408,7 @@ class Line():
         self.X = X_TMP
         self.Y = Y_TMP
 
+
 class TriTag(Tag, Tool):
     '''
     inherit Tag and Tool,a Tag for triangular coord
@@ -417,6 +424,7 @@ class TriTag(Tag, Tool):
         self.X_offset = X_offset
         self.Y_offset = Y_offset
         self.FontSize = FontSize
+
 
 class TriPoint(Point, Tool):
     '''
@@ -447,6 +455,7 @@ class TriPoint(Point, Tool):
         self.Label = Label
 
         self.X, self.Y = self.TriToBin(self.x, self.y, self.z)
+
 
 class TriLine(Line, Tool):
     '''
@@ -514,6 +523,7 @@ class TriLine(Line, Tool):
         self.y = Y_TMP
         self.z = Z_TMP
 
+
 class PandasModel(QtCore.QAbstractTableModel):
     _df = pd.DataFrame()
     _changed = False
@@ -523,11 +533,9 @@ class PandasModel(QtCore.QAbstractTableModel):
         self._df = df
         self._changed = False
 
-
         self._filters = {}
         self._sortBy = []
         self._sortDirection = []
-
 
     def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
         if role != QtCore.Qt.DisplayRole:
@@ -583,8 +591,8 @@ class PandasModel(QtCore.QAbstractTableModel):
             dtype = self._df[col].dtype
             if dtype != object:
                 value = None if value == '' else dtype.type(value)
-        #self._df.set_value(row, col, value)
-        self._df.at[row,col]= value
+        # self._df.set_value(row, col, value)
+        self._df.at[row, col] = value
         self._changed = True
         # self.emit(QtCore.SIGNAL('dataChanged()'))
         return True
@@ -601,8 +609,8 @@ class PandasModel(QtCore.QAbstractTableModel):
         index = self._df.index.tolist()
         self.layoutAboutToBeChanged.emit()
 
-        #self._df.sort_values(colname, ascending=order == QtCore.Qt.AscendingOrder, inplace=True)
-        #self._df.reset_index(inplace=True, drop=True)
+        # self._df.sort_values(colname, ascending=order == QtCore.Qt.AscendingOrder, inplace=True)
+        # self._df.reset_index(inplace=True, drop=True)
 
         try:
             self._df.sort_values(colname, ascending=order == QtCore.Qt.AscendingOrder, inplace=True)
@@ -615,9 +623,10 @@ class PandasModel(QtCore.QAbstractTableModel):
 
         self.layoutChanged.emit()
 
-class CustomQTableView(QtWidgets.QTableView):
 
+class CustomQTableView(QtWidgets.QTableView):
     df = pd.DataFrame()
+
     def __init__(self, *args):
         super().__init__(*args)
 
@@ -625,13 +634,13 @@ class CustomQTableView(QtWidgets.QTableView):
         self.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers |
                              QtWidgets.QAbstractItemView.DoubleClicked)
 
-
     def keyPressEvent(self, event):  # Reimplement the event here
         return
 
-class NewCustomQTableView(QtWidgets.QTableView):
 
-    path=''
+class NewCustomQTableView(QtWidgets.QTableView):
+    path = ''
+
     def __init__(self, *args):
         super().__init__(*args)
         self.setAcceptDrops(True)
@@ -643,14 +652,13 @@ class NewCustomQTableView(QtWidgets.QTableView):
     def keyPressEvent(self, event):  # Reimplement the event here
         return
 
-
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             files = [(u.toLocalFile()) for u in event.mimeData().urls()]
             for f in files:
                 if 'csv' in f or 'xls' in f:
                     print('Drag', f)
-                    self.path=f
+                    self.path = f
 
                     if ('csv' in f):
                         self.parent().raw = pd.read_csv(f)
@@ -658,7 +666,6 @@ class NewCustomQTableView(QtWidgets.QTableView):
                         self.parent().raw = pd.read_excel(f)
 
                     # #print(self.raw)
-
 
             event.accept()
         else:
@@ -668,6 +675,7 @@ class NewCustomQTableView(QtWidgets.QTableView):
         files = [(u.toLocalFile()) for u in event.mimeData().urls()]
         for f in files:
             print('Drop')
+
 
 class TableViewer(QMainWindow):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'
@@ -727,7 +735,7 @@ class TableViewer(QMainWindow):
     Para = pd.DataFrame()
     _df = pd.DataFrame()
     data_to_test = pd.DataFrame()
-    data_to_test_location =''
+    data_to_test_location = ''
     begin_result = pd.DataFrame()
     load_result = pd.DataFrame()
 
@@ -849,7 +857,6 @@ class TableViewer(QMainWindow):
         self.tableView.setObjectName('tableView')
         self.tableView.setSortingEnabled(True)
 
-
         self.vbox = QVBoxLayout()
 
         self.vbox.addWidget(self.tableView)
@@ -860,7 +867,6 @@ class TableViewer(QMainWindow):
 
         self.model = PandasModel(self.df)
         self.tableView.setModel(self.model)
-
 
     def create_status_bar(self):
         self.status_text = QLabel("Click Save button to save.")
@@ -912,25 +918,26 @@ class TableViewer(QMainWindow):
             action.setCheckable(True)
         return action
 
+
 class AppForm(QMainWindow):
     result = pd.DataFrame()
     Para = pd.DataFrame()
     _df = pd.DataFrame()
     _df_back = pd.DataFrame()
     data_to_test = pd.DataFrame()
-    data_to_test_location =''
+    data_to_test_location = ''
     begin_result = pd.DataFrame()
     load_result = pd.DataFrame()
 
-    kernel_list = ['linear','rbf','sigmoid','poly']
+    kernel_list = ['linear', 'rbf', 'sigmoid', 'poly']
     _changed = False
 
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
     reference = 'Print the reference here.'
     AllLabel = []
-    IndexList=[]
-    LabelList=[]
+    IndexList = []
+    LabelList = []
     ItemNames = ['Foidolite',
                  'Peridotgabbro',
                  'Foid Gabbro',
@@ -975,10 +982,10 @@ class AppForm(QMainWindow):
 
     SelectDic = {}
 
-    Standard=''
+    Standard = ''
     FileName_Hint = ''
     WholeResult = {}
-    OutPutCheck= True
+    OutPutCheck = True
     OutPutTitle = 'Blank Title'
     OutPutData = pd.DataFrame()
     OutPutFig = Figure((8.0, 8.0))
@@ -994,13 +1001,12 @@ class AppForm(QMainWindow):
             self._changed = True
             # print('DataFrame recieved to AppForm')
 
-        self.AllLabel=[]
+        self.AllLabel = []
 
         for i in range(len(self._df)):
             tmp_label = self._df.at[i, 'Label']
             if tmp_label not in self.AllLabel:
                 self.AllLabel.append(tmp_label)
-
 
         for i in range(len(self.LocationAreas)):
             tmpi = self.LocationAreas[i] + [self.LocationAreas[i][0]]
@@ -1013,29 +1019,31 @@ class AppForm(QMainWindow):
         self.create_main_frame()
         self.create_status_bar()
 
-    def CleanDataFile(self,raw=pd.DataFrame(),checklist=['质量','分数','百分比',' ','ppm','ma', 'wt','%','(',')','（','）','[',']','【','】']):
-
+    def CleanDataFile(self, raw=pd.DataFrame(),
+                      checklist=['质量', '分数', '百分比', ' ', 'ppm', 'ma', 'wt', '%', '(', ')', '（', '）', '[', ']', '【',
+                                 '】']):
 
         for i in checklist:
             raw = raw.rename(columns=lambda x: x.replace(i, ''))
             pass
 
         for i in raw.dtypes.index:
-            if raw.dtypes[i] != float and raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha', 'Style','Width', 'Label']:
-                print(raw.dtypes[i],i,'droped')
+            if raw.dtypes[i] != float and raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha',
+                                                                             'Style', 'Width', 'Label']:
+                print(raw.dtypes[i], i, 'droped')
                 raw = raw.drop(i, 1)
 
         for i in raw.columns.values.tolist():
-            if i=='':
+            if i == '':
                 raw = raw.drop(i, 1)
 
         raw = raw.dropna(axis=1, how='all')
 
-        #Columns = raw.columns.values.tolist()
-        #Rows = raw.index.values.tolist()
+        # Columns = raw.columns.values.tolist()
+        # Rows = raw.index.values.tolist()
 
         for i in raw.index.values.tolist():
-            if type(raw.at[i, 'Label'])== str:
+            if type(raw.at[i, 'Label']) == str:
                 if 'tandard' in raw.at[i, 'Label']:
                     print('Your Self Defined Standard is at the line No.', i)
                     self.Standard = raw.loc[i]
@@ -1043,7 +1051,7 @@ class AppForm(QMainWindow):
 
         raw = raw.reset_index(drop=True)
 
-        return(raw)
+        return (raw)
         print(raw.columns.values.tolist())
 
     def Check(self):
@@ -1056,7 +1064,7 @@ class AppForm(QMainWindow):
             self.OutPutCheck = True
         else:
             self.OutPutCheck = False
-        return(self.OutPutCheck)
+        return (self.OutPutCheck)
 
     def clearLayout(self, layout):
         if layout is not None:
@@ -1070,8 +1078,8 @@ class AppForm(QMainWindow):
 
     def resizeEvent(self, evt=None):
 
-        w=self.width()
-        h=self.height()
+        w = self.width()
+        h = self.height()
         '''
         if h<=360:
             h=360
@@ -1081,24 +1089,24 @@ class AppForm(QMainWindow):
             self.resize(w, h)
         '''
 
-
         step = (w * 94 / 100) / 5
-        foot=h*3/48
+        foot = h * 3 / 48
 
     def OldErrorEvent(self):
         _translate = QtCore.QCoreApplication.translate
-        reply = QMessageBox.information(self,  _translate('MainWindow','Warning'),  _translate('MainWindow','Your Data mismatch this Function.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
+        reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
+                                                                                              'Your Data mismatch this Function.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
 
-    def ErrorEvent(self,text=''):
+    def ErrorEvent(self, text=''):
 
         _translate = QtCore.QCoreApplication.translate
-        
-        if(text==''):
+
+        if (text == ''):
             reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
                                                                                                   'Your Data mismatch this Function.\n Some Items missing?\n Or maybe there are blanks in items names?\n Or there are nonnumerical value？'))
         else:
             reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
-                                                                                                      'Your Data mismatch this Function.\n Error infor is:') + text)
+                                                                                                  'Your Data mismatch this Function.\n Error infor is:') + text)
 
     def DrawLine(self, l=[(41, 0), (41, 3), (45, 3)], color='grey', linewidth=0.5, linestyle='-', linelabel='',
                  alpha=0.5):
@@ -1132,15 +1140,16 @@ class AppForm(QMainWindow):
             self.canvas.print_figure(path, dpi=self.dpi)
             self.statusBar().showMessage('Saved to %s' % path, 2000)
 
-    def save_plot_quitely(self,path= '~/',name='Target'):
+    def save_plot_quitely(self, path='~/', name='Target'):
         self.canvas.print_figure(path + name + '.pdf', dpi=self.dpi)
         self.canvas.print_figure(path + name + '.png', dpi=self.dpi)
 
-    def stateval(self,data=np.ndarray):
-        #print(type(data),data)
-        dict={'min': min(data),'max': max(data),'median': nanmedian(data), 'mean':nanmean(data), 'ptp':ptp(data), 'var':nanvar(data), 'std':nanstd(data), 'cv':nanmean(data)/nanstd(data)}
+    def stateval(self, data=np.ndarray):
+        # print(type(data),data)
+        dict = {'min': min(data), 'max': max(data), 'median': nanmedian(data), 'mean': nanmean(data), 'ptp': ptp(data),
+                'var': nanvar(data), 'std': nanstd(data), 'cv': nanmean(data) / nanstd(data)}
 
-        return(dict)
+        return (dict)
 
     def create_main_frame(self):
         self.main_frame = QWidget()
@@ -1222,7 +1231,7 @@ class AppForm(QMainWindow):
                                                          'PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
 
         pix = QtWidgets.QWidget.grab(self.canvas)
-        #pix.save("./capture.png", "PNG")
+        # pix.save("./capture.png", "PNG")
         pix.save(ImgFileOutput)
 
     def OLDsaveImgFile(self):
@@ -1233,21 +1242,19 @@ class AppForm(QMainWindow):
 
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
-            #self.canvas.print_raw(ImgFileOutput, dpi=300)
-
+            # self.canvas.print_raw(ImgFileOutput, dpi=300)
 
     def saveImgFile(self):
         ImgFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                          '文件保存',
-                                                         'C:/'+self.FileName_Hint,
+                                                         'C:/' + self.FileName_Hint,
                                                          'pdf Files (*.pdf);;SVG Files (*.svg);;PNG Files (*.png)')  # 设置文件扩展名过滤,注意用双分号间隔
 
         if (ImgFileOutput != ''):
             self.canvas.print_figure(ImgFileOutput, dpi=300)
-            #self.canvas.print_raw(ImgFileOutput, dpi=300)
+            # self.canvas.print_raw(ImgFileOutput, dpi=300)
 
-
-    def getDataFiles(self,limit=6):
+    def getDataFiles(self, limit=6):
         print('get Multiple Data Files  called \n')
         DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, u'Choose Data File',
                                                                 '~/',
@@ -1256,7 +1263,7 @@ class AppForm(QMainWindow):
 
         DataFramesList = []
 
-        if len(DataFilesInput) >= 1 :
+        if len(DataFilesInput) >= 1:
             for i in range(len(DataFilesInput)):
                 if i < limit:
                     if ('csv' in DataFilesInput[i]):
@@ -1264,51 +1271,46 @@ class AppForm(QMainWindow):
                     elif ('xls' in DataFilesInput[i]):
                         DataFramesList.append(pd.read_excel(DataFilesInput[i]))
                 else:
-                    #self.ErrorEvent(text='You can only open up to 6 Data Files at a time.')
+                    # self.ErrorEvent(text='You can only open up to 6 Data Files at a time.')
                     pass
 
-        return(DataFramesList,DataFilesInput)
+        return (DataFramesList, DataFilesInput)
 
-
-
-    def getDataFile(self,CleanOrNot=True):
+    def getDataFile(self, CleanOrNot=True):
         _translate = QtCore.QCoreApplication.translate
 
-        DataFileInput, filetype = QFileDialog.getOpenFileName(self,_translate('MainWindow', u'Choose Data File'),
-                                                                  '~/',
-                                                                  'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+        DataFileInput, filetype = QFileDialog.getOpenFileName(self, _translate('MainWindow', u'Choose Data File'),
+                                                              '~/',
+                                                              'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
         print(DataFileInput)
 
-        raw_input_data=pd.DataFrame()
+        raw_input_data = pd.DataFrame()
 
         if ('csv' in DataFileInput):
             raw_input_data = pd.read_csv(DataFileInput)
         elif ('xls' in DataFileInput):
             raw_input_data = pd.read_excel(DataFileInput)
 
-        if len(raw_input_data)>0:
-            return(raw_input_data,DataFileInput)
+        if len(raw_input_data) > 0:
+            return (raw_input_data, DataFileInput)
         else:
-            return('Blank')
+            return ('Blank')
 
-    def getFileName(self,list=['C:/Users/Fred/Documents/GitHub/Writing/元素数据/Ag.xlsx']):
-        result=[]
+    def getFileName(self, list=['C:/Users/Fred/Documents/GitHub/Writing/元素数据/Ag.xlsx']):
+        result = []
         for i in list:
             result.append(i.split("/")[-1].split(".")[0])
         print(result)
-        return(result)
+        return (result)
 
     def Key_Func(self):
         pass
 
-
-
-
     def loadDataToTest(self):
-        TMP =self.getDataFile()
+        TMP = self.getDataFile()
         if TMP != 'Blank':
-            self.data_to_test=TMP[0]
-            self.data_to_test_location=TMP[1]
+            self.data_to_test = TMP[0]
+            self.data_to_test_location = TMP[1]
         self.Key_Func()
 
     def saveDataFile(self):
@@ -1319,11 +1321,11 @@ class AppForm(QMainWindow):
 
         DataFileOutput, ok2 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',
-                                                          'C:/'+self.FileName_Hint,
+                                                          'C:/' + self.FileName_Hint,
                                                           'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
 
         if "Label" in self.model._df.columns.values.tolist():
-            self.model._df=self.model._df.set_index('Label')
+            self.model._df = self.model._df.set_index('Label')
 
         if (DataFileOutput != ''):
 
@@ -1383,14 +1385,12 @@ class AppForm(QMainWindow):
 
                 # self.Para.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
 
-
     def showResult(self):
 
         self.result.reset_index
 
         self.resultpop = TableViewer(df=self.result, title='Results')
         self.resultpop.show()
-
 
     def showPara(self):
 
@@ -1417,17 +1417,17 @@ class AppForm(QMainWindow):
         return action
 
     def GetResult(self):
-        self.WholeResult={'Check':True,'Title':self.OutPutTitle,'Data':self.OutPutData,'Fig':self.OutPutFig}
-        return(self.WholeResult)
+        self.WholeResult = {'Check': True, 'Title': self.OutPutTitle, 'Data': self.OutPutData, 'Fig': self.OutPutFig}
+        return (self.WholeResult)
 
-    def DropUseless(self,df= pd.DataFrame(),droplist = ['Q (Mole)', 'A (Mole)', 'P (Mole)', 'F (Mole)',
-                    'Q (Mass)', 'A (Mass)', 'P (Mass)', 'F (Mass)']):
+    def DropUseless(self, df=pd.DataFrame(), droplist=['Q (Mole)', 'A (Mole)', 'P (Mole)', 'F (Mole)',
+                                                       'Q (Mass)', 'A (Mass)', 'P (Mass)', 'F (Mass)']):
         for t in droplist:
             if t in df.columns.values:
                 df = df.drop(t, 1)
-        return(df)
+        return (df)
 
-    def ReduceSize(self,df=pd.DataFrame):
+    def ReduceSize(self, df=pd.DataFrame):
 
         m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
 
@@ -1435,16 +1435,15 @@ class AppForm(QMainWindow):
             if i in df.columns.values:
                 df = df.drop(i, 1)
         df = df.loc[:, (df != 0).any(axis=0)]
-        return(df)
+        return (df)
 
-
-    def Slim(self,df= pd.DataFrame()):
+    def Slim(self, df=pd.DataFrame()):
 
         ItemsAvalibale = df.columns.values.tolist()
         if 'Label' in ItemsAvalibale:
             df = df.set_index('Label')
 
-        df = df.dropna(axis=1,how='all')
+        df = df.dropna(axis=1, how='all')
 
         ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width']
@@ -1456,37 +1455,32 @@ class AppForm(QMainWindow):
         df = df.apply(pd.to_numeric, errors='coerce')
         df = df.dropna(axis='columns')
 
-        return(df)
+        return (df)
 
+    def relation(self, data1=np.ndarray, data2=np.ndarray):
+        data = array([data1, data2])
+        dict = {'cov': cov(data, bias=1), 'corrcoef': corrcoef(data)}
+        return (dict)
 
+    def Hsim_Distance(self, a=[1, 2], b=[5, 6, 7, 8]):
+        tmp = []
+        result = 0
+        for i in range(min(len(a), len(b))):
+            tmp.append(1.0 / (1 + np.abs(a[i] - b[i])))
 
-    def relation(self,data1=np.ndarray,data2=np.ndarray):
-        data=array([data1,data2])
-        dict={'cov':cov(data,bias=1),'corrcoef':corrcoef(data)}
-        return(dict)
+        # print(tmp)
+        result = np.sum(tmp) / (min([len(a), len(b)]))
+        return (result)
 
-    def Hsim_Distance(self,a=[1,2],b=[5,6,7,8]):
-        tmp =[]
-        result=0
-        for i in range(min(len(a),len(b))):
-            tmp.append( 1.0/(1+np.abs(a[i]-b[i])))
+    def Close_Distance(self, a=[1, 2, 3, 4], b=[5, 6, 7, 8]):
+        tmp = []
+        result = 0
+        for i in range(min([len(a), len(b)])):
+            tmp.append(np.power(np.e, -np.abs(a[i] - b[i])))
 
-        #print(tmp)
-        result=np.sum(tmp)/(min([len(a),len(b)]))
-        return(result)
-
-
-    def Close_Distance(self,a=[1,2,3,4],b=[5,6,7,8]):
-        tmp =[]
-        result=0
-        for i in range(min([len(a),len(b)])):
-            tmp.append(  np.power(np.e,-np.abs(a[i]-b[i]) )  )
-
-        #print(tmp)
-        result=np.sum(tmp)/(min([len(a),len(b)]))
-        return(result)
-
-
+        # print(tmp)
+        result = np.sum(tmp) / (min([len(a), len(b)]))
+        return (result)
 
 
 class PlotModel(FigureCanvas):
@@ -1519,8 +1513,6 @@ class PlotModel(FigureCanvas):
 
         self.axes.plot(x, y, color=color, linewidth=linewidth, linestyle=linestyle, label=linelabel, alpha=alpha)
         return (x, y)
-
-
 
     def TAS(self, df=pd.DataFrame(), Left=35, Right=79, X0=30, X1=90, X_Gap=7, Base=0,
             Top=19, Y0=1, Y1=19, Y_Gap=19, FontSize=12, xLabel=r'$SiO_2 wt\%$', yLabel=r'$na_2O + K_2O wt\%$'):
@@ -1691,7 +1683,7 @@ class Lsq():
         k, b = Para[0]
 
     ###需要拟合的函数func及误差error###
-    def func(self,p, x):
+    def func(self, p, x):
         k, b = p
         return k * x + b
 
@@ -1700,8 +1692,6 @@ class Lsq():
         return (self.func(p, x) - y)  # x、y都是列表，故返回值也是个列表
 
 
+LocationOfMySelf = os.path.dirname(__file__)
 
-
-LocationOfMySelf=os.path.dirname(__file__)
-
-#print(LocationOfMySelf,'Custom Bass Classes')
+# print(LocationOfMySelf,'Custom Bass Classes')
