@@ -1,5 +1,5 @@
 Title: Download
-Date: 2019-1-24 10:05:25
+Date: 2019-5-6 14:33:53
 Category: Doc
 Tags: Doc, English, Chinese
 
@@ -9,7 +9,7 @@ Tags: Doc, English, Chinese
 ### [Click Here](https://github.com/GeoPyTool/GeoPyTool/issues/new) to get the latest link to [join the GeoPyTool Slack](https://geopytool.slack.com/)
 
 ### GeoPyTool packs:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1ewNlNrDQNjtCLS9ibBPW5Q#list/path=%2Fsharelink1763171575-261348695782281%2FRelease&parentPath=%2Fsharelink1763171575-261348695782281)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1ReLXKdNtpKBbqn7_bWH3OA)
 
 [OneDrive](https://1drv.ms/f/s!AnIw_Lqr4g5tgTMqT9tXxIK9PYNI)
 
