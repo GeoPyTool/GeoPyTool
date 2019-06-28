@@ -1012,7 +1012,7 @@ class XY(AppForm):
                         yuse = yuse / standardchosen[item_b]
 
                 if (self.logx_cb.isChecked()):
-                    xuse = math.log(x, 10)
+                    xuse = math.log(xuse, 10)
                     newxlabel = '$log10$( ' + self.xlabel + ')'
 
                     self.axes.set_xlabel(newxlabel)
@@ -1021,7 +1021,7 @@ class XY(AppForm):
                     self.axes.set_xlabel(self.xlabel)
 
                 if (self.logy_cb.isChecked()):
-                    yuse = math.log(y, 10)
+                    yuse = math.log(yuse, 10)
 
                     newylabel = '$log10$( ' + self.ylabel + ')'
 
