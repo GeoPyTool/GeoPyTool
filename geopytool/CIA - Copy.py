@@ -22,14 +22,15 @@ class CIA(AppForm):
 
 
     reference = '''
-        CIA = [Al2O3/(Al2O3+CaO*+Na2O+K2O]×100    
-        ICV = (Fe2O3+K2O+Na2O+CaO*+MgO+MnO+TiO2)/Al2O3 (Cox,1995)    
-        PIA = {(Al2O3-K2O)/[(Al2O3-K2O)+CaO*+Na2O]}×100
-        CIW = [Al2O3/(Al2O3+CaO*+Na2O)]×100
-        CIW' = [Al2O3/(Al2O3+Na2O)]×100
-                   
+        CIA = [Al2O3/(Al2O3+CaO*+Na2O+K2O]×100
+        
+        
+        ICV =(Fe2O3+K2O+Na2O+CaO*+MgO+MnO+TiO2)/Al2O3 (Cox,1995)
+        
+        
         where CaO* is the amount of CaO incorporated in the silicate fraction of the rock.
-        CaO* = CaO - (10/3 * P2O5)        
+        CaO* = CaO - (10/3 * P2O5)
+        
         if CaO* < Na2O:
             CaO* = CaO*
         else:
@@ -38,14 +39,6 @@ class CIA(AppForm):
         
         
         References:
-        Nesbitt-CIA-1982
-        Harnois-CIW-1988
-        Mclennan-CIA-1993
-        Cox R-ICV-1995
-        Fedo-PIA-1995
-        Cullers-CIW'-2000
-        Song B W-2013
-        
         Cox R, Lowe D R, Cullers R L. The influence of sediment recycling and basement composition on evolution of mudrock chemistry in the southwestern United States[J]. Geochimica Et Cosmochimica Acta, 1995, 59(14):2919-2940.
         Harnois, L., 1988, The CIW index: A new chemical index of weathering: Sedimentary Geology, v. 55, p. 319–322. doi:10.1016/0037-0738(88)90137-6
         Nesbitt, H.W., and Young, G.M., 1982, Early Proterozoic climates and plate motions inferred from major element chemistry of lutites: Nature, v. 299, p. 715–717. doi:10.1038/299715a0
@@ -200,16 +193,6 @@ class CIA(AppForm):
         if 'ICV' not in WholeItemsAvalibale:
             WholeItemsAvalibale.append('ICV')
 
-        if 'PIA' not in WholeItemsAvalibale:
-            WholeItemsAvalibale.append('PIA')
-
-        if 'CIW' not in WholeItemsAvalibale:
-            WholeItemsAvalibale.append('CIW')
-        if 'CIW\'' not in WholeItemsAvalibale:
-            WholeItemsAvalibale.append('CIW\'')
-
-
-
 
 
         print('index',Indexes,'\ncolums',WholeItemsAvalibale)
@@ -325,28 +308,12 @@ class CIA(AppForm):
 
 
             CIA=tmpAl2O3/(tmpAl2O3+usedCaO+tmpNa2O+tmpK2O)*100
+
             tmpList.append(CIA)
 
             ICV =(tmpFe2O3+tmpK2O+tmpNa2O+usedCaO+tmpMgO+tmpMnO+tmpTiO2)/tmpAl2O3 #(Cox,1995)
+
             tmpList.append(ICV)
-
-            PIA = ((tmpAl2O3-tmpK2O)/(tmpAl2O3-tmpK2O+usedCaO+tmpNa2O))*100
-            tmpList.append(PIA)
-
-            CIW = (tmpAl2O3/(tmpAl2O3+usedCaO+tmpNa2O))*100
-            tmpList.append(CIW)
-
-            CIW2 = (tmpAl2O3/(tmpAl2O3+tmpNa2O))*100
-            tmpList.append(CIW2)
-
-
-            '''
-            CIA = [Al2O3/(Al2O3+CaO*+Na2O+K2O]×100    
-            ICV = (Fe2O3+K2O+Na2O+CaO*+MgO+MnO+TiO2)/Al2O3 (Cox,1995)    
-            PIA = {(Al2O3-K2O)/[(Al2O3-K2O)+CaO*+Na2O]}×100
-            CIW = [Al2O3/(Al2O3+CaO*+Na2O)]×100
-            CIW' = [Al2O3/(Al2O3+Na2O)]×100   
-            '''
 
             #print(len(tmpList))
             WholeList.append(tmpList)

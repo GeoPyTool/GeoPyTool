@@ -368,7 +368,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionClastic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'Clastic',self)
         self.actionClastic.setObjectName("actionClastic")
 
-        self.actionCIA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'CIA and ICV',self)
+        self.actionCIA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'CIA/ICV/PIA/CIW/CIW\'',self)
         self.actionCIA.setObjectName("actionCIA")
 
         self.actionXY = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'X-Y',self)
@@ -635,7 +635,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQFL.setText('3-1 '+_translate('MainWindow',u'QFL'))
         self.actionQmFLt.setText('3-2 '+_translate('MainWindow',u'QmFLt'))
         self.actionClastic.setText('3-3 '+_translate('MainWindow',u'Clastic'))
-        self.actionCIA.setText('3-4 '+ _translate('MainWindow',u'CIA and ICV'))
+        self.actionCIA.setText('3-4 '+ _translate('MainWindow',u'CIA/ICV/PIA/CIW/CIW\''))
 
         self.actionZirconCe.setText('4-1 '+ _translate('MainWindow',u'ZirconCe'))
         self.actionZirconCeOld.setText('4-2 '+ _translate('MainWindow', u'ZirconCeOld'))

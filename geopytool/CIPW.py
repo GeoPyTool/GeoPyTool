@@ -300,13 +300,12 @@ class CIPW(AppForm):
         self.tableViewVolume.setModel(self.modelVolume)
         self.tableViewCalced.setModel(self.modelCalced)
 
+
         print(len(self.FinalResultMole))
         print(len(self.FinalResultWeight))
         print(len(self.FinalResultVolume))
         print(len(self.FinalResultCalced))
 
-        #self.WholeResult = pd.concat([self.FinalResultMole,self.FinalResultWeight,self.FinalResultVolume,self.FinalResultCalced], axis=1 )
-        #self.OutPutData = self.WholeResult
 
 
 
