@@ -13,7 +13,7 @@ class Trace(AppForm):
     itemstocheck = ['Cs', 'Tl', 'Rb', 'Ba', 'W', 'Th', '', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Pb', 'Pr', 'Mo',
                    'Sr', 'P', 'Nd', 'F', 'Sm', 'Zr', 'Hf', 'E', 'Sn', 'Sb', 'Ti', 'Gd', 'Tb', 'Dy',
                    'Li',
-                   'Y', 'Ho', 'Er', 'Tm', 'Yb', 'L']
+                   'Y', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
 
     StandardsName = ['PM','OIB', 'EMORB', 'C1',  'NMORB','UCC_Rudnick & Gao2003']
     reference = 'Reference: Sun, S. S., and Mcdonough, W. F., 1989, UCC_Rudnick & Gao2003'
