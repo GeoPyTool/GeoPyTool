@@ -1,6 +1,6 @@
-version = '0.8.20.0.100'
+version = '0.8.20.0.101'
 
-date = '2019-10-15'
+date = '2020-01-05'
 
 dpi = 128
 # coding:utf-8
@@ -764,11 +764,10 @@ class TableViewer(QMainWindow):
                 self.AllLabel.append(tmp_label)
 
         for i in range(len(self.LocationAreas)):
-            tmpi = self.LocationAreas[i] + [self.LocationAreas[i][0]]
+            tmpi = self.LocationAreas[i] + [self.LocationAreas[i][0]] # Here is to add the beginning point to the region
             tmppath = path.Path(tmpi)
             self.AreasHeadClosed.append(tmpi)
             patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
-
             self.SelectDic[self.ItemNames[i]] = tmppath
 
         self.create_main_frame()
@@ -958,7 +957,7 @@ class AppForm(QMainWindow):
                  'Quartzolite',
                  ]
 
-    LocationAreas = [[[41, 3], [37, 3], [35, 9], [37, 14], [52.5, 18], [52.5, 14], [48.4, 11.5], [45, 9.4], [41, 7]],
+    LocationAreas = [ [[41, 3], [37, 3], [35, 9], [37, 14], [52.5, 18], [52.5, 14], [48.4, 11.5], [45, 9.4], [41, 7]],
                      [[41, 0], [41, 3], [45, 3], [45, 0]],
                      [[41, 3], [41, 7], [45, 9.4], [49.4, 7.3], [45, 5], [45, 3]],
                      [[45, 9.4], [48.4, 11.5], [53, 9.3], [49.4, 7.3]],
@@ -979,9 +978,7 @@ class AppForm(QMainWindow):
                      ]
 
     AreasHeadClosed = []
-
     SelectDic = {}
-
     Standard = ''
     FileName_Hint = ''
     WholeResult = {}
@@ -990,10 +987,13 @@ class AppForm(QMainWindow):
     OutPutData = pd.DataFrame()
     OutPutFig = Figure((8.0, 8.0))
     itemstocheck = ['SiO2', 'K2O', 'Na2O']
+    title = 'TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)'
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QWidget.__init__(self, parent)
-        self.setWindowTitle('TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)')
+        self.setWindowTitle(self.title)
+
+
         self.FileName_Hint = ''
         self._df = df
         self._df_back = df
@@ -1013,7 +1013,6 @@ class AppForm(QMainWindow):
             tmppath = path.Path(tmpi)
             self.AreasHeadClosed.append(tmpi)
             patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
-
             self.SelectDic[self.ItemNames[i]] = tmppath
 
         self.create_main_frame()

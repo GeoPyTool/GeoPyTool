@@ -7,6 +7,8 @@ class TAS(AppForm):
     _df = pd.DataFrame()
     _changed = False
 
+    title= 'TAS (total alkali–silica) diagram Volcanic/Intrusive (Wilson et al. 1989)'
+
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
 
@@ -398,7 +400,7 @@ class TAS(AppForm):
                         if 'Index' in self._df_back.columns.values:
                             self.IndexList.append(self._df_back.at[i, 'Index'])
                         else:
-                            self.IndexList.append('No ' + str(i))
+                            self.IndexList.append('No ' + str(i+1))
                         break
                     pass
 

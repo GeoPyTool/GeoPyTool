@@ -2,7 +2,6 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
 class Pearce(AppForm):
-
     reference = 'Reference: Pearce, J. A., Harris, N. B. W., and Tindle, A. G., 1984, Trace Element Discrimination Diagrams for the Tectonic Interpretation of Granitic Rocks: Journal of Petrology, v. 25, no. 4, p. 956-983.'
     Lines = []
     Tags = []
@@ -11,6 +10,8 @@ class Pearce(AppForm):
     description = '\n syn-COLG: syn-collision granites\t VAG: volcanic arc granites\n WPG: within plate granites\t ORG: ocean ridge granites  \n '
 
     itemstocheck = [u'Y', u'Yb', u'Nb', u'Rb', u'Ta']
+
+
 
     text = [u'0.1', u'1', u'10', u'100', u'1000', u'10000', u'100000', u'1000000', u'10000000']
 
@@ -60,102 +61,22 @@ class Pearce(AppForm):
 
     condation = [Condation0, Condation1, Condation2, Condation3]
 
-    LocationAreas0 = [ [[2, 80], [55, 300],[400,2000],[2,2000]],
-                      [[400, 2000],[55, 300],[51.5,8],[2000,400]],
-                      [[2, 80], [55, 300], [51.5, 8], [50, 1],[2,1]],
-                      [[50, 1],[51.5, 8],[2000,400],[2000,1]],
-                      ]
-
-    ItemNames0 =[u'syn-COLG', u'WPG', u'VAG', u'ORG']
-
-
-    LocationAreas1 = [[[0.5, 140], [6, 200], [50, 2000],[0.5,2000]],
-                      [[50, 2000],[6, 200], [6, 8],[200, 400]],
-                      [[0.5, 140],[6, 200], [6,8],[6,1],[0.5,1]],
-                      [[6, 1], [6, 8],[200, 400],[200,1]],
-                      ]
-
-    ItemNames1 =[u'syn-COLG', u'WPG', u'VAG', u'ORG']
-
-
-    LocationAreas2 = [[[1, 2000], [25, 25],[1000, 400],[1000,2000]],
-                      [[1000,400],[25, 25], [50, 10], [1000, 100]],
-                      [[40, 1],[50,10], [1000, 100],[1000,1]],
-                      ]
-
-    ItemNames2 =[u'WPG', u'ORG', u'VAG_or_syn-COLG']
-
-
-    LocationAreas3 = [[[0.55, 20], [3, 2],[0.1, 0.35],[0.1,20]],
-                      [[0.55, 20], [3, 2], [100,20]],
-                      [[0.1, 0.35], [3, 2],[5,1],[5,0.05],[0.1,0.05]],
-                      [[100,20],[3, 2], [5, 1],[100,7]],
-                      [[5, 0.05], [5, 1],[100,7],[100,0.05]],
-                      ]
-
-    ItemNames3 =[u'syn-COLG', u'WPG1', u'VAG',u'WPG2', u'ORG']
-
-    AreasHeadClosed = []
-    SelectDic0 = {}
-    SelectDic1 = {}
-    SelectDic2 = {}
-    SelectDic3 = {}
-
-
     def __init__(self, parent=None, df=pd.DataFrame()):
-        QWidget.__init__(self, parent)
+        QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.title)
 
 
-        self.FileName_Hint = ''
+        self.FileName_Hint='Pearce'
+
         self._df = df
-        self._df_back = df
         if (len(df) > 0):
             self._changed = True
-            # print('DataFrame recieved to AppForm')
-
-        self.AllLabel = []
-
-        for i in range(len(self._df)):
-            tmp_label = self._df.at[i, 'Label']
-            if tmp_label not in self.AllLabel:
-                self.AllLabel.append(tmp_label)
-
-        for i in range(len(self.LocationAreas0)):
-            tmpi = self.LocationAreas0[i] + [self.LocationAreas0[i][0]]
-            tmppath = path.Path(tmpi)
-            self.AreasHeadClosed.append(tmpi)
-            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
-            self.SelectDic0[self.ItemNames0[i]] = tmppath
-
-        for i in range(len(self.LocationAreas1)):
-            tmpi = self.LocationAreas1[i] + [self.LocationAreas1[i][0]]
-            tmppath = path.Path(tmpi)
-            self.AreasHeadClosed.append(tmpi)
-            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
-            self.SelectDic1[self.ItemNames1[i]] = tmppath
-
-        for i in range(len(self.LocationAreas2)):
-            tmpi = self.LocationAreas2[i] + [self.LocationAreas2[i][0]]
-            tmppath = path.Path(tmpi)
-            self.AreasHeadClosed.append(tmpi)
-            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
-            self.SelectDic2[self.ItemNames2[i]] = tmppath
-
-        for i in range(len(self.LocationAreas3)):
-            tmpi = self.LocationAreas3[i] + [self.LocationAreas3[i][0]]
-            tmppath = path.Path(tmpi)
-            self.AreasHeadClosed.append(tmpi)
-            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
-            self.SelectDic3[self.ItemNames3[i]] = tmppath
-
+            # print('DataFrame recieved to Pearce')
 
         self.create_main_frame()
         self.create_status_bar()
 
-
     def create_main_frame(self):
-
         self.resize(900, 900)
         self.main_frame = QWidget()
         self.dpi = 128
@@ -172,8 +93,8 @@ class Pearce(AppForm):
         self.save_button.clicked.connect(self.saveImgFile)
 
 
-        self.result_button = QPushButton('&Classification Result')
-        self.result_button.clicked.connect(self.Explain)
+        #self.result_button = QPushButton('&Result')
+        #self.result_button.clicked.connect(self.Pearce)
 
 
         self.legend_cb = QCheckBox('&Legend')
@@ -195,7 +116,7 @@ class Pearce(AppForm):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.result_button,self.legend_cb,  self.detail_cb,self.show_data_index_cb]:
+        for w in [self.save_button, self.legend_cb,  self.detail_cb,self.show_data_index_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -327,13 +248,6 @@ class Pearce(AppForm):
 
 
 
-        self.OutPutData = pd.DataFrame()
-        self.LabelList=[]
-        self.IndexList=[]
-        self.TypeList0=[]
-        self.TypeList1=[]
-        self.TypeList2=[]
-        self.TypeList3=[]
 
 
 
@@ -398,6 +312,9 @@ class Pearce(AppForm):
                 self.axes[1, 1].plot(self.customDrawLogLine(l=i)[0],self.customDrawLogLine(l=i)[1], color='black', linewidth=0.8, alpha=0.5)
 
 
+
+
+
         PointLabels = []
 
         self.TagsD = []
@@ -413,74 +330,21 @@ class Pearce(AppForm):
 
             #   self.WholeData.append(math.log(tmp, 10))
 
-            self.LabelList.append(raw.at[i, 'Label'])
-
-            if 'Index' in raw.columns.values:
-                self.IndexList.append(raw.at[i, 'Index'])
-            else:
-                self.IndexList.append('No ' + str(i+1))
-
-
-
             if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
                 TmpLabel = ''
             else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
 
-
-
             xa, ya = 0, 0
             xb, yb = 0, 0
             xc, yc = 0, 0
             xd, yd = 0, 0
 
-            Label = TmpLabel
-
             xa, ya = (raw.at[i, 'Y'] + raw.at[i, 'Nb']), raw.at[i, 'Rb']
             xb, yb = (raw.at[i, 'Yb'] + raw.at[i, 'Ta']), raw.at[i, 'Rb']
             xc, yc = raw.at[i, 'Y'], raw.at[i, 'Nb']
             xd, yd = raw.at[i, 'Yb'], raw.at[i, 'Ta']
-
-
-            HitOnRegions=0
-            for j in self.ItemNames0:
-                if self.SelectDic0[j].contains_point([xa, ya]):
-                    self.TypeList0.append(j)
-                    HitOnRegions=1
-                    break
-            if HitOnRegions==0:
-                self.TypeList0.append('on line or out')
-
-            HitOnRegions = 0
-            for j in self.ItemNames1:
-                if self.SelectDic1[j].contains_point([xb, yb]):
-                    self.TypeList1.append(j)
-                    HitOnRegions=1
-                    break
-            if HitOnRegions==0:
-                self.TypeList1.append('on line or out')
-
-            HitOnRegions = 0
-            for j in self.ItemNames2:
-                if self.SelectDic2[j].contains_point([xc, yc]):
-                    self.TypeList2.append(j)
-                    HitOnRegions=1
-                    break
-            if HitOnRegions==0:
-                self.TypeList2.append('on line or out')
-
-            HitOnRegions = 0
-            for j in self.ItemNames3:
-                if self.SelectDic3[j].contains_point([xd, yd]):
-                    self.TypeList3.append(j)
-                    HitOnRegions=1
-                    break
-            if HitOnRegions==0:
-                self.TypeList3.append('on line or out')
-
-
-
 
             try:
                 self.axes[0, 0].scatter(math.log(xa, 10), math.log(ya, 10), marker=raw.at[i, 'Marker'],
@@ -605,36 +469,7 @@ class Pearce(AppForm):
 
         self.canvas.draw()
 
+
         self.OutPutTitle='Pearce'
 
         self.OutPutFig=self.fig
-
-        print(len(self.LabelList), len(self.IndexList), len(self.TypeList0), len(self.TypeList1), len(self.TypeList2),
-              len(self.TypeList3))
-
-        self.OutPutData = pd.DataFrame({'Label': self.LabelList,
-             'Index':self.IndexList,
-             'TectonicTypeA': self.TypeList0,
-             'TectonicTypeB': self.TypeList1,
-             'TectonicTypeC': self.TypeList2,
-             'TectonicTypeD': self.TypeList3,
-             })
-
-        '''
-        (
-            {'Label': self.LabelList,
-             'Index':self.IndexList,
-             'TectonicTypeA': self.TypeList0,
-             'TectonicTypeB': self.TypeList1,
-             'TectonicTypeC': self.TypeList2,
-             'TectonicTypeD': self.TypeList3,
-             })
-
-        '''
-
-    def Explain(self):
-
-        #self.OutPutData = self.OutPutData.set_index('Label')
-
-        self.tablepop = TableViewer(df=self.OutPutData,title='Pearce Result')
-        self.tablepop.show()
