@@ -1,4 +1,4 @@
-version = '0.8.19.5.104'
+version = '0.8.20.0.100'
 
 date = '2019-10-15'
 
@@ -565,7 +565,7 @@ class PandasModel(QtCore.QAbstractTableModel):
         elif role == QtCore.Qt.CheckStateRole:
             return None
 
-        return QtCore.QVariant(str(self._df.ix[index.row(), index.column()]))
+        return QtCore.QVariant(str(self._df.iloc[index.row(), index.column()]))
 
     def flags(self, index):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
