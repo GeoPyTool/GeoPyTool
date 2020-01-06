@@ -3,7 +3,6 @@ from geopytool.CustomClass import *
 
 class QFL(AppForm, Tool):
     reference = 'Refrence: Dickinson, W. R., Beard, L. S., Brakenridge, G. R., Erjavec, J. L., Ferguson, R. C., Inman, K. F., Knepp, R. A., Lindberg, F. A., and Ryberg, P. T., 1983, Provenance of North American Phanerozoic sandstones in relation to tectonic setting: Geological Society of America Bulletin, v. 94, no. 2, p. 222.'
-
     _df = pd.DataFrame()
     _changed = False
 
@@ -24,6 +23,7 @@ class QFL(AppForm, Tool):
               u'Dissected \n Arc',
               u'Transitional \n Arc',
               u'Undissected \n Arc']
+
     Locations = [(8.5, 1.5, 90),
                  (28.5, 1.5, 70),
                  (58.5, 1.5, 40),
@@ -31,6 +31,7 @@ class QFL(AppForm, Tool):
                  (35, 30, 35),
                  (15, 60, 15),
                  (11, 80, 9)]
+
     Offset = [(-80, 2),
               (-80, 2),
               (-80, 2),
@@ -38,6 +39,12 @@ class QFL(AppForm, Tool):
               (-20, -8),
               (-60, -2),
               (-40, -5)]
+
+    AreasHeadClosed = []
+    SelectDic = {}
+    AllLabel = []
+    IndexList = []
+    LabelList = []
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -53,6 +60,22 @@ class QFL(AppForm, Tool):
         self.create_status_bar()
 
         self.raw = self._df
+
+        self.AllLabel = []
+
+        for i in range(len(self._df)):
+            tmp_label = self._df.at[i, 'Label']
+            if tmp_label not in self.AllLabel:
+                self.AllLabel.append(tmp_label)
+
+        for i in range(len(self.LocationAreas)):
+            tmpi = self.LocationAreas[i] + [self.LocationAreas[i][0]]
+            tmppath = path.Path(tmpi)
+            self.AreasHeadClosed.append(tmpi)
+            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
+            self.SelectDic[self.ItemNames[i]] = tmppath
+
+
         for i in range(len(self.Labels)):
             self.Tags.append(Tag(Label=self.Labels[i],
                                  Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
@@ -124,8 +147,6 @@ class QFL(AppForm, Tool):
         # self.axes.spines['top'].set_color('none')
         # self.axes.spines['bottom'].set_color('none')
         # self.axes.spines['left'].set_color('none')
-
-
 
         s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
                      Style='-',
@@ -260,3 +281,25 @@ class QFL(AppForm, Tool):
 
         self.canvas.draw()
 
+        self.OutPutFig=self.fig
+
+        self.OutPutTitle = 'QFL'
+
+        '''
+        print(len(self.LabelList), len(self.IndexList), len(self.TypeList))
+
+        self.OutPutData = pd.DataFrame({'Label': self.LabelList,
+                                        'Index': self.IndexList,
+                                        'TectonicType': self.TypeList,
+                                        })
+
+        '''
+
+
+
+    def Explain(self):
+
+        # self.OutPutData = self.OutPutData.set_index('Label')
+
+        self.tablepop = TableViewer(df=self.OutPutData, title='Pearce Result')
+        self.tablepop.show()

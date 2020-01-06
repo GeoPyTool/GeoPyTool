@@ -981,7 +981,6 @@ class QAPF(AppForm, Tool):
 
         self.canvas.draw()
 
-
         self.OutPutFig=self.fig
 
         self.OutPutTitle = 'QAPF'
