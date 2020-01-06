@@ -250,9 +250,11 @@ class TAS(AppForm):
 
 
         self.OutPutData = pd.DataFrame()
+
         self.LabelList=[]
         self.IndexList=[]
         self.TypeList=[]
+
         self.RittmanList=[]
 
 
@@ -387,22 +389,25 @@ class TAS(AppForm):
                 xtest=df.at[i, 'SiO2']
                 ytest=df.at[i, 'Na2O'] + df.at[i, 'K2O']
 
+                HitOnRegions = 0
 
+                self.LabelList.append(Label)
+
+                if 'Index' in self._df_back.columns.values:
+                    self.IndexList.append(self._df_back.at[i, 'Index'])
+                else:
+                    self.IndexList.append('No ' + str(i+1))
+
+                self.RittmanList.append(round(ytest ** 2 / (xtest - 43) + 0.001, 2))
 
                 for j in self.ItemNames:
                     if self.SelectDic[j].contains_point([xtest,ytest]):
-
-                        self.LabelList.append(Label)
+                        HitOnRegions = 1
                         self.TypeList.append(j)
-
-                        self.RittmanList.append(round( ytest**2/(xtest-43) + 0.001, 2))
-
-                        if 'Index' in self._df_back.columns.values:
-                            self.IndexList.append(self._df_back.at[i, 'Index'])
-                        else:
-                            self.IndexList.append('No ' + str(i+1))
                         break
-                    pass
+                if HitOnRegions == 0:
+                    self.TypeList.append('on line or out')
+
 
 
                 self.axes.scatter(df.at[i, 'SiO2'], (df.at[i, 'Na2O'] + df.at[i, 'K2O']), marker=df.at[i, 'Marker'],

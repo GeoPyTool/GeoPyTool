@@ -1,4 +1,4 @@
-version = '0.8.20.0.103'
+version = '0.8.20.0.104'
 
 date = '2020-01-06'
 
@@ -979,6 +979,7 @@ class AppForm(QMainWindow):
     AllLabel = []
     IndexList = []
     LabelList = []
+    TypeList = []
     Standard = ''
     FileName_Hint = ''
     WholeResult = {}

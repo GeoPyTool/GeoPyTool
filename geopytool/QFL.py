@@ -40,11 +40,32 @@ class QFL(AppForm, Tool):
               (-60, -2),
               (-40, -5)]
 
+    LocationAreas = [
+        [[50.0, 86.60254037844386], [41.0, 71.01408311032397], [44.885, 68.77107731452226], [51.5, 84.00446416709055]],
+        [[41.0, 71.01408311032397], [27.5, 47.63139720814412], [34.394999999999996, 44.64360956508781],
+         [44.885, 68.77107731452226]],
+        [[27.5, 47.63139720814412], [0.0, 0.0], [15.0, 0.0], [34.394999999999996, 44.64360956508781]],
+        [[51.5, 84.00446416709055], [34.394999999999996, 44.64360956508781], [87.5, 21.650635094610966]],
+        [[34.394999999999996, 44.64360956508781], [21.725, 15.475873965627919], [70.52499999999999, 29.00319077274085]],
+        [[21.725, 15.475873965627919], [15.0, 0.0], [50.0, 0.0], [87.5, 21.650635094610966],
+         [70.52499999999999, 29.00319077274085]],
+        [[87.5, 21.650635094610966], [50.0, 0.0], [100.0, 0.0]]]
+
+
+    ItemNames = [u'Craton Interior',
+              u'Transitional Continental',
+              u'Basement Uplift',
+              u'Recycled Orogenic',
+              u'Dissected Arc',
+              u'Transitional Arc',
+              u'Undissected Arc']
+
     AreasHeadClosed = []
     SelectDic = {}
     AllLabel = []
     IndexList = []
     LabelList = []
+    TypeList = []
 
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
@@ -100,6 +121,10 @@ class QFL(AppForm, Tool):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
+        self.result_button = QPushButton('&Classification Result')
+        self.result_button.clicked.connect(self.Explain)
+
+
         self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Tri)
 
@@ -119,7 +144,7 @@ class QFL(AppForm, Tool):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.legend_cb,self.show_data_index_cb , self.Tag_cb]:
+        for w in [self.save_button,self.result_button, self.draw_button, self.legend_cb,self.show_data_index_cb , self.Tag_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -233,17 +258,43 @@ class QFL(AppForm, Tool):
         PointLabels = []
         TPoints = []
 
+        self.IndexList = []
+        self.LabelList = []
+        self.TypeList = []
+
         print(raw.columns)
         for i in range(len(raw)):
+
             TmpLabel = ''
             if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
                 TmpLabel = ''
             else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+
+            self.LabelList.append(raw.at[i, 'Label'])
+            if 'Index' in raw.columns.values:
+                self.IndexList.append(raw.at[i, 'Index'])
+            else:
+                self.IndexList.append('No ' + str(i + 1))
+
             TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'L'], raw.at[i, 'Q']), Size=raw.at[i, 'Size'],
                                     Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                     Label=TmpLabel))
+
+
+
+            xa,ya = self.TriToBin(raw.at[i, 'F'], raw.at[i, 'L'], raw.at[i, 'Q'])
+
+            HitOnRegions = 0
+            for j in self.ItemNames:
+                if self.SelectDic[j].contains_point([xa, ya]):
+                    self.TypeList.append(j)
+                    HitOnRegions = 1
+                    break
+            if HitOnRegions == 0:
+                self.TypeList.append('on line or out')
+
 
         for i in range(len(TPoints)):
             self.axes.scatter(TPoints[i].X, TPoints[i].Y, marker=TPoints[i].Marker, s=TPoints[i].Size, color=TPoints[i].Color, alpha=TPoints[i].Alpha,
@@ -276,24 +327,23 @@ class QFL(AppForm, Tool):
         if (self.legend_cb.isChecked()):
             self.axes.legend(bbox_to_anchor=(1, 1), loc=2, borderaxespad=0, prop=fontprop)
 
-
-
-
         self.canvas.draw()
 
         self.OutPutFig=self.fig
 
         self.OutPutTitle = 'QFL'
 
-        '''
+
         print(len(self.LabelList), len(self.IndexList), len(self.TypeList))
+
+
 
         self.OutPutData = pd.DataFrame({'Label': self.LabelList,
                                         'Index': self.IndexList,
                                         'TectonicType': self.TypeList,
                                         })
 
-        '''
+
 
 
 

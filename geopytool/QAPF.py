@@ -898,7 +898,9 @@ class QAPF(AppForm, Tool):
 
         PointLabels = []
         TPoints = []
-        self.TypeList=[]
+        self.IndexList = []
+        self.LabelList = []
+        self.TypeList = []
 
         print(raw.columns.values)
 

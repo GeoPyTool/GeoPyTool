@@ -55,6 +55,44 @@ class QmFLt(AppForm, Tool):
               (+50, -2),
               (+52, -15)]
 
+    LocationAreas = [
+        [[50.0, 86.60254037844386], [40.0, 69.28203230275508], [49.825, 63.60956590796702], [55.5, 77.07626093681503]],
+        [[40.0, 69.28203230275508], [28.5, 49.363448015713], [40.780921907809216, 42.16256065419889],
+         [49.825, 63.60956590796702]],
+        [[28.5, 49.363448015713], [0.0, 0.0], [23.0, 0.0], [40.780921907809216, 42.16256065419889]],
+        [[47.53, 58.17958662623859], [40.780921907809216, 42.16256065419889], [69.44694469446945, 25.35975979878824]],
+        [[40.780921907809216, 42.16256065419889], [31.08, 19.15648193171178], [69.44694469446945, 25.35975979878824]],
+        [[31.08, 19.15648193171178], [23.0, 0.0], [53.0, 0.0], [79.60000000000001, 10.911920087683928],
+         [69.44694469446945, 25.35975979878824]],
+        [[53.0, 0.0], [87.0, 0.0], [79.60000000000001, 10.911920087683928]],
+        [[55.5, 77.07626093681503], [47.53, 58.17958662623859], [57.82421757824217, 43.002521299805245],
+         [70.79207920792079, 50.58960279532859]],
+        [[57.82421757824217, 43.002521299805245], [69.44694469446945, 25.35975979878824], [84.0, 27.712812921102035],
+         [70.79207920792079, 50.58960279532859]],
+        [[69.44694469446945, 25.35975979878824],  [87.0, 0.0], [100.0, 0.0],[84.0, 27.712812921102035]]
+        ]
+
+    ItemNames = [u'Craton Interior',
+              u'Transitional Continental',
+              u'Basement Uplift',
+
+              u'Mixed',
+              u'Dissected Arc',
+              u'Transitional Arc',
+              u'Undissected Arc',
+
+              u'Quartzose Recycled',
+              u'Transitional Recycled',
+              u'Lithic Recycled']
+
+    AreasHeadClosed = []
+    SelectDic = {}
+    AllLabel = []
+    IndexList = []
+    LabelList = []
+    TypeList = []
+
+
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Qm-F-lt')
@@ -69,6 +107,21 @@ class QmFLt(AppForm, Tool):
         self.create_status_bar()
 
         self.raw = self._df
+
+        self.AllLabel = []
+
+        for i in range(len(self._df)):
+            tmp_label = self._df.at[i, 'Label']
+            if tmp_label not in self.AllLabel:
+                self.AllLabel.append(tmp_label)
+
+        for i in range(len(self.LocationAreas)):
+            tmpi = self.LocationAreas[i] + [self.LocationAreas[i][0]]
+            tmppath = path.Path(tmpi)
+            self.AreasHeadClosed.append(tmpi)
+            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
+            self.SelectDic[self.ItemNames[i]] = tmppath
+
         for i in range(len(self.Labels)):
             self.Tags.append(Tag(Label=self.Labels[i],
                                  Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
@@ -94,6 +147,9 @@ class QmFLt(AppForm, Tool):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
+        self.result_button = QPushButton('&Classification Result')
+        self.result_button.clicked.connect(self.Explain)
+
         self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Tri)
 
@@ -113,7 +169,7 @@ class QmFLt(AppForm, Tool):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.legend_cb,self.show_data_index_cb, self.Tag_cb]:
+        for w in [self.save_button,self.result_button, self.draw_button, self.legend_cb,self.show_data_index_cb, self.Tag_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -289,6 +345,11 @@ class QmFLt(AppForm, Tool):
 
         PointLabels = []
         TPoints = []
+
+        self.IndexList = []
+        self.LabelList = []
+        self.TypeList = []
+
         for i in range(len(raw)):
             TmpLabel = ''
             if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
@@ -296,9 +357,26 @@ class QmFLt(AppForm, Tool):
             else:
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
+
+            self.LabelList.append(raw.at[i, 'Label'])
+            if 'Index' in raw.columns.values:
+                self.IndexList.append(raw.at[i, 'Index'])
+            else:
+                self.IndexList.append('No ' + str(i + 1))
+
             TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'Lt'], raw.at[i, 'Qm']), Size=raw.at[i, 'Size'],
                                     Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                     Label=TmpLabel))
+
+            xa,ya = self.TriToBin(raw.at[i, 'F'], raw.at[i, 'Lt'], raw.at[i, 'Qm'])
+            HitOnRegions = 0
+            for j in self.ItemNames:
+                if self.SelectDic[j].contains_point([xa, ya]):
+                    self.TypeList.append(j)
+                    HitOnRegions = 1
+                    break
+            if HitOnRegions == 0:
+                self.TypeList.append('on line or out')
 
         for i in range(len(TPoints)):
             self.axes.scatter(TPoints[i].X, TPoints[i].Y, marker=TPoints[i].Marker, s=TPoints[i].Size, color=TPoints[i].Color, alpha=TPoints[i].Alpha,
@@ -334,3 +412,26 @@ class QmFLt(AppForm, Tool):
 
         self.canvas.draw()
 
+        self.OutPutFig=self.fig
+
+        self.OutPutTitle = 'QmFLt'
+
+        print(len(self.LabelList), len(self.IndexList), len(self.TypeList))
+
+
+
+        self.OutPutData = pd.DataFrame({'Label': self.LabelList,
+                                        'Index': self.IndexList,
+                                        'TectonicType': self.TypeList,
+                                        })
+
+
+
+
+
+    def Explain(self):
+
+        # self.OutPutData = self.OutPutData.set_index('Label')
+
+        self.tablepop = TableViewer(df=self.OutPutData, title='Pearce Result')
+        self.tablepop.show()
