@@ -185,12 +185,149 @@ class QAPF(AppForm, Tool):
               (60, 0),
               (-30, 0)]
 
+    LocationAreas0 = [[[50.0, 86.60254037844386], [45.0, 77.94228634059948], [55.0, 77.94228634059948]],
+                         [[45.0, 77.94228634059948], [30.0, 51.96152422706631], [70.0, 51.96152422706631],
+                          [55.0, 77.94228634059948]],
+                         [[30.0, 51.96152422706631], [10.0, 17.32050807568877], [18.0, 17.32050807568877],
+                          [34.0, 51.96152422706631]],
+                         [[34.0, 51.96152422706631], [18.0, 17.32050807568877], [38.0, 17.32050807568877],
+                          [44.0, 51.96152422706631]],
+                         [[44.0, 51.96152422706631], [38.0, 17.32050807568877], [62.0, 17.32050807568877],
+                          [56.0, 51.96152422706631]],
+                         [[56.0, 51.96152422706631], [62.0, 17.32050807568877], [82.0, 17.32050807568877],
+                          [66.0, 51.96152422706631]],
+                         [[66.0, 51.96152422706631], [82.0, 17.32050807568877], [90.0, 17.32050807568877],
+                          [70.0, 51.96152422706631]],
+                         [[10.0, 17.32050807568877], [2.5, 4.330127018922193], [12.0, 4.330127018922193],
+                          [18.0, 17.32050807568877]],
+                         [[18.0, 17.32050807568877], [12.0, 4.330127018922193], [35.75, 4.330127018922193],
+                          [38.0, 17.32050807568877]],
+                         [[38.0, 17.32050807568877], [35.75, 4.330127018922193], [64.25, 4.330127018922193],
+                          [62.0, 17.32050807568877]],
+                         [[62.0, 17.32050807568877], [64.25, 4.330127018922193], [88.34951456310678, 4.204006814487566],
+                          [82.0, 17.32050807568877]],
+                         [[88.34951456310678, 4.204006814487566], [82.0, 17.32050807568877], [97.5, 4.330127018922193],
+                          [90.0, 17.32050807568877]],
+                         [[2.5, 4.330127018922193], [0.0, 0.0], [10.0, 0.0], [11.650485436893202, 4.204006814487566]],
+                         [[11.650485436893202, 4.204006814487566], [10.0, 0.0], [35.0, 0.0],
+                          [35.75, 4.330127018922193]],
+                         [[35.75, 4.330127018922193], [35.0, 0.0], [65.0, 0.0], [64.25, 4.330127018922193]],
+                         [[64.25, 4.330127018922193], [65.0, 0.0], [90.0, 0.0], [88.34951456310678, 4.204006814487566]],
+                         [[88.34951456310678, 4.204006814487566], [90.0, 0.0], [100.0, 0.0], [97.5, 4.330127018922193]],
+                         [[0.0, 0.0], [5.0, -8.660254037844386], [14.0, -8.660254037844386], [10.0, 0.0]],
+                         [[10.0, 0.0], [14.0, -8.660254037844386], [36.42857142857143, -8.247860988423225],
+                          [35.0, 0.0]],
+                         [[35.0, 0.0], [36.42857142857143, -8.247860988423225], [63.57142857142858, -8.247860988423225],
+                          [65.0, 0.0]],
+                         [[65.0, 0.0], [63.57142857142858, -8.247860988423225], [86.0, -8.660254037844386],
+                          [90.0, 0.0]],
+                         [[90.0, 0.0], [86.0, -8.660254037844386], [95.0, -8.660254037844386], [100.0, 0.0]],
+                         [[5.0, -8.660254037844386], [30.0, -51.96152422706631], [34.0, -51.96152422706631],
+                          [14.0, -8.660254037844386]],
+                         [[14.0, -8.660254037844386], [34.0, -51.96152422706631], [50.0, -51.96152422706631],
+                          [50.0, -8.660254037844386]],
+                         [[50.0, -8.660254037844386], [50.0, -51.96152422706631], [66.0, -51.96152422706631],
+                          [86.0, -8.660254037844386]],
+                         [[86.0, -8.660254037844386], [66.0, -51.96152422706631], [70.0, -51.96152422706631],
+                          [95.0, -8.660254037844386]],
+                         [[30.0, -51.96152422706631], [50.0, -86.60254037844386], [70.0, -51.96152422706631]]]
+
+    ItemNames0 = [
+        '1a: quartzolite',
+        '1b: quartz-rich granitoid',
+        '2: alkali feldspar granite',
+        '3a: (syeno granite)',
+        '3b: (monzo granite)',
+        '4: granodiorite',
+        '5: tonalite',
+        '6*: quartz alkali feldspar syenite',
+        '7*: quartz syenite',
+        '8*: quartz monzonite',
+        '9*: quartz monzodiorite quartz monzogabbro',
+        '10*: quartz diorite quartz gabbro  quartz anorthosite',
+        '6: alkali feldspar syenite',
+        '7: syenite',
+        '8: monzonite',
+        '9: monzodiorite monzogabbro',
+        '10: diorite gabbro anorthosite',
+        '6\': foid-bearing alkali feldspar syenite',
+        '7\': foid-bearing syenite',
+        '8\': foid-bearing monzonite',
+        '9\': foid-bearing monzodiorite foid-bearing monzogabbro',
+        '10\': foid-bearing diorite foid-bearing gabbro foid-bearing anorthosite',
+        '11: foid syenite',
+        '12: foid monzosyenite',
+        '13: foid monzodiorite foid monzogabbro',
+        '14: foid diorite foid gabbro',
+        '15: foidolite'
+    ]
+
+    LocationAreas1 = [
+        [[30.0, 51.96152422706631], [10.0, 17.32050807568877], [38.0, 17.32050807568877], [44.0, 51.96152422706631]],
+        [[44.0, 51.96152422706631], [38.0, 17.32050807568877], [62.0, 17.32050807568877], [56.0, 51.96152422706631]],
+        [[56.0, 51.96152422706631], [62.0, 17.32050807568877], [90.0, 17.32050807568877], [70.0, 51.96152422706631]],
+        [[10.0, 17.32050807568877], [2.5, 4.330127018922193], [12.0, 4.330127018922193], [18.0, 17.32050807568877]],
+        [[18.0, 17.32050807568877], [12.0, 4.330127018922193], [35.75, 4.330127018922193], [38.0, 17.32050807568877]],
+        [[38.0, 17.32050807568877], [35.75, 4.330127018922193], [64.25, 4.330127018922193], [62.0, 17.32050807568877]],
+        [[62.0, 17.32050807568877], [65.0, 0.0], [100.0, 0.0], [90.0, 17.32050807568877]],
+        [[2.5, 4.330127018922193], [0.0, 0.0], [10.0, 0.0], [11.650485436893202, 4.204006814487566]],
+        [[11.650485436893202, 4.204006814487566], [10.0, 0.0], [35.0, 0.0], [35.75, 4.330127018922193]],
+        [[35.75, 4.330127018922193], [35.0, 0.0], [65.0, 0.0], [64.25, 4.330127018922193]],
+        [[0.0, 0.0], [5.0, -8.660254037844386], [14.0, -8.660254037844386], [10.0, 0.0]],
+        [[10.0, 0.0], [14.0, -8.660254037844386], [36.42857142857143, -8.247860988423225], [35.0, 0.0]],
+        [[35.0, 0.0], [36.42857142857143, -8.247860988423225], [63.57142857142858, -8.247860988423225], [65.0, 0.0]],
+        [[65.0, 0.0], [63.57142857142858, -8.247860988423225], [95.0, -8.660254037844386], [100.0, 0.0]],
+        [[5.0, -8.660254037844386], [30.0, -51.96152422706631], [34.0, -51.96152422706631], [14.0, -8.660254037844386]],
+        [[14.0, -8.660254037844386], [34.0, -51.96152422706631], [50.0, -51.96152422706631],
+         [50.0, -8.660254037844386]],
+        [[50.0, -8.660254037844386], [50.0, -51.96152422706631], [66.0, -51.96152422706631],
+         [86.0, -8.660254037844386]],
+        [[86.0, -8.660254037844386], [66.0, -51.96152422706631], [70.0, -51.96152422706631],
+         [95.0, -8.660254037844386]],
+        [[30.0, -51.96152422706631], [45.0, -77.94228634059948], [50.0, -77.94228634059948],
+         [50.0, -51.96152422706631]],
+        [[50.0, -51.96152422706631], [50.0, -77.94228634059948], [55.0, -77.94228634059948],
+         [70.0, -51.96152422706631]],
+        [[45.0, -77.94228634059948], [50.0, -86.60254037844386], [55.0, -77.94228634059948]]]
+
+    ItemNames1 = [
+        '1:alkali feldspar rhyolite',
+        '2:rhyolite',
+        '3:dacite',
+        '4:quartz alkali feldspar trachyte',
+        '5:quartz trachyte',
+        '6:quartz latite',
+        '7:basalt andesite',
+        '8:alkali feldspar trachyte',
+        '9:trachyte',
+        '10:latite',
+        '11:foid-bearing alkali feldspar trachyte',
+        '12:foid-bearing trachyte',
+        '13:foid-bearing latite',
+        '7:basalt andesite',
+        '14:phonolite',
+        '15:tephritic phonolite',
+        '16:phonolitic basanite (olivine > 10%) phonolitic tephrite (olivine < 10%)',
+        '17:basanite (olivine > 10%) tephrite (olivine < 10%)',
+        '18:phonolitic foidite',
+        '19:tephritic foidite',
+        '20:foidoite',
+    ]
+
+    AreasHeadClosed = []
+    SelectDic0 = {}
+    SelectDic1 = {}
+
+    AllLabel = []
+    IndexList = []
+    LabelList = []
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
 
 
         self.FileName_Hint='QAPF'
         self._df = df
+        self._df_back = df
         if (len(df) > 0):
             self._changed = True
             # print('DataFrame recieved to DualTri')
@@ -198,6 +335,28 @@ class QAPF(AppForm, Tool):
         self.raw = self._df
         self.create_main_frame()
         self.create_status_bar()
+
+        self.AllLabel = []
+
+        for i in range(len(self._df)):
+            tmp_label = self._df.at[i, 'Label']
+            if tmp_label not in self.AllLabel:
+                self.AllLabel.append(tmp_label)
+
+        for i in range(len(self.LocationAreas0)):
+            tmpi = self.LocationAreas0[i] + [self.LocationAreas0[i][0]]
+            tmppath = path.Path(tmpi)
+            self.AreasHeadClosed.append(tmpi)
+            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
+            self.SelectDic0[self.ItemNames0[i]] = tmppath
+
+        for i in range(len(self.LocationAreas1)):
+            tmpi = self.LocationAreas1[i] + [self.LocationAreas1[i][0]]
+            tmppath = path.Path(tmpi)
+            self.AreasHeadClosed.append(tmpi)
+            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
+            self.SelectDic1[self.ItemNames1[i]] = tmppath
+
 
         TriLine(Points=[(100, 0, 0), (0, 0, 100), (0, 100, 0), (0, 0, -100), (100, 0, 0), (35, 65, 0)], Sort='',
                 Width=1, Color='black', Style='-',
@@ -224,10 +383,6 @@ class QAPF(AppForm, Tool):
         self.axes.axis('off')
         self.axes.set_xlim(-10, 110)
         self.axes.set_ylim(-105 * np.sqrt(3) / 2, 105 * np.sqrt(3) / 2)
-
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.main_frame)
-        self.axes = self.fig.add_subplot(111)
         # Create the navigation toolbar, tied to the canvas
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -235,8 +390,8 @@ class QAPF(AppForm, Tool):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
-        #self.result_button = QPushButton('&Result')
-        #self.result_button.clicked.connect(self.Explain)
+        self.result_button = QPushButton('&Classification Result')
+        self.result_button.clicked.connect(self.Explain)
 
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
@@ -253,16 +408,6 @@ class QAPF(AppForm, Tool):
         self.slider.setTickPosition(QSlider.TicksBothSides)
         self.slider.valueChanged.connect(self.QAPF)  # int
 
-        '''
-        self.Tag_cb = QCheckBox('&Plutonic')
-        self.Tag_cb.setChecked(True)
-        self.Tag_cb.stateChanged.connect(self.QAPF)  # int
-        if (self.Tag_cb.isChecked()):
-            self.Tag_cb.setText('&Plutonic')
-        else:
-            self.Tag_cb.setText('&Volcanic')
-        '''
-
 
         self.detail_cb = QCheckBox('&Detail')
         self.detail_cb.setChecked(True)
@@ -273,7 +418,7 @@ class QAPF(AppForm, Tool):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,  self.detail_cb, self.legend_cb,self.slider_left_label,self.slider,self.slider_right_label]:
+        for w in [self.save_button, self.result_button, self.detail_cb, self.legend_cb,self.slider_left_label,self.slider,self.slider_right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -308,6 +453,8 @@ class QAPF(AppForm, Tool):
         self.axes.clear()
         self.axes.axis('off')
         self.Tags = []
+
+        raw = self._df
 
         self.axes.set_xlim(-10, 110)
         self.axes.set_ylim(-105 * np.sqrt(3) / 2, 105 * np.sqrt(3) / 2)
@@ -744,24 +891,18 @@ class QAPF(AppForm, Tool):
                 self.axes.annotate(i.Label, xy=i.Location,
                                    fontsize=6, color='grey', alpha=0.8)
 
-        raw = self._df
+
 
         #raw = self.CleanDataFile(self._df)
 
 
         PointLabels = []
         TPoints = []
+        self.TypeList=[]
 
         print(raw.columns.values)
 
         for i in range(len(raw)):
-
-            q = 1
-            f = 1
-            a = 1
-            p = 1
-
-
 
             if 'A (Volume)' in raw.columns.values:
                 q = raw.at[i, 'Q (Volume)']
@@ -782,14 +923,52 @@ class QAPF(AppForm, Tool):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
 
+            self.LabelList.append(raw.at[i, 'Label'])
+            if 'Index' in raw.columns.values:
+                self.IndexList.append(raw.at[i, 'Index'])
+            else:
+                self.IndexList.append('No ' + str(i + 1))
+
+
+
             if (q != 0 and q != ''):
                 TPoints.append(TriPoint((a, p, q), Size=raw.at[i, 'Size'],
                                         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                         Label=TmpLabel))
+
+
+                xa,ya = self.TriToBin(a, p, q)
+
             else:
                 TPoints.append(TriPoint((a, p, 0 - f), Size=raw.at[i, 'Size'],
                                         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                         Label=TmpLabel))
+
+
+
+                xa,ya = self.TriToBin(a, p, 0 - f)
+
+
+
+            if (int(self.slider.value()) == 0):
+                HitOnRegions = 0
+                for j in self.ItemNames0:
+                    if self.SelectDic0[j].contains_point([xa, ya]):
+                        self.TypeList.append(j)
+                        HitOnRegions = 1
+                        break
+                if HitOnRegions == 0:
+                    self.TypeList.append('on line or out')
+            else:
+                HitOnRegions = 0
+                for j in self.ItemNames1:
+                    if self.SelectDic1[j].contains_point([xa, ya]):
+                        self.TypeList.append(j)
+                        HitOnRegions = 1
+                        break
+                if HitOnRegions == 0:
+                    self.TypeList.append('on line or out')
+
 
         for i in TPoints:
             self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
@@ -804,3 +983,19 @@ class QAPF(AppForm, Tool):
 
 
         self.OutPutFig=self.fig
+
+        self.OutPutTitle = 'QAPF'
+
+        print(len(self.LabelList), len(self.IndexList), len(self.TypeList))
+
+        self.OutPutData = pd.DataFrame({'Label': self.LabelList,
+                                        'Index': self.IndexList,
+                                        'RockType': self.TypeList,
+                                        })
+
+    def Explain(self):
+
+        # self.OutPutData = self.OutPutData.set_index('Label')
+
+        self.tablepop = TableViewer(df=self.OutPutData, title='Pearce Result')
+        self.tablepop.show()

@@ -121,9 +121,9 @@ class TAS(AppForm):
         self.riedman_cb.stateChanged.connect(self.TAS)  # int
 
 
-        self.tag_cb = QCheckBox('&Tag')
-        self.tag_cb.setChecked(True)
-        self.tag_cb.stateChanged.connect(self.TAS)  # int
+        self.detail_cb = QCheckBox('&Detail')
+        self.detail_cb.setChecked(True)
+        self.detail_cb.stateChanged.connect(self.TAS)  # int
 
         self.shape_cb= QCheckBox('&Shape')
         self.shape_cb.setChecked(False)
@@ -164,7 +164,7 @@ class TAS(AppForm):
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select ,self.tag_cb,self.irvine_cb ]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select ,self.detail_cb,self.irvine_cb ]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
@@ -320,7 +320,7 @@ class TAS(AppForm):
 
 
         TagNumber = min(len(Labels), len(Locations))
-        if (self.tag_cb.isChecked()):
+        if (self.detail_cb.isChecked()):
             for k in range(TagNumber):
                 self.axes.annotate(Labels[k], Locations[k], xycoords='data', xytext=(X_offset, Y_offset),
                                    textcoords='offset points',

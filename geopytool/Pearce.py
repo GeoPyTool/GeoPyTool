@@ -107,7 +107,7 @@ class Pearce(AppForm):
         self.setWindowTitle(self.title)
 
 
-        self.FileName_Hint = ''
+        self.FileName_Hint = 'Pearce'
         self._df = df
         self._df_back = df
         if (len(df) > 0):
@@ -620,17 +620,7 @@ class Pearce(AppForm):
              'TectonicTypeD': self.TypeList3,
              })
 
-        '''
-        (
-            {'Label': self.LabelList,
-             'Index':self.IndexList,
-             'TectonicTypeA': self.TypeList0,
-             'TectonicTypeB': self.TypeList1,
-             'TectonicTypeC': self.TypeList2,
-             'TectonicTypeD': self.TypeList3,
-             })
 
-        '''
 
     def Explain(self):
 

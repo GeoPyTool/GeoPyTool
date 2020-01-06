@@ -1,4 +1,4 @@
-version = '0.8.20.0.102'
+version = '0.8.20.0.103'
 
 date = '2020-01-06'
 
@@ -934,9 +934,6 @@ class AppForm(QMainWindow):
     xlabel = r'$SiO_2 wt\%$'
     ylabel = r'$Na_2O + K_2O wt\%$'
     reference = 'Print the reference here.'
-    AllLabel = []
-    IndexList = []
-    LabelList = []
     ItemNames = ['Foidolite',
                  'Peridotgabbro',
                  'Foid Gabbro',
@@ -979,6 +976,9 @@ class AppForm(QMainWindow):
 
     AreasHeadClosed = []
     SelectDic = {}
+    AllLabel = []
+    IndexList = []
+    LabelList = []
     Standard = ''
     FileName_Hint = ''
     WholeResult = {}
