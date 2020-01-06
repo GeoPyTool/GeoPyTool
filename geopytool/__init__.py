@@ -1518,21 +1518,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-
-
-
         if (len(self.model._df) > 0):
             ItemsAvalibale = self.model._df.columns.values.tolist()
-            if 'Q' in  ItemsAvalibale and 'A' in  ItemsAvalibale and 'P' in  ItemsAvalibale and 'F' in ItemsAvalibale:
-                self.qapfpop = QAPF(df=self.model._df)
-                try:
-                    self.qapfpop.QAPF()
-                    self.qapfpop.show()
-                except Exception as e:
-                    self.ErrorEvent(text=repr(e))
-            else:
-                reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow',
-                                                                                                      'Your data contain no Q/A/P/F data.\n Maybe you need to run CIPW first?'))
+            #if 'Q' in  ItemsAvalibale and 'A' in  ItemsAvalibale and 'P' in  ItemsAvalibale and 'F' in ItemsAvalibale:
+            self.qapfpop = QAPF(df=self.model._df)
+            try:
+                self.qapfpop.QAPF()
+                self.qapfpop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+            #else: reply = QMessageBox.information(self, _translate('MainWindow', 'Warning'), _translate('MainWindow', 'Your data contain no Q/A/P/F data.\n Maybe you need to run CIPW first?'))
 
     def ZirconCe(self):
         print('self.model._df length: ',len(self.model._df))

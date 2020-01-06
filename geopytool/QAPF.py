@@ -744,15 +744,24 @@ class QAPF(AppForm, Tool):
                 self.axes.annotate(i.Label, xy=i.Location,
                                    fontsize=6, color='grey', alpha=0.8)
 
-        #raw = self._df
+        raw = self._df
 
-        raw = self.CleanDataFile(self._df)
+        #raw = self.CleanDataFile(self._df)
 
 
         PointLabels = []
         TPoints = []
 
+        print(raw.columns.values)
+
         for i in range(len(raw)):
+
+            q = 1
+            f = 1
+            a = 1
+            p = 1
+
+
 
             if 'A (Volume)' in raw.columns.values:
                 q = raw.at[i, 'Q (Volume)']
