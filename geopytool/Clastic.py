@@ -3,7 +3,6 @@ from geopytool.CustomClass import *
 
 
 
-
 class Clastic(AppForm, Tool):
     _df = pd.DataFrame()
     _changed = False
@@ -95,6 +94,38 @@ class Clastic(AppForm, Tool):
               (0, 0),
               (0, 0), ]
 
+
+    LocationAreas =  [  [  [50.0, 86.60254037844386], [37.5, 64.9519052838329], [62.5, 64.9519052838329]   ] ,
+                        [  [37.5, 64.9519052838329], [25.0, 43.30127018922193], [40.0, 34.64101615137754], [50.0, 51.96152422706631], [50.0, 64.9519052838329]   ] ,
+                        [  [50.0, 64.9519052838329], [50.0, 51.96152422706631], [60.0, 34.64101615137754], [75.0, 43.30127018922193], [62.5, 64.9519052838329]   ] ,
+                        [  [25.0, 43.30127018922193], [12.5, 21.650635094610966], [18.75, 10.825317547305483], [30.0, 17.32050807568877], [40.0, 34.64101615137754]   ] ,
+                        [  [50.0, 51.96152422706631], [30.0, 17.32050807568877], [70.0, 17.32050807568877]   ] ,
+                        [  [60.0, 34.64101615137754], [70.0, 17.32050807568877], [81.25, 10.825317547305483], [87.5, 21.650635094610966], [75.0, 43.30127018922193]   ] ,
+                        [  [12.5, 21.650635094610966], [0.0, 0.0], [25.0, 0.0]   ] ,
+                        [  [30.0, 17.32050807568877], [18.75, 10.825317547305483], [25.0, 0.0], [50.0, 0.0], [50.0, 17.32050807568877]   ] ,
+                        [  [50.0, 17.32050807568877], [50.0, 0.0], [75.0, 0.0], [81.25, 10.825317547305483], [70.0, 17.32050807568877]   ] ,
+                        [  [87.5, 21.650635094610966], [75.0, 0.0], [100.0, 0.0]]
+                     ]
+
+
+    ItemNames = [u'Y',
+              u'SY',
+              u'TY',
+              u'YS',
+              u'STY',
+              u'YT',
+              u'S',
+              u'TS',
+              u'ST',
+              u'T',]
+
+    AreasHeadClosed = []
+    SelectDic = {}
+    AllLabel = []
+    IndexList = []
+    LabelList = []
+    TypeList = []
+
     def __init__(self, parent=None, df=pd.DataFrame()):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Sand-Silt-Clay')
@@ -108,6 +139,21 @@ class Clastic(AppForm, Tool):
         self.create_status_bar()
 
         self.raw = self._df
+
+        self.AllLabel = []
+
+        for i in range(len(self._df)):
+            tmp_label = self._df.at[i, 'Label']
+            if tmp_label not in self.AllLabel:
+                self.AllLabel.append(tmp_label)
+
+        for i in range(len(self.LocationAreas)):
+            tmpi = self.LocationAreas[i] + [self.LocationAreas[i][0]]
+            tmppath = path.Path(tmpi)
+            self.AreasHeadClosed.append(tmpi)
+            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
+            self.SelectDic[self.ItemNames[i]] = tmppath
+
         for i in range(len(self.Labels)):
             self.Tags.append(Tag(Label=self.Labels[i],
                                  Location=self.TriToBin(self.Locations[i][0], self.Locations[i][1],
@@ -133,6 +179,11 @@ class Clastic(AppForm, Tool):
         self.save_button = QPushButton('&Save')
         self.save_button.clicked.connect(self.saveImgFile)
 
+
+        self.result_button = QPushButton('&Classification Result')
+        self.result_button.clicked.connect(self.Explain)
+
+
         self.draw_button = QPushButton('&Reset')
         self.draw_button.clicked.connect(self.Tri)
 
@@ -154,7 +205,7 @@ class Clastic(AppForm, Tool):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.draw_button, self.legend_cb,self.show_data_index_cb , self.Tag_cb]:
+        for w in [self.save_button,self.result_button, self.draw_button, self.legend_cb,self.show_data_index_cb , self.Tag_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -230,6 +281,7 @@ class Clastic(AppForm, Tool):
                  (75, 12.5, 12.5),
                  (12.5, 75, 12.5), ]
 
+
         tmp = []
         # 中心三角绘制
         tmp.append(
@@ -271,6 +323,11 @@ class Clastic(AppForm, Tool):
         raw = self._df
         PointLabels = []
         TPoints = []
+
+        self.IndexList = []
+        self.LabelList = []
+        self.TypeList = []
+
         for i in range(len(raw)):
             TmpLabel = ''
             if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
@@ -279,14 +336,29 @@ class Clastic(AppForm, Tool):
                 PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
 
+            self.LabelList.append(raw.at[i, 'Label'])
+            if 'Index' in raw.columns.values:
+                self.IndexList.append(raw.at[i, 'Index'])
+            else:
+                self.IndexList.append('No ' + str(i + 1))
+
+
             TPoints.append(TriPoint((raw.at[i, 'Sand'], raw.at[i, 'Silt'], raw.at[i, 'Clay']), Size=raw.at[i, 'Size'],
                                     Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
                                     Label=TmpLabel))
 
 
-            # TPoints.append(TriPoint((raw.at[i, 'X'], raw.at[i, 'Y'], raw.at[i, 'Z']), Size=raw.at[i, 'Size'],
-            #         Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],
-            #         Label=TmpLabel))
+
+            xa,ya = self.TriToBin(raw.at[i, 'Sand'], raw.at[i, 'Silt'], raw.at[i, 'Clay'])
+
+            HitOnRegions = 0
+            for j in self.ItemNames:
+                if self.SelectDic[j].contains_point([xa, ya]):
+                    self.TypeList.append(j)
+                    HitOnRegions = 1
+                    break
+            if HitOnRegions == 0:
+                self.TypeList.append('on line or out')
 
 
 
@@ -325,5 +397,27 @@ class Clastic(AppForm, Tool):
 
         self.canvas.draw()
 
-        self.canvas.draw()
 
+        self.OutPutFig=self.fig
+
+        self.OutPutTitle = 'Clastic'
+
+
+        print(len(self.LabelList), len(self.IndexList), len(self.TypeList))
+
+
+
+        self.OutPutData = pd.DataFrame({'Label': self.LabelList,
+                                        'Index': self.IndexList,
+                                        'TectonicType': self.TypeList,
+                                        })      
+
+
+
+
+    def Explain(self):
+
+        # self.OutPutData = self.OutPutData.set_index('Label')
+
+        self.tablepop = TableViewer(df=self.OutPutData, title='Pearce Result')
+        self.tablepop.show()

@@ -24,6 +24,18 @@ class K2OSiO2(AppForm):
     whole_labels=[]
     SVM_labels=[]
 
+
+
+    LocationAreas = [ [ [45,100],[45, 0.945], [48, 1.2], [68, 2.9], [85, 4.345],[85,100]],
+                   [ [45, 0.945],  [48, 1.2], [68, 2.9], [85, 4.345],[85, 1.965],[68, 1.2], [48, 0.3],[45, 0.16499999999999998]],
+                    [[45, 0.16499999999999998], [48, 0.3], [68, 1.2], [85, 1.965],[85,0],[45,0],]
+                     ]
+
+    ItemNames = ['High K',
+                 'Medium K',
+                 'Low K',
+                 ]
+
     def create_main_frame(self):
         self.resize(1000, 800)
         self.main_frame = QWidget()
@@ -143,14 +155,32 @@ class K2OSiO2(AppForm):
 
         '''
 
+        self.OutPutData = pd.DataFrame()
 
+        self.LabelList = []
+        self.IndexList = []
+        self.TypeList = []
 
         all_labels=[]
         all_colors=[]
         all_markers=[]
         all_alpha=[]
 
+        self.AllLabel = []
+
+
+        for i in range(len(self.LocationAreas)):
+            tmpi = self.LocationAreas[i] + [
+                self.LocationAreas[i][0]]  # Here is to add the beginning point to the region
+            tmppath = path.Path(tmpi)
+            self.AreasHeadClosed.append(tmpi)
+            patch = patches.PathPatch(tmppath, facecolor='orange', lw=0.3, alpha=0.3)
+            self.SelectDic[self.ItemNames[i]] = tmppath
+
         for i in range(len(self._df)):
+            tmp_label = self._df.at[i, 'Label']
+            if tmp_label not in self.AllLabel:
+                self.AllLabel.append(tmp_label)
             target = self._df.at[i, 'Label']
             color = self._df.at[i, 'Color']
             marker = self._df.at[i, 'Marker']
@@ -165,7 +195,6 @@ class K2OSiO2(AppForm):
                 all_alpha.append(alpha)
 
         self.whole_labels = all_labels
-
 
         PointLabels = []
         PointColors = []
@@ -236,14 +265,23 @@ class K2OSiO2(AppForm):
                 xtest=df.at[i, 'SiO2']
                 ytest=df.at[i, 'K2O']
 
+                HitOnRegions = 0
+
+                self.LabelList.append(Label)
+
+                if 'Index' in self._df_back.columns.values:
+                    self.IndexList.append(self._df_back.at[i, 'Index'])
+                else:
+                    self.IndexList.append('No ' + str(i + 1))
+
+
                 for j in self.ItemNames:
-                    if self.SelectDic[j].contains_point([xtest,ytest]):
-
-                        self.LabelList.append(Label)
+                    if self.SelectDic[j].contains_point([xtest, ytest]):
+                        HitOnRegions = 1
                         self.TypeList.append(j)
-
                         break
-                    pass
+                if HitOnRegions == 0:
+                    self.TypeList.append('on line or out')
 
 
                 self.axes.scatter(df.at[i, 'SiO2'], df.at[i, 'K2O'], marker=df.at[i, 'Marker'],

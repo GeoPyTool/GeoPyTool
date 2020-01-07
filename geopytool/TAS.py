@@ -57,7 +57,8 @@ class TAS(AppForm):
 
     AreasHeadClosed = []
     SelectDic = {}
-
+    LabelList = []
+    IndexList = []
     TypeList=[]
 
     RittmanList=[]
