@@ -1466,8 +1466,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.qflpop = QFL(df=self.model._df)
-            self.qflpop.Tri()
-            self.qflpop.show()
             try:
                 self.qflpop.Tri()
                 self.qflpop.show()
