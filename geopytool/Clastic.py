@@ -195,6 +195,10 @@ class Clastic(AppForm, Tool):
         self.Tag_cb.setChecked(True)
         self.Tag_cb.stateChanged.connect(self.Tri)  # int
 
+        self.InternalLine_cb = QCheckBox('&Internal Line')
+        self.InternalLine_cb.setChecked(True)
+        self.InternalLine_cb.stateChanged.connect(self.Tri)  # int
+
 
         self.show_data_index_cb = QCheckBox('&Show Data Index')
         self.show_data_index_cb.setChecked(False)
@@ -205,7 +209,7 @@ class Clastic(AppForm, Tool):
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button,self.result_button, self.draw_button, self.legend_cb,self.show_data_index_cb , self.Tag_cb]:
+        for w in [self.save_button,self.result_button, self.draw_button, self.legend_cb,self.show_data_index_cb ,self.InternalLine_cb, self.Tag_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -305,16 +309,17 @@ class Clastic(AppForm, Tool):
             tmp.append(TriLine(Points=[Middle[i], Other[i]], Sort='', Width=1, Color='black', Style='-', Alpha=0.7,
                                Label=''))
 
-        # 20网格线条绘制
-        for i in range(len(Gap20)):
-            if i <= len(Gap20) - 5:
-                tmp.append(
-                    TriLine(Points=[Gap20[i], Gap20[i + 4]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
-                            Label=''))
-            else:
-                tmp.append(
-                    TriLine(Points=[Gap20[i], Gap20[-1 - i]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
-                            Label=''))
+        if (self.InternalLine_cb.isChecked()):
+            # 20网格线条绘制
+            for i in range(len(Gap20)):
+                if i <= len(Gap20) - 5:
+                    tmp.append(
+                        TriLine(Points=[Gap20[i], Gap20[i + 4]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
+                                Label=''))
+                else:
+                    tmp.append(
+                        TriLine(Points=[Gap20[i], Gap20[-1 - i]], Sort='', Width=0.5, Color='grey', Style='-', Alpha=0.5,
+                                Label=''))
 
         for i in tmp:
             self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,

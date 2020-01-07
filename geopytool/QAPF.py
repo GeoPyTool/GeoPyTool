@@ -413,12 +413,18 @@ class QAPF(AppForm, Tool):
         self.detail_cb.setChecked(True)
         self.detail_cb.stateChanged.connect(self.QAPF)  # int
 
+
+
+        self.show_data_index_cb = QCheckBox('&Show Data Index')
+        self.show_data_index_cb.setChecked(False)
+        self.show_data_index_cb.stateChanged.connect(self.QAPF)  # int
+
         #
         # Layout with box sizers
         #
         self.hbox = QHBoxLayout()
 
-        for w in [self.save_button, self.result_button, self.detail_cb, self.legend_cb,self.slider_left_label,self.slider,self.slider_right_label]:
+        for w in [self.save_button, self.result_button, self.show_data_index_cb , self.detail_cb, self.legend_cb,self.slider_left_label,self.slider,self.slider_right_label]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -972,9 +978,29 @@ class QAPF(AppForm, Tool):
                     self.TypeList.append('on line or out')
 
 
-        for i in TPoints:
-            self.axes.scatter(i.X, i.Y, marker=i.Marker, s=i.Size, color=i.Color, alpha=i.Alpha,
-                              label=i.Label)
+
+
+        for i in range(len(TPoints)):
+            self.axes.scatter(TPoints[i].X, TPoints[i].Y, marker=TPoints[i].Marker, s=TPoints[i].Size, color=TPoints[i].Color, alpha=TPoints[i].Alpha,
+                              label=TPoints[i].Label)
+
+
+            if (self.show_data_index_cb.isChecked()):
+
+                if 'Index' in self._df_back.columns.values:
+
+                    self.axes.annotate(str(self._df_back.at[i, 'Index']),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+                else:
+                    self.axes.annotate('No' + str(i + 1),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+
 
 
 
@@ -983,7 +1009,7 @@ class QAPF(AppForm, Tool):
 
         self.canvas.draw()
 
-        self.OutPutFig=self.fig
+        #self.OutPutFig=self.fig
 
         self.OutPutTitle = 'QAPF'
 

@@ -1,4 +1,4 @@
-version = '0.8.20.0.106'
+version = '0.8.20.0.107'
 
 date = '2020-01-07'
 
@@ -1025,11 +1025,11 @@ class AppForm(QMainWindow):
 
         for i in checklist:
             raw = raw.rename(columns=lambda x: x.replace(i, ''))
-            pass
+
 
         for i in raw.dtypes.index:
             if raw.dtypes[i] != float and raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha',
-                                                                             'Style', 'Width', 'Label']:
+                                                                             'Style', 'Width', 'Label'] and i not in self.itemstocheck:
                 print(raw.dtypes[i], i, 'droped')
                 raw = raw.drop(i, 1)
 
