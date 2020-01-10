@@ -424,5 +424,5 @@ class Clastic(AppForm, Tool):
 
         # self.OutPutData = self.OutPutData.set_index('Label')
 
-        self.tablepop = TableViewer(df=self.OutPutData, title='Pearce Result')
+        self.tablepop = TableViewer(df=self.OutPutData, title='Clastic Result')
         self.tablepop.show()
