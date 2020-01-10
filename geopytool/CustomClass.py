@@ -1,6 +1,6 @@
-version = '0.8.20.0.107'
+version = '0.8.20.0.109'
 
-date = '2020-01-07'
+date = '2020-01-10'
 
 dpi = 128
 # coding:utf-8
@@ -9,6 +9,10 @@ from geopytool.ImportDependence import *
 
 
 # from geopytool.TableViewer import TableViewer
+from cycler import cycler
+
+# Create cycler object. Use any styling from above you please
+monochrome = (cycler('color', ['k']) * cycler('linestyle', ['-', '--', ':', '=.']) * cycler('marker', ['^',',', '.']))
 
 
 class GrowingTextEdit(QtWidgets.QTextEdit):

@@ -645,7 +645,7 @@ class TAS(AppForm):
         self.OutPutData = pd.DataFrame(
             {'Label': self.LabelList,
              'Index':self.IndexList,
-             'RockType': self.TypeList,
+             'Type': self.TypeList,
              'Rittman Index': self.RittmanList
              })
 
@@ -705,8 +705,6 @@ class TAS(AppForm):
                     # DataFileOutput = DataFileOutput[0:-5]
                     predict_result.to_excel(DataFileOutput, encoding='utf-8')
                     # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
-
-
             '''
 
         except Exception as e:

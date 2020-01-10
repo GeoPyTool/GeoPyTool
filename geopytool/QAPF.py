@@ -1017,7 +1017,7 @@ class QAPF(AppForm, Tool):
 
         self.OutPutData = pd.DataFrame({'Label': self.LabelList,
                                         'Index': self.IndexList,
-                                        'RockType': self.TypeList,
+                                        'Type': self.TypeList,
                                         })
 
     def Explain(self):

@@ -78,6 +78,7 @@ from geopytool.Saccani import Saccani
 from geopytool.Raman import Raman
 from geopytool.FluidInclusion import FluidInclusion
 from geopytool.MyHist import MyHist
+from geopytool.Pie import Pie
 
 from geopytool.Temp import *
 from geopytool.TraceNew import TraceNew
@@ -346,6 +347,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMyHist = QtWidgets.QAction(QIcon(LocationOfMySelf+'/h.png'), u'Histogram',self)
         self.actionMyHist.setObjectName('actionMyHist')
 
+        self.actionPie = QtWidgets.QAction(QIcon(LocationOfMySelf+'/h.png'), u'Pie',self)
+        self.actionPie.setObjectName('actionPie')
+
         self.actionFA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/fa.png'),u'FA',self)
         self.actionFA.setObjectName('actionFA')
 
@@ -459,6 +463,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionTwoD)
         self.menuAdditional.addAction(self.actionTwoD_Grey)
         self.menuAdditional.addAction(self.actionMyHist)
+        self.menuAdditional.addAction(self.actionPie)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -548,6 +553,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTwoD.triggered.connect(self.TwoD)
         self.actionTwoD_Grey.triggered.connect(self.TwoD_Grey)
         self.actionMyHist.triggered.connect(self.MyHist)
+        self.actionPie.triggered.connect(self.MyPie)
 
         #self.actionICA.triggered.connect(self.ICA)
         #self.actionSVM.triggered.connect(self.SVM)
@@ -665,6 +671,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTwoD_Grey.setText('5-11 '+_translate('MainWindow',u'TwoD Grey'))
 
         self.actionMyHist.setText('5-12 '+_translate('MainWindow',u'Histogram + KDE Curve'))
+        self.actionPie.setText('5-13 '+_translate('MainWindow',u'Pie Chart'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -1254,12 +1261,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.raw) > 0):
             self.MyHistpop = MyHist(df=self.raw,filename= self.DataLocation)
-
-            self.MyHistpop.MyHist()
-            self.MyHistpop.show()
             try:
                 self.MyHistpop.MyHist()
                 self.MyHistpop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+    def MyPie(self):
+        print('self.model._df length: ',len(self.raw))
+        if (len(self.raw) <= 0):
+            self.getDataFile()
+        if (len(self.raw) > 0):
+            self.MyPiepop = Pie(df=self.raw)
+
+            self.MyPiepop.Magic()
+            self.MyPiepop.show()
+
+            try:
+                self.MyPiepop.Magic()
+                self.MyPiepop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
@@ -1722,23 +1742,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def Sta(self):
         #Sta on Calculated Distance
         print('Sta called \n')
-
-        pass
-
-
         print('self.model._df length: ',len(self.model._df))
-
 
         if (len(self.model._df)<=0):
             self.getDataFile()
-            pass
-
 
         if (len(self.model._df) > 0):
-
-            self.stapop = MySta(df=self.model._df)
-            self.stapop.Sta()
-
             try:
                 self.stapop = MySta(df=self.model._df)
                 self.stapop.Sta()
