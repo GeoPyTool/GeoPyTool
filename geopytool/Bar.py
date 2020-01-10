@@ -2,17 +2,18 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 #from geopytool.TableViewer import TableViewer
 
-class Pie(AppForm):
+class Bar(AppForm):
 
     xlabel = 'x'
     items = []
-    description = 'Pie Chart'
+    description = 'Bar Chart'
     LabelSetted = True
     ValueChoosed = False
     single_LabelSetted = True
     single_ValueChoosed = False
     switched = False
     LabelList = []
+
     def __init__(self, parent=None, df=pd.DataFrame(),Standard={}):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.description)
@@ -39,7 +40,7 @@ class Pie(AppForm):
         self.dpi = 128
         self.fig = Figure((10, 8.0), dpi=self.dpi)
 
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.13, bottom=0.2, right=0.7, top=0.9)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.33, bottom=0.2, right=0.7, top=0.9)
 
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -61,6 +62,10 @@ class Pie(AppForm):
         self.color_cb.setChecked(False)
         self.color_cb.stateChanged.connect(self.Magic)  # int
 
+        self.style_cb = QCheckBox('&Direction')
+        self.style_cb.setChecked(False)
+        self.style_cb.stateChanged.connect(self.Magic)  # int
+
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
@@ -75,7 +80,7 @@ class Pie(AppForm):
 
         self.hbox = QHBoxLayout()
 
-        for w in [self.switch_button, self.save_plot_button,self.color_cb,self.legend_cb,]:
+        for w in [self.switch_button, self.save_plot_button,self.color_cb,self.style_cb]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
@@ -217,17 +222,23 @@ class Pie(AppForm):
                     else:
                         tmpCounter = tmpCounter + 1
                 AllCounters.append(tmpCounter)
-            #print(len(AllTypes),len(AllCounters))
 
+
+            print(AllTypes,'\n',AllCounters)
 
             if (self.color_cb.isChecked()):
-                self.axes.pie(AllCounters, labels=AllTypes, autopct='%1.1f%%')
+                if(self.style_cb.isChecked()):
+                    self.axes.bar(AllTypes,AllCounters)
+                else:
+                    self.axes.barh(AllTypes,AllCounters)
             else:
-                _, _, autotexts =self.axes.pie(AllCounters, labels=AllTypes, autopct='%1.1f%%', colors = ['%f' % (i/float(len(AllTypes))) for i in range(len(AllTypes))])
-                for autotext in autotexts:
-                    autotext.set_color('white')
 
-            self.title='Pie Chart'
+                if(self.style_cb.isChecked()):
+                    self.axes.bar(AllTypes, AllCounters, color='gray')
+                else:
+                    self.axes.barh(AllTypes, AllCounters, color='gray')
+
+            self.title='Bar Chart'
 
 
             # autopct='%1.1f%%'显示比列，格式化显示一位小数，固定写法
@@ -284,28 +295,31 @@ class Pie(AppForm):
 
             #print(len(single_TypeList),len(single_Counters))
 
-            self.title='Pie Chart of '+ self.LabelList[b]
-
+            self.title='Bar Chart of '+ self.LabelList[b]
             if (self.color_cb.isChecked()):
-                self.axes.pie(single_Counters, labels=single_TypeList, autopct='%1.1f%%')
+
+                if(self.style_cb.isChecked()):
+                    self.axes.bar(single_TypeList, single_Counters, )
+                else:
+                    self.axes.barh(single_TypeList,single_Counters, )
             else:
-                _, _, autotexts = self.axes.pie(single_Counters, labels=single_TypeList, autopct='%1.1f%%',
-                                                colors=['%f' % (i / float(len(single_TypeList))) for i in
-                                                        range(len(single_TypeList))])
-                for autotext in autotexts:
-                    autotext.set_color('white')
+                if (self.style_cb.isChecked()):
+                    self.axes.bar(single_TypeList, single_Counters, color='gray')
+                else:
+                    self.axes.barh(single_TypeList, single_Counters, color='gray')
+
 
             # autopct='%1.1f%%'显示比列，格式化显示一位小数，固定写法
         '''
         except Exception as e:
         self.ErrorEvent(text=repr(e))
-    
+        if (self.legend_cb.isChecked()):
+        #self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
+        self.axes.legend(bbox_to_anchor=(1.3, 1),loc='upper left', borderaxespad=1, prop=fontprop)
         '''
         # pass
 
-        if (self.legend_cb.isChecked()):
-            #self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
-            self.axes.legend(bbox_to_anchor=(1.3, 1),loc='upper left', borderaxespad=1, prop=fontprop)
+
 
         self.setWindowTitle(self.title)
         self.FileName_Hint= self.title

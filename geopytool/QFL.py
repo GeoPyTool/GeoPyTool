@@ -329,7 +329,7 @@ class QFL(AppForm, Tool):
 
         self.canvas.draw()
 
-        self.OutPutFig=self.fig
+        #self.OutPutFig=self.fig
 
         self.OutPutTitle = 'QFL'
 
@@ -340,7 +340,7 @@ class QFL(AppForm, Tool):
 
         self.OutPutData = pd.DataFrame({'Label': self.LabelList,
                                         'Index': self.IndexList,
-                                        'TectonicType': self.TypeList,
+                                        'Type': self.TypeList,
                                         })
 
 

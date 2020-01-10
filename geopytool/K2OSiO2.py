@@ -503,10 +503,10 @@ class K2OSiO2(AppForm):
 
         self.OutPutData = pd.DataFrame(
             {'Label': self.LabelList,
-             'RockType': self.TypeList
+             'Type': self.TypeList
              })
 
-        self.OutPutFig=self.fig
+        #self.OutPutFig=self.fig
 
 
     def showPredictResultSelected(self):

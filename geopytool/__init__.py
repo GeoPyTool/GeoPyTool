@@ -79,6 +79,7 @@ from geopytool.Raman import Raman
 from geopytool.FluidInclusion import FluidInclusion
 from geopytool.MyHist import MyHist
 from geopytool.Pie import Pie
+from geopytool.Bar import Bar
 
 from geopytool.Temp import *
 from geopytool.TraceNew import TraceNew
@@ -347,8 +348,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMyHist = QtWidgets.QAction(QIcon(LocationOfMySelf+'/h.png'), u'Histogram',self)
         self.actionMyHist.setObjectName('actionMyHist')
 
-        self.actionPie = QtWidgets.QAction(QIcon(LocationOfMySelf+'/h.png'), u'Pie',self)
+        self.actionPie = QtWidgets.QAction(QIcon(LocationOfMySelf+'/pie.png'), u'Pie',self)
         self.actionPie.setObjectName('actionPie')
+
+        self.actionBar = QtWidgets.QAction(QIcon(LocationOfMySelf+'/bar.png'), u'Bar',self)
+        self.actionBar.setObjectName('actionPie')
 
         self.actionFA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/fa.png'),u'FA',self)
         self.actionFA.setObjectName('actionFA')
@@ -464,6 +468,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionTwoD_Grey)
         self.menuAdditional.addAction(self.actionMyHist)
         self.menuAdditional.addAction(self.actionPie)
+        self.menuAdditional.addAction(self.actionBar)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -554,6 +559,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionTwoD_Grey.triggered.connect(self.TwoD_Grey)
         self.actionMyHist.triggered.connect(self.MyHist)
         self.actionPie.triggered.connect(self.MyPie)
+        self.actionBar.triggered.connect(self.MyBar)
 
         #self.actionICA.triggered.connect(self.ICA)
         #self.actionSVM.triggered.connect(self.SVM)
@@ -672,6 +678,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionMyHist.setText('5-12 '+_translate('MainWindow',u'Histogram + KDE Curve'))
         self.actionPie.setText('5-13 '+_translate('MainWindow',u'Pie Chart'))
+        self.actionBar.setText('5-14 '+_translate('MainWindow',u'Bar Chart'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -1273,13 +1280,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.getDataFile()
         if (len(self.raw) > 0):
             self.MyPiepop = Pie(df=self.raw)
-
-            self.MyPiepop.Magic()
-            self.MyPiepop.show()
-
             try:
                 self.MyPiepop.Magic()
                 self.MyPiepop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+    def MyBar(self):
+        print('self.model._df length: ',len(self.raw))
+        if (len(self.raw) <= 0):
+            self.getDataFile()
+        if (len(self.raw) > 0):
+            self.MyBarpop = Bar(df=self.raw)
+            try:
+                self.MyBarpop.Magic()
+                self.MyBarpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
