@@ -362,7 +362,7 @@ class QmFLt(AppForm, Tool):
             if 'Index' in raw.columns.values:
                 self.IndexList.append(raw.at[i, 'Index'])
             else:
-                self.IndexList.append('No ' + str(i + 1))
+                self.IndexList.append('No ' + str(int(i+1)))
 
             TPoints.append(TriPoint((raw.at[i, 'F'], raw.at[i, 'Lt'], raw.at[i, 'Qm']), Size=raw.at[i, 'Size'],
                                     Color=raw.at[i, 'Color'], Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'],

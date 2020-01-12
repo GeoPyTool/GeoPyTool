@@ -398,7 +398,7 @@ class TAS(AppForm):
                 if 'Index' in self._df_back.columns.values:
                     self.IndexList.append(self._df_back.at[i, 'Index'])
                 else:
-                    self.IndexList.append('No ' + str(i+1))
+                    self.IndexList.append('No ' + str(int(i+1)))
 
                 self.RittmanList.append(round(ytest ** 2 / (xtest - 43) + 0.001, 2))
 
@@ -569,7 +569,7 @@ class TAS(AppForm):
                                     if 'Index' in self.data_to_test_back.columns.values:
                                         self.IndexList.append(self.data_to_test_back.at[i, 'Index'])
                                     else:
-                                        self.IndexList.append('No '+str(i))
+                                        self.IndexList.append('No '+str(int(i+1)))
                                     break
 
                             if (self.show_load_data_cb.isChecked()):

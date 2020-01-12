@@ -935,7 +935,7 @@ class QAPF(AppForm, Tool):
             if 'Index' in raw.columns.values:
                 self.IndexList.append(raw.at[i, 'Index'])
             else:
-                self.IndexList.append('No ' + str(i + 1))
+                self.IndexList.append('No ' + str(int(i+1)))
 
 
 

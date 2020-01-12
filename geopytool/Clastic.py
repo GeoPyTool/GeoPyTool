@@ -345,7 +345,7 @@ class Clastic(AppForm, Tool):
             if 'Index' in raw.columns.values:
                 self.IndexList.append(raw.at[i, 'Index'])
             else:
-                self.IndexList.append('No ' + str(i + 1))
+                self.IndexList.append('No ' + str(int(i+1)))
 
 
             TPoints.append(TriPoint((raw.at[i, 'Sand'], raw.at[i, 'Silt'], raw.at[i, 'Clay']), Size=raw.at[i, 'Size'],
