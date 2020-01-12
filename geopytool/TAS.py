@@ -3,6 +3,7 @@ from geopytool.CustomClass import *
 #from geopytool.TableViewer import TableViewer
 
 
+
 class TAS(AppForm):
     _df = pd.DataFrame()
     _changed = False
@@ -711,12 +712,8 @@ class TAS(AppForm):
             msg = 'You need to load another data to run SVM.\n '
             self.ErrorEvent(text= msg +repr(e) )
 
-
-
-
     def Explain(self):
-
-        #self.OutPutData = self.OutPutData.set_index('Label')
-
-        self.tablepop = TableViewer(df=self.OutPutData,title='TAS Result')
+        # self.OutPutData = self.OutPutData.set_index('Label')
+        self.tablepop = TableViewer(df=self.OutPutData, title='TAS Result')
         self.tablepop.show()
+
