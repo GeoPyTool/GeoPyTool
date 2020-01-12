@@ -78,8 +78,6 @@ from geopytool.Saccani import Saccani
 from geopytool.Raman import Raman
 from geopytool.FluidInclusion import FluidInclusion
 from geopytool.MyHist import MyHist
-from geopytool.Pie import Pie
-from geopytool.Bar import Bar
 
 from geopytool.Temp import *
 from geopytool.TraceNew import TraceNew

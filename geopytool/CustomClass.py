@@ -1,4 +1,4 @@
-version = '0.8.20.0.113'
+version = '0.8.20.0.114'
 
 date = '2020-01-12'
 
@@ -1713,11 +1713,13 @@ class Pie(AppForm):
             if (self.color_cb.isChecked()):
                 self.axes.pie(AllCounters, labels=AllTypes, autopct='%1.1f%%')
             else:
-                _, _, autotexts = self.axes.pie(AllCounters, labels=AllTypes, autopct='%1.1f%%',
+                pie_images, _, autotexts = self.axes.pie(AllCounters, labels=AllTypes, autopct='%1.1f%%',
                                                 colors=['%f' % (i / float(len(AllTypes))) for i in
                                                         range(len(AllTypes))])
                 for autotext in autotexts:
                     autotext.set_color('white')
+                for pie_image in pie_images:
+                    pie_image.set_alpha(0.8)
 
             self.title = 'Pie Chart'
 
