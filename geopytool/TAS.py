@@ -16,6 +16,7 @@ class TAS(AppForm):
     itemstocheck = ['SiO2', 'K2O', 'Na2O']
     reference = 'Reference: Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.'
 
+
     ItemNames = ['Foidolite',
                  'Peridotgabbro',
                  'Foid Gabbro',

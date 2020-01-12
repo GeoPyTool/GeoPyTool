@@ -371,7 +371,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionFluidInclusion.setObjectName('actionFluidInclusion')
 
 
-        self.actionClastic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'Clastic',self)
+        self.actionClastic = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'Clastic(sand-silt-clay)',self)
         self.actionClastic.setObjectName("actionClastic")
 
         self.actionCIA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/mud.png'),u'CIA/ICV/PIA/CIW/CIW\'',self)
@@ -644,7 +644,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionQFL.setText('3-1 '+_translate('MainWindow',u'QFL'))
         self.actionQmFLt.setText('3-2 '+_translate('MainWindow',u'QmFLt'))
-        self.actionClastic.setText('3-3 '+_translate('MainWindow',u'Clastic'))
+        self.actionClastic.setText('3-3 '+_translate('MainWindow',u'Clastic(sand-silt-clay)'))
         self.actionCIA.setText('3-4 '+ _translate('MainWindow',u'CIA/ICV/PIA/CIW/CIW\''))
 
         self.actionZirconCe.setText('4-1 '+ _translate('MainWindow',u'ZirconCe'))

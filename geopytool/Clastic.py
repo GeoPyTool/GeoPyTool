@@ -11,6 +11,7 @@ class Clastic(AppForm, Tool):
     ylabel = r''
 
     Tags = []
+    reference = 'Reference: Figure 1-A from Flemming, B.W., 2000. A revised textural classification of gravel-free muddy sediments on the basis of ternary diagrams. Continental Shelf Research, 20(10): 1125-1137.'
 
     Label = [u'Clay', u'Sand', u'Silt']
     LabelPosition = [(45, 50 * np.sqrt(3) + 2),
@@ -108,7 +109,7 @@ class Clastic(AppForm, Tool):
                      ]
 
 
-    ItemNames = [u'Y',
+    ItemNames = [u'Clay',
               u'SY',
               u'TY',
               u'YS',
@@ -118,6 +119,18 @@ class Clastic(AppForm, Tool):
               u'TS',
               u'ST',
               u'T',]
+
+
+    ItemNames = [u'Clay',
+              u'Sand Clay',
+              u'Silt Clay',
+              u'Clay Sand',
+              u'Sand Silt Clay',
+              u'Clay Silt',
+              u'Sand',
+              u'Silt Sand',
+              u'Sand Silt',
+              u'Silt',]
 
     AreasHeadClosed = []
     SelectDic = {}
