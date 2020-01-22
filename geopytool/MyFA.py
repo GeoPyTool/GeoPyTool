@@ -97,7 +97,7 @@ class MyFA(AppForm):
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb= QCheckBox('&SVM Boundary')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Key_Func)  # int
 
@@ -489,10 +489,8 @@ class MyFA(AppForm):
 
         if (self.hyperplane_cb.isChecked()):
 
-            pass
-
             if (self.switched == False):
-                clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s],probability= True)
+                clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability = True)
                 svm_x = self.fa_result[:, a]
                 svm_y = self.fa_result[:, b]
                 svm_z = self.fa_result[:, c]

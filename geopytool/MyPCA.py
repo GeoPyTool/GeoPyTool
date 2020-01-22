@@ -104,7 +104,7 @@ class MyPCA(AppForm):
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb= QCheckBox('&SVM Boundary')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Key_Func)  # int
 
@@ -509,12 +509,12 @@ class MyPCA(AppForm):
 
         if (self.hyperplane_cb.isChecked()):
             if (self.switched == False):
-                clf = svm.SVC(C=1.0, kernel= self.kernel_list[k_s],probability= True)
+                clf = svm.SVC(C=1.0, kernel= self.kernel_list[k_s], probability = True)
                 svm_x = self.pca_result[:, a]
                 svm_y = self.pca_result[:, b]
                 svm_z = self.pca_result[:, c]
-                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
-                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 200),
+                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 200))
 
                 le = LabelEncoder()
                 le.fit(self.result_to_fit.index)
@@ -533,8 +533,8 @@ class MyPCA(AppForm):
                 svm_x = self.pca_result[:, a]
                 svm_y = self.pca_result[:, b]
 
-                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
-                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 200),
+                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 200))
 
                 le = LabelEncoder()
                 le.fit(self.result_to_fit.index)

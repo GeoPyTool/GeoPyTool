@@ -228,7 +228,7 @@ class XY(AppForm):
         self.show_data_index_cb.stateChanged.connect(self.Magic)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb= QCheckBox('&SVM Boundary')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
 
@@ -328,7 +328,7 @@ class XY(AppForm):
 
 
 
-        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb= QCheckBox('&SVM Boundary')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
 
@@ -1395,8 +1395,8 @@ class XY(AppForm):
                 clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
                 svm_x = XtoFit
                 svm_y = YtoFit
-                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
-                                            np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 200),
+                                            np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 200))
 
                 le = LabelEncoder()
                 le.fit(self._df.Label)

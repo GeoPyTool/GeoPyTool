@@ -171,7 +171,7 @@ class Harker(AppForm):
         self.shape_cb.stateChanged.connect(self.Harker)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb= QCheckBox('&SVM Boundary')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Harker)  # int
 
@@ -856,8 +856,8 @@ class Harker(AppForm):
         k_s = int(self.kernel_select.value())
         try:
             clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-            xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
-                                 np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
+            xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 200),
+                                 np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 200))
 
             le = LabelEncoder()
             le.fit(target_label)

@@ -101,7 +101,7 @@ class MyLDA(AppForm):
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&Hyperplane')
+        self.hyperplane_cb= QCheckBox('&SVM Boundary')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Key_Func)  # int
 
@@ -331,7 +331,7 @@ class MyLDA(AppForm):
                 self.ErrorEvent(text=missing)
 
 
-        #self.kernel_select_label.setText(self.kernel_list[k_s])
+        self.kernel_select_label.setText(self.kernel_list[k_s])
         self.axes.set_xlabel("function "+str(a))
 
         self.axes.set_ylabel("function "+str(b))
