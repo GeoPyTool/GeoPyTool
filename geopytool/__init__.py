@@ -54,6 +54,8 @@ from geopytool.MyPCA import MyPCA
 
 from geopytool.MyLDA import MyLDA
 
+from geopytool.MyQDA import MyQDA
+
 from geopytool.Trans import MyTrans
 
 from geopytool.Dist import MyDist
@@ -367,6 +369,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionLDA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/lda.png'),u'LDA',self)
         self.actionLDA.setObjectName('actionLDA')
 
+        self.actionQDA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qda.png'),u'QDA',self)
+        self.actionQDA.setObjectName('actionQDA')
+
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
@@ -478,6 +483,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionFA)
         self.menuAdditional.addAction(self.actionPCA)
         self.menuAdditional.addAction(self.actionLDA)
+        #self.menuAdditional.addAction(self.actionQDA)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -561,6 +567,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionFA.triggered.connect(self.FA)
         self.actionPCA.triggered.connect(self.PCA)
         self.actionLDA.triggered.connect(self.LDA)
+        self.actionQDA.triggered.connect(self.QDA)
 
         self.actionDist.triggered.connect(self.Dist)
         self.actionStatistics.triggered.connect(self.Sta)
@@ -692,6 +699,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionFA.setText('5-13 '+_translate('MainWindow',u'FA'))
         self.actionPCA.setText('5-14 '+_translate('MainWindow',u'PCA'))
         self.actionLDA.setText('5-15 '+_translate('MainWindow',u'LDA'))
+        self.actionQDA.setText('5-16 '+_translate('MainWindow',u'QDA'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -732,13 +740,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         except requests.exceptions.ConnectionError as err:
             print(err)
             r=0
-            buttonReply = QMessageBox.information(self,  _translate('MainWindow', u'NetWork Error'),_translate('MainWindow', u'Net work unavailable.'))
+            buttonReply = QMessageBox.information(self,  _translate('MainWindow', u'NetWork Error'), _translate('MainWindow','You are using GeoPyTool ') + version +'\n'+'Net work unavailable.')
             NewVersion ="targetversion = '0'"
 
         except requests.exceptions.HTTPError as err:
             print(err)
             r=0
-            buttonReply = QMessageBox.information(self,  _translate('MainWindow', u'NetWork Error'),_translate('MainWindow', u'Net work unavailable.'))
+            buttonReply = QMessageBox.information(self,  _translate('MainWindow', u'NetWork Error'), _translate('MainWindow','You are using GeoPyTool ') + version +'\n'+'Net work unavailable.')
             NewVersion ="targetversion = '0'"
 
 
@@ -1835,8 +1843,22 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df) > 0):
             self.ldapop = MyLDA(df=self.model._df.fillna(0))
 
-            self.ldapop.Key_Func()
-            self.ldapop.show()
+            try:
+                self.ldapop.Key_Func()
+                self.ldapop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+    def QDA(self):
+        print('LDA called \n')
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+        if (len(self.model._df) > 0):
+            self.qdapop = MyQDA(df=self.model._df.fillna(0))
+
+            self.qdapop.Key_Func()
+            self.qdapop.show()
 
             try:
                 pass
