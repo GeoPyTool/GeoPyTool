@@ -73,6 +73,8 @@ class MyTrans(AppForm):
 
         self.std_button = QPushButton('&Standard Transform')
         self.log_button = QPushButton('&Log Transform')
+        self.log_ten_button = QPushButton('&Log 10 Transform')
+        self.log_e_button = QPushButton('&Log e Transform')
 
 
         # self.save_button.clicked.connect(self.saveDataFile)
@@ -87,6 +89,8 @@ class MyTrans(AppForm):
         self.center_Arithmetic_button.clicked.connect(self.center_Arithmetic)
         self.std_button.clicked.connect(self.std_trans)
         self.log_button.clicked.connect(self.log_trans)
+        self.log_ten_button.clicked.connect(self.log_ten_trans)
+        self.log_e_button.clicked.connect(self.log_e_trans)
 
 
 
@@ -98,13 +102,8 @@ class MyTrans(AppForm):
         #self.vbox.addWidget(self.canvas)
         self.vbox.addWidget(self.tableView)
 
-        self.hbox.addWidget(self.transpose_button)
-        self.hbox.addWidget(self.center_Arithmetic_button)
-        self.hbox.addWidget(self.center_Geometric_button)
-        self.hbox.addWidget(self.std_button)
-        self.hbox.addWidget(self.log_button)
-        self.hbox.addWidget(self.reset_button)
-        self.hbox.addWidget(self.save_button)
+        for w in [self.transpose_button,self.center_Arithmetic_button,self.center_Geometric_button,self.std_button,self.log_ten_button,self.log_e_button,self.reset_button,self.save_button]:
+            self.hbox.addWidget(w)
 
 
         self.vbox.addLayout(self.hbox)
@@ -226,6 +225,18 @@ class MyTrans(AppForm):
         self.show()
 
     def log_trans(self):
+        self.result=np.log(self.result)
+        self.tableresult=PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
+
+    def log_ten_trans(self):
+        self.result=np.log10(self.result)
+        self.tableresult=PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
+
+    def log_e_trans(self):
         self.result=np.log(self.result)
         self.tableresult=PandasModel(self.result)
         self.tableView.setModel(self.tableresult)
