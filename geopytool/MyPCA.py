@@ -21,7 +21,7 @@ class MyPCA(AppForm):
                 'Width',
                 'Tag']
     data_to_test =pd.DataFrame()
-    switched = False
+    switched = True
     text_result = ''
     whole_labels=[]
     pca = PCA(n_components='mle')
@@ -573,7 +573,7 @@ class MyPCA(AppForm):
                     axis=1).set_index('Label')
                 print(predict_result)
 
-                self.predictpop = TableViewer(df=predict_result, title='SVM Predict Result with All Items')
+                self.predictpop = TableViewer(df=predict_result, title=self.description +' SVM Predict Result with All Items')
                 self.predictpop.show()
 
                 '''

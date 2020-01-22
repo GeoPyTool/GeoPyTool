@@ -52,6 +52,8 @@ from geopytool.MyFA import MyFA
 
 from geopytool.MyPCA import MyPCA
 
+from geopytool.MyLDA import MyLDA
+
 from geopytool.Trans import MyTrans
 
 from geopytool.Dist import MyDist
@@ -198,6 +200,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSet = QtWidgets.QAction(QIcon(LocationOfMySelf + '/set.png'), u'Set', self)
         self.actionSet.setObjectName('actionSet')
         self.actionSet.setShortcut('Ctrl+F')
+
+        self.actionFillNaN = QtWidgets.QAction(QIcon(LocationOfMySelf + '/FillNaN.png'), u'Set', self)
+        self.actionFillNaN.setObjectName('actionFillNaN')
+        self.actionFillNaN.setShortcut('Ctrl+Alt+F')
 
         self.actionSave = QtWidgets.QAction(QIcon(LocationOfMySelf+'/save.png'), u'Save',self)
         self.actionSave.setObjectName('actionSave')
@@ -358,6 +364,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPCA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/pca.png'),u'PCA',self)
         self.actionPCA.setObjectName('actionPCA')
 
+        self.actionLDA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/lda.png'),u'LDA',self)
+        self.actionLDA.setObjectName('actionLDA')
+
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
@@ -397,6 +406,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionClose)
         self.menuFile.addAction(self.actionSet)
+        self.menuFile.addAction(self.actionFillNaN)
         self.menuFile.addAction(self.actionSave)
 
         self.menuFile.addAction(self.actionCombine)
@@ -457,8 +467,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionXYZ)
         self.menuAdditional.addAction(self.actionCluster)
         self.menuAdditional.addAction(self.actionMultiDimension)
-        self.menuAdditional.addAction(self.actionFA)
-        self.menuAdditional.addAction(self.actionPCA)
         self.menuAdditional.addAction(self.actionDist)
         self.menuAdditional.addAction(self.actionStatistics)
         self.menuAdditional.addAction(self.actionThreeD)
@@ -467,6 +475,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionMyHist)
         self.menuAdditional.addAction(self.actionPie)
         self.menuAdditional.addAction(self.actionBar)
+        self.menuAdditional.addAction(self.actionFA)
+        self.menuAdditional.addAction(self.actionPCA)
+        self.menuAdditional.addAction(self.actionLDA)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -549,6 +560,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.actionFA.triggered.connect(self.FA)
         self.actionPCA.triggered.connect(self.PCA)
+        self.actionLDA.triggered.connect(self.LDA)
 
         self.actionDist.triggered.connect(self.Dist)
         self.actionStatistics.triggered.connect(self.Sta)
@@ -567,6 +579,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionOpen.triggered.connect(self.getDataFile)
         self.actionClose.triggered.connect(self.clearDataFile)
         self.actionSet.triggered.connect(self.SetUpDataFile)
+        self.actionFillNaN.triggered.connect(self.FillNaN)
         self.actionSave.triggered.connect(self.saveDataFile)
         self.actionQuit.triggered.connect(qApp.quit)
 
@@ -619,6 +632,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionOpen.setText(_translate('MainWindow', u'Open Data'))
         self.actionClose.setText(_translate('MainWindow', u'Close Data'))
         self.actionSet.setText(_translate('MainWindow', u'Set Format'))
+        self.actionFillNaN.setText(_translate('MainWindow', u'Fill Blank with 0'))
         self.actionSave.setText(_translate('MainWindow', u'Save Data'))
         self.actionQuit.setText(_translate('MainWindow', u'Quit App'))
 
@@ -661,22 +675,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMultiDimension.setText('5-4 '+_translate('MainWindow',u'MultiDimension'))
 
 
-        self.actionFA.setText('5-5 '+_translate('MainWindow',u'FA'))
 
-        self.actionPCA.setText('5-6 '+_translate('MainWindow',u'PCA'))
+        self.actionDist.setText('5-5 '+_translate('MainWindow',u'Distance'))
 
-        self.actionDist.setText('5-7 '+_translate('MainWindow',u'Distance'))
-
-        self.actionStatistics.setText('5-8 '+_translate('MainWindow',u'Statistics'))
+        self.actionStatistics.setText('5-6 '+_translate('MainWindow',u'Statistics'))
 
 
-        self.actionThreeD.setText('5-9 '+_translate('MainWindow',u'ThreeD'))
-        self.actionTwoD.setText('5-10 '+_translate('MainWindow',u'TwoD'))
-        self.actionTwoD_Grey.setText('5-11 '+_translate('MainWindow',u'TwoD Grey'))
+        self.actionThreeD.setText('5-7 '+_translate('MainWindow',u'ThreeD'))
+        self.actionTwoD.setText('5-8 '+_translate('MainWindow',u'TwoD'))
+        self.actionTwoD_Grey.setText('5-9 '+_translate('MainWindow',u'TwoD Grey'))
 
-        self.actionMyHist.setText('5-12 '+_translate('MainWindow',u'Histogram + KDE Curve'))
-        self.actionPie.setText('5-13 '+_translate('MainWindow',u'Pie Chart'))
-        self.actionBar.setText('5-14 '+_translate('MainWindow',u'Bar Chart'))
+        self.actionMyHist.setText('5-10 '+_translate('MainWindow',u'Histogram + KDE Curve'))
+        self.actionPie.setText('5-11 '+_translate('MainWindow',u'Pie Chart'))
+        self.actionBar.setText('5-12 '+_translate('MainWindow',u'Bar Chart'))
+
+        self.actionFA.setText('5-13 '+_translate('MainWindow',u'FA'))
+        self.actionPCA.setText('5-14 '+_translate('MainWindow',u'PCA'))
+        self.actionLDA.setText('5-15 '+_translate('MainWindow',u'LDA'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -895,6 +910,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         else:
             reply = QMessageBox.information(self,  _translate('MainWindow','Ready'),
                                          _translate('MainWindow','Items added, Modify in the Table to set up details.'))
+
+
+    def FillNaN(self):
+
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+            pass
+
+        if (len(self.model._df) > 0):
+            self.model._df=self.model._df.fillna(0)
+            self.model = PandasModel(self.model._df)
+            self.tableView.setModel(self.model)
+            reply = QMessageBox.information(self, _translate('MainWindow', 'Ready'),
+                                            _translate('MainWindow', 'Blanks are now filled with 0s.'))
 
     def clearDataFile(self):
         self.raw = pd.DataFrame()
@@ -1131,8 +1160,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df)<=0):
             self.getDataFile()
             pass
+
         if (len(self.model._df) > 0):
-            self.transpop = MyTrans(df=self.model._df)
+            self.transpop = MyTrans(df=self.model._df.fillna(0))
             self.transpop.Trans()
 
     def ReFormat(self):
@@ -1768,67 +1798,63 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 tmp_msg='\n This is to do Sta on Calculated Distance.\n'
                 self.ErrorEvent(text=tmp_msg+repr(e))
 
-    def PCA(self):
-
-        print('PCA called \n')
-
-        pass
-
-
-        print('self.model._df length: ',len(self.model._df))
-
-
-        if (len(self.model._df)<=0):
-            self.getDataFile()
-            pass
-
-        if (len(self.model._df) > 0):
-            self.pcapop = MyPCA(df=self.model._df)
-            try:
-                self.pcapop.Key_Func()
-                self.pcapop.show()
-            except Exception as e:
-                self.ErrorEvent(text=repr(e))
 
     def FA(self):
-
         print('FA called \n')
-
-        pass
-
-
         print('self.model._df length: ',len(self.model._df))
-
-
         if (len(self.model._df)<=0):
             self.getDataFile()
-            pass
-
         if (len(self.model._df) > 0):
-            self.fapop = MyFA(df=self.model._df)
-            self.fapop.Key_Func()
-            self.fapop.show()
+            self.fapop = MyFA(df=self.model._df.fillna(0))
             try:
                 self.fapop.Key_Func()
                 self.fapop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
+
+    def PCA(self):
+        print('PCA called \n')
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+        if (len(self.model._df) > 0):
+            self.pcapop = MyPCA(df=self.model._df.fillna(0))
+            try:
+                self.pcapop.Key_Func()
+                self.pcapop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+
+    def LDA(self):
+        print('LDA called \n')
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+        if (len(self.model._df) > 0):
+            self.ldapop = MyLDA(df=self.model._df.fillna(0))
+
+            self.ldapop.Key_Func()
+            self.ldapop.show()
+
+            try:
+                pass
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+
     def Tri(self):
         pass
 
     def Auto(self):
-
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()
-
         if (len(self.model._df) > 0):
             TotalResult=[]
-
             df = self.model._df
             AutoResult = 0
-
             FileOutput, ok1 = QFileDialog.getSaveFileName(self,
                                                           '文件保存',
                                                           'C:/',
