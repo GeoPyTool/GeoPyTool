@@ -574,14 +574,14 @@ class TiAlCaMgMnKNaSi(AppForm):
             for i in range(len(self.data_to_test)):
 
 
-                TiO2_tmp = (df.at[i, 'TiO2'])
-                Al2O3_tmp = (df.at[i, 'Al2O3'])
-                CaO_tmp = (df.at[i, 'CaO'])
-                MgO_tmp = (df.at[i, 'MgO'])
-                MnO_tmp = (df.at[i, 'MnO'])
-                K2O_tmp = (df.at[i, 'K2O'])
-                Na2O_tmp = (df.at[i, 'Na2O'])
-                SiO2_tmp = (df.at[i, 'SiO2'])
+                TiO2_tmp = (self.data_to_test.at[i, 'TiO2'])
+                Al2O3_tmp = (self.data_to_test.at[i, 'Al2O3'])
+                CaO_tmp = (self.data_to_test.at[i, 'CaO'])
+                MgO_tmp = (self.data_to_test.at[i, 'MgO'])
+                MnO_tmp = (self.data_to_test.at[i, 'MnO'])
+                K2O_tmp = (self.data_to_test.at[i, 'K2O'])
+                Na2O_tmp = (self.data_to_test.at[i, 'Na2O'])
+                SiO2_tmp = (self.data_to_test.at[i, 'SiO2'])
 
                 xtest= self.ld1(TiO2_tmp ,Al2O3_tmp ,CaO_tmp ,MgO_tmp ,MnO_tmp ,K2O_tmp ,Na2O_tmp ,SiO2_tmp )
                 ytest= self.ld2(TiO2_tmp ,Al2O3_tmp ,CaO_tmp ,MgO_tmp ,MnO_tmp ,K2O_tmp ,Na2O_tmp ,SiO2_tmp )
