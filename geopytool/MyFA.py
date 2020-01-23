@@ -515,8 +515,9 @@ class MyFA(AppForm):
                 svm_x = self.fa_result[:, a]
                 svm_y = self.fa_result[:, b]
 
-                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
-                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
+
+                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
+                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
 
                 le = LabelEncoder()
                 le.fit(self.result_to_fit.index)

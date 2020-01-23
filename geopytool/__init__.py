@@ -78,6 +78,11 @@ from geopytool.Rose import Rose
 from geopytool.Stereo import Stereo
 from geopytool.TAS import TAS
 from geopytool.K2OSiO2 import K2OSiO2
+from geopytool.ZrYSrTi import ZrYSrTi
+from geopytool.TiAlCaMgMnKNaSi import TiAlCaMgMnKNaSi
+
+
+
 from geopytool.Saccani import Saccani
 from geopytool.Raman import Raman
 from geopytool.FluidInclusion import FluidInclusion
@@ -291,6 +296,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionK2OSiO2.setObjectName('actionK2OSiO2')
 
 
+
+        self.actionZrYSrTi = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'ZrYSrTi',self)
+        self.actionZrYSrTi.setObjectName('actionZrYSrTi')
+
+
+        self.actionTiAlCaMgMnKNaSi = QtWidgets.QAction(QIcon(LocationOfMySelf+'/xy.png'), u'TiAlCaMgMnKNaSi',self)
+        self.actionTiAlCaMgMnKNaSi.setObjectName('actionTiAlCaMgMnKNaSi')
+
+
         self.actionStereo = QtWidgets.QAction(QIcon(LocationOfMySelf+'/structure.png'),u'Stereo',self)
         self.actionStereo.setObjectName('actionStereo')
 
@@ -441,10 +455,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuGeoChem.addAction(self.actionK2OSiO2)
         self.menuGeoChem.addAction(self.actionRaman)
         self.menuGeoChem.addAction(self.actionFluidInclusion)
-
-
         self.menuGeoChem.addAction(self.actionHarkerOld)
         self.menuGeoChem.addAction(self.actionTraceNew)
+        self.menuGeoChem.addAction(self.actionZrYSrTi)
+        self.menuGeoChem.addAction(self.actionTiAlCaMgMnKNaSi)
 
 
 
@@ -540,6 +554,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQAPF.triggered.connect(self.QAPF)
         self.actionSaccani.triggered.connect(self.Saccani)
         self.actionK2OSiO2.triggered.connect(self.K2OSiO2)
+        self.actionZrYSrTi.triggered.connect(self.ZrYSrTi)
+        self.actionTiAlCaMgMnKNaSi.triggered.connect(self.TiAlCaMgMnKNaSi)
+
+
+
         self.actionRaman.triggered.connect(self.Raman)
         self.actionFluidInclusion.triggered.connect(self.FluidInclusion)
 
@@ -659,6 +678,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionFluidInclusion.setText('1-13 '+_translate('MainWindow',u'Fluid Inclusion'))
         self.actionHarkerOld.setText('1-14 '+_translate('MainWindow',u'Harker Classical'))
         self.actionTraceNew.setText('1-15 '+_translate('MainWindow',u'TraceNew'))
+        self.actionZrYSrTi.setText('1-16 '+_translate('MainWindow',u'ZrYSrTi'))
+        self.actionTiAlCaMgMnKNaSi.setText('1-17 '+_translate('MainWindow',u'TiAlCaMgMnKNaSi'))
 
         self.actionStereo.setText('2-1 '+_translate('MainWindow',u'Stereo'))
         self.actionRose.setText('2-2 '+_translate('MainWindow',u'Rose'))
@@ -1168,9 +1189,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df)<=0):
             self.getDataFile()
             pass
-
         if (len(self.model._df) > 0):
-            self.transpop = MyTrans(df=self.model._df.fillna(0))
+            self.transpop = MyTrans(df=self.model._df)
             self.transpop.Trans()
 
     def ReFormat(self):
@@ -1680,10 +1700,40 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.getDataFile()
 
         if (len(self.model._df) > 0):
-            self.taspop = K2OSiO2(df=self.model._df)
+            self.K2OSiO2pop = K2OSiO2(df=self.model._df)
             try:
-                self.taspop.K2OSiO2()
-                self.taspop.show()
+                self.K2OSiO2pop.K2OSiO2()
+                self.K2OSiO2pop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+
+    def ZrYSrTi(self):
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
+
+        if (len(self.model._df) > 0):
+            self.ZrYSrTipop = ZrYSrTi(df=self.model._df)
+
+            try:
+                self.ZrYSrTipop.Key_Func()
+                self.ZrYSrTipop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+    def TiAlCaMgMnKNaSi(self):
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
+
+        if (len(self.model._df) > 0):
+            self.TiAlCaMgMnKNaSipop = TiAlCaMgMnKNaSi(df=self.model._df)
+
+            self.TiAlCaMgMnKNaSipop.Key_Func()
+            self.TiAlCaMgMnKNaSipop.show()
+            try:
+                pass
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 

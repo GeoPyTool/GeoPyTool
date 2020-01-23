@@ -76,6 +76,10 @@ class MyTrans(AppForm):
         self.log_ten_button = QPushButton('&Log 10 Transform')
         self.log_e_button = QPushButton('&Log e Transform')
 
+        self.fill_NaN_button = QPushButton('&Fill Blanks With 0')
+        self.remove_row_with_0_button = QPushButton('&Remove Rows With Blanks')
+        self.remove_column_with_0_button = QPushButton('&Remove Columns With Blanks')
+
 
         # self.save_button.clicked.connect(self.saveDataFile)
 
@@ -94,19 +98,42 @@ class MyTrans(AppForm):
 
 
 
+        self.fill_NaN_button.clicked.connect(self.fill_NaNs)
+        self.remove_row_with_0_button.clicked.connect(self.remove_row_with_0)
+        self.remove_column_with_0_button .clicked.connect(self.remove_column_with_0)
+
+
 
         self.vbox = QVBoxLayout()
 
-        self.hbox =QHBoxLayout()
+        self.hbox0 =QHBoxLayout()
+        self.hbox1 =QHBoxLayout()
+        self.hbox2 =QHBoxLayout()
 
         #self.vbox.addWidget(self.canvas)
         self.vbox.addWidget(self.tableView)
 
-        for w in [self.transpose_button,self.center_Arithmetic_button,self.center_Geometric_button,self.std_button,self.log_ten_button,self.log_e_button,self.reset_button,self.save_button]:
-            self.hbox.addWidget(w)
+        for w in [self.reset_button,
+                  self.save_button,]:
+            self.hbox0.addWidget(w)
+
+        for w in [self.center_Arithmetic_button,
+                  self.center_Geometric_button,
+                  self.std_button,
+                  self.log_ten_button,
+                  self.log_e_button,]:
+            self.hbox1.addWidget(w)
+
+        for w in [self.transpose_button,
+                  self.fill_NaN_button,
+                  self.remove_row_with_0_button,
+                  self.remove_column_with_0_button]:
+            self.hbox2.addWidget(w)
 
 
-        self.vbox.addLayout(self.hbox)
+        self.vbox.addLayout(self.hbox0)
+        self.vbox.addLayout(self.hbox1)
+        self.vbox.addLayout(self.hbox2)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -125,7 +152,7 @@ class MyTrans(AppForm):
 
         dataframe = self._df
 
-        dataframe =  dataframe.dropna(axis=1,how='all')
+        #dataframe =  dataframe.dropna(axis=1,how='all')
 
         self.settings_backup = self._df
 
@@ -140,9 +167,7 @@ class MyTrans(AppForm):
 
 
         dataframe = dataframe.apply(pd.to_numeric, errors='coerce')
-        dataframe = dataframe.dropna(axis='columns')
-
-
+        #dataframe = dataframe.dropna(axis='columns')
 
         self.result=dataframe
         self.originalresult=self.result
@@ -187,7 +212,11 @@ class MyTrans(AppForm):
 
                 # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
 
-
+    def fill_NaNs(self):
+        self.result = self.result.fillna(0)
+        self.tableresult = PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
 
     def transpose(self):
         self.result=self.result.T
@@ -195,6 +224,31 @@ class MyTrans(AppForm):
         self.tableView.setModel(self.tableresult)
         self.show()
 
+    def remove_row_with_0(self):
+        self.settings_backup = self._df
+        self.settings_backup = self.settings_backup.dropna()
+
+        #dataframe = self._df
+        ItemsAvalibale = self._df.columns.values.tolist()
+
+        ItemsToTest = ['Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width']
+
+        for i in ItemsAvalibale:
+            if i in ItemsToTest:
+                pass
+            elif (i != 'Label'):
+                self.settings_backup = self.settings_backup.drop(i, 1)
+        self.result = self.result.dropna()
+        self.tableresult = PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
+
+    def remove_column_with_0(self):
+        self.result = self.result.dropna(axis=1)
+        self.tableresult = PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
 
     def center_Geometric(self):
 
