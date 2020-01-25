@@ -51,7 +51,7 @@ class MyLDA(AppForm):
 
         self.result_to_fit= self.Slim(self._df)
 
-        self.LDA = LinearDiscriminantAnalysis(n_components=len(self.result_to_fit)-1)
+        self.LDA = LinearDiscriminantAnalysis(n_components= 2 )
 
         le = LabelEncoder()
         le.fit(self.result_to_fit.index)
@@ -61,7 +61,9 @@ class MyLDA(AppForm):
 
         try:
             self.LDA.fit(self.result_to_fit.values,original_label)
-            self.comp = (self.LDA.scalings_)
+            print(self.LDA.get_params())
+            print(self.LDA.classes_)
+            self.comp = (self.LDA.scalings_.T)
             self.n = len(self.comp)
 
         except Exception as e:
@@ -80,7 +82,9 @@ class MyLDA(AppForm):
         self.fig = plt.figure(figsize=(12, 6))
         #self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.9, top=0.9)
 
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
+        #self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
+
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
@@ -142,6 +146,8 @@ class MyLDA(AppForm):
         self.hbox3 = QHBoxLayout()
         self.hbox4 = QHBoxLayout()
 
+
+
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
 
@@ -181,7 +187,7 @@ class MyLDA(AppForm):
 
 
         self.LDA.fit(self.result_to_fit.values, original_label)
-        self.comp = (self.LDA.scalings_)
+        self.comp = (self.LDA.scalings_.T)
         self.n = len(self.comp)
         self.lda_result = self.LDA.fit_transform(self.result_to_fit.values, original_label)
         #self.lda_result = self.LDA.transform(self.result_to_fit.values)
@@ -332,9 +338,9 @@ class MyLDA(AppForm):
 
 
         self.kernel_select_label.setText(self.kernel_list[k_s])
-        self.axes.set_xlabel("function "+str(a))
+        self.axes.set_xlabel("component "+str(a+1))
 
-        self.axes.set_ylabel("function "+str(b))
+        self.axes.set_ylabel("component "+str(b+1))
 
 
         self.begin_result = pd.concat([self.settings_backup, pd.DataFrame(self.lda_result)], axis=1)

@@ -1,6 +1,6 @@
-version = '0.8.20.0.121'
+version = '0.8.20.0.122'
 
-date = '2020-01-24'
+date = '2020-01-25'
 
 dpi = 128
 # coding:utf-8
@@ -918,16 +918,16 @@ class TableViewer(QMainWindow):
 
 
     def MyPie(self):
-        self.MyPiepop = Pie(df=self.df)
         try:
+            self.MyPiepop = Pie(df=self.df)
             self.MyPiepop.Magic()
             self.MyPiepop.show()
         except Exception as e:
             self.ErrorEvent(text=repr(e))
 
     def MyBar(self):
-        self.MyBarpop = Bar(df=self.df)
         try:
+            self.MyBarpop = Bar(df=self.df)
             self.MyBarpop.Magic()
             self.MyBarpop.show()
         except Exception as e:
@@ -1444,7 +1444,8 @@ class AppForm(QMainWindow):
 
     def ReduceSize(self, df=pd.DataFrame):
 
-        m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
+        m = ['Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width']
 
         for i in m:
             if i in df.columns.values:
@@ -1460,7 +1461,7 @@ class AppForm(QMainWindow):
 
         df = df.dropna(axis=1, how='all')
 
-        ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+        ItemsToTest = ['Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width']
 
         for i in ItemsToTest:

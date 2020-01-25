@@ -1305,7 +1305,7 @@ class XY(AppForm):
                 self.data_to_test_to_fit = self.Slim(self.data_to_test)
 
                 self.load_settings_backup = self.data_to_test
-                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size',
+                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size',
                                     'Alpha',
                                     'Style', 'Width']
                 for i in self.data_to_test.columns.values.tolist():

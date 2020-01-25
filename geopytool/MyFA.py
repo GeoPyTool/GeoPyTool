@@ -194,10 +194,13 @@ class MyFA(AppForm):
 
         if ( self.switched== False):
 
+            self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
             self.switch_button.setText('&Switch to 2D')
             self.axes = Axes3D(self.fig, elev=-150, azim=110)
             self.vbox.addLayout(self.hbox4)
         else:
+
+            self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
             self.switch_button.setText('&Switch to 3D')
             self.axes = self.fig.add_subplot(111)
 

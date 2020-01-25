@@ -50,7 +50,7 @@ class TiAlCaMgMnKNaSi(AppForm):
 
 
     def create_main_frame(self):
-        self.resize(1000, 800)
+        self.resize(800,800)
         self.main_frame = QWidget()
         self.dpi = 128
         self.fig = Figure((18.0, 12.0), dpi=self.dpi)

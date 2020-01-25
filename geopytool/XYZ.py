@@ -61,6 +61,7 @@ class XYZ(AppForm):
                 'Author',
                 'DataType',
                 'Label',
+                'Index',
                 'Marker',
                 'Color',
                 'Size',
@@ -123,7 +124,7 @@ class XYZ(AppForm):
 
         dataframe = self._df
         ItemsAvalibale = self._df.columns.values.tolist()
-        ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+        ItemsToTest = ['Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width', 'Label']
 
         for i in ItemsToTest:
