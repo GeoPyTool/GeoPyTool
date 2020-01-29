@@ -199,6 +199,8 @@ class MyQDA(AppForm):
         all_markers=[]
         all_alpha=[]
 
+        self.color_list=[]
+
         for i in range(len(self._df)):
             target =self._df.at[i, 'Label']
             color = self._df.at[i, 'Color']
@@ -210,6 +212,8 @@ class MyQDA(AppForm):
                 all_colors.append(color)
                 all_markers.append(marker)
                 all_alpha.append(alpha)
+            if color not in self.color_list:
+                self.color_list.append(color)
 
         self.whole_labels = all_labels
 
@@ -399,7 +403,7 @@ class MyQDA(AppForm):
             clf.fit(svm_train, class_label)
             Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
             Z = Z.reshape(xx.shape)
-            self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+            self.axes.contourf(xx, yy, Z,cmap=ListedColormap(self.color_list), alpha=0.2)
 
 
         if (self.legend_cb.isChecked()):

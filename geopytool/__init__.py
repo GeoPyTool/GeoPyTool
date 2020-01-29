@@ -1893,9 +1893,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if (len(self.model._df) > 0):
             self.ldapop = MyLDA(df=self.model._df.fillna(0))
 
+            self.ldapop.Key_Func()
+            self.ldapop.show()
             try:
-                self.ldapop.Key_Func()
-                self.ldapop.show()
+                pass
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
@@ -1906,12 +1907,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.getDataFile()
         if (len(self.model._df) > 0):
             self.qdapop = MyQDA(df=self.model._df.fillna(0))
-
-            self.qdapop.Key_Func()
-            self.qdapop.show()
-
             try:
-                pass
+                self.qdapop.Key_Func()
+                self.qdapop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 

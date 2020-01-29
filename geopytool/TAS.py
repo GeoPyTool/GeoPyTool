@@ -98,6 +98,9 @@ class TAS(AppForm):
         self.result_button.clicked.connect(self.Explain)
 
 
+        self.save_lda_button_selected = QPushButton('&LDA Predict ')
+        self.save_lda_button_selected.clicked.connect(self.showLDAResultSelected)
+
         self.save_predict_button_selected = QPushButton('&Predict Result')
         self.save_predict_button_selected.clicked.connect(self.showPredictResultSelected)
 
@@ -132,8 +135,11 @@ class TAS(AppForm):
         self.shape_cb.setChecked(False)
         self.shape_cb.stateChanged.connect(self.TAS)  # int
 
+        self.lda_cb = QCheckBox('&LDA')
+        self.lda_cb.setChecked(False)
+        self.lda_cb.stateChanged.connect(self.TAS)  # int
 
-        self.hyperplane_cb= QCheckBox('&SVM Boundary')
+        self.hyperplane_cb= QCheckBox('&SVM')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.TAS)  # int
 
@@ -163,11 +169,11 @@ class TAS(AppForm):
         self.hbox1 = QHBoxLayout()
         self.hbox2 = QHBoxLayout()
 
-        for w in [self.load_data_button,self.save_button, self.result_button, self.save_predict_button_selected,self.slider_left_label, self.slider,self.slider_right_label]:
+        for w in [self.load_data_button,self.save_button, self.result_button, self.save_lda_button_selected, self.save_predict_button_selected,self.slider_left_label, self.slider,self.slider_right_label]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select ,self.detail_cb,self.irvine_cb ]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.lda_cb ,self.hyperplane_cb,self.kernel_select_label,self.kernel_select ,self.detail_cb,self.irvine_cb ]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
@@ -251,6 +257,8 @@ class TAS(AppForm):
         all_markers=[]
         all_alpha=[]
 
+        LDA_X = []
+        LDA_Label = []
 
         self.OutPutData = pd.DataFrame()
 
@@ -258,6 +266,7 @@ class TAS(AppForm):
         self.IndexList=[]
         self.TypeList=[]
 
+        self.color_list=[]
         self.RittmanList=[]
 
 
@@ -273,6 +282,8 @@ class TAS(AppForm):
                 all_colors.append(color)
                 all_markers.append(marker)
                 all_alpha.append(alpha)
+            if color not in self.color_list:
+                self.color_list.append(color)
 
         self.whole_labels = all_labels
 
@@ -434,14 +445,17 @@ class TAS(AppForm):
                 Marker = df.at[i, 'Marker']
                 Label = df.at[i, 'Label']
 
-                xtest=df.at[i, 'SiO2']
-                ytest=df.at[i, 'Na2O'] + df.at[i, 'K2O']
+                xuse=df.at[i, 'SiO2']
+                yuse=df.at[i, 'Na2O'] + df.at[i, 'K2O']
 
-                XtoFit[Label].append(xtest)
-                YtoFit[Label].append(ytest)
+                XtoFit[Label].append(xuse)
+                YtoFit[Label].append(yuse)
 
-                SVM_X.append(xtest)
-                SVM_Y.append(ytest)
+                SVM_X.append(xuse)
+                SVM_Y.append(yuse)
+
+                LDA_X.append([xuse,yuse])
+                LDA_Label.append(df.at[i, 'Label'] )
 
             if (self.shape_cb.isChecked()):
                 for i in PointLabels:
@@ -449,6 +463,7 @@ class TAS(AppForm):
                     if XtoFit[i] != YtoFit[i]:
                         xmin, xmax = min(XtoFit[i]), max(XtoFit[i])
                         ymin, ymax = min(YtoFit[i]), max(YtoFit[i])
+
 
                         DensityColorMap = 'Greys'
                         DensityAlpha = 0.1
@@ -480,7 +495,8 @@ class TAS(AppForm):
                             # Contour plot
                             cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
                             # Label plot
-                            #self.axes.clabel(cset, inline=1, fontsize=10)
+                            if (self.legend_cb.isChecked()):
+                                self.axes.clabel(cset, inline=1, fontsize=10)
 
 
             if (self.irvine_cb.isChecked()):
@@ -500,9 +516,8 @@ class TAS(AppForm):
                         missing = missing + '\n' + i
 
                 if contained == True:
-                    for i in self.data_to_test.columns.values.tolist():
-                        if i not in self._df.columns.values.tolist():
-                            self.data_to_test = self.data_to_test.drop(columns=i)
+                    self.data_to_test = self.CleanDataFile(self.data_to_test)
+
 
                     # print(self.data_to_test)
 
@@ -607,6 +622,11 @@ class TAS(AppForm):
                 xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 200),
                                      np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 200))
 
+
+                xmin, xmax = self.axes.get_xlim()
+                ymin, ymax = self.axes.get_ylim()
+                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+
                 le = LabelEncoder()
                 le.fit(self._df.Label)
                 class_label = le.transform(self._df.Label)
@@ -615,7 +635,7 @@ class TAS(AppForm):
                 clf.fit(svm_train,class_label)
                 Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
                 Z = Z.reshape(xx.shape)
-                self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+                self.axes.contourf(xx, yy, Z,cmap=ListedColormap(self.color_list), alpha=0.2)
 
             if (self.show_data_index_cb.isChecked()):
 
@@ -635,6 +655,37 @@ class TAS(AppForm):
                                            color=self._df.at[i, 'Color'],
                                            alpha=self._df.at[i, 'Alpha'])
 
+            if (self.lda_cb.isChecked()):
+                le = LabelEncoder()
+                le.fit(LDA_Label)
+                original_label = le.transform(LDA_Label)
+                # print(self.result_to_fit.values.tolist())
+                model = LinearDiscriminantAnalysis()
+                model.fit(LDA_X, original_label)
+                xmin, xmax = self.axes.get_xlim()
+                ymin, ymax = self.axes.get_ylim()
+                self.model = model
+
+                self.cmap_trained_data = ListedColormap(self.color_list)
+                xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
+                                     np.linspace(ymin, ymax, 200))
+
+                # xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+
+                Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+                # Z_proba = model.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+
+                # self.axes.pcolormesh(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+
+                self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+
+                # Z = self.LDA.predict(np.c_[xx.ravel(), yy.ravel()])
+                # Z = self.LDA.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+                # plt.pcolormesh(xx, yy, Z, cmap='red_blue_classes', norm=colors.Normalize(0., 1.), zorder=0)
+                # self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+                # tmpZ = Z[:, 0].reshape(xx.shape)
+                #    self.axes.pcolormesh(xx, yy, tmpZ, cmap=ListedColormap(self.color_list[i]),norm=colors.Normalize(0., 1.), zorder=0,alpha=0.4)
+                # self.axes.contour(xx, yy, Z, [0.5], linewidths=2., colors='white')
 
             self.canvas.draw()
 
@@ -696,22 +747,53 @@ class TAS(AppForm):
             self.predictpop = TableViewer(df=predict_result, title='SVM Predict Result')
             self.predictpop.show()
 
-            '''
-            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self, '文件保存', 'C:/',  'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-            if (DataFileOutput != ''):
-                if ('csv' in DataFileOutput):
-                    # DataFileOutput = DataFileOutput[0:-4]
-                    predict_result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-                    # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
-                elif ('xlsx' in DataFileOutput):
-                    # DataFileOutput = DataFileOutput[0:-5]
-                    predict_result.to_excel(DataFileOutput, encoding='utf-8')
-                    # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
-            '''
 
         except Exception as e:
             msg = 'You need to load another data to run SVM.\n '
             self.ErrorEvent(text= msg +repr(e) )
+
+
+    def showLDAResultSelected(self):
+
+        try:
+            lda_x = self.All_X
+            lda_y = self.All_Y
+
+            le = LabelEncoder()
+            le.fit(self._df.Label)
+            lda_train = pd.concat([pd.DataFrame(lda_x), pd.DataFrame(lda_y)], axis=1)
+            lda_train = lda_train.values
+            self.model.fit(lda_train, self._df.Label)
+            xx = self.data_to_test['SiO2']
+            yy=[]
+            for k in range(len(self.data_to_test)):
+                tmp =self.data_to_test.at[k, 'Na2O'] + self.data_to_test.at[k,'K2O']
+                yy.append(tmp)
+                pass
+
+            Z = self.model.predict(np.c_[xx.ravel(), np.array(yy).ravel()])
+
+            Z2 = self.model.predict_proba(np.c_[xx.ravel(), np.array(yy).ravel()])
+            proba_df = pd.DataFrame(Z2)
+            proba_df.columns = self.model.classes_
+
+            proba_list = []
+            for i in range(len(proba_df)):
+                proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
+            predict_result = pd.concat(
+                [self.data_to_test['Label'], pd.DataFrame({'LDA Classification': Z}),
+                 pd.DataFrame({'Confidence probability': proba_list})],
+                axis=1).set_index('Label')
+            print(predict_result)
+
+            self.predictpop = TableViewer(df=predict_result,
+                                          title='LDA Predict Result')
+            self.predictpop.show()
+
+        except Exception as e:
+            msg = 'You need to load another data to run LDA.\n '
+            self.ErrorEvent(text= msg +repr(e) )
+
 
     def Explain(self):
         # self.OutPutData = self.OutPutData.set_index('Label')

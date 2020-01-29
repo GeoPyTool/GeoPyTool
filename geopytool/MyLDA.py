@@ -24,6 +24,8 @@ class MyLDA(AppForm):
     text_result = ''
     whole_labels=[]
     LDA = LinearDiscriminantAnalysis()
+    model=[]
+
     n=6
 
     def __init__(self, parent=None, df=pd.DataFrame()):
@@ -48,8 +50,10 @@ class MyLDA(AppForm):
                 self.settings_backup = self.settings_backup.drop(i, 1)
         #print(self.settings_backup)
 
-
         self.result_to_fit= self.Slim(self._df)
+
+
+        #self.LDA = LinearDiscriminantAnalysis(n_components= 2 )
 
         self.LDA = LinearDiscriminantAnalysis(n_components= 2 )
 
@@ -59,10 +63,17 @@ class MyLDA(AppForm):
 
         #print(self.result_to_fit.columns.values.tolist())
 
+        #np.dot(clf.coef_, x) - clf.intercept_ = 0
+
         try:
+
+            #print(self.result_to_fit.values)
             self.LDA.fit(self.result_to_fit.values,original_label)
-            print(self.LDA.get_params())
-            print(self.LDA.classes_)
+            #print(self.LDA.get_params())
+            #print(self.LDA.classes_)
+            #print(self.LDA.coef_ ,'\n', self.LDA.intercept_,'\n', self.LDA.scalings_)
+            #f(x) = -clf.coef_[0][0]/clf.coef_[0][1] * x - clf.intercept_/clf.coef_[0][1]
+
             self.comp = (self.LDA.scalings_.T)
             self.n = len(self.comp)
 
@@ -176,6 +187,7 @@ class MyLDA(AppForm):
         b = 1
 
         k_s = int(self.kernel_select.value())
+        self.color_list=[]
 
         self.axes.clear()
 
@@ -183,13 +195,24 @@ class MyLDA(AppForm):
         le.fit(self.result_to_fit.index)
         original_label = le.transform(self.result_to_fit.index)
 
-        #print(self.result_to_fit.columns.values.tolist())
+        #print(self.result_to_fit.values.tolist())
 
 
-        self.LDA.fit(self.result_to_fit.values, original_label)
+        self.LDA.fit(self.result_to_fit.values.tolist(), original_label)
+
+        #print('\n coef is ',self.LDA.coef_, '\n intercept is ', self.LDA.intercept_)
+
+        # f(x) = -self.LDA.coef_[0][0]/self.LDA.coef_[0][1] * x - self.LDA.intercept_/self.LDA.coef_[0][1]
+
+
         self.comp = (self.LDA.scalings_.T)
         self.n = len(self.comp)
         self.lda_result = self.LDA.fit_transform(self.result_to_fit.values, original_label)
+
+        # class 0 and 1 : areas
+
+
+
         #self.lda_result = self.LDA.transform(self.result_to_fit.values)
 
         #self.text_result='N Components :' + str(n)+'N Components :' + str(comp)+ '\nExplained Variance Ratio :' + str(evr)+'\nExplained Variance :' + str(ev)
@@ -224,6 +247,8 @@ class MyLDA(AppForm):
                 all_colors.append(color)
                 all_markers.append(marker)
                 all_alpha.append(alpha)
+            if color not in self.color_list:
+                self.color_list.append(color)
 
         self.whole_labels = all_labels
 
@@ -361,6 +386,9 @@ class MyLDA(AppForm):
                 xmin, xmax = min(XtoFit), max(XtoFit)
                 ymin, ymax = min(YtoFit), max(YtoFit)
 
+                xmin, xmax = self.axes.get_xlim()
+                ymin, ymax = self.axes.get_ylim()
+
                 DensityColorMap = 'Greys'
                 DensityAlpha = 0.1
 
@@ -385,7 +413,8 @@ class MyLDA(AppForm):
                     # Contour plot
                     cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
                     # Label plot
-                    # self.axes.clabel(cset, inline=1, fontsize=10)
+                    if (self.legend_cb.isChecked()):
+                        self.axes.clabel(cset, inline=1, fontsize=10)
 
         if (self.show_data_index_cb.isChecked()):
             for i in range(len(self.lda_result)):
@@ -413,19 +442,17 @@ class MyLDA(AppForm):
             clf.fit(svm_train, class_label)
             Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
             Z = Z.reshape(xx.shape)
-            self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+            self.axes.contourf(xx, yy, Z,cmap=ListedColormap(self.color_list), alpha=0.2)
 
 
         if (self.legend_cb.isChecked()):
             self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
 
 
-
         self.result = pd.concat([self.begin_result , self.load_result], sort=False, axis=0).set_index('Label')
         self.canvas.draw()
 
     def showPredictResult(self):
-
 
         k_s = int(self.kernel_select.value())
 

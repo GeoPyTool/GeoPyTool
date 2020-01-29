@@ -174,9 +174,6 @@ class XY(AppForm):
         self.flag = 0
 
     def create_main_frame(self):
-
-
-
         self.resize(800, 800)
 
         self.main_frame = QWidget()
@@ -216,19 +213,20 @@ class XY(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
 
-
+        self.lda_cb = QCheckBox('&LDA')
+        self.lda_cb.setChecked(False)
+        self.lda_cb.stateChanged.connect(self.Magic)  # int
 
         self.show_load_data_cb = QCheckBox('&Show Loaded Data')
         self.show_load_data_cb.setChecked(True)
         self.show_load_data_cb.stateChanged.connect(self.Magic)  # int
-
 
         self.show_data_index_cb = QCheckBox('&Show Data Index')
         self.show_data_index_cb.setChecked(False)
         self.show_data_index_cb.stateChanged.connect(self.Magic)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&SVM Boundary')
+        self.hyperplane_cb= QCheckBox('&SVM')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
 
@@ -328,10 +326,13 @@ class XY(AppForm):
 
 
 
-        self.hyperplane_cb= QCheckBox('&SVM Boundary')
+        self.hyperplane_cb= QCheckBox('&SVM')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
 
+
+        self.save_lda_button_selected = QPushButton('&LDA Predict ')
+        self.save_lda_button_selected.clicked.connect(self.showLDAResultSelected)
 
         self.save_predict_button_selected = QPushButton('&Predict Selected')
         self.save_predict_button_selected.clicked.connect(self.showPredictResultSelected)
@@ -397,12 +398,12 @@ class XY(AppForm):
         self.kernel_select.valueChanged.connect(self.Magic)  # int
         self.kernel_select_label = QLabel('Kernel')
 
-        for w in [self.save_plot_button ,self.stat_button,self.load_data_button,self.save_predict_button,self.save_predict_button_selected]:
+        for w in [self.save_plot_button ,self.stat_button,self.load_data_button,self.save_lda_button_selected ,self.save_predict_button,self.save_predict_button_selected]:
             self.hbox.addWidget(w)
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb,self.lda_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -523,8 +524,6 @@ class XY(AppForm):
         return (result)
 
     def Load(self):
-
-
         fileName, filetype = QFileDialog.getOpenFileName(self,
                                                          '选取文件',
                                                          '~/',
@@ -778,9 +777,6 @@ class XY(AppForm):
 
 
 
-
-
-
     def Magic(self):
 
         k_s = int(self.kernel_select.value())
@@ -939,11 +935,14 @@ class XY(AppForm):
         PointColors = []
         XtoFit = []
         YtoFit = []
+        LDA_X = []
+        LDA_Label = []
 
         all_labels=[]
         all_colors=[]
         all_markers=[]
         all_alpha=[]
+        self.color_list=[]
 
         for i in range(len(self._df)):
             target = self._df.at[i, 'Label']
@@ -958,10 +957,13 @@ class XY(AppForm):
                 all_markers.append(marker)
                 all_alpha.append(alpha)
 
+            if color not in self.color_list:
+                self.color_list.append(color)
+
+
         self.whole_labels = all_labels
 
-
-        df = self.CleanDataFile(self._df)
+        df=self._df
 
         for i in range(len(df)):
             TmpLabel = ''
@@ -1047,12 +1049,16 @@ class XY(AppForm):
 
                 XtoFit.append(xuse)
                 YtoFit.append(yuse)
+                LDA_X.append([xuse,yuse])
+                LDA_Label.append(df.at[i, 'Label'] )
 
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
                 #pass
 
 
+
+        df = self.CleanDataFile(self._df)
 
 
 
@@ -1231,6 +1237,7 @@ class XY(AppForm):
                     xmin, xmax = min(XtoFit_dic[i]), max(XtoFit_dic[i])
                     ymin, ymax = min(YtoFit_dic[i]), max(YtoFit_dic[i])
 
+
                     DensityColorMap = 'Greys'
                     DensityAlpha = 0.1
 
@@ -1261,7 +1268,8 @@ class XY(AppForm):
                         # Contour plot
                         cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
                         # Label plot
-                        #self.axes.clabel(cset, inline=1, fontsize=10)
+                        if (self.legend_cb.isChecked()):
+                            self.axes.clabel(cset, inline=1, fontsize=10)
 
 
         if (len(self.data_to_test) > 0):
@@ -1388,15 +1396,15 @@ class XY(AppForm):
 
         self.All_X=XtoFit
         self.All_Y=YtoFit
+
         if (self.hyperplane_cb.isChecked()):
-
-
             if XtoFit != YtoFit:
                 clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
                 svm_x = XtoFit
                 svm_y = YtoFit
-                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 200),
-                                            np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 200))
+                xmin, xmax = self.axes.get_xlim()
+                ymin, ymax = self.axes.get_ylim()
+                xx, yy = np.meshgrid(np.arange(xmin, xmax, (xmax-xmin) / 200), np.arange( ymin, ymax, (ymax-ymin)/ 200))
 
                 le = LabelEncoder()
                 le.fit(self._df.Label)
@@ -1409,7 +1417,7 @@ class XY(AppForm):
                 clf.fit(svm_train,class_label)
                 Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
                 Z = Z.reshape(xx.shape)
-                self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+                self.axes.contourf(xx, yy, Z, cmap=ListedColormap(self.color_list), alpha=0.2)
 
         if (self.show_data_index_cb.isChecked()):
 
@@ -1430,9 +1438,41 @@ class XY(AppForm):
                                            color=self._df.at[i, 'Color'],
                                            alpha=self._df.at[i, 'Alpha'])
 
-
         if (self.legend_cb.isChecked()):
             self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
+
+        if (self.lda_cb.isChecked()):
+            le = LabelEncoder()
+            le.fit(LDA_Label)
+            original_label = le.transform(LDA_Label)
+            # print(self.result_to_fit.values.tolist())
+            model = LinearDiscriminantAnalysis()
+            model.fit(LDA_X, original_label)
+            xmin, xmax = self.axes.get_xlim()
+            ymin, ymax = self.axes.get_ylim()
+            self.model=model
+
+            self.cmap_trained_data=ListedColormap(self.color_list)
+            xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
+                                 np.linspace(ymin, ymax, 200))
+
+            #xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+    
+            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+            #Z_proba = model.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+
+            #self.axes.pcolormesh(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+
+            self.axes.contourf(xx, yy, Z.reshape(xx.shape),cmap=ListedColormap(self.color_list), alpha=0.2)
+
+            # Z = self.LDA.predict(np.c_[xx.ravel(), yy.ravel()])
+            # Z = self.LDA.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+            # plt.pcolormesh(xx, yy, Z, cmap='red_blue_classes', norm=colors.Normalize(0., 1.), zorder=0)
+            # self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+            # tmpZ = Z[:, 0].reshape(xx.shape)
+            #    self.axes.pcolormesh(xx, yy, tmpZ, cmap=ListedColormap(self.color_list[i]),norm=colors.Normalize(0., 1.), zorder=0,alpha=0.4)
+            # self.axes.contour(xx, yy, Z, [0.5], linewidths=2., colors='white')
+
 
 
         self.canvas.draw()
@@ -1496,6 +1536,41 @@ class XY(AppForm):
 
         except Exception as e:
             msg = 'You need to load another data to run SVM.\n '
+            self.ErrorEvent(text= msg +repr(e) )
+
+    def showLDAResultSelected(self):
+
+        try:
+            lda_x = self.All_X
+            lda_y = self.All_Y
+
+            le = LabelEncoder()
+            le.fit(self._df.Label)
+            lda_train = pd.concat([pd.DataFrame(lda_x), pd.DataFrame(lda_y)], axis=1)
+            lda_train = lda_train.values
+            self.model.fit(lda_train, self._df.Label)
+            xx = self.data_to_test_to_fit[self.items[self.a_index]]
+            yy = self.data_to_test_to_fit[self.items[self.b_index]]
+
+            Z = self.model.predict(np.c_[xx.ravel(), yy.ravel()])
+
+            Z2 = self.model.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+            proba_df = pd.DataFrame(Z2)
+            proba_df.columns = self.model.classes_
+
+            proba_list = []
+            for i in range(len(proba_df)):
+                proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
+            predict_result = pd.concat(
+                [self.data_to_test['Label'], pd.DataFrame({'LDA Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
+                axis=1).set_index('Label')
+            print(predict_result)
+
+            self.predictpop = TableViewer(df=predict_result, title='LDA Predict Result With '+ self.items[self.a_index]+','+self.items[self.b_index])
+            self.predictpop.show()
+
+        except Exception as e:
+            msg = 'You need to load another data to run LDA.\n '
             self.ErrorEvent(text= msg +repr(e) )
 
 

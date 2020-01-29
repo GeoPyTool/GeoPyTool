@@ -171,7 +171,7 @@ class Harker(AppForm):
         self.shape_cb.stateChanged.connect(self.Harker)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&SVM Boundary')
+        self.hyperplane_cb= QCheckBox('&SVM')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Harker)  # int
 
@@ -363,6 +363,7 @@ class Harker(AppForm):
 
         PointLabels = []
         PointColors = []
+        self.color_list=[]
 
         for i in range(len(raw)):
             if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
@@ -374,6 +375,10 @@ class Harker(AppForm):
                 pass
             else:
                 PointColors.append(raw.at[i, 'Color'])
+
+            color=raw.at[i, 'Color']
+            if color not in self.color_list:
+                self.color_list.append(color)
 
 
             Al2O3, MgO, FeO, Fe2O3, CaO, Na2O, K2O, TiO2, P2O5, SiO2 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -697,35 +702,35 @@ class Harker(AppForm):
 
             Al2O3_HyperPlane_Result= self.DrawHyperPlane(svm_x = raw.SiO2,svm_y = raw.Al2O3, target_label=raw.Label)
             if Al2O3_HyperPlane_Result[0]==True:
-                Al2O3_plot.contourf(Al2O3_HyperPlane_Result[1],Al2O3_HyperPlane_Result[2],Al2O3_HyperPlane_Result[3], cmap='hot', alpha=0.2)
+                Al2O3_plot.contourf(Al2O3_HyperPlane_Result[1],Al2O3_HyperPlane_Result[2],Al2O3_HyperPlane_Result[3],cmap=ListedColormap(self.color_list), alpha=0.2)
 
             MgO_HyperPlane_Result= self.DrawHyperPlane(svm_x = raw.SiO2,svm_y = raw.MgO, target_label=raw.Label)
             if MgO_HyperPlane_Result[0]==True:
-                MgO_plot.contourf(MgO_HyperPlane_Result[1],MgO_HyperPlane_Result[2],MgO_HyperPlane_Result[3], cmap='hot', alpha=0.2)
+                MgO_plot.contourf(MgO_HyperPlane_Result[1],MgO_HyperPlane_Result[2],MgO_HyperPlane_Result[3],cmap=ListedColormap(self.color_list), alpha=0.2)
 
             FeTotal_HyperPlane_Result= self.DrawHyperPlane(svm_x = raw.SiO2,svm_y = FeTotal_list, target_label=raw.Label)
             if FeTotal_HyperPlane_Result[0]==True:
-                FeTotal_plot.contourf(FeTotal_HyperPlane_Result[1],FeTotal_HyperPlane_Result[2],FeTotal_HyperPlane_Result[3], cmap='hot', alpha=0.2)
+                FeTotal_plot.contourf(FeTotal_HyperPlane_Result[1],FeTotal_HyperPlane_Result[2],FeTotal_HyperPlane_Result[3],cmap=ListedColormap(self.color_list), alpha=0.2)
 
             CaO_HyperPlane_Result= self.DrawHyperPlane(svm_x = raw.SiO2,svm_y = raw.CaO, target_label=raw.Label)
             if CaO_HyperPlane_Result[0]==True:
-                CaO_plot.contourf(CaO_HyperPlane_Result[1],CaO_HyperPlane_Result[2],CaO_HyperPlane_Result[3], cmap='hot', alpha=0.2)
+                CaO_plot.contourf(CaO_HyperPlane_Result[1],CaO_HyperPlane_Result[2],CaO_HyperPlane_Result[3],cmap=ListedColormap(self.color_list), alpha=0.2)
 
             Na2O_HyperPlane_Result= self.DrawHyperPlane(svm_x = raw.SiO2,svm_y = raw.Na2O, target_label=raw.Label)
             if Na2O_HyperPlane_Result[0]==True:
-                Na2O_plot.contourf(Na2O_HyperPlane_Result[1],Na2O_HyperPlane_Result[2],Na2O_HyperPlane_Result[3], cmap='hot', alpha=0.2)
+                Na2O_plot.contourf(Na2O_HyperPlane_Result[1],Na2O_HyperPlane_Result[2],Na2O_HyperPlane_Result[3],cmap=ListedColormap(self.color_list), alpha=0.2)
 
             K2O_HyperPlane_Result= self.DrawHyperPlane(svm_x = raw.SiO2,svm_y = raw.K2O, target_label=raw.Label)
             if K2O_HyperPlane_Result[0]==True:
-                K2O_plot.contourf(K2O_HyperPlane_Result[1],K2O_HyperPlane_Result[2],K2O_HyperPlane_Result[3], cmap='hot', alpha=0.2)
+                K2O_plot.contourf(K2O_HyperPlane_Result[1],K2O_HyperPlane_Result[2],K2O_HyperPlane_Result[3],cmap=ListedColormap(self.color_list), alpha=0.2)
 
             TiO2_HyperPlane_Result= self.DrawHyperPlane(svm_x = raw.SiO2,svm_y = raw.TiO2, target_label=raw.Label)
             if TiO2_HyperPlane_Result[0]==True:
-                TiO2_plot.contourf(TiO2_HyperPlane_Result[1],TiO2_HyperPlane_Result[2],TiO2_HyperPlane_Result[3], cmap='hot', alpha=0.2)
+                TiO2_plot.contourf(TiO2_HyperPlane_Result[1],TiO2_HyperPlane_Result[2],TiO2_HyperPlane_Result[3],cmap=ListedColormap(self.color_list), alpha=0.2)
 
             P2O5_HyperPlane_Result= self.DrawHyperPlane(svm_x = raw.SiO2,svm_y = raw.P2O5, target_label=raw.Label)
             if P2O5_HyperPlane_Result[0]==True:
-                P2O5_plot.contourf(P2O5_HyperPlane_Result[1],P2O5_HyperPlane_Result[2],P2O5_HyperPlane_Result[3], cmap='hot', alpha=0.2)
+                P2O5_plot.contourf(P2O5_HyperPlane_Result[1],P2O5_HyperPlane_Result[2],P2O5_HyperPlane_Result[3],cmap=ListedColormap(self.color_list), alpha=0.2)
 
 
 

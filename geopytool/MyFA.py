@@ -97,7 +97,7 @@ class MyFA(AppForm):
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&SVM Boundary')
+        self.hyperplane_cb= QCheckBox('&SVM')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Key_Func)  # int
 
@@ -458,7 +458,8 @@ class MyFA(AppForm):
                         # Contour plot
                         cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
                         # Label plot
-                        #self.axes.clabel(cset, inline=1, fontsize=10)
+                        if (self.legend_cb.isChecked()):
+                            self.axes.clabel(cset, inline=1, fontsize=10)
 
 
         if (self.show_data_index_cb.isChecked()):
@@ -500,6 +501,10 @@ class MyFA(AppForm):
                 xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
                                          np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
 
+                xmin, xmax = self.axes.get_xlim()
+                ymin, ymax = self.axes.get_ylim()
+                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+
                 le = LabelEncoder()
                 le.fit(self.result_to_fit.index)
                 class_label = le.transform(self.result_to_fit.index)
@@ -521,6 +526,10 @@ class MyFA(AppForm):
 
                 xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
                                          np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
+
+                xmin, xmax = self.axes.get_xlim()
+                ymin, ymax = self.axes.get_ylim()
+                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
 
                 le = LabelEncoder()
                 le.fit(self.result_to_fit.index)

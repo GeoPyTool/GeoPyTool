@@ -1,6 +1,6 @@
-version = '0.8.20.0.122'
+version = '0.8.20.0.123'
 
-date = '2020-01-25'
+date = '2020-01-30'
 
 dpi = 128
 # coding:utf-8
@@ -934,6 +934,10 @@ class TableViewer(QMainWindow):
             self.ErrorEvent(text=repr(e))
 
 class AppForm(QMainWindow):
+    cmap_trained_data= ListedColormap(['#FFAAAA', '#AAFFAA', '#AAAAFF'])
+
+    model = LinearDiscriminantAnalysis()
+    color_list=[]
     result = pd.DataFrame()
     Para = pd.DataFrame()
     _df = pd.DataFrame()
@@ -1461,7 +1465,7 @@ class AppForm(QMainWindow):
 
         df = df.dropna(axis=1, how='all')
 
-        ItemsToTest = ['Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+        ItemsToTest = ['Number', 'Tag','Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width']
 
         for i in ItemsToTest:
