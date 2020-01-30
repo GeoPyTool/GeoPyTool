@@ -87,7 +87,7 @@ class TAS(AppForm):
         # Other GUI controls
 
 
-        self.load_data_button = QPushButton('&Add Data to Compare')
+        self.load_data_button = QPushButton('&Load Data')
         self.load_data_button.clicked.connect(self.loadDataToTest)
 
 

@@ -72,6 +72,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from numpy import vstack, array, nan, mean, median, ptp, var, std, cov, corrcoef, arange, sin, pi , nanmean, nanmedian, nanvar, nanstd
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.font_manager import ttfFontProperty
+import matplotlib.tri as tri
 from matplotlib.colors import ListedColormap
 from matplotlib.figure import Figure
 from matplotlib import colors

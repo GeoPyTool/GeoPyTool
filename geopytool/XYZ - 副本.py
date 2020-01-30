@@ -2,7 +2,7 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
 
-class XYZ(AppForm):
+class XYZ(AppForm,Tool):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
                u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
                u'Li',
@@ -95,34 +95,13 @@ class XYZ(AppForm):
     FadeGroups=100
     ShapeGroups=200
 
-    logratio_switched=False
+
     LimSet= False
 
     LabelSetted = False
     ValueChoosed = True
 
-    whole_labels=[]
-    xplot_test_list = []
-    yplot_test_list = []
-    v_tmp_test_list = []
-    w_tmp_test_list = []
-    All_X=[]
-    All_Y=[]
-    All_V=[]
-    All_W=[]
-
     def __init__(self, parent=None, df=pd.DataFrame(),Standard={}):
-        self.whole_labels=[]
-        self.xplot_test_list = []
-        self.yplot_test_list = []
-        self.v_tmp_test_list = []
-        self.w_tmp_test_list = []
-
-        self.All_X = []
-        self.All_Y = []
-        self.All_V = []
-        self.All_W = []
-
         QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.description)
 
@@ -180,83 +159,6 @@ class XYZ(AppForm):
 
         self.flag = 0
 
-    def TriToTri(self, x, y, z):
-        if (x + y + z == 0):
-            return (0, 0,0)
-        else:
-            Sum = x + y + z
-            X = x / Sum
-            Y = y / Sum
-            Z = z / Sum
-            return(X,Y,Z)
-
-    def TriToBin(self, x, y, z):
-        if (x + y + z == 0):
-            return (0, 0)
-        else:
-            Sum = x + y + z
-            X = x / Sum
-            Y = y / Sum
-            Z = z / Sum
-            if (X + Y != 0):
-                a = Z / 2.0 + (1 - Z) * Y / (Y + X)
-            else:
-                a = Z / 2.0
-            b = Z / 2.0 * (np.sqrt(3))
-            return (a, b)
-
-        0.5 * (x + 2 * z) / (x + y + z)
-        - sin(pi / 3) * x / (x + y + z)
-
-    def BinToTri(self, a,b):
-        if (b >= 0):
-            y = a - b / np.sqrt(3)
-            z = b * 2 / np.sqrt(3)
-            x = 1 - (a + b / np.sqrt(3))
-            return (x, y, z)
-        else:
-            y = a + b / np.sqrt(3)
-            z = b * 2 / np.sqrt(3)
-            x = 1- (a - b / np.sqrt(3))
-            return (x, y, z)
-
-    def LogRatioTriToBin(self,x, y, z):
-        if z<=0:
-            z=0.001
-        Sum = x + y + z
-        if Sum==0:
-            Sum=0.001
-        X = x / Sum
-        Y = y / Sum
-        Z = z / Sum
-
-        V = np.log(X/Z)
-        W = np.log(Y/Z)
-        return (V,W)
-
-    def DebugLogRatioTriToBin(self,x, y, z):
-        if z<=0:
-            z=0.001
-        Sum = x + y + z
-        if Sum==0:
-            Sum=0.001
-        X = x / Sum
-        Y = y / Sum
-        Z = z / Sum
-        print('X is \t',X,'Z is \t',Z)
-        V = np.log(X/Z)
-        W = np.log(Y/Z)
-        return (V,W)
-
-    def BackLogRatioBinToTri(self,V,W):
-        a=np.power(np.e,V)
-        b=np.power(np.e,W)
-        X=a/(a+b+1)
-        Y=b/(a+b+1)
-        Z=1/(a+b+1)
-        return (X,Y,Z)
-
-
     def create_main_frame(self):
 
         self.resize(800, 800)
@@ -266,8 +168,6 @@ class XYZ(AppForm):
         self.fig = Figure((8.0,8.0), dpi=self.dpi)
 
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.7, top=0.9)
-
-        #self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.13, bottom=0.2, right=0.7, top=0.9)
 
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -282,11 +182,6 @@ class XYZ(AppForm):
         self.save_button.clicked.connect(self.saveImgFile)
 
 
-        self.load_data_button = QPushButton('&Load Data')
-        self.load_data_button.clicked.connect(self.loadDataToTest)
-
-        self.logratio_button = QPushButton('&LogRatio')
-        self.logratio_button.clicked.connect(self.LogRatio_Switch)
 
         self.stat_button = QPushButton('&Stat')
         self.stat_button.clicked.connect(self.Stat)
@@ -297,37 +192,13 @@ class XYZ(AppForm):
         self.unload_button = QPushButton('&Unload Basemap')
         self.unload_button.clicked.connect(self.Unload)
 
-
-        self.save_lda_button_selected = QPushButton('&LDA Predict ')
-        self.save_lda_button_selected.clicked.connect(self.showLDAResultSelected)
-
-        self.save_predict_button_selected = QPushButton('&SVM Predict')
-        self.save_predict_button_selected.clicked.connect(self.showPredictResultSelected)
-
-
-
-        self.show_load_data_cb = QCheckBox('&Show Loaded Data')
-        self.show_load_data_cb.setChecked(True)
-        self.show_load_data_cb.stateChanged.connect(self.Magic)  # int
-
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
 
-        self.shape_cb = QCheckBox('&Shape')
-        self.shape_cb.setChecked(False)
-        self.shape_cb.stateChanged.connect(self.Magic)  # int
-
-
         self.lda_cb = QCheckBox('&LDA')
         self.lda_cb.setChecked(False)
         self.lda_cb.stateChanged.connect(self.Magic)  # int
-
-
-        self.hyperplane_cb= QCheckBox('&SVM')
-        self.hyperplane_cb.setChecked(False)
-        self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
-
 
         self.norm_cb = QCheckBox('&Norm')
         self.norm_cb.setChecked(False)
@@ -356,14 +227,20 @@ class XYZ(AppForm):
         self.x_element.setTickPosition(QSlider.TicksBothSides)
         self.x_element.valueChanged.connect(self.ValueChooser)  # int
 
+
+
         self.x_seter = QLineEdit(self)
         self.x_seter.textChanged[str].connect(self.LabelSeter)
 
         #self.x_calculator = QLineEdit(self)
 
+
+
         self.logx_cb = QCheckBox('&Log')
         self.logx_cb.setChecked(False)
         self.logx_cb.stateChanged.connect(self.Magic)  # int
+
+
 
         self.show_data_index_cb = QCheckBox('&Show Data Index')
         self.show_data_index_cb.setChecked(False)
@@ -376,6 +253,8 @@ class XYZ(AppForm):
         self.y_element.setTickPosition(QSlider.TicksBothSides)
         self.y_element.valueChanged.connect(self.ValueChooser)  # int
 
+
+
         self.y_seter = QLineEdit(self)
         self.y_seter.textChanged[str].connect(self.LabelSeter)
 
@@ -385,6 +264,7 @@ class XYZ(AppForm):
         self.logy_cb.setChecked(False)
         self.logy_cb.stateChanged.connect(self.Magic)  # int
 
+
         self.z_element = QSlider(Qt.Horizontal)
         self.z_element.setRange(0, len(self.items) - 1)
         self.z_element.setValue(2)
@@ -392,10 +272,13 @@ class XYZ(AppForm):
         self.z_element.setTickPosition(QSlider.TicksBothSides)
         self.z_element.valueChanged.connect(self.ValueChooser)  # int
 
+
+
         self.z_seter = QLineEdit(self)
         self.z_seter.textChanged[str].connect(self.LabelSeter)
 
         #self.z_calculator = QLineEdit(self)
+
 
         self.logz_cb = QCheckBox('&Log')
         self.logz_cb.setChecked(False)
@@ -424,38 +307,28 @@ class XYZ(AppForm):
         self.hbox8 = QHBoxLayout()
 
 
-        self.kernel_select = QSlider(Qt.Horizontal)
-        self.kernel_select.setRange(0, len(self.kernel_list)-1)
-        self.kernel_select.setValue(0)
-        self.kernel_select.setTracking(True)
-        self.kernel_select.setTickPosition(QSlider.TicksBothSides)
-        self.kernel_select.valueChanged.connect(self.Magic)  # int
-        self.kernel_select_label = QLabel('Kernel')
 
-        for w in [self.save_button,self.stat_button,self.logratio_button,self.load_data_button, self.save_lda_button_selected,self.save_predict_button_selected, self.load_button, self.unload_button]:
+        for w in [self.save_button,self.stat_button, self.load_button, self.unload_button,
+                  self.legend_cb,self.lda_cb,self.show_data_index_cb]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.lda_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select]:
+        for w in [self.norm_cb, self.left_label, self.standard_slider,self.right_label]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.norm_cb, self.left_label, self.standard_slider,self.right_label]:
+        for w in [self.logx_cb, self.x_multiplier, self.x_seter, self.x_element]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logx_cb, self.x_multiplier, self.x_seter, self.x_element]:
+        for w in [self.logy_cb, self.y_multiplier, self.y_seter, self.y_element]:
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logy_cb, self.y_multiplier, self.y_seter, self.y_element]:
-            self.hbox4.addWidget(w)
-            self.hbox4.setAlignment(w, Qt.AlignVCenter)
-
 
         for w in [self.logz_cb, self.z_multiplier, self.z_seter, self.z_element]:
-            self.hbox5.addWidget(w)
-            self.hbox5.setAlignment(w, Qt.AlignVCenter)
+            self.hbox4.addWidget(w)
+            self.hbox4.setAlignment(w, Qt.AlignVCenter)
 
 
 
@@ -467,7 +340,6 @@ class XYZ(AppForm):
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
         self.vbox.addLayout(self.hbox4)
-        self.vbox.addLayout(self.hbox5)
 
         self.textbox = GrowingTextEdit(self)
 
@@ -492,6 +364,8 @@ class XYZ(AppForm):
         #self.right_label.setFixedWidth(w/5)
 
 
+
+
     def Read(self, inpoints):
         points = []
         for i in inpoints:
@@ -508,6 +382,7 @@ class XYZ(AppForm):
 
                 result.append((a, b))
         return (result)
+
 
     def Load(self):
         fileName, filetype = QFileDialog.getOpenFileName(self,
@@ -617,18 +492,6 @@ class XYZ(AppForm):
 
     def Magic(self):
 
-
-        k_s = int(self.kernel_select.value())
-        self.kernel_select_label.setText(self.kernel_list[k_s])
-
-
-        if self.logratio_switched==False:
-            self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.05, right=0.7, top=0.90)
-            self.logratio_button.setText('&LogRatio')
-        else:
-            self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.13, bottom=0.2, right=0.7, top=0.99)
-            self.logratio_button.setText('&Back to Tri')
-
         self.WholeData = []
 
         self.x_scale = self.width_plot / self.width_load
@@ -730,6 +593,8 @@ class XYZ(AppForm):
             if c> len(ItemsAvalibale)-1:
                 c = int(self.z_element.value())
 
+
+
         if self.ValueChoosed == True:
             a = int(self.x_element.value())
             b = int(self.y_element.value())
@@ -741,13 +606,13 @@ class XYZ(AppForm):
 
 
 
-        self.a_index= a
-        self.b_index= b
-        self.c_index= c
+
+
+
 
         self.axes.clear()
-        if self.logratio_switched== False:
-            self.axes.axis('off')
+        self.axes.axis('off')
+
 
 
         slider_value=int(self.standard_slider.value())
@@ -772,22 +637,16 @@ class XYZ(AppForm):
 
         self.right_label.setText(right_label_text)
 
-        LinePoints = [[1, 0, 0], [0, 1, 0], [0, 0, 1],  [1, 0, 0]]
 
-        LineX=[]
-        LineY=[]
+        s = [TriLine(Points=[(100, 0, 0), (0, 100, 0), (0, 0, 100), (100, 0, 0)], Sort='', Width=1, Color='black',
+                     Style='-',
+                     Alpha=0.3, Label='')]
+        for i in s:
+            self.axes.plot(i.X, i.Y, color=i.Color, linewidth=i.Width, linestyle=i.Style, alpha=i.Alpha,
+                           label=i.Label)
 
-        if self.logratio_switched== False:
-            for i in range(len(LinePoints)):
-                xdraw, ydraw = self.TriToBin(x=LinePoints[i][0],y=LinePoints[i][1],z=LinePoints[i][2])
-                LineX.append(xdraw)
-                LineY.append(ydraw)
-
-            self.axes.plot(LineX, LineY, color='black', linewidth=1, linestyle='-',alpha=0.3,
-                           label='')
-
-        x = [0, 1]
-        y = [0, 0.5 * np.sqrt(3)]
+        x = [0, 100]
+        y = [0, 50 * np.sqrt(3)]
 
         extent = [min(x), max(x), min(y), max(y)]
 
@@ -799,9 +658,6 @@ class XYZ(AppForm):
         PointColors = []
         XtoFit = []
         YtoFit = []
-        ZtoFit = []
-        VtoFit = []
-        WtoFit = []
         LDA_X = []
         LDA_Label = []
         all_labels=[]
@@ -811,33 +667,18 @@ class XYZ(AppForm):
         self.color_list=[]
 
         for i in range(len(self._df)):
-            TmpLabel = ''
-            if (self._df.at[i, 'Label'] in PointLabels or self._df.at[i, 'Label'] == ''):
-                TmpLabel = ''
-            else:
-                PointLabels.append(self._df.at[i, 'Label'])
-                TmpLabel = self._df.at[i, 'Label']
-
-            TmpColor = ''
-            if (self._df.at[i, 'Color'] in PointColors or self._df.at[i, 'Color'] == ''):
-                TmpColor = ''
-            else:
-                PointColors.append(self._df.at[i, 'Color'])
-                TmpColor = self._df.at[i, 'Color']
+            target = self._df.at[i, 'Label']
             color = self._df.at[i, 'Color']
+            marker = self._df.at[i, 'Marker']
+            alpha = self._df.at[i, 'Alpha']
+            if target not in all_labels:
+                all_labels.append(target)
+                all_colors.append(color)
+                all_markers.append(marker)
+                all_alpha.append(alpha)
             if color not in self.color_list:
                 self.color_list.append(color)
 
-        XtoFit_dic = {}
-        YtoFit_dic = {}
-        VtoFit_dic = {}
-        WtoFit_dic = {}
-
-        for i in PointLabels:
-            XtoFit_dic[i] = []
-            YtoFit_dic[i] = []
-            VtoFit_dic[i] = []
-            WtoFit_dic[i] = []
 
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
@@ -846,10 +687,10 @@ class XYZ(AppForm):
 
             #   self.WholeData.append(math.log(tmp, 10))
 
-            if (raw.at[i, 'Label'] in all_labels or raw.at[i, 'Label'] == ''):
+            if (raw.at[i, 'Label'] in PointLabels or raw.at[i, 'Label'] == ''):
                 TmpLabel = ''
             else:
-                all_labels.append(raw.at[i, 'Label'])
+                PointLabels.append(raw.at[i, 'Label'])
                 TmpLabel = raw.at[i, 'Label']
 
             x, y, z = 0, 0, 0
@@ -860,11 +701,16 @@ class XYZ(AppForm):
 
             else:
                 #x, y, z = raw.at[i, self.items[a]], raw.at[i, self.items[b]],raw.at[i, self.items[c]]
-                x, y, z = dataframe_values_only.at[i, self.items[a]], dataframe_values_only.at[i, self.items[b]], dataframe_values_only.at[i, self.items[c]]
+
+                x, y ,z  = dataframe_values_only.at[i, self.items[a]], dataframe_values_only.at[i, self.items[b]], dataframe_values_only.at[i, self.items[c]]
+
+
                 try:
                     xuse = x
                     yuse = y
                     zuse = z
+
+
 
                     self.xlabel = self.items[a]
                     self.ylabel = self.items[b]
@@ -916,15 +762,15 @@ class XYZ(AppForm):
                                 item_c = item_c.replace(j, "")
 
                         if item_a in self.Element:
-                            self.xlabel = self.xlabel  + ' Norm by ' + standardnamechosen
+                            self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
                             xuse = xuse / standardchosen[item_a]
 
                         if item_b in self.Element:
-                            self.ylabel = self.ylabel + ' Norm by ' + standardnamechosen
+                            self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
                             yuse = yuse / standardchosen[item_b]
 
                         if item_c in self.Element:
-                            self.zlabel = self.zlabel + ' Norm by ' + standardnamechosen
+                            self.zlabel = self.items[c] + ' Norm by ' + standardnamechosen
                             zuse = zuse / standardchosen[item_c]
 
                     if (self.logx_cb.isChecked()):
@@ -948,55 +794,51 @@ class XYZ(AppForm):
                         newzlabel =  self.zlabel
 
 
-                    xtmp,ytmp,ztmp=self.TriToTri(xuse, yuse, zuse)
-                    xplot,yplot=self.TriToBin(xtmp,ytmp,ztmp)
 
-                    #print(self.LogRatioTriToBin(xuse, yuse,zuse))
-                    v_tmp,w_tmp=self.LogRatioTriToBin(xuse, yuse,zuse)
+                    TPoints.append(TriPoint((xuse, yuse, zuse), Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'],
+                                            Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel))
 
-                    VtoFit.append(v_tmp)
-                    WtoFit.append(w_tmp)
-                    LDA_X.append([v_tmp, w_tmp])
+
+                    LDA_X.append(self.LogRatioTriToBin(xuse, yuse,zuse))
                     LDA_Label.append(raw.at[i, 'Label'])
-
-                    Label = (raw.at[i, 'Label'])
-
-                    xtest,ytest  = self.TriToBin(xuse, yuse,zuse)
-
-                    XtoFit.append(xtest)
-                    YtoFit.append(ytest)
-
-                    XtoFit_dic[Label].append(xtest)
-                    YtoFit_dic[Label].append(ytest)
-                    VtoFit_dic[Label].append(v_tmp)
-                    WtoFit_dic[Label].append(w_tmp)
-
-
-                    if self.logratio_switched== False:
-                        self.axes.scatter(xplot,yplot, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'],
-                                      color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                      label=TmpLabel)
-                    else:
-                        self.axes.scatter(v_tmp, w_tmp, marker=raw.at[i, 'Marker'], s=raw.at[i, 'Size'],
-                                          color=raw.at[i, 'Color'], alpha=raw.at[i, 'Alpha'],
-                                          label=TmpLabel)
-
 
                 except Exception as e:
                     self.ErrorEvent(text=repr(e))
                     # pass
-        if self.logratio_switched == False:
-            self.axes.annotate(newxlabel, xy=(0,0), xytext=(-0.04, -0.04),fontsize=6)
-            self.axes.annotate(newylabel, xy=(1,0), xytext=(1, -0.04),fontsize=6)
-            self.axes.annotate(newzlabel, xy=(0.5,0.867), xytext=(0.45, 0.90),fontsize=6)
-        else:
-            self.axes.set_xlabel('log'+newxlabel+'/'+newzlabel)
-            self.axes.set_ylabel('log'+newylabel+'/'+newzlabel)
+
+        self.axes.annotate(newxlabel, xy=(0,0), xytext=(-4, -4),fontsize=6)
+        self.axes.annotate(newylabel, xy=(100,0), xytext=(100, -4),fontsize=6)
+        self.axes.annotate(newzlabel, xy=(50,86.7), xytext=(45, 90),fontsize=6)
 
 
-        self.whole_labels = all_labels
+        for i in range(len(TPoints)):
+            self.axes.scatter(TPoints[i].X, TPoints[i].Y, marker=TPoints[i].Marker, s=TPoints[i].Size,
+                              color=TPoints[i].Color, alpha=TPoints[i].Alpha,
+                              label=TPoints[i].Label)
+
+            if (self.show_data_index_cb.isChecked()):
+
+                if 'Index' in self._df_back.columns.values:
+
+                    self.axes.annotate(str(self._df_back.at[i, 'Index']),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
+                else:
+                    self.axes.annotate('No' + str(i + 1),
+                                       xy=(TPoints[i].X,
+                                           TPoints[i].Y),
+                                       color=self._df.at[i, 'Color'],
+                                       alpha=self._df.at[i, 'Alpha'])
 
         self.textbox.setText(self.sentence)
+
+
+        if (self.legend_cb.isChecked()):
+            self.axes.legend(bbox_to_anchor=(1.05, 1),loc=2, borderaxespad=0, prop=fontprop)
+
+
 
         if self.polygon != 0 and self.polyline != 0 and self.line != 0:
 
@@ -1016,54 +858,6 @@ class XYZ(AppForm):
                 # self.DrawLine(self.polygon)
                 # self.DrawLine(self.polyline)
 
-        if (self.shape_cb.isChecked()):
-            for i in PointLabels:
-                if self.logratio_switched==False:
-                    xmin, xmax = min(XtoFit_dic[i]), max(XtoFit_dic[i])
-                    ymin, ymax = min(YtoFit_dic[i]), max(YtoFit_dic[i])
-                else:
-                    xmin, xmax = min(VtoFit_dic[i]), max(VtoFit_dic[i])
-                    ymin, ymax = min(WtoFit_dic[i]), max(WtoFit_dic[i])
-
-                DensityColorMap = 'Greys'
-                DensityAlpha = 0.1
-
-                DensityLineColor = PointColors[PointLabels.index(i)]
-                DensityLineAlpha = 0.3
-
-                # Peform the kernel density estimate
-                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
-                # print(self.ShapeGroups)
-                # command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
-                # exec(command)
-                # print(xx, yy)
-                positions = np.vstack([xx.ravel(), yy.ravel()])
-
-                if self.logratio_switched==False:
-                    values = np.vstack([XtoFit_dic[i], YtoFit_dic[i]])
-                else:
-                    values = np.vstack([VtoFit_dic[i], WtoFit_dic[i]])
-
-
-                kernelstatus = True
-                try:
-                    st.gaussian_kde(values)
-                except Exception as e:
-                    self.ErrorEvent(text=repr(e))
-                    kernelstatus = False
-                if kernelstatus == True:
-                    kernel = st.gaussian_kde(values)
-                    f = np.reshape(kernel(positions).T, xx.shape)
-                    # Contourf plot
-                    cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
-                    ## Or kernel density estimate plot instead of the contourf plot
-                    # self.axes.imshow(np.rot90(f), cmap='Blues', extent=[xmin, xmax, ymin, ymax])
-                    # Contour plot
-                    cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
-                    # Label plot
-                    if (self.legend_cb.isChecked()):
-                        self.axes.clabel(cset, inline=1, fontsize=10)
-
         if (self.lda_cb.isChecked()):
             le = LabelEncoder()
             le.fit(LDA_Label)
@@ -1071,162 +865,47 @@ class XYZ(AppForm):
             # print(self.result_to_fit.values.tolist())
             model = LinearDiscriminantAnalysis()
             model.fit(LDA_X, original_label)
+            V_list=[]
+            W_list=[]
+            for i in range(len(TPoints)):
+                V_list.append(TPoints[i].V)
+                W_list.append(TPoints[i].W)
 
-            if self.logratio_switched == False:
-                xmin, xmax = min(XtoFit), max(XtoFit)
-                ymin, ymax = min(YtoFit), max(YtoFit)
-            else:
-                xmin, xmax = min(VtoFit), max(VtoFit)
-                ymin, ymax = min(WtoFit), max(WtoFit)
 
+            xmin, xmax = min(V_list),max(V_list)
+            ymin, ymax = min(W_list),max(W_list)
+
+            self.model = model
             self.cmap_trained_data = ListedColormap(self.color_list)
             xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
                                  np.linspace(ymin, ymax, 200))
+
+            a1,b1,c1= self.BackLogRatioBinToTri(xmin, ymin)
+            a2,b2,c2= self.BackLogRatioBinToTri(xmax, ymax)
+
+            xnewmin,ynewmin= self.TriToBin(a1,b1,c1)
+            xnewmax,ynewmax= self.TriToBin(a2,b2,c2)
+            # xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+
+            xplot,yplot = np.meshgrid(np.linspace(xnewmin, xnewmax, 200),
+                                 np.linspace(ynewmin, ynewmax, 200))
+
             Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
 
+            self.axes.contourf(xplot, yplot, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
 
-
-        self.All_X=XtoFit
-        self.All_Y=YtoFit
-        self.All_V=VtoFit
-        self.All_W=WtoFit
-
-        if (self.hyperplane_cb.isChecked()):
-
-            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-
-            if self.logratio_switched == False:
-                svm_x = XtoFit
-                svm_y = YtoFit
-                xmin, xmax = min(XtoFit), max(XtoFit)
-                ymin, ymax = min(YtoFit), max(YtoFit)
-            else:
-                svm_x = VtoFit
-                svm_y = WtoFit
-                xmin, xmax = min(VtoFit), max(VtoFit)
-                ymin, ymax = min(WtoFit), max(WtoFit)
-
-            xx, yy = np.meshgrid(np.arange(xmin, xmax, (xmax-xmin) / 200), np.arange( ymin, ymax, (ymax-ymin)/ 200))
-
-            le = LabelEncoder()
-            le.fit(self._df.Label)
-            print(len(self._df.Label),self._df.Label)
-
-            class_label=le.transform(self._df.Label)
-            svm_train= pd.concat([pd.DataFrame(svm_x),pd.DataFrame(svm_y)], axis=1)
-
-            svm_train=svm_train.values
-            clf.fit(svm_train,class_label)
-            Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
-            self.axes.contourf(xx, yy, Z, cmap=ListedColormap(self.color_list), alpha=0.2)
-
-        if (len(self.data_to_test) > 0):
-
-            self.xplot_test_list = []
-            self.yplot_test_list = []
-            self.v_tmp_test_list = []
-            self.w_tmp_test_list = []
-
-            contained = True
-            missing = 'Miss setting infor:'
-
-            for i in ['Label', 'Color', 'Marker', 'Alpha']:
-                if i not in self.data_to_test.columns.values.tolist():
-                    contained = False
-                    missing = missing + '\n' + i
-
-            if contained == True:
-                for i in self.data_to_test.columns.values.tolist():
-                    if i not in self._df.columns.values.tolist():
-                        self.data_to_test = self.data_to_test.drop(columns=i)
-
-                # print(self.data_to_test)
-
-                test_labels = []
-                test_colors = []
-                test_markers = []
-                test_alpha = []
-
-                for i in range(len(self.data_to_test)):
-
-                    # print(self.data_to_test.at[i, 'Label'])
-                    target = self.data_to_test.at[i, 'Label']
-                    color = self.data_to_test.at[i, 'Color']
-                    marker = self.data_to_test.at[i, 'Marker']
-                    alpha = self.data_to_test.at[i, 'Alpha']
-
-                    if target not in test_labels and target not in all_labels:
-                        test_labels.append(target)
-                        test_colors.append(color)
-                        test_markers.append(marker)
-                        test_alpha.append(alpha)
-
-                self.whole_labels = self.whole_labels + test_labels
-
-                self.data_to_test_to_fit = self.Slim(self.data_to_test)
-
-                self.load_settings_backup = self.data_to_test
-                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
-                                    'Size',
-                                    'Alpha',
-                                    'Style', 'Width']
-                for i in self.data_to_test.columns.values.tolist():
-                    if i not in Load_ItemsToTest:
-                        self.load_settings_backup = self.load_settings_backup.drop(i, 1)
-
-                print(self.load_settings_backup, self.data_to_test)
-
-                print(self.load_settings_backup.shape, self.data_to_test.shape)
-
-                # self.load_result = pd.concat([self.load_settings_backup, pd.DataFrame(self.data_to_test_to_fit)], axis=1)
-            try:
-                for i in range(len(self.data_to_test)):
-
-                    target = self.data_to_test.at[i, 'Label']
-                    if target not in all_labels:
-                        all_labels.append(target)
-                        tmp_label = self.data_to_test.at[i, 'Label']
-                    else:
-                        tmp_label = ''
-
-                    x_load_test = self.data_to_test.at[i, self.items[a]]
-                    y_load_test = self.data_to_test.at[i, self.items[b]]
-                    z_load_test = self.data_to_test.at[i, self.items[c]]
-
-                    xtmp_test,ytmp_test,ztmp_test=self.TriToTri(x_load_test, y_load_test, z_load_test)
-
-                    xplot_test,yplot_test=self.TriToBin(xtmp_test,ytmp_test,ztmp_test)
-                    v_tmp_test,w_tmp_test=self.LogRatioTriToBin(xtmp_test,ytmp_test,ztmp_test)
-
-                    self.xplot_test_list.append(xplot_test)
-                    self.yplot_test_list.append(yplot_test)
-                    self.v_tmp_test_list.append(v_tmp_test)
-                    self.w_tmp_test_list.append(w_tmp_test)
-
-                    if (self.show_load_data_cb.isChecked()):
-                        if self.logratio_switched== False:
-                            self.axes.scatter(xplot_test,yplot_test, marker=self.data_to_test.at[i, 'Marker'],
-                                              s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                              alpha=self.data_to_test.at[i, 'Alpha'],
-                                              label=tmp_label)
-                        else:
-                            self.axes.scatter(v_tmp_test,w_tmp_test, marker=self.data_to_test.at[i, 'Marker'],
-                                              s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                              alpha=self.data_to_test.at[i, 'Alpha'],
-                                              label=tmp_label)
-
-
-
-
-            except Exception as e:
-                self.ErrorEvent(text=repr(e))
-
-        if (self.legend_cb.isChecked()):
-            self.axes.legend(bbox_to_anchor=(1.05, 1),loc=2, borderaxespad=0, prop=fontprop)
+            # Z_proba = model.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+            # self.axes.pcolormesh(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+            # Z = self.LDA.predict(np.c_[xx.ravel(), yy.ravel()])
+            # Z = self.LDA.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+            # plt.pcolormesh(xx, yy, Z, cmap='red_blue_classes', norm=colors.Normalize(0., 1.), zorder=0)
+            # self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+            # tmpZ = Z[:, 0].reshape(xx.shape)
+            # self.axes.pcolormesh(xx, yy, tmpZ, cmap=ListedColormap(self.color_list[i]),norm=colors.Normalize(0., 1.), zorder=0,alpha=0.4)
+            # self.axes.contour(xx, yy, Z, [0.5], linewidths=2., colors='white')
 
         self.canvas.draw()
+
 
     def stateval(self,data=np.ndarray):
         dict={'mean':mean(data),'ptp':ptp(data),'var':var(data),'std':std(data),'cv':mean(data)/std(data)}
@@ -1275,116 +954,3 @@ class XYZ(AppForm):
         return(StatResultDf)
 
 
-    def LogRatio_Switch(self):
-        self.logratio_switched= not self.logratio_switched
-        self.Magic()
-
-
-    def loadDataToTest(self):
-        TMP =self.getDataFile()
-        if TMP != 'Blank':
-            self.data_to_test=TMP[0]
-        self.Magic()
-
-
-
-    def showLDAResultSelected(self):
-
-        try:
-            if self.logratio_switched== False:
-                lda_x = self.All_X
-                lda_y = self.All_Y
-            else:
-                lda_x = self.All_V
-                lda_y = self.All_W
-
-            le = LabelEncoder()
-            le.fit(self._df.Label)
-            lda_train = pd.concat([pd.DataFrame(lda_x), pd.DataFrame(lda_y)], axis=1)
-            lda_train = lda_train.values
-            # print(self.result_to_fit.values.tolist())
-            model = LinearDiscriminantAnalysis()
-            model.fit(lda_train, self._df.Label)
-
-            if self.logratio_switched == False:
-                xx = np.array(self.xplot_test_list)
-                yy = np.array(self.yplot_test_list)
-            else:
-                xx = np.array(self.v_tmp_test_list)
-                yy = np.array(self.w_tmp_test_list)
-
-
-            Z = []
-            Z2 = []
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z2 = model.predict_proba(np.c_[xx.ravel(), yy.ravel()])
-            proba_df = pd.DataFrame(Z2)
-            proba_df.columns = model.classes_
-
-            proba_list = []
-            for i in range(len(proba_df)):
-                proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
-            predict_result = pd.concat(
-                [self.data_to_test['Label'], pd.DataFrame({'LDA Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
-                axis=1).set_index('Label')
-            print(predict_result)
-
-            self.predictpop = TableViewer(df=predict_result, title='LDA Predict Result With '+ self.items[self.a_index]+','+self.items[self.b_index])
-            self.predictpop.show()
-
-        except Exception as e:
-            msg = 'You need to load another data to run LDA.\n '
-            self.ErrorEvent(text= msg +repr(e) )
-
-
-    def showPredictResultSelected(self):
-        k_s = int(self.kernel_select.value())
-        try:
-            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-
-            if self.logratio_switched== False:
-                svm_x = self.All_X
-                svm_y = self.All_Y
-            else:
-                svm_x = self.All_V
-                svm_y = self.All_W
-
-
-            le = LabelEncoder()
-            le.fit(self._df.Label)
-            class_label = le.transform(self._df.Label)
-            svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y)], axis=1)
-            svm_train = svm_train.values
-            clf.fit(svm_train, self._df.Label)
-
-            if self.logratio_switched == False:
-                xx = np.array(self.xplot_test_list)
-                yy = np.array(self.yplot_test_list)
-            else:
-                xx = np.array(self.v_tmp_test_list)
-                yy = np.array(self.w_tmp_test_list)
-            Z = []
-            Z2 = []
-            Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z2 = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])
-            proba_df = pd.DataFrame(Z2)
-            proba_df.columns = clf.classes_
-
-            proba_list = []
-            for i in range(len(proba_df)):
-                proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
-            predict_result = pd.concat(
-                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}),
-                 pd.DataFrame({'Confidence probability': proba_list})],
-                axis=1).set_index('Label')
-            print(predict_result)
-
-            self.predictpop = TableViewer(df=predict_result,
-                                          title='SVM Predict Result With ' + self.items[self.a_index] + ',' + self.items[
-                                              self.b_index])
-            self.predictpop.show()
-
-
-        except Exception as e:
-            msg = 'You need to load another data to run SVM.\n '
-            self.ErrorEvent(text=msg + repr(e))

@@ -192,8 +192,6 @@ class XY(AppForm):
 
         # Other GUI controls
 
-        self.load_data_button = QPushButton('&Add Data to Compare')
-        self.load_data_button.clicked.connect(self.loadDataToTest)
 
         self.save_plot_button = QPushButton('&Save IMG')
         self.save_plot_button .clicked.connect(self.saveImgFile)
@@ -234,8 +232,6 @@ class XY(AppForm):
         self.fit_cb= QCheckBox('&PolyFit')
         self.fit_cb.setChecked(False)
         self.fit_cb.stateChanged.connect(self.Magic)  # int
-
-
 
 
         self.fit_seter = QLineEdit(self)
@@ -325,11 +321,10 @@ class XY(AppForm):
 
 
 
-
-        self.hyperplane_cb= QCheckBox('&SVM')
-        self.hyperplane_cb.setChecked(False)
-        self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
-
+        self.x_multiplier = QLineEdit(self)
+        self.x_multiplier.textChanged[str].connect(self.Magic)
+        self.y_multiplier = QLineEdit(self)
+        self.y_multiplier.textChanged[str].connect(self.Magic)
 
         self.save_lda_button_selected = QPushButton('&LDA Predict ')
         self.save_lda_button_selected.clicked.connect(self.showLDAResultSelected)
@@ -340,7 +335,7 @@ class XY(AppForm):
         self.save_predict_button = QPushButton('&Predict All')
         self.save_predict_button.clicked.connect(self.showPredictResult)
 
-        self.load_data_button = QPushButton('&Add Data to Compare')
+        self.load_data_button = QPushButton('&Load Data')
         self.load_data_button.clicked.connect(self.loadDataToTest)
 
         self.width_size_seter_label = QLabel('SVG Width')
@@ -413,11 +408,11 @@ class XY(AppForm):
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.logx_cb,self.x_seter, self.x_element]:
+        for w in [self.logx_cb, self.x_multiplier, self.x_seter, self.x_element]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logy_cb,self.y_seter, self.y_element]:
+        for w in [self.logy_cb, self.y_multiplier, self.y_seter, self.y_element]:
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
@@ -464,6 +459,10 @@ class XY(AppForm):
 
         self.x_seter.setFixedWidth(w/10)
         self.y_seter.setFixedWidth(w/10)
+
+        self.x_multiplier.setFixedWidth(w/10)
+        self.y_multiplier.setFixedWidth(w/10)
+
 
         '''
         self.save_plot_button.setFixedWidth(w/10)
@@ -986,8 +985,28 @@ class XY(AppForm):
                 xuse = x
                 yuse = y
 
+
                 self.xlabel = self.items[a]
                 self.ylabel = self.items[b]
+
+                if (self.x_multiplier.text() != ''):
+                    try:
+                        x_string = self.x_multiplier.text()
+                        x_timer = float(self.x_multiplier.text())
+                        self.xlabel = self.items[a] + '*' + x_string
+                        xuse = xuse * x_timer
+                    except(ValueError):
+                        pass
+
+                if (self.y_multiplier.text() != ''):
+                    try:
+                        y_string = self.y_multiplier.text()
+                        y_timer = float(self.y_multiplier.text())
+                        self.ylabel = self.items[b] + '*' + y_string
+                        yuse = yuse * y_timer
+                    except(ValueError):
+                        pass
+
 
                 if (self.norm_cb.isChecked()):
 
@@ -1006,11 +1025,11 @@ class XY(AppForm):
                             item_b=item_b.replace(j, "")
 
                     if item_a in self.Element:
-                        self.xlabel = self.items[a] + ' Norm by ' + standardnamechosen
+                        self.xlabel = self.xlabel  + ' Norm by ' + standardnamechosen
                         xuse = xuse / standardchosen[item_a]
 
                     if item_b in self.Element:
-                        self.ylabel = self.items[b] + ' Norm by ' + standardnamechosen
+                        self.ylabel = self.ylabel + ' Norm by ' + standardnamechosen
                         yuse = yuse / standardchosen[item_b]
 
                 if (self.logx_cb.isChecked()):

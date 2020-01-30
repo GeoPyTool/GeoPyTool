@@ -136,7 +136,7 @@ class Harker(AppForm):
         self.save_predict_button = QPushButton('&Show Predict Result')
         self.save_predict_button.clicked.connect(self.showPredictResult)
 
-        self.load_data_button = QPushButton('&Add Data to Test')
+        self.load_data_button = QPushButton('&Load Data')
         self.load_data_button.clicked.connect(self.loadDataToTest)
 
 

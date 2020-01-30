@@ -1,6 +1,6 @@
-version = '0.8.20.0.124'
+version = '0.8.20.0.125'
 
-date = '2020-01-30'
+date = '2020-01-31'
 
 dpi = 128
 # coding:utf-8
@@ -31,6 +31,7 @@ class GrowingTextEdit(QtWidgets.QTextEdit):
 
 
 class Tool():
+
     def TriToBin(self, x, y, z):
 
         '''
@@ -190,6 +191,7 @@ class Tool():
 
         return (a, b)
         # plt.fill(a, b, Color=Color, Alpha=Alpha, )
+
 
     def LogRatioTriToBin(self,x, y, z):
         if (x>0 and y>0 and z > 0):
