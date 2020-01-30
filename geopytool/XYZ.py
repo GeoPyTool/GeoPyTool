@@ -2,7 +2,7 @@ from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
 
-class XYZ(AppForm):
+class XYZ(AppForm,Tool):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
                u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
                u'Li',
@@ -105,7 +105,6 @@ class XYZ(AppForm):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle(self.description)
 
-
         self.FileName_Hint='XYZ'
 
         self.items = []
@@ -124,7 +123,7 @@ class XYZ(AppForm):
 
         dataframe = self._df
         ItemsAvalibale = self._df.columns.values.tolist()
-        ItemsToTest = ['Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+        ItemsToTest = ['Number', 'Tag','Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width', 'Label']
 
         for i in ItemsToTest:
@@ -166,9 +165,9 @@ class XYZ(AppForm):
 
         self.main_frame = QWidget()
         self.dpi = 128
-        self.fig = Figure((8.0, 8.0), dpi=self.dpi)
+        self.fig = Figure((8.0,8.0), dpi=self.dpi)
 
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.7, top=0.9)
 
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
@@ -196,6 +195,10 @@ class XYZ(AppForm):
         self.legend_cb = QCheckBox('&Legend')
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Magic)  # int
+
+        self.lda_cb = QCheckBox('&LDA')
+        self.lda_cb.setChecked(False)
+        self.lda_cb.stateChanged.connect(self.Magic)  # int
 
         self.norm_cb = QCheckBox('&Norm')
         self.norm_cb.setChecked(False)
@@ -283,6 +286,13 @@ class XYZ(AppForm):
 
 
 
+        self.x_multiplier = QLineEdit(self)
+        self.x_multiplier.textChanged[str].connect(self.Magic)
+        self.y_multiplier = QLineEdit(self)
+        self.y_multiplier.textChanged[str].connect(self.Magic)
+        self.z_multiplier = QLineEdit(self)
+        self.z_multiplier.textChanged[str].connect(self.Magic)
+
         #
         # Layout with box sizers
         #
@@ -299,20 +309,24 @@ class XYZ(AppForm):
 
 
         for w in [self.save_button,self.stat_button, self.load_button, self.unload_button,
-                  self.legend_cb,self.show_data_index_cb, self.norm_cb, self.left_label, self.standard_slider,self.right_label]:
+                  self.legend_cb,self.show_data_index_cb]:
+            self.hbox0.addWidget(w)
+            self.hbox0.setAlignment(w, Qt.AlignVCenter)
+
+        for w in [self.norm_cb, self.left_label, self.standard_slider,self.right_label]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logx_cb, self.x_seter, self.x_element]:
+        for w in [self.logx_cb, self.x_multiplier, self.x_seter, self.x_element]:
             self.hbox2.addWidget(w)
             self.hbox2.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.logy_cb, self.y_seter, self.y_element]:
+        for w in [self.logy_cb, self.y_multiplier, self.y_seter, self.y_element]:
             self.hbox3.addWidget(w)
             self.hbox3.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.logz_cb, self.z_seter, self.z_element]:
+        for w in [self.logz_cb, self.z_multiplier, self.z_seter, self.z_element]:
             self.hbox4.addWidget(w)
             self.hbox4.setAlignment(w, Qt.AlignVCenter)
 
@@ -321,6 +335,7 @@ class XYZ(AppForm):
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
+        self.vbox.addLayout(self.hbox0)
         self.vbox.addLayout(self.hbox1)
         self.vbox.addLayout(self.hbox2)
         self.vbox.addLayout(self.hbox3)
@@ -332,15 +347,21 @@ class XYZ(AppForm):
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
 
+
         w=self.width()
         h=self.height()
-
         self.x_seter.setFixedWidth(w/10)
         self.y_seter.setFixedWidth(w/10)
         self.z_seter.setFixedWidth(w/10)
-        self.standard_slider.setMinimumWidth(w/5)
 
-        self.right_label.setFixedWidth(w/5)
+        self.x_multiplier.setFixedWidth(w/10)
+        self.y_multiplier.setFixedWidth(w/10)
+        self.z_multiplier.setFixedWidth(w/10)
+
+
+        #self.standard_slider.setMinimumWidth(w/5)
+
+        #self.right_label.setFixedWidth(w/5)
 
 
 
@@ -634,6 +655,30 @@ class XYZ(AppForm):
 
         TPoints = []
         PointLabels = []
+        PointColors = []
+        XtoFit = []
+        YtoFit = []
+        LDA_X = []
+        LDA_Label = []
+        all_labels=[]
+        all_colors=[]
+        all_markers=[]
+        all_alpha=[]
+        self.color_list=[]
+
+        for i in range(len(self._df)):
+            target = self._df.at[i, 'Label']
+            color = self._df.at[i, 'Color']
+            marker = self._df.at[i, 'Marker']
+            alpha = self._df.at[i, 'Alpha']
+            if target not in all_labels:
+                all_labels.append(target)
+                all_colors.append(color)
+                all_markers.append(marker)
+                all_alpha.append(alpha)
+            if color not in self.color_list:
+                self.color_list.append(color)
+
 
         for i in range(len(raw)):
             # raw.at[i, 'DataType'] == 'User' or raw.at[i, 'DataType'] == 'user' or raw.at[i, 'DataType'] == 'USER'
@@ -665,9 +710,39 @@ class XYZ(AppForm):
                     yuse = y
                     zuse = z
 
+
+
                     self.xlabel = self.items[a]
                     self.ylabel = self.items[b]
                     self.zlabel = self.items[c]
+
+
+                    if (self.x_multiplier.text() != ''):
+                        try:
+                            x_string = self.x_multiplier.text()
+                            x_timer = float(self.x_multiplier.text())
+                            self.xlabel = self.items[a]+'*'+x_string
+                            xuse=xuse*x_timer
+                        except(ValueError):
+                            pass
+
+                    if (self.y_multiplier.text() != ''):
+                        try:
+                            y_string = self.y_multiplier.text()
+                            y_timer = float(self.y_multiplier.text())
+                            self.ylabel = self.items[b]+'*'+y_string
+                            yuse=yuse*y_timer
+                        except(ValueError):
+                            pass
+
+                    if (self.z_multiplier.text() != ''):
+                        try:
+                            z_string = self.z_multiplier.text()
+                            z_timer = float(self.z_multiplier.text())
+                            self.zlabel = self.items[c]+'*'+z_string
+                            zuse=zuse*z_timer
+                        except(ValueError):
+                            pass
 
                     if (self.norm_cb.isChecked()):
                         self.sentence = self.reference
@@ -723,6 +798,9 @@ class XYZ(AppForm):
                     TPoints.append(TriPoint((xuse, yuse, zuse), Size=raw.at[i, 'Size'], Color=raw.at[i, 'Color'],
                                             Alpha=raw.at[i, 'Alpha'], Marker=raw.at[i, 'Marker'], Label=TmpLabel))
 
+
+                    LDA_X.append(self.LogRatioTriToBin(xuse, yuse,zuse))
+                    LDA_Label.append(raw.at[i, 'Label'])
 
                 except Exception as e:
                     self.ErrorEvent(text=repr(e))
@@ -780,6 +858,51 @@ class XYZ(AppForm):
                 # self.DrawLine(self.polygon)
                 # self.DrawLine(self.polyline)
 
+        if (self.lda_cb.isChecked()):
+            le = LabelEncoder()
+            le.fit(LDA_Label)
+            original_label = le.transform(LDA_Label)
+            # print(self.result_to_fit.values.tolist())
+            model = LinearDiscriminantAnalysis()
+            model.fit(LDA_X, original_label)
+            V_list=[]
+            W_list=[]
+            for i in range(len(TPoints)):
+                V_list.append(TPoints[i].V)
+                W_list.append(TPoints[i].W)
+
+
+            xmin, xmax = min(V_list),max(V_list)
+            ymin, ymax = min(W_list),max(W_list)
+
+            self.model = model
+            self.cmap_trained_data = ListedColormap(self.color_list)
+            xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
+                                 np.linspace(ymin, ymax, 200))
+
+            a1,b1,c1= self.BackLogRatioBinToTri(xmin, ymin)
+            a2,b2,c2= self.BackLogRatioBinToTri(xmax, ymax)
+
+            xnewmin,ynewmin= self.TriToBin(a1,b1,c1)
+            xnewmax,ynewmax= self.TriToBin(a2,b2,c2)
+            # xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+
+            xplot,yplot = np.meshgrid(np.linspace(xnewmin, xnewmax, 200),
+                                 np.linspace(ynewmin, ynewmax, 200))
+
+            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+
+            self.axes.contourf(xplot, yplot, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+
+            # Z_proba = model.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+            # self.axes.pcolormesh(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+            # Z = self.LDA.predict(np.c_[xx.ravel(), yy.ravel()])
+            # Z = self.LDA.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+            # plt.pcolormesh(xx, yy, Z, cmap='red_blue_classes', norm=colors.Normalize(0., 1.), zorder=0)
+            # self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
+            # tmpZ = Z[:, 0].reshape(xx.shape)
+            # self.axes.pcolormesh(xx, yy, tmpZ, cmap=ListedColormap(self.color_list[i]),norm=colors.Normalize(0., 1.), zorder=0,alpha=0.4)
+            # self.axes.contour(xx, yy, Z, [0.5], linewidths=2., colors='white')
 
         self.canvas.draw()
 

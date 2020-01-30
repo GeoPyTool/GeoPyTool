@@ -1,4 +1,4 @@
-version = '0.8.20.0.123'
+version = '0.8.20.0.124'
 
 date = '2020-01-30'
 
@@ -190,6 +190,24 @@ class Tool():
 
         return (a, b)
         # plt.fill(a, b, Color=Color, Alpha=Alpha, )
+
+    def LogRatioTriToBin(self,x, y, z):
+        if (x>0 and y>0 and z > 0):
+            Sum = x + y + z
+            X = 100.0 * x / Sum
+            Y = 100.0 * y / Sum
+            Z = 100.0 * z / Sum
+            V = np.log(X/Z)
+            W = np.log(Y/Z)
+            return (V,W)
+
+    def BackLogRatioBinToTri(self,V,W):
+        a=np.power(np.e,V)
+        b=np.power(np.e,W)
+        X=a/(a+b+1)
+        Y=b/(a+b+1)
+        Z=1/(a+b+1)
+        return (X,Y,Z)
 
 
 class Point():
@@ -442,6 +460,8 @@ class TriPoint(Point, Tool):
     y = 0
     z = 0
     sum = 1
+    V = 0
+    W = 0
 
     def __init__(self, P=(10, 20, 70), Size=12, Color='red', Alpha=0.3, Marker='o', Label=''):
         super().__init__()
@@ -450,6 +470,9 @@ class TriPoint(Point, Tool):
         self.x = P[0] * 100 / self.sum
         self.y = P[1] * 100 / self.sum
         self.z = P[2] * 100 / self.sum
+
+        self.V=(np.log(self.x / self.z))
+        self.W=(np.log(self.y / self.z))
 
         self.Location = P
         self.Size = Size
@@ -470,9 +493,9 @@ class TriLine(Line, Tool):
     x = []
     y = []
     z = []
-
     X = []
     Y = []
+
 
     def __init__(self, Points=[(0, 0, 0), (1, 1, 1)], Sort='', Width=1, Color='blue', Style='-', Alpha=0.3, Label=''):
         super().__init__()

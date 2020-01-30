@@ -1450,7 +1450,7 @@ class XY(AppForm):
             model.fit(LDA_X, original_label)
             xmin, xmax = self.axes.get_xlim()
             ymin, ymax = self.axes.get_ylim()
-            self.model=model
+            self.model = model
 
             self.cmap_trained_data=ListedColormap(self.color_list)
             xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
