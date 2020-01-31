@@ -157,8 +157,20 @@ class XY(AppForm):
 
         numdf = numdf[numdf[data_columns].notnull().all(axis=1)]
 
-        ItemsAvalibale = numdf.columns.values.tolist()
-        dataframe_values_only=numdf
+        dataframe = self._df
+
+        ItemsAvalibale = self._df.columns.values.tolist()
+        ItemsToTest = ['Number', 'Tag', 'Type', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+                       'Style', 'Width', 'Label']
+
+        for i in ItemsToTest:
+            if i in ItemsAvalibale:
+                dataframe = dataframe.drop(i, 1)
+
+        dataframe_values_only = dataframe.apply(pd.to_numeric, errors='coerce')
+        dataframe_values_only = dataframe_values_only.dropna(axis='columns')
+        ItemsAvalibale = dataframe_values_only.columns.values.tolist()
+        data_columns = ItemsAvalibale
 
         self.items = dataframe_values_only.columns.values.tolist()
 
@@ -795,13 +807,12 @@ class XY(AppForm):
         dataframe = self._df
 
         ItemsAvalibale = self._df.columns.values.tolist()
-        ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+        ItemsToTest = ['Number', 'Tag', 'Type', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width','Label']
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
                 dataframe = dataframe.drop(i, 1)
-
 
         dataframe_values_only = dataframe.apply(pd.to_numeric, errors='coerce')
         dataframe_values_only = dataframe_values_only.dropna(axis='columns')
@@ -815,14 +826,9 @@ class XY(AppForm):
         numdf = numdf[numdf[data_columns].notnull().all(axis=1)]
 
         ItemsAvalibale = numdf.columns.values.tolist()
-        dataframe_values_only=numdf
-
-
 
         a = int(self.x_element.value())
         b = int(self.y_element.value())
-
-
 
         if self.LabelSetted == True:
             if(self.x_seter.text()!=''):
@@ -878,7 +884,6 @@ class XY(AppForm):
 
         self.a_index= a
         self.b_index= b
-
 
         self.axes.clear()
 
@@ -964,7 +969,7 @@ class XY(AppForm):
 
         df=self._df
 
-        for i in range(len(df)):
+        for i in range(len(dataframe_values_only)):
             TmpLabel = ''
             if (df.at[i, 'Label'] in PointLabels or df.at[i, 'Label'] == ''):
                 TmpLabel = ''
@@ -979,6 +984,8 @@ class XY(AppForm):
                 PointColors.append(df.at[i, 'Color'])
                 TmpColor = df.at[i, 'Color']
 
+
+            print(self.items[a],self.items[b])
             x, y = dataframe_values_only.at[i, self.items[a]], dataframe_values_only.at[i, self.items[b]]
 
             try:
@@ -1332,16 +1339,17 @@ class XY(AppForm):
                 self.data_to_test_to_fit = self.Slim(self.data_to_test)
 
                 self.load_settings_backup = self.data_to_test
-                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size',
+                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size',
                                     'Alpha',
                                     'Style', 'Width']
+
                 for i in self.data_to_test.columns.values.tolist():
                     if i not in Load_ItemsToTest:
                         self.load_settings_backup = self.load_settings_backup.drop(i, 1)
 
-                print(self.load_settings_backup ,self.data_to_test)
+                print(self.load_settings_backup, self.data_to_test)
 
-                print(self.load_settings_backup.shape ,self.data_to_test.shape)
+                print(self.load_settings_backup.shape, self.data_to_test.shape)
 
 
                 #self.load_result = pd.concat([self.load_settings_backup, pd.DataFrame(self.data_to_test_to_fit)], axis=1)

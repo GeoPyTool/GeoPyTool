@@ -641,7 +641,7 @@ class XYZ(AppForm):
 
         dataframe = self._df
         ItemsAvalibale = self._df.columns.values.tolist()
-        ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
+        ItemsToTest = ['Number', 'Tag', 'Name', 'Type','Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha',
                        'Style', 'Width','Label']
 
         for i in ItemsToTest:
@@ -680,7 +680,7 @@ class XYZ(AppForm):
                     atmp=self.x_seter.text()
                     try:
                         if atmp in ItemsAvalibale:
-                            a= ItemsAvalibale.index(atmp)
+                            a = ItemsAvalibale.index(atmp)
                             #print(a)
                     except(ValueError):
                         pass
@@ -744,6 +744,9 @@ class XYZ(AppForm):
         self.a_index= a
         self.b_index= b
         self.c_index= c
+
+
+        print(self.items,a,b,c)
 
         self.axes.clear()
         if self.logratio_switched== False:
@@ -1168,7 +1171,7 @@ class XYZ(AppForm):
                 self.data_to_test_to_fit = self.Slim(self.data_to_test)
 
                 self.load_settings_backup = self.data_to_test
-                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
+                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
                                     'Size',
                                     'Alpha',
                                     'Style', 'Width']
