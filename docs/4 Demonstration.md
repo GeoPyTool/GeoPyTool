@@ -95,6 +95,10 @@ These functions are quite commonly used and the details are shown as the picture
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/TAS-REE-Trace.png)
 
+#### Click on the button shown in the picture below to get the classification results. On the table view image, click on the Pie button to generate the Pie chart of the results.
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/TAS.png)
+
 
 ## Pearce Diagram
 
@@ -147,7 +151,7 @@ These two function are super easy. Notice the ASiO2 and ATiO2 here are the Activ
 
 
 
-## User Defined X-Y plot
+## User Defined X-Y diagram
 
 This function allows users to load any picture from any articles as a base map to plot on.
 
@@ -158,6 +162,42 @@ For example, as the picture below shown,  the original diagram used Nb and Th, n
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/UserDefinedXY.png)
 
 ![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/03.LoadBaseMap.png?raw=true)
+
+
+Open a data and format in the main interface, then run X-Y plot to get the x-y diagram.
+The log checkboxes control whether you would log the data, the editable boxes follow log checkboxes are to input timer of select data feature. The other editable boxes and the sliders next by both control the data features you choose to plot on the diagram.
+For example, in the picture below, It is just A and B directly used as features.
+Click on LDA checkbox to show the LDA boundaries.
+Or Click on SVM checkbox to show the SVM boundaries.
+Then click Load Data to load unclassified data samples to make prediction.
+If you only used the plotted features, for example A and B shown in the picture below, the predicted result of LDA can be seen and saved by clicking "LDA Predict" button, SVM prediction result can be got by clicking "Predict Selected".
+If you want use all features to run the SVM to predict, click on "Predict All" button. These buttons work the same way in other similar plots, shown as the pictures below.
+
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/xy.png)
+
+
+Standa alone FA/PCA/LDA functions are similar to the X-Y function.
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/fa.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/pca.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/lda.png)
+
+## User Defined X-Y-Z diagram 
+
+Open a data and format in the main interface, then run X-Y-Y plot to get the x-y-y diagram.
+The log checkboxes control whether you would log the data, the editable boxes follow log checkboxes are to input timer of select data feature. The other editable boxes and the sliders next by both control the data features you choose to plot on the diagram.
+For example, in the picture below, It is 1*A, 4*B, and 5*C used as features.
+Click on LDA checkbox to show the LDA boundaries.
+Or Click on SVM checkbox to show the SVM boundaries.
+Then click Load Data to load unclassified data samples to make prediction.
+
+#### Additional functions
+
+Click on the "LogRatio" buttion will transfer the triangular plot into a normal X-Y plot, which is much elegant both mathematically and practically.
+
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/xyz.png)
+![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/logratio.png)
 
 
 ## 3D and Statistics
