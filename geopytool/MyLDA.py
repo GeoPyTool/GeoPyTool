@@ -103,6 +103,10 @@ class MyLDA(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Key_Func)  # int
 
+        self.lda_cb = QCheckBox('&LDA')
+        self.lda_cb.setChecked(False)
+        self.lda_cb.stateChanged.connect(self.Key_Func)  # int
+
         self.show_load_data_cb = QCheckBox('&Show Loaded Data')
         self.show_load_data_cb.setChecked(True)
         self.show_load_data_cb.stateChanged.connect(self.Key_Func)  # int
@@ -116,7 +120,7 @@ class MyLDA(AppForm):
         self.shape_cb.stateChanged.connect(self.Key_Func)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&SVM Boundary')
+        self.hyperplane_cb= QCheckBox('&SVM')
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Key_Func)  # int
 
@@ -162,7 +166,7 @@ class MyLDA(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
 
-        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb,self.kernel_select_label,self.kernel_select ]:
+        for w in [self.legend_cb,self.show_load_data_cb, self.show_data_index_cb, self.shape_cb,  self.lda_cb, self.hyperplane_cb,self.kernel_select_label,self.kernel_select ]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -210,13 +214,7 @@ class MyLDA(AppForm):
         self.lda_result = self.LDA.fit_transform(self.result_to_fit.values, original_label)
 
         # class 0 and 1 : areas
-
-
-
-        #self.lda_result = self.LDA.transform(self.result_to_fit.values)
-
         #self.text_result='N Components :' + str(n)+'N Components :' + str(comp)+ '\nExplained Variance Ratio :' + str(evr)+'\nExplained Variance :' + str(ev)
-
 
         title=[]
         for i in range(len(self.comp)):
@@ -227,14 +225,12 @@ class MyLDA(AppForm):
 
         self.Para=pd.DataFrame(self.compdict)
 
-
-
-
-
         all_labels=[]
         all_colors=[]
         all_markers=[]
         all_alpha=[]
+        LDA_X = []
+        LDA_Label = []
 
         for i in range(len(self._df)):
             target =self._df.at[i, 'Label']
@@ -249,6 +245,12 @@ class MyLDA(AppForm):
                 all_alpha.append(alpha)
             if color not in self.color_list:
                 self.color_list.append(color)
+            LDA_X.append([self.lda_result[i, a],
+                          self.lda_result[i, b]])
+            LDA_Label.append(self._df.at[i, 'Label'])
+
+
+
 
         self.whole_labels = all_labels
 
@@ -378,6 +380,7 @@ class MyLDA(AppForm):
                               label=all_labels[i],
                               alpha=all_alpha[i])
 
+
             if (self.shape_cb.isChecked()):
                 pass
                 XtoFit = self.lda_result[self.result_to_fit.index == all_labels[i], a]
@@ -430,8 +433,11 @@ class MyLDA(AppForm):
             clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
             svm_x = self.lda_result[:, a]
             svm_y = self.lda_result[:, b]
-            xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 500),
-                                 np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 500))
+            xmin, xmax = self.axes.get_xlim()
+            ymin, ymax = self.axes.get_ylim()
+            self.cmap_trained_data = ListedColormap(self.color_list)
+            xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
+                                 np.linspace(ymin, ymax, 200))
 
             le = LabelEncoder()
             le.fit(self.result_to_fit.index)
@@ -450,6 +456,24 @@ class MyLDA(AppForm):
 
 
         self.result = pd.concat([self.begin_result , self.load_result], sort=False, axis=0).set_index('Label')
+
+        if (self.lda_cb.isChecked()):
+            le = LabelEncoder()
+            le.fit(LDA_Label)
+            original_label = le.transform(LDA_Label)
+            # print(self.result_to_fit.values.tolist())
+            model = LinearDiscriminantAnalysis()
+            model.fit(LDA_X, original_label)
+            xmin, xmax = self.axes.get_xlim()
+            ymin, ymax = self.axes.get_ylim()
+            self.model = model
+            self.cmap_trained_data = ListedColormap(self.color_list)
+            xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
+                                 np.linspace(ymin, ymax, 200))
+            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+            self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+
+
         self.canvas.draw()
 
     def showPredictResult(self):

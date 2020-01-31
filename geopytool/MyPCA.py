@@ -89,6 +89,9 @@ class MyPCA(AppForm):
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.Key_Func)  # int
 
+        self.lda_cb = QCheckBox('&LDA')
+        self.lda_cb.setChecked(False)
+        self.lda_cb.stateChanged.connect(self.Key_Func)  # int
 
         self.show_load_data_cb = QCheckBox('&Show Loaded Data')
         self.show_load_data_cb.setChecked(True)
@@ -175,7 +178,7 @@ class MyPCA(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
 
-        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.hyperplane_cb,self.kernel_select_label,self.kernel_select ]:
+        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.lda_cb , self.hyperplane_cb,self.kernel_select_label,self.kernel_select ]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -257,6 +260,9 @@ class MyPCA(AppForm):
         all_colors=[]
         all_markers=[]
         all_alpha=[]
+        LDA_X = []
+        LDA_Label = []
+
         self.color_list=[]
 
         for i in range(len(self._df)):
@@ -272,6 +278,11 @@ class MyPCA(AppForm):
                 all_alpha.append(alpha)
             if color not in self.color_list:
                 self.color_list.append(color)
+
+            LDA_X.append([self.pca_result[i, a],
+                          self.pca_result[i, b]])
+            LDA_Label.append(self._df.at[i, 'Label'])
+
 
         self.whole_labels = all_labels
 
@@ -520,9 +531,6 @@ class MyPCA(AppForm):
                 svm_x = self.pca_result[:, a]
                 svm_y = self.pca_result[:, b]
                 svm_z = self.pca_result[:, c]
-                xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 200),
-                                         np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 200))
-
 
                 xmin, xmax = self.axes.get_xlim()
                 ymin, ymax = self.axes.get_ylim()
@@ -561,10 +569,29 @@ class MyPCA(AppForm):
                 clf.fit(svm_train,class_label)
                 Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
                 Z = Z.reshape(xx.shape)
-                self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
-
+                self.axes.contourf(xx, yy, Z, cmap=ListedColormap(self.color_list), alpha=0.2)
 
         self.result = pd.concat([self.begin_result , self.load_result], axis=0,sort=False).set_index('Label')
+
+
+        if (self.lda_cb.isChecked()):
+            le = LabelEncoder()
+            le.fit(LDA_Label)
+            original_label = le.transform(LDA_Label)
+            # print(self.result_to_fit.values.tolist())
+            model = LinearDiscriminantAnalysis()
+            model.fit(LDA_X, original_label)
+            xmin, xmax = self.axes.get_xlim()
+            ymin, ymax = self.axes.get_ylim()
+            self.model = model
+            self.cmap_trained_data = ListedColormap(self.color_list)
+            xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
+                                 np.linspace(ymin, ymax, 200))
+            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+            self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+
+
+
         self.canvas.draw()
 
 
