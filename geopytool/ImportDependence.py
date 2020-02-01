@@ -55,7 +55,7 @@ from sklearn.decomposition import PCA, FastICA, FactorAnalysis
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 
 from sklearn import svm
-
+from sklearn import tree
 from sklearn import datasets
 from scipy.stats import mode, gaussian_kde
 from scipy.spatial import distance

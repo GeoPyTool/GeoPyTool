@@ -56,6 +56,8 @@ from geopytool.MyLDA import MyLDA
 
 from geopytool.MyQDA import MyQDA
 
+from geopytool.MyDT import MyDT
+
 from geopytool.Trans import MyTrans
 
 from geopytool.Dist import MyDist
@@ -386,6 +388,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQDA = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qda.png'),u'QDA',self)
         self.actionQDA.setObjectName('actionQDA')
 
+        self.actionDT = QtWidgets.QAction(QIcon(LocationOfMySelf+'/dt.png'),u'DT',self)
+        self.actionDT.setObjectName('actionDT')
+
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf+'/qapf.png'),u'QAPF',self)
         self.actionQAPF.setObjectName('actionQAPF')
 
@@ -497,6 +502,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionFA)
         self.menuAdditional.addAction(self.actionPCA)
         self.menuAdditional.addAction(self.actionLDA)
+        self.menuAdditional.addAction(self.actionDT)
         #self.menuAdditional.addAction(self.actionQDA)
 
         self.menuHelp.addAction(self.actionWeb)
@@ -586,6 +592,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionFA.triggered.connect(self.FA)
         self.actionPCA.triggered.connect(self.PCA)
         self.actionLDA.triggered.connect(self.LDA)
+        self.actionDT.triggered.connect(self.DT)
         self.actionQDA.triggered.connect(self.QDA)
 
         self.actionDist.triggered.connect(self.Dist)
@@ -720,7 +727,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionFA.setText('5-13 '+_translate('MainWindow',u'FA'))
         self.actionPCA.setText('5-14 '+_translate('MainWindow',u'PCA'))
         self.actionLDA.setText('5-15 '+_translate('MainWindow',u'LDA'))
-        self.actionQDA.setText('5-16 '+_translate('MainWindow',u'QDA'))
+        self.actionDT.setText('5-16 '+_translate('MainWindow',u'DT'))
+        self.actionQDA.setText('5-17 '+_translate('MainWindow',u'QDA'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -1900,8 +1908,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 
+    def DT(self):
+        print('DT called \n')
+        print('self.model._df length: ',len(self.model._df))
+        if (len(self.model._df)<=0):
+            self.getDataFile()
+        if (len(self.model._df) > 0):
+            self.dtpop = MyDT(df=self.model._df.fillna(0))
+            try:
+                self.dtpop.Key_Func()
+                self.dtpop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
     def QDA(self):
-        print('LDA called \n')
+        print('QDA called \n')
         print('self.model._df length: ',len(self.model._df))
         if (len(self.model._df)<=0):
             self.getDataFile()

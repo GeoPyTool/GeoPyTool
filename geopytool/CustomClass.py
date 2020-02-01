@@ -1,4 +1,4 @@
-version = '0.8.20.0.127'
+version = '0.8.20.0.128'
 
 date = '2020-01-31'
 
@@ -973,6 +973,7 @@ class AppForm(QMainWindow):
     load_result = pd.DataFrame()
 
     kernel_list = ['linear', 'rbf', 'sigmoid', 'poly']
+    clf = svm.SVC(C=1.0, kernel='linear', probability=True)
     _changed = False
 
     xlabel = r'$SiO_2 wt\%$'

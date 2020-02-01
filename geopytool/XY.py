@@ -985,7 +985,7 @@ class XY(AppForm):
                 TmpColor = df.at[i, 'Color']
 
 
-            print(self.items[a],self.items[b])
+
             x, y = dataframe_values_only.at[i, self.items[a]], dataframe_values_only.at[i, self.items[b]]
 
             try:
@@ -1200,8 +1200,6 @@ class XY(AppForm):
 
                     for i in range(int(self.FitLevel + 1)):
                         Paralist.append([opt[i], sigma[i]])
-
-
                         if int(self.fit_slider.value()) == 0:
 
                             if (self.FitLevel - i == 0):
@@ -1213,25 +1211,14 @@ class XY(AppForm):
                                 BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'x^' + str(
                                 self.FitLevel - i) +  '+\n'
 
-
-
                         elif (int(self.fit_slider.value()) == 1):
-
                             if (self.FitLevel-i==0):
                                 ResultStr = ResultStr + str(opt[i]) + '$\pm$' + str(sigma[i])+'+'
                                 BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + '+\n'
-
-
-
                             else:
                                 ResultStr = ResultStr+ str(opt[i])+'$\pm$'+str(sigma[i])+'$y^'+str(self.FitLevel-i)+'$'+'+'
                                 BoxResultStr = BoxResultStr + str(opt[i]) + '±' + str(sigma[i]) + 'y^' + str(
                                 self.FitLevel - i) +  '+\n'
-
-
-                            pass
-
-                        pass
 
                     self.textbox.setText(formular +'\n'+ BoxResultStr+ '\n MSWD(±2σ)'+str(MSWD)+'±'+str(2*MSWDerr)+'\n' + self.sentence)
 
@@ -1271,7 +1258,7 @@ class XY(AppForm):
                     DensityLineAlpha = 0.3
 
                     # Peform the kernel density estimate
-                    xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                    xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
                     # print(self.ShapeGroups)
                     # command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
                     # exec(command)
@@ -1339,7 +1326,8 @@ class XY(AppForm):
                 self.data_to_test_to_fit = self.Slim(self.data_to_test)
 
                 self.load_settings_backup = self.data_to_test
-                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size',
+                Load_ItemsToTest = ['Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
+                                    'Size',
                                     'Alpha',
                                     'Style', 'Width']
 
@@ -1375,25 +1363,6 @@ class XY(AppForm):
                                           alpha=self.data_to_test.at[i, 'Alpha'],
                                           label=tmp_label)
 
-                        '''
-                        if raw.at[i, 'Color'] == 'w' or raw.at[i, 'Color'] == 'White':
-                            self.axes.scatter(x_load_test, y_load_test,
-                                              marker=self.data_to_test.at[i, 'Marker'],
-                                              s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                              alpha=self.data_to_test.at[i, 'Alpha'],
-                                              label=tmp_label,
-                                              edgecolors='black')
-                        else:
-                            self.axes.scatter(x_load_test, y_load_test,
-                                              marker=self.data_to_test.at[i, 'Marker'],
-                                              s=self.data_to_test.at[i, 'Size'], color=self.data_to_test.at[i, 'Color'],
-                                              alpha=self.data_to_test.at[i, 'Alpha'],
-                                              label=tmp_label,
-                                              edgecolors='white')
-                                              
-                        '''
-
-
 
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
@@ -1424,26 +1393,29 @@ class XY(AppForm):
         self.All_X=XtoFit
         self.All_Y=YtoFit
 
-        if (self.hyperplane_cb.isChecked()):
-            if XtoFit != YtoFit:
-                clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-                svm_x = XtoFit
-                svm_y = YtoFit
-                xmin, xmax = self.axes.get_xlim()
-                ymin, ymax = self.axes.get_ylim()
-                xx, yy = np.meshgrid(np.arange(xmin, xmax, (xmax-xmin) / 200), np.arange( ymin, ymax, (ymax-ymin)/ 200))
 
-                le = LabelEncoder()
-                le.fit(self._df.Label)
-                print(len(self._df.Label),self._df.Label)
+        if XtoFit != YtoFit:
+            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
+            svm_x = XtoFit
+            svm_y = YtoFit
+            xmin, xmax = self.axes.get_xlim()
+            ymin, ymax = self.axes.get_ylim()
+            # xx, yy = np.meshgrid(np.arange(xmin, xmax, (xmax-xmin) / 200), np.arange( ymin, ymax, (ymax-ymin)/ 200))
+            xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
+            le = LabelEncoder()
+            le.fit(self._df.Label)
+            print(len(self._df.Label),self._df.Label)
 
-                class_label=le.transform(self._df.Label)
-                svm_train= pd.concat([pd.DataFrame(svm_x),pd.DataFrame(svm_y)], axis=1)
+            class_label=le.transform(self._df.Label)
+            svm_train= pd.concat([pd.DataFrame(svm_x),pd.DataFrame(svm_y)], axis=1)
 
-                svm_train=svm_train.values
-                clf.fit(svm_train,class_label)
-                Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
-                Z = Z.reshape(xx.shape)
+            svm_train=svm_train.values
+            #clf.fit(svm_train,class_label)
+            clf.fit(svm_train,self._df.Label)
+            self.clf=clf
+            Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+            Z = Z.reshape(xx.shape)
+            if (self.hyperplane_cb.isChecked()):
                 self.axes.contourf(xx, yy, Z, cmap=ListedColormap(self.color_list), alpha=0.2)
 
         if (self.show_data_index_cb.isChecked()):
@@ -1480,11 +1452,10 @@ class XY(AppForm):
             self.model = model
 
             self.cmap_trained_data=ListedColormap(self.color_list)
-            xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
-                                 np.linspace(ymin, ymax, 200))
+            #xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200), np.linspace(ymin, ymax, 200))
 
             #xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
-    
+            xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
             Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
             #Z_proba = model.predict_proba(np.c_[xx.ravel(), yy.ravel()])
 
@@ -1515,50 +1486,26 @@ class XY(AppForm):
 
         k_s = int(self.kernel_select.value())
         try:
-            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-            svm_x = self.All_X
-            svm_y = self.All_Y
-
-            le = LabelEncoder()
-            le.fit(self._df.Label)
-            class_label = le.transform(self._df.Label)
-            svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y)], axis=1)
-            svm_train = svm_train.values
-            clf.fit(svm_train, self._df.Label)
             xx = self.data_to_test_to_fit[self.items[self.a_index]]
             yy = self.data_to_test_to_fit[self.items[self.b_index]]
 
-            Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+            Z = self.clf.predict(np.c_[xx.ravel(), yy.ravel()])
 
-            Z2 = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+            Z2 = self.clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])
             proba_df = pd.DataFrame(Z2)
-            proba_df.columns = clf.classes_
-
+            proba_df.columns = self.clf.classes_
 
             proba_list = []
             for i in range(len(proba_df)):
                 proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
             predict_result = pd.concat(
-                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
+                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}),
+                 pd.DataFrame({'Confidence probability': proba_list}), proba_df],
                 axis=1).set_index('Label')
             print(predict_result)
 
-
             self.predictpop = TableViewer(df=predict_result, title='SVM Predict Result With '+ self.items[self.a_index]+','+self.items[self.b_index])
             self.predictpop.show()
-
-            '''
-            DataFileOutput, ok2 = QFileDialog.getSaveFileName(self, '文件保存', 'C:/',  'Excel Files (*.xlsx);;CSV Files (*.csv)')  # 数据文件保存输出
-            if (DataFileOutput != ''):
-                if ('csv' in DataFileOutput):
-                    # DataFileOutput = DataFileOutput[0:-4]
-                    predict_result.to_csv(DataFileOutput, sep=',', encoding='utf-8')
-                    # self.result.to_csv(DataFileOutput + '.csv', sep=',', encoding='utf-8')
-                elif ('xlsx' in DataFileOutput):
-                    # DataFileOutput = DataFileOutput[0:-5]
-                    predict_result.to_excel(DataFileOutput, encoding='utf-8')
-                    # self.result.to_excel(DataFileOutput + '.xlsx', encoding='utf-8')
-            '''
 
 
         except Exception as e:
@@ -1589,7 +1536,8 @@ class XY(AppForm):
             for i in range(len(proba_df)):
                 proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
             predict_result = pd.concat(
-                [self.data_to_test['Label'], pd.DataFrame({'LDA Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
+                [self.data_to_test['Label'], pd.DataFrame({'LDA Classification': Z}),
+                 pd.DataFrame({'Confidence probability': proba_list}),proba_df],
                 axis=1).set_index('Label')
             print(predict_result)
 
@@ -1619,7 +1567,8 @@ class XY(AppForm):
             for i in range(len(proba_df)):
                 proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
             predict_result = pd.concat(
-                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
+                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}),
+                 pd.DataFrame({'Confidence probability': proba_list}),proba_df],
                 axis=1).set_index('Label')
             print(predict_result)
 

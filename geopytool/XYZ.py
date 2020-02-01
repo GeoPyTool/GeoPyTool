@@ -1035,7 +1035,8 @@ class XYZ(AppForm):
                 DensityLineAlpha = 0.3
 
                 # Peform the kernel density estimate
-                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                #xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
                 # print(self.ShapeGroups)
                 # command='''xx, yy = np.mgrid[xmin:xmax:'''+str(self.ShapeGroups)+ '''j, ymin:ymax:''' +str(self.ShapeGroups)+'''j]'''
                 # exec(command)
@@ -1083,8 +1084,8 @@ class XYZ(AppForm):
                 ymin, ymax = min(WtoFit), max(WtoFit)
 
             self.cmap_trained_data = ListedColormap(self.color_list)
-            xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
-                                 np.linspace(ymin, ymax, 200))
+            #xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200), np.linspace(ymin, ymax, 200))
+            xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
             Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
             self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
 
@@ -1095,34 +1096,36 @@ class XYZ(AppForm):
         self.All_V=VtoFit
         self.All_W=WtoFit
 
+
+        clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
+
+        if self.logratio_switched == False:
+            svm_x = XtoFit
+            svm_y = YtoFit
+            xmin, xmax = min(XtoFit), max(XtoFit)
+            ymin, ymax = min(YtoFit), max(YtoFit)
+        else:
+            svm_x = VtoFit
+            svm_y = WtoFit
+            xmin, xmax = min(VtoFit), max(VtoFit)
+            ymin, ymax = min(WtoFit), max(WtoFit)
+
+        #xx, yy = np.meshgrid(np.arange(xmin, xmax, (xmax-xmin) / 200), np.arange( ymin, ymax, (ymax-ymin)/ 200))
+        xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
+        le = LabelEncoder()
+        le.fit(self._df.Label)
+        print(len(self._df.Label),self._df.Label)
+
+        class_label=le.transform(self._df.Label)
+        svm_train= pd.concat([pd.DataFrame(svm_x),pd.DataFrame(svm_y)], axis=1)
+
+        svm_train=svm_train.values
+        clf.fit(svm_train,class_label)
+        clf.fit(svm_train,self._df.Label)
+        self.clf=clf
+        Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+        Z = Z.reshape(xx.shape)
         if (self.hyperplane_cb.isChecked()):
-
-            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-
-            if self.logratio_switched == False:
-                svm_x = XtoFit
-                svm_y = YtoFit
-                xmin, xmax = min(XtoFit), max(XtoFit)
-                ymin, ymax = min(YtoFit), max(YtoFit)
-            else:
-                svm_x = VtoFit
-                svm_y = WtoFit
-                xmin, xmax = min(VtoFit), max(VtoFit)
-                ymin, ymax = min(WtoFit), max(WtoFit)
-
-            xx, yy = np.meshgrid(np.arange(xmin, xmax, (xmax-xmin) / 200), np.arange( ymin, ymax, (ymax-ymin)/ 200))
-
-            le = LabelEncoder()
-            le.fit(self._df.Label)
-            print(len(self._df.Label),self._df.Label)
-
-            class_label=le.transform(self._df.Label)
-            svm_train= pd.concat([pd.DataFrame(svm_x),pd.DataFrame(svm_y)], axis=1)
-
-            svm_train=svm_train.values
-            clf.fit(svm_train,class_label)
-            Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
             self.axes.contourf(xx, yy, Z, cmap=ListedColormap(self.color_list), alpha=0.2)
 
         if (len(self.data_to_test) > 0):
@@ -1171,7 +1174,7 @@ class XYZ(AppForm):
                 self.data_to_test_to_fit = self.Slim(self.data_to_test)
 
                 self.load_settings_backup = self.data_to_test
-                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
+                Load_ItemsToTest = ['Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
                                     'Size',
                                     'Alpha',
                                     'Style', 'Width']
@@ -1328,7 +1331,8 @@ class XYZ(AppForm):
             for i in range(len(proba_df)):
                 proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
             predict_result = pd.concat(
-                [self.data_to_test['Label'], pd.DataFrame({'LDA Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
+                [self.data_to_test['Label'], pd.DataFrame({'LDA Classification': Z}),
+                 pd.DataFrame({'Confidence probability': proba_list}), proba_df],
                 axis=1).set_index('Label')
             print(predict_result)
 
@@ -1343,22 +1347,21 @@ class XYZ(AppForm):
     def showPredictResultSelected(self):
         k_s = int(self.kernel_select.value())
         try:
+            '''
             clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-
             if self.logratio_switched== False:
                 svm_x = self.All_X
                 svm_y = self.All_Y
             else:
                 svm_x = self.All_V
                 svm_y = self.All_W
-
-
             le = LabelEncoder()
             le.fit(self._df.Label)
             class_label = le.transform(self._df.Label)
             svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y)], axis=1)
             svm_train = svm_train.values
             clf.fit(svm_train, self._df.Label)
+            '''
 
             if self.logratio_switched == False:
                 xx = np.array(self.xplot_test_list)
@@ -1368,17 +1371,17 @@ class XYZ(AppForm):
                 yy = np.array(self.w_tmp_test_list)
             Z = []
             Z2 = []
-            Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z2 = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])
+            Z = self.clf.predict(np.c_[xx.ravel(), yy.ravel()])
+            Z2 = self.clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])
             proba_df = pd.DataFrame(Z2)
-            proba_df.columns = clf.classes_
+            proba_df.columns = self.clf.classes_
 
             proba_list = []
             for i in range(len(proba_df)):
                 proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
             predict_result = pd.concat(
                 [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}),
-                 pd.DataFrame({'Confidence probability': proba_list})],
+                 pd.DataFrame({'Confidence probability': proba_list}),proba_df],
                 axis=1).set_index('Label')
             print(predict_result)
 

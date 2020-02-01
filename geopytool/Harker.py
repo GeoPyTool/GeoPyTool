@@ -742,9 +742,19 @@ class Harker(AppForm):
             LoadedLabels=[]
 
             Loaded_FeTotal_list = []
+            self.load_settings_backup = self.data_to_test
+            Load_ItemsToTest = ['Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
+                                'Size',
+                                'Alpha',
+                                'Style', 'Width']
 
+            for i in self.data_to_test.columns.values.tolist():
+                if i not in Load_ItemsToTest:
+                    self.load_settings_backup = self.load_settings_backup.drop(i, 1)
 
+            print(self.data_to_test.columns.values.tolist())
 
+            self.data_to_test = self.CleanDataFile(self.data_to_test)
             for i in range(len(self.data_to_test)):
                 if (self.data_to_test.at[i, 'Label'] in LoadedLabels or self.data_to_test.at[i, 'Label'] == ''):
                     TmpLabel = ''
@@ -861,8 +871,10 @@ class Harker(AppForm):
         k_s = int(self.kernel_select.value())
         try:
             clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-            xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 200),
-                                 np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 200))
+            # xx, yy = np.meshgrid(np.arange(min(svm_x), max(svm_x), np.ptp(svm_x) / 200), np.arange(min(svm_y), max(svm_y), np.ptp(svm_y) / 200))
+
+
+            xx, yy = np.mgrid[min(svm_x):max(svm_x):2048j, min(svm_y): max(svm_y):2048j]
 
             le = LabelEncoder()
             le.fit(target_label)
@@ -880,12 +892,13 @@ class Harker(AppForm):
             pass
             return(False,0)
 
+
     def DrawContourf(self,xlist=[1,2,3],ylist=[4,5,6]):
 
         xmin, xmax = min(xlist), max(xlist)
         ymin, ymax = min(ylist), max(ylist)
         # Peform the kernel density estimate
-        xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+        xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
 
         positions = np.vstack([xx.ravel(), yy.ravel()])
         values = np.vstack([ xlist,ylist])
@@ -927,45 +940,10 @@ class Harker(AppForm):
             for i in range(len(proba_df)):
                 proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
             predict_result = pd.concat(
-                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
+                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}),
+                 pd.DataFrame({'Confidence probability': proba_list}),proba_df],
                 axis=1).set_index('Label')
             print(predict_result)
 
             self.predictAllpop = TableViewer(df=predict_result, title='SVM Predict Result with All Items')
             self.predictAllpop.show()
-
-            '''
-            try:
-                clf = svm.SVC(C=1.0, kernel='linear',probability= True)
-                le = LabelEncoder()
-                le.fit(self._df.Label)
-                df_values = self.Slim(df)
-
-                clf.fit(df_values, df.Label)
-                Z = clf.predict(np.c_[df_to_fit])
-                Z2 = clf.predict_proba(np.c_[df_to_fit])
-                proba_df = pd.DataFrame(Z2)
-
-                proba_list=[]
-                
-                for i in range(len(proba_df)):
-                    print(proba_df[i])
-
-
-                proba_df.columns = clf.classes_
-                predict_result = pd.concat(
-                    [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}), proba_df],
-                    axis=1).set_index('Label')
-                print(predict_result)
-
-                self.predictAllpop = TableViewer(df=predict_result, title='SVM Predict Result with All Items')
-                self.predictAllpop.show()
-
-
-            except Exception as e:
-                msg = 'You need to load another data to run SVM.\n '
-                self.ErrorEvent(text= msg +repr(e) )
-
-            '''
-
-

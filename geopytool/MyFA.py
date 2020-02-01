@@ -325,8 +325,11 @@ class MyFA(AppForm):
 
 
                 self.load_settings_backup = self.data_to_test
-                Load_ItemsToTest = ['Label', 'Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size',
-                               'Alpha','Style', 'Width']
+                Load_ItemsToTest = ['Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
+                                    'Size',
+                                    'Alpha',
+                                    'Style', 'Width']
+
                 for i in self.data_to_test.columns.values.tolist():
                     if i not in Load_ItemsToTest:
                         self.load_settings_backup = self.load_settings_backup .drop(i, 1)
@@ -376,7 +379,7 @@ class MyFA(AppForm):
                                     DensityLineColor = test_colors[i]
                                     DensityLineAlpha = 0.1
                                     # Peform the kernel density estimate
-                                    xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                                    xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
                                     positions = np.vstack([xx.ravel(), yy.ravel()])
                                     values = np.vstack([XtoFit, YtoFit])
                                     kernelstatus = True
@@ -453,7 +456,7 @@ class MyFA(AppForm):
                     DensityLineColor = all_colors[i]
                     DensityLineAlpha = 0.3
                     # Peform the kernel density estimate
-                    xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                    xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
                     positions = np.vstack([xx.ravel(), yy.ravel()])
                     values = np.vstack([XtoFit, YtoFit])
                     kernelstatus = True
@@ -516,7 +519,7 @@ class MyFA(AppForm):
 
                 xmin, xmax = self.axes.get_xlim()
                 ymin, ymax = self.axes.get_ylim()
-                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
 
                 le = LabelEncoder()
                 le.fit(self.result_to_fit.index)
@@ -542,7 +545,7 @@ class MyFA(AppForm):
 
                 xmin, xmax = self.axes.get_xlim()
                 ymin, ymax = self.axes.get_ylim()
-                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
 
                 le = LabelEncoder()
                 le.fit(self.result_to_fit.index)
@@ -577,8 +580,9 @@ class MyFA(AppForm):
             ymin, ymax = self.axes.get_ylim()
             self.model = model
             self.cmap_trained_data = ListedColormap(self.color_list)
-            xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200),
-                                 np.linspace(ymin, ymax, 200))
+            #xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200), np.linspace(ymin, ymax, 200))
+
+            xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
             Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
             self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
 
@@ -604,7 +608,8 @@ class MyFA(AppForm):
             for i in range(len(proba_df)):
                 proba_list.append(round(max(proba_df.iloc[i])+ 0.001, 2))
             predict_result = pd.concat(
-                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}), pd.DataFrame({'Confidence probability': proba_list})],
+                [self.data_to_test['Label'], pd.DataFrame({'SVM Classification': Z}),
+                 pd.DataFrame({'Confidence probability': proba_list}),proba_df],
                 axis=1).set_index('Label')
             print(predict_result)
 
