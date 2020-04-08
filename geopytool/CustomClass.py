@@ -1,6 +1,6 @@
-version = '0.8.20.0.129'
+version = '0.8.20.0.130'
 
-date = '2020-02-11'
+date = '2020-04-07'
 
 dpi = 128
 # coding:utf-8
@@ -1063,6 +1063,10 @@ class AppForm(QMainWindow):
 
         self.create_main_frame()
         self.create_status_bar()
+
+
+
+
 
     def CleanDataFile(self, raw=pd.DataFrame(),
                       checklist=['质量', '分数', '百分比', ' ', 'ppm', 'ma', 'wt', '%', '(', ')', '（', '）', '[', ']', '【',

@@ -240,6 +240,10 @@ class XY(AppForm):
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
 
+        self.line_cb= QCheckBox('&Boundary Line')
+        self.line_cb.setChecked(False)
+        self.line_cb.stateChanged.connect(self.Magic)  # int
+
 
         self.fit_cb= QCheckBox('&PolyFit')
         self.fit_cb.setChecked(False)
@@ -410,7 +414,7 @@ class XY(AppForm):
             self.hbox.setAlignment(w, Qt.AlignVCenter)
 
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb,self.lda_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb, self.norm_cb,self.shape_cb,self.lda_cb,self.hyperplane_cb,self.line_cb,self.kernel_select_label,self.kernel_select]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -1416,7 +1420,22 @@ class XY(AppForm):
             Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
             Z = Z.reshape(xx.shape)
             if (self.hyperplane_cb.isChecked()):
-                self.axes.contourf(xx, yy, Z, cmap=ListedColormap(self.color_list), alpha=0.2)
+                CS = self.axes.contourf(xx, yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
+                                        cmap=ListedColormap(self.color_list), alpha=0.2)
+                CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',
+                                        alpha=0)
+                if (self.line_cb.isChecked()):
+                    for l in CS2.allsegs:
+                        if len(l) > 0:
+                            a = np.array(l[0])
+                            print(a)
+                            x = a[:, 0]
+                            y = a[:, 1]
+                            self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k',
+                                           alpha=0.3)
+                self.axes.set_xlim(xmin, xmax)
+                self.axes.set_ylim(ymin, ymax)
+
 
         if (self.show_data_index_cb.isChecked()):
 
@@ -1461,16 +1480,22 @@ class XY(AppForm):
 
             #self.axes.pcolormesh(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
 
-            self.axes.contourf(xx, yy, Z.reshape(xx.shape),cmap=ListedColormap(self.color_list), alpha=0.2)
 
-            # Z = self.LDA.predict(np.c_[xx.ravel(), yy.ravel()])
-            # Z = self.LDA.predict_proba(np.c_[xx.ravel(), yy.ravel()])
-            # plt.pcolormesh(xx, yy, Z, cmap='red_blue_classes', norm=colors.Normalize(0., 1.), zorder=0)
-            # self.axes.contourf(xx, yy, Z, cmap='hot', alpha=0.2)
-            # tmpZ = Z[:, 0].reshape(xx.shape)
-            #    self.axes.pcolormesh(xx, yy, tmpZ, cmap=ListedColormap(self.color_list[i]),norm=colors.Normalize(0., 1.), zorder=0,alpha=0.4)
-            # self.axes.contour(xx, yy, Z, [0.5], linewidths=2., colors='white')
-
+            CS = self.axes.contourf(xx, yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
+                                    cmap=ListedColormap(self.color_list), alpha=0.2)
+            CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',
+                                    alpha=0)
+            if (self.line_cb.isChecked()):
+                for l in CS2.allsegs:
+                    if len(l) > 0:
+                        a = np.array(l[0])
+                        print(a)
+                        x = a[:, 0]
+                        y = a[:, 1]
+                        self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k',
+                                       alpha=0.3)
+            self.axes.set_xlim(xmin, xmax)
+            self.axes.set_ylim(ymin, ymax)
 
 
         self.canvas.draw()

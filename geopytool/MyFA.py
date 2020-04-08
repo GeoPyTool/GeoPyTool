@@ -105,6 +105,9 @@ class MyFA(AppForm):
         self.hyperplane_cb.setChecked(False)
         self.hyperplane_cb.stateChanged.connect(self.Key_Func)  # int
 
+        self.line_cb= QCheckBox('&Boundary Line')
+        self.line_cb.setChecked(False)
+        self.line_cb.stateChanged.connect(self.Key_Func)  # int
 
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
@@ -172,7 +175,7 @@ class MyFA(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
 
-        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.lda_cb ,self.hyperplane_cb,self.kernel_select_label,self.kernel_select ]:
+        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.lda_cb ,self.hyperplane_cb,self.line_cb,self.kernel_select_label,self.kernel_select ]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
@@ -556,7 +559,24 @@ class MyFA(AppForm):
                 clf.fit(svm_train,class_label)
                 Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
                 Z = Z.reshape(xx.shape)
-                self.axes.contourf(xx, yy, Z, cmap=ListedColormap(self.color_list), alpha=0.2)
+                #self.axes.contourf(xx, yy, Z, cmap=ListedColormap(self.color_list), alpha=0.2)
+
+                CS = self.axes.contourf(xx, yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
+                                        cmap=ListedColormap(self.color_list), alpha=0.2)
+                CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',
+                                        alpha=0)
+                if (self.line_cb.isChecked()):
+                    for l in CS2.allsegs:
+                        if len(l) > 0:
+                            a = np.array(l[0])
+                            print(a)
+                            x = a[:, 0]
+                            y = a[:, 1]
+                            self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k',
+                                           alpha=0.3)
+                self.axes.set_xlim(xmin, xmax)
+                self.axes.set_ylim(ymin, ymax)
+
 
         if (self.legend_cb.isChecked()):
 
@@ -584,8 +604,23 @@ class MyFA(AppForm):
 
             xx, yy = np.mgrid[xmin:xmax:2048j, ymin:ymax:2048j]
             Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+            #self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
 
+            CS = self.axes.contourf(xx, yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
+                                    cmap=ListedColormap(self.color_list), alpha=0.2)
+            CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',
+                                    alpha=0)
+            if (self.line_cb.isChecked()):
+                for l in CS2.allsegs:
+                    if len(l) > 0:
+                        a = np.array(l[0])
+                        print(a)
+                        x = a[:, 0]
+                        y = a[:, 1]
+                        self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k',
+                                       alpha=0.3)
+            self.axes.set_xlim(xmin, xmax)
+            self.axes.set_ylim(ymin, ymax)
 
 
         self.canvas.draw()
