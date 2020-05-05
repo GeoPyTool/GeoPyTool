@@ -326,9 +326,13 @@ class XYZ(AppForm):
         self.lda_cb.stateChanged.connect(self.Magic)  # int
 
 
-        self.hyperplane_cb= QCheckBox('&SVM')
-        self.hyperplane_cb.setChecked(False)
-        self.hyperplane_cb.stateChanged.connect(self.Magic)  # int
+        self.svm_cb= QCheckBox('&SVM')
+        self.svm_cb.setChecked(False)
+        self.svm_cb.stateChanged.connect(self.Magic)  # int
+
+        self.curve_cb= QCheckBox('&Show Curve (testing)')
+        self.curve_cb.setChecked(False)
+        self.curve_cb.stateChanged.connect(self.Magic)  # int
 
 
         self.norm_cb = QCheckBox('&Norm')
@@ -438,7 +442,7 @@ class XYZ(AppForm):
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.lda_cb,self.hyperplane_cb,self.kernel_select_label,self.kernel_select]:
+        for w in [self.legend_cb,self.show_load_data_cb,self.show_data_index_cb,self.shape_cb,self.curve_cb,self.lda_cb,self.svm_cb,self.kernel_select_label,self.kernel_select]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -1064,6 +1068,11 @@ class XYZ(AppForm):
             # print(self.result_to_fit.values.tolist())
             model = LinearDiscriminantAnalysis()
             model.fit(LDA_X, original_label)
+
+            local_xmin, local_xmax = min(XtoFit), max(XtoFit)
+            local_ymin, local_ymax = min(YtoFit), max(YtoFit)
+            xx, yy = np.mgrid[local_xmin:local_xmax:2048j, local_ymin:local_ymax:2048j]
+
             xmin, xmax = self.axes.get_xlim()
             ymin, ymax = self.axes.get_ylim()
 
@@ -1073,37 +1082,49 @@ class XYZ(AppForm):
             #self.cmap_trained_data = ListedColormap(self.color_list)
             #xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200), np.linspace(ymin, ymax, 200))
             vv, ww = np.mgrid[vmin:vmax:2048j, wmin:wmax:2048j]
-            Z = model.predict(np.c_[vv.ravel(), ww.ravel()])
             #self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
 
             if self.logratio_switched == True:
+                Z = model.predict(np.c_[vv.ravel(), ww.ravel()])
                 CS = self.axes.contourf(vv, ww, Z.reshape(vv.shape), levels=len(self.color_list) + 1, cmap=ListedColormap(self.color_list), alpha=0.2)
                 CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',alpha=0)
 
             if self.logratio_switched == False:
 
-                CS = self.axes.contourf(vv, ww, Z.reshape(vv.shape), levels=len(self.color_list) + 1, cmap=ListedColormap(self.color_list), alpha=0)
-                CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',alpha=0)
-                for l in CS2.allsegs:
-                    if len(l) > 0:
-                        a = np.array(l[0])
-                        print(a)
-                        x = a[:, 0]
-                        y = a[:, 1]
-                        x_t=[]
-                        y_t=[]
+                if self.curve_cb.isChecked():
+                    Z = model.predict(np.c_[vv.ravel(), ww.ravel()])
+                    CS = self.axes.contourf(vv, ww, Z.reshape(vv.shape), levels=len(self.color_list) + 1,
+                                            cmap=ListedColormap(self.color_list), alpha=0)
+                    CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',
+                                            alpha=0)
+                    for l in CS2.allsegs:
+                        if len(l) > 0:
+                            a = np.array(l[0])
+                            print(a)
+                            x = a[:, 0]
+                            y = a[:, 1]
+                            x_t = []
+                            y_t = []
 
-                        for i in range(len(x)):
-                            s = math.exp(x[i]) + math.exp(y[i]) + 1
-                            X = math.exp(x[i]) / s
-                            Y = math.exp(y[i]) / s
-                            Z = 1 / s
-                            if ((X + Y + Z)!=0):
-                                x_t.append(0.5 * (X + 2 * Z) / (X + Y + Z))
-                                y_t.append(math.sin(math.pi / 3) * X / (X + Y + Z))
+                            for i in range(len(x)):
+                                s = math.exp(x[i]) + math.exp(y[i]) + 1
+                                X = math.exp(x[i]) / s
+                                Y = math.exp(y[i]) / s
+                                Z = 1 / s
+                                if ((X + Y + Z) != 0):
+                                    x_t.append(0.5 * (X + 2 * Z) / (X + Y + Z))
+                                    y_t.append(math.sin(math.pi / 3) * X / (X + Y + Z))
 
-                        #self.axes.plot(np.unique(x_t), np.poly1d(np.polyfit(x_t, y_t, 1))(np.unique(x)), color='k',  alpha=0.3)
-                        self.axes.plot(x_t, y_t, color='blue',  alpha=0.3)
+                            # self.axes.plot(np.unique(x_t), np.poly1d(np.polyfit(x_t, y_t, 1))(np.unique(x)), color='k',  alpha=0.3)
+                            self.axes.plot(x_t, y_t, color='blue', alpha=0.3)
+
+                else:
+                    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+                    CS = self.axes.contourf(xx, yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
+                                            cmap=ListedColormap(self.color_list), alpha=0.3)
+
+
+
 
 
                 self.axes.set_xlim(xmin, xmax)
@@ -1117,10 +1138,20 @@ class XYZ(AppForm):
         self.All_W=WtoFit
 
         clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-        svm_x = VtoFit
-        svm_y = WtoFit
+        if self.logratio_switched == False:
+            svm_x = XtoFit
+            svm_y = YtoFit
+        else:
+            svm_x = VtoFit
+            svm_y = WtoFit
+
         vmin, vmax = min(VtoFit), max(VtoFit)
         wmin, wmax = min(WtoFit), max(WtoFit)
+
+
+        local_xmin, local_xmax = min(XtoFit), max(XtoFit)
+        local_ymin, local_ymax = min(YtoFit), max(YtoFit)
+        xx, yy = np.mgrid[local_xmin:local_xmax:2048j, local_ymin:local_ymax:2048j]
 
         xmin, xmax = self.axes.get_xlim()
         ymin, ymax = self.axes.get_ylim()
@@ -1137,49 +1168,65 @@ class XYZ(AppForm):
         clf.fit(svm_train,class_label)
 
         self.clf=clf
-        Z = clf.predict(np.c_[vv.ravel(), ww.ravel()])
-        Z = Z.reshape(vv.shape)
 
 
-        if (self.hyperplane_cb.isChecked()):
+
+        if self.svm_cb.isChecked():
+
             if self.logratio_switched == True:
+
+
+                Z = clf.predict(np.c_[vv.ravel(), ww.ravel()])
+                Z = Z.reshape(vv.shape)
+
                 SVM_CS = self.axes.contourf(vv, ww, Z.reshape(vv.shape), levels=len(self.color_list) + 1, cmap=ListedColormap(self.color_list), alpha=0.2)
                 SVM_CS2 = self.axes.contour(SVM_CS, levels=SVM_CS.levels[::len(self.color_list)], colors='k', origin='lower', alpha=0)
             if self.logratio_switched == False:
-                SVM_CS = self.axes.contourf(vv, ww, Z.reshape(vv.shape), levels=len(self.color_list) + 1, cmap=ListedColormap(self.color_list), alpha=0)
-                SVM_CS2 = self.axes.contour(SVM_CS, levels=SVM_CS.levels[::len(self.color_list)], colors='k', origin='lower', alpha=0)
-                for l in SVM_CS2.allsegs:
-                    if len(l) > 0:
-                        a = np.array(l[0])
-                        print(a)
-                        x = a[:, 0]
-                        y = a[:, 1]
-                        x_t = []
-                        y_t = []
 
-                        for i in range(len(x)):
-                            s = math.exp(x[i]) + math.exp(y[i]) + 1
-                            X = math.exp(x[i]) / s
-                            Y = math.exp(y[i]) / s
-                            Z = 1 / s
-                            if ((X + Y + Z) != 0):
-                                x_t.append(0.5 * (X + 2 * Z) / (X + Y + Z))
-                                y_t.append(math.sin(math.pi / 3) * X / (X + Y + Z))
+                if self.curve_cb.isChecked():
+                    Z = clf.predict(np.c_[vv.ravel(), ww.ravel()])
+                    Z = Z.reshape(vv.shape)
+                    SVM_CS = self.axes.contourf(vv, ww, Z.reshape(vv.shape), levels=len(self.color_list) + 1,
+                                                cmap=ListedColormap(self.color_list), alpha=0)
+                    SVM_CS2 = self.axes.contour(SVM_CS, levels=SVM_CS.levels[::len(self.color_list)], colors='k',
+                                                origin='lower', alpha=0)
+                    for l in SVM_CS2.allsegs:
+                        if len(l) > 0:
+                            a = np.array(l[0])
+                            print(a)
+                            x = a[:, 0]
+                            y = a[:, 1]
+                            x_t = []
+                            y_t = []
 
-                        # self.axes.plot(np.unique(x_t), np.poly1d(np.polyfit(x_t, y_t, 1))(np.unique(x)), color='k',  alpha=0.3)
-                        self.axes.plot(x_t, y_t, color='red', alpha=0.3)
+                            for i in range(len(x)):
+                                s = math.exp(x[i]) + math.exp(y[i]) + 1
+                                X = math.exp(x[i]) / s
+                                Y = math.exp(y[i]) / s
+                                Z = 1 / s
+                                if ((X + Y + Z) != 0):
+                                    x_t.append(0.5 * (X + 2 * Z) / (X + Y + Z))
+                                    y_t.append(math.sin(math.pi / 3) * X / (X + Y + Z))
+
+                            # self.axes.plot(np.unique(x_t), np.poly1d(np.polyfit(x_t, y_t, 1))(np.unique(x)), color='k',  alpha=0.3)
+                            self.axes.plot(x_t, y_t, color='red', alpha=0.3)
+
+                            # sorted_indices = np.argsort(np.asarray(x_t), axis=0)
+                            # print(sorted_indices)
+                            # sorted_x = np.asarray(x_t)[sorted_indices]
+                            # sorted_y = np.asarray(y_t)[sorted_indices]
+                            # spl = make_interp_spline(sorted_x, sorted_y, k=3)  # type: BSpline
+                            # xnew = np.linspace(min(x_t), max(x_t), len(x_t))
+                            # xnew = np.linspace(xmin, xmax, 2048)
+                            # power_smooth = spl(xnew)
+                            # self.axes.plot(xnew, power_smooth, color='k', alpha=0.3)
 
 
-                        # sorted_indices = np.argsort(np.asarray(x_t), axis=0)
-                        # print(sorted_indices)
-                        # sorted_x = np.asarray(x_t)[sorted_indices]
-                        # sorted_y = np.asarray(y_t)[sorted_indices]
-                        # spl = make_interp_spline(sorted_x, sorted_y, k=3)  # type: BSpline
-                        # xnew = np.linspace(min(x_t), max(x_t), len(x_t))
-                        # xnew = np.linspace(xmin, xmax, 2048)
-                        # power_smooth = spl(xnew)
-                        # self.axes.plot(xnew, power_smooth, color='k', alpha=0.3)
-
+                else:
+                    Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+                    Z = Z.reshape(xx.shape)
+                    SVM_CS = self.axes.contourf(xx,yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
+                                                cmap=ListedColormap(self.color_list), alpha=0.3)
 
 
 
