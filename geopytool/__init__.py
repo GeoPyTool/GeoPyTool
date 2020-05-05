@@ -1765,6 +1765,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.xyzpop = XYZ(df=self.model._df,Standard=self.Standard)
+
             try:
                 self.xyzpop.Magic()
                 self.xyzpop.show()

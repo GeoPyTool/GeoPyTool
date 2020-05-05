@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding:utf-8
 import os
-import setuptools
+from distutils.core import setup
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
 
@@ -15,7 +15,7 @@ except:
     README = 'https://github.com/GeoPyTool/GeoPyTool/blob/master/README.md'
 
 
-setuptools.setup(name='geopytool',
+setup(name='geopytool',
       version=version,
       description='a tool for daily geology related task. visit geopytool.com for further information',
       longdescription=README,

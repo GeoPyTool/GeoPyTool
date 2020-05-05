@@ -549,8 +549,8 @@ class MyPCA(AppForm):
                             print(a)
                             x = a[:, 0]
                             y = a[:, 1]
-                            self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k',
-                                           alpha=0.3)
+                            self.axes.plot(x, y, color='red', alpha=0.3)
+                            #self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k', alpha=0.3)
                 self.axes.set_xlim(xmin, xmax)
                 self.axes.set_ylim(ymin, ymax)
 
@@ -581,7 +581,8 @@ class MyPCA(AppForm):
                         print(a)
                         x= a[:, 0]
                         y= a[:, 1]
-                        self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)),color='k', alpha=0.3)
+                        self.axes.plot(x, y, color='blue', alpha=0.3)
+                        #self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)),color='k', alpha=0.3)
             self.axes.set_xlim(xmin, xmax)
             self.axes.set_ylim(ymin, ymax)
         self.canvas.draw()

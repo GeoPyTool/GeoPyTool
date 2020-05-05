@@ -26,6 +26,7 @@ import sklearn as sk
 
 import scipy.stats as st
 
+from scipy.interpolate import make_interp_spline, BSpline
 
 
 from scipy.optimize import leastsq
