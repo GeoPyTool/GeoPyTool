@@ -15,6 +15,7 @@ except:
     README = 'https://github.com/GeoPyTool/GeoPyTool/blob/master/README.md'
 
 
+
 setuptools.setup(name='geopytool',
       version=version,
       description='a tool for daily geology related task. visit geopytool.com for further information',
@@ -26,7 +27,9 @@ setuptools.setup(name='geopytool',
       package_data={
           'geopytool': ['*.py','*.png','*.qm','*.ttf','*.ini','*.md'],
       },
+
       include_package_data=True,
+
 
       #py_modules=['CIPW','Cluster','geopytool/CustomClass','Harker','IMP','Magic','MudStone','MultiDimension','OldCustomClass','Pearce','PlotModel','QAPF','QFL','QmFLt','REE','Rose','Stereo','TAS','TableViewer','Temp','Test','Trace','XY','XYZ','ZirconCe','cli'],
 

@@ -1,0 +1,14 @@
+# This is an implicit value, here for clarity
+--index https://pypi.python.org/simple/
+
+cython>=0.27.1
+numpy>=1.8.2
+pandas>=0.24.1
+scipy>=1.2.1
+xlrd>=1.0.0
+matplotlib>=2.1.0
+BeautifulSoup4>=4.5.1
+requests>=2.18.4
+PyQt5>=5.12
+scikit-learn>=0.19.1
+sklearn-pandas>=1.8.0

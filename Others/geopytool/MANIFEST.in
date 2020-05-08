@@ -1,0 +1,69 @@
+include Test.png
+include calc.png
+include cluster.png
+include cn.png
+include cns.png
+include cnt.png
+include earth.png
+include en.png
+include forum.png
+include geopytool.png
+include github.png
+include help.png
+include lang.png
+include open.png
+include png.txt
+include qapf.png
+include quit.png
+include rose.png
+include save.png
+include set.png
+include spider.png
+include spider2.png
+include stastic.png
+include structure.png
+include temperature.png
+include triangular.png
+include update.png
+include version.png
+include web.png
+include website.png
+include xy.png
+include magic.png
+imclude multiple.png
+
+include config.ini
+
+include *.ini
+include *.png
+include cns.qm
+include cnt.qm
+include wqy.ttf
+
+include *.txt
+
+include requirements.txt
+
+include *.py
+
+
+include CustomClass.py
+include IMP.py
+include ZirconCe.py
+include TAS.py
+include REE.py
+include Trace.py
+include Pearce.py
+include Harker.py
+include Stereo.py
+include Rose.py
+include CIPW.py
+include QAPF.py
+include QFL.py
+include QmFLt.py
+include MudStone.py
+include Temp.py
+include Cluster.py
+include XY.py
+include XYZ.py
+include Magic.py
