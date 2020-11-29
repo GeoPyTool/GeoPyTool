@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="8f518a09-6a02-4870-b508-1f688aa519d7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/CIPW.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MacUsage.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/OSXUsage.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Sample.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Unit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Usage.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/geopython.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mac_main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/old.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/geopython.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/geopython.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,24 +38,24 @@
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="RunManager" selected="Python.__init__">
-    <configuration name="__init__" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="__init__" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="geopython" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Anaconda3\python.exe" />
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/bin/python3" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/geopytool" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -92,6 +100,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;.&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
@@ -103,23 +112,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.__init__" />
         <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
-  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -138,54 +135,37 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="668" y="212" key="#__init__" timestamp="1578023658571">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state x="104" y="71" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606647937508">
+      <screen x="0" y="25" width="1280" height="775" />
     </state>
-    <state x="668" y="212" key="#__init__/0.0.1920.1200@0.0.1920.1200" timestamp="1578023658571" />
-    <state width="1899" height="411" key="GridCell.Tab.0.bottom" timestamp="1578295713655">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state x="104" y="71" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.25.1280.775@0.25.1280.775" timestamp="1606647937508" />
+    <state width="1259" height="195" key="GridCell.Tab.0.bottom" timestamp="1606648091379">
+      <screen x="0" y="25" width="1280" height="775" />
     </state>
-    <state width="1899" height="411" key="GridCell.Tab.0.bottom/0.0.1920.1200@0.0.1920.1200" timestamp="1578295713655" />
-    <state width="1899" height="411" key="GridCell.Tab.0.center" timestamp="1578295713655">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state width="1259" height="195" key="GridCell.Tab.0.bottom/0.25.1280.775@0.25.1280.775" timestamp="1606648091379" />
+    <state width="1259" height="195" key="GridCell.Tab.0.center" timestamp="1606648091378">
+      <screen x="0" y="25" width="1280" height="775" />
     </state>
-    <state width="1899" height="411" key="GridCell.Tab.0.center/0.0.1920.1200@0.0.1920.1200" timestamp="1578295713655" />
-    <state width="1899" height="411" key="GridCell.Tab.0.left" timestamp="1578295713655">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state width="1259" height="195" key="GridCell.Tab.0.center/0.25.1280.775@0.25.1280.775" timestamp="1606648091378" />
+    <state width="1259" height="195" key="GridCell.Tab.0.left" timestamp="1606648091377">
+      <screen x="0" y="25" width="1280" height="775" />
     </state>
-    <state width="1899" height="411" key="GridCell.Tab.0.left/0.0.1920.1200@0.0.1920.1200" timestamp="1578295713655" />
-    <state width="1899" height="411" key="GridCell.Tab.0.right" timestamp="1578295713655">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state width="1259" height="195" key="GridCell.Tab.0.left/0.25.1280.775@0.25.1280.775" timestamp="1606648091377" />
+    <state width="1259" height="195" key="GridCell.Tab.0.right" timestamp="1606648091379">
+      <screen x="0" y="25" width="1280" height="775" />
     </state>
-    <state width="1899" height="411" key="GridCell.Tab.0.right/0.0.1920.1200@0.0.1920.1200" timestamp="1578295713655" />
-    <state width="1899" height="411" key="GridCell.Tab.1.bottom" timestamp="1578295713589">
-      <screen x="0" y="0" width="1920" height="1200" />
+    <state width="1259" height="195" key="GridCell.Tab.0.right/0.25.1280.775@0.25.1280.775" timestamp="1606648091379" />
+    <state x="149" y="48" key="SettingsEditor" timestamp="1606647854350">
+      <screen x="0" y="25" width="1280" height="775" />
     </state>
-    <state width="1899" height="411" key="GridCell.Tab.1.bottom/0.0.1920.1200@0.0.1920.1200" timestamp="1578295713589" />
-    <state width="1899" height="411" key="GridCell.Tab.1.center" timestamp="1578295713589">
-      <screen x="0" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1899" height="411" key="GridCell.Tab.1.center/0.0.1920.1200@0.0.1920.1200" timestamp="1578295713589" />
-    <state width="1899" height="411" key="GridCell.Tab.1.left" timestamp="1578295713589">
-      <screen x="0" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1899" height="411" key="GridCell.Tab.1.left/0.0.1920.1200@0.0.1920.1200" timestamp="1578295713589" />
-    <state width="1899" height="411" key="GridCell.Tab.1.right" timestamp="1578295713589">
-      <screen x="0" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1899" height="411" key="GridCell.Tab.1.right/0.0.1920.1200@0.0.1920.1200" timestamp="1578295713589" />
-    <state x="655" y="258" key="SettingsEditor" timestamp="1578281289527">
-      <screen x="0" y="0" width="1920" height="1200" />
-    </state>
-    <state x="655" y="258" key="SettingsEditor/0.0.1920.1200@0.0.1920.1200" timestamp="1578281289527" />
+    <state x="149" y="48" key="SettingsEditor/0.25.1280.775@0.25.1280.775" timestamp="1606647854350" />
   </component>
 </project>
