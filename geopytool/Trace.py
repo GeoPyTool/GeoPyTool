@@ -4,7 +4,7 @@ from geopytool.CustomClass import *
 class Trace(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
               30, 31, 32, 33, 34, 35, 36, 37]
-    xticklabels = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
+    xticklabels = [u'',u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',
                    u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
                    u'Li',
                    u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
@@ -80,7 +80,7 @@ class Trace(AppForm):
             if tmp_label not in self.AllLabel:
                 self.AllLabel.append(tmp_label)
 
-        self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr',
+        self.Element = [u'', u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr',
                         u'Mo',
                         u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb', u'Dy',
                         u'Li',
@@ -230,12 +230,17 @@ class Trace(AppForm):
 
 
         if (int(self.type_slider.value()) == 0):
-            self.Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
+            self.Element = [u'', u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb',
                             u'Pr', u'Mo',
                             u'Sr', u'P', u'Nd', u'F', u'Sm', u'Zr', u'Hf', u'Eu', u'Sn', u'Sb', u'Ti', u'Gd', u'Tb',
                             u'Dy', u'Li', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
 
             CommonElements = [i for i in self.Element if i in self._df.columns]
+
+
+
+
+
             self.Element = CommonElements
             self.xticks = [i for i in range(1,len(CommonElements)+2)]
             self.xticklabels = CommonElements
@@ -246,11 +251,12 @@ class Trace(AppForm):
 
         else:
             self.Type_cb.setText('&Rb-Lu (26 Elements)')
-            self.Element = [u'Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd',
+            self.Element = [u'',u'Rb', u'Ba', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pr', u'Sr', u'P', u'Nd',
                             u'Zr', u'Hf',
                             u'Sm', u'Eu', u'Ti', u'Tb', u'Dy', u'Y', u'Ho', u'Er', u'Tm', u'Yb', u'Lu']
 
             CommonElements = [i for i in self.Element if i in self._df.columns]
+
             self.Element = CommonElements
             self.xticks = [i for i in range(1,len(CommonElements)+2)]
             self.xticklabels = CommonElements
@@ -538,6 +544,8 @@ class Trace(AppForm):
 
 
         self.axes.set_xticks(self.xticks)
+
+        self.xticklabels.append( '')  # fix blank head problem by matplotlib
         self.axes.set_xticklabels(self.xticklabels, rotation=-45, fontsize=6)
 
 

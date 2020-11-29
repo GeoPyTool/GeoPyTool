@@ -1394,6 +1394,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.tracepop = Trace(df=self.model._df,Standard=self.Standard)
+            self.tracepop.Trace()
+            self.tracepop.show()
+
+
             try:
                 self.tracepop.Trace()
                 self.tracepop.show()
