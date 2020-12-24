@@ -2,8 +2,8 @@
 #coding:utf-8
 import os
 import setuptools
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
+from ImportDependence import *
+from CustomClass import *
 
 
 
@@ -18,7 +18,7 @@ except:
 
 setuptools.setup(name='geopytool',
       version=version,
-      description='a tool for daily geology related task. visit geopytool.com for further information',
+      description='a tool for daily geology related task. visit com for further information',
       longdescription=README,
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',
@@ -33,7 +33,7 @@ setuptools.setup(name='geopytool',
 
       #py_modules=['CIPW','Cluster','geopytool/CustomClass','Harker','IMP','Magic','MudStone','MultiDimension','OldCustomClass','Pearce','PlotModel','QAPF','QFL','QmFLt','REE','Rose','Stereo','TAS','TableViewer','Temp','Test','Trace','XY','XYZ','ZirconCe','cli'],
 
-      #py_modules=['geopytool.CustomClass'],
+      #py_modules=['CustomClass'],
 
       install_requires=[ 
                         'cython',

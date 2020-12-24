@@ -1,5 +1,5 @@
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
+from ImportDependence import *
+from CustomClass import *
 
 class Rose(AppForm):
     reference = 'Zhou, J. B., Zeng, Z. X., and Yuan, J. R., 2003, THE DESIGN AND DEVELOPMENT OF THE SOFTWARE STRUCKIT FOR STRUCTURAL GEOLOGY: Journal of Changchun University of Science & Technology, v. 33, no. 3, p. 276-281.'

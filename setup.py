@@ -16,7 +16,7 @@ except:
 
 
 setuptools.setup(name='geopytool',
-      version=version,
+      version="0.8.20.0.202",
       description='a tool for daily geology related task. visit geopytool.com for further information',
       longdescription=README,
       author='cycleuser',
@@ -30,7 +30,7 @@ setuptools.setup(name='geopytool',
 
       #py_modules=['CIPW','Cluster','geopytool/CustomClass','Harker','IMP','Magic','MudStone','MultiDimension','OldCustomClass','Pearce','PlotModel','QAPF','QFL','QmFLt','REE','Rose','Stereo','TAS','TableViewer','Temp','Test','Trace','XY','XYZ','ZirconCe','cli'],
 
-      #py_modules=['geopytool.CustomClass'],
+      #py_modules=['CustomClass'],
 
       install_requires=[ 
                         'cython',

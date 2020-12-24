@@ -1,5 +1,5 @@
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
+from ImportDependence import *
+from CustomClass import *
 
 class ZirconCeOld(QMainWindow):
     _df = pd.DataFrame()
@@ -377,7 +377,7 @@ class ZirconCeOld(QMainWindow):
                                         textcoords='offset points',
                                         ha='right', va='bottom',
                                         bbox=dict(boxstyle='round,pad=0.2', fc='yellow', alpha=0.3),
-                                          # from geopytool.ZirconCe import ZirconCe
+                                          # from ZirconCe import ZirconCe
                                           arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
 
         for i in self.z3:

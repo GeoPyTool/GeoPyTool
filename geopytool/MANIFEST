@@ -16,7 +16,7 @@ cnt.qm
 earth.png
 en.png
 forum.png
-geopytool.png
+png
 github.png
 help.png
 lang.png
@@ -55,8 +55,8 @@ geopytool/cnt.qm
 geopytool/earth.png
 geopytool/en.png
 geopytool/forum.png
-geopytool/geopytool.png
-geopytool/geopytool.py
+geopytool/png
+geopytool/py
 geopytool/github.png
 geopytool/gpversion.py
 geopytool/gui.py

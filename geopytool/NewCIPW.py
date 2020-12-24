@@ -1,6 +1,6 @@
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
-from geopytool.QAPF import *
+from ImportDependence import *
+from CustomClass import *
+from QAPF import *
 
 class CIPW(AppForm):
     addon = 'Name Author DataType Label Marker Color Size Alpha Style Width TOTAL total LOI loi'

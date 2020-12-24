@@ -1,5 +1,5 @@
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
+from ImportDependence import *
+from CustomClass import *
 from PyQt5 import QtGui  # (the example applies equally well to PySide)
 import pyqtgraph as pg
 import pandas as pd

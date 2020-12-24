@@ -1,5 +1,5 @@
-from geopytool.ImportDependence import *
-#from geopytool.QAPF import *
+from ImportDependence import *
+#from QAPF import *
 
 class PandasModel(QtCore.QAbstractTableModel):
     _df = pd.DataFrame()

@@ -1,5 +1,5 @@
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
+from ImportDependence import *
+from CustomClass import *
 
 class QmFLt(AppForm, Tool):
     reference = 'Refrence: Dickinson, W. R., Beard, L. S., Brakenridge, G. R., Erjavec, J. L., Ferguson, R. C., Inman, K. F., Knepp, R. A., Lindberg, F. A., and Ryberg, P. T., 1983, Provenance of North American Phanerozoic sandstones in relation to tectonic setting: Geological Society of America Bulletin, v. 94, no. 2, p. 222.'

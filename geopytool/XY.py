@@ -1,6 +1,6 @@
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
-#from geopytool.TableViewer import TableViewer
+from ImportDependence import *
+from CustomClass import *
+#from TableViewer import TableViewer
 
 class XY(AppForm):
     Element = [u'Cs', u'Tl', u'Rb', u'Ba', u'W', u'Th', u'U', u'Nb', u'Ta', u'K', u'La', u'Ce', u'Pb', u'Pr', u'Mo',

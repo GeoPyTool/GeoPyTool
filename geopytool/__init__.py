@@ -1,12 +1,14 @@
 ﻿#!/usr/bin/python3
 # coding:utf-8
-
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
+import sys,os
+print(sys.path)
 
 LocationOfMySelf=os.path.dirname(__file__)
-
+sys.path.append(LocationOfMySelf)
 #print(LocationOfMySelf,' init')
+
+from ImportDependence import *
+from CustomClass import *
 
 
 sign = '''
@@ -26,78 +28,78 @@ a tool set for daily geology related task.
 t = 'You are using GeoPyTool ' + version + ', released on' + date + '\n' + sign
 _translate = QtCore.QCoreApplication.translate
 
-from geopytool.CustomClass import TableViewer
-from geopytool.CIPW import CIPW
-from geopytool.Niggli import Niggli
-from geopytool.Cluster import Cluster
-from geopytool.Harker import Harker
-from geopytool.HarkerOld import HarkerOld
+from CustomClass import TableViewer
+from CIPW import CIPW
+from Niggli import Niggli
+from Cluster import Cluster
+from Harker import Harker
+from HarkerOld import HarkerOld
 
-#from geopytool.Magic import Magic
+#from Magic import Magic
 
-from geopytool.Clastic import Clastic
-from geopytool.CIA import CIA
+from Clastic import Clastic
+from CIA import CIA
 
-from geopytool.IsoTope import IsoTope
+from IsoTope import IsoTope
 
-from geopytool.KArIsoTope import KArIsoTope
+from KArIsoTope import KArIsoTope
 
-from geopytool.MultiDimension import MultiDimension
+from MultiDimension import MultiDimension
 
-from geopytool.Combine import MyCombine
+from Combine import MyCombine
 
-from geopytool.Flatten import MyFlatten
+from Flatten import MyFlatten
 
-from geopytool.MyFA import MyFA
+from MyFA import MyFA
 
-from geopytool.MyPCA import MyPCA
+from MyPCA import MyPCA
 
-from geopytool.MyLDA import MyLDA
+from MyLDA import MyLDA
 
-from geopytool.MyQDA import MyQDA
+from MyQDA import MyQDA
 
-from geopytool.MyDT import MyDT
+from MyDT import MyDT
 
-from geopytool.Trans import MyTrans
+from Trans import MyTrans
 
-from geopytool.Dist import MyDist
+from Dist import MyDist
 
-from geopytool.Sta import MySta
+from Sta import MySta
 
-from geopytool.ThreeD import MyThreeD
-
-
-from geopytool.TwoD import MyTwoD
-
-from geopytool.TwoD_Grey import MyTwoD_Grey
-
-from geopytool.Pearce import Pearce
-from geopytool.QAPF import QAPF
-from geopytool.QFL import QFL
-from geopytool.QmFLt import QmFLt
-from geopytool.REE import REE
-from geopytool.Rose import Rose
-from geopytool.Stereo import Stereo
-from geopytool.TAS import TAS
-from geopytool.K2OSiO2 import K2OSiO2
-from geopytool.ZrYSrTi import ZrYSrTi
-from geopytool.TiAlCaMgMnKNaSi import TiAlCaMgMnKNaSi
+from ThreeD import MyThreeD
 
 
+from TwoD import MyTwoD
 
-from geopytool.Saccani import Saccani
-from geopytool.Raman import Raman
-from geopytool.FluidInclusion import FluidInclusion
-from geopytool.MyHist import MyHist
+from TwoD_Grey import MyTwoD_Grey
 
-from geopytool.Temp import *
-from geopytool.TraceNew import TraceNew
-from geopytool.Trace import Trace
-from geopytool.XY import XY
-from geopytool.XYZ import XYZ
-from geopytool.ZirconCe import ZirconCe
-from geopytool.ZirconCeOld import ZirconCeOld
-from geopytool.Magic import Magic
+from Pearce import Pearce
+from QAPF import QAPF
+from QFL import QFL
+from QmFLt import QmFLt
+from REE import REE
+from Rose import Rose
+from Stereo import Stereo
+from TAS import TAS
+from K2OSiO2 import K2OSiO2
+from ZrYSrTi import ZrYSrTi
+from TiAlCaMgMnKNaSi import TiAlCaMgMnKNaSi
+
+
+
+from Saccani import Saccani
+from Raman import Raman
+from FluidInclusion import FluidInclusion
+from MyHist import MyHist
+
+from Temp import *
+from TraceNew import TraceNew
+from Trace import Trace
+from XY import XY
+from XYZ import XYZ
+from ZirconCe import ZirconCe
+from ZirconCeOld import ZirconCeOld
+from Magic import Magic
 
 # Create a custom "QProxyStyle" to enlarge the QMenu icons
 #-----------------------------------------------------------
@@ -138,7 +140,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate('MainWindow', u'GeoPyTool'))
-        self.setWindowIcon(QIcon(LocationOfMySelf+'/geopytool.png'))
+        self.setWindowIcon(QIcon(LocationOfMySelf+'/png'))
         self.talk=  _translate('MainWindow','You are using GeoPyTool ') + version +'\n'+  _translate('MainWindow','released on ') + date
 
         self.model = PandasModel(self.raw)
@@ -617,7 +619,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionQuit.triggered.connect(qApp.quit)
 
 
-        self.actionWeb.triggered.connect(self.goIssue)
+        self.actionWeb.triggered.connect(self.goDiscussion)
         self.actionGoGithub.triggered.connect(self.goGitHub)
         self.actionVersionCheck.triggered.connect(self.checkVersion)
 
@@ -748,8 +750,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def goGitHub(self):
         webbrowser.open('https://github.com/GeoPyTool/GeoPyTool')
 
-    def goIssue(self):
-        webbrowser.open('https://github.com/GeoPyTool/GeoPyTool/issues')
+    def goDiscussion(self):
+        webbrowser.open('https://github.com/GeoPyTool/GeoPyTool/discussions')
 
     def checkVersion(self):
 
@@ -757,7 +759,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         _translate = QtCore.QCoreApplication.translate
 
-        url = 'https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/geopytool/CustomClass.py'
+        url = 'https://gitlab.com/cycleuser/GeoPyTool/-/raw/master/geopytool/CustomClass.py'
 
 
         r= 0
@@ -1394,10 +1396,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if (len(self.model._df) > 0):
             self.tracepop = Trace(df=self.model._df,Standard=self.Standard)
-            self.tracepop.Trace()
-            self.tracepop.show()
-
-
             try:
                 self.tracepop.Trace()
                 self.tracepop.show()

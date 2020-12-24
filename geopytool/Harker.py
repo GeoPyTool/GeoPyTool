@@ -1,5 +1,5 @@
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
+from ImportDependence import *
+from CustomClass import *
 
 class Harker(AppForm):
     Lines = []

@@ -1,6 +1,6 @@
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
-#from geopytool.TableViewer import TableViewer
+from ImportDependence import *
+from CustomClass import *
+#from TableViewer import TableViewer
 
 class Bar(AppForm):
 

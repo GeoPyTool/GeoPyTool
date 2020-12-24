@@ -1,5 +1,5 @@
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
+from ImportDependence import *
+from CustomClass import *
 
 class TraceNew(AppForm):
     xticks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -515,6 +515,9 @@ class TraceNew(AppForm):
 
 
         self.axes.set_xticks(self.xticks)
+        
+        
+        self.xticklabels.append( '')  # fix blank head problem by matplotlib
         self.axes.set_xticklabels(self.xticklabels, rotation=-45, fontsize=6)
 
 
