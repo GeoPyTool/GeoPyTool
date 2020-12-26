@@ -21,6 +21,9 @@ import subprocess
 import webbrowser
 import sys
 import sklearn as sk
+
+from sklearn.neural_network import MLPClassifier
+
 #import vispy.app, vispy.visuals, vispy.scene, vispy.plot, vispy.io, vispy.color
 #import sklearn_pandas as skpd
 
