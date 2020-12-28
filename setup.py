@@ -16,7 +16,7 @@ except:
 
 
 setuptools.setup(name='geopytool',
-      version="0.8.20.0.203",
+      version="0.8.20.0.204",
       description='a tool for daily geology related task. visit geopytool.com for further information',
       longdescription=README,
       author='cycleuser',
