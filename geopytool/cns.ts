@@ -121,7 +121,7 @@
     <message>
         <location filename="__init__.py" line="631"/>
         <source>Remove LOI</source>
-        <translation>去除烧式量</translation>
+        <translation>去除烧失量</translation>
     </message>
     <message>
         <location filename="__init__.py" line="632"/>
@@ -346,7 +346,7 @@
     <message>
         <location filename="__init__.py" line="687"/>
         <source>MLP</source>
-        <translation type="unfinished">多层感知机</translation>
+        <translation>多层感知机</translation>
     </message>
     <message>
         <location filename="__init__.py" line="689"/>
@@ -456,7 +456,7 @@
     <message>
         <location filename="__init__.py" line="1210"/>
         <source>LOI has been removed!:</source>
-        <translation>烧式量已经移除</translation>
+        <translation>烧失量已经移除</translation>
     </message>
     <message>
         <location filename="__init__.py" line="1563"/>

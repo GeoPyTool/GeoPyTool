@@ -121,7 +121,7 @@
     <message>
         <location filename="__init__.py" line="631"/>
         <source>Remove LOI</source>
-        <translation>去除燒式量</translation>
+        <translation>去除燒失量</translation>
     </message>
     <message>
         <location filename="__init__.py" line="632"/>
@@ -456,7 +456,7 @@
     <message>
         <location filename="__init__.py" line="1210"/>
         <source>LOI has been removed!:</source>
-        <translation>燒式量已經移除</translation>
+        <translation>燒失量已經移除</translation>
     </message>
     <message>
         <location filename="__init__.py" line="1563"/>
