@@ -109,6 +109,9 @@ class MyFA(AppForm):
         self.line_cb.setChecked(False)
         self.line_cb.stateChanged.connect(self.Key_Func)  # int
 
+        self.run_MLP_button = QPushButton('&Run MLP')
+        self.run_MLP_button.clicked.connect(self.runMLP)
+
         self.mpl_toolbar = NavigationToolbar(self.canvas, self.main_frame)
 
         # Other GUI controls
@@ -175,11 +178,11 @@ class MyFA(AppForm):
         self.vbox.addWidget(self.mpl_toolbar)
         self.vbox.addWidget(self.canvas)
 
-        for w in [self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.lda_cb ,self.hyperplane_cb,self.line_cb,self.kernel_select_label,self.kernel_select ]:
+        for w in [self.switch_button,self.legend_cb, self.show_load_data_cb, self.show_data_index_cb, self.shape_cb, self.lda_cb ,self.hyperplane_cb,self.line_cb,self.kernel_select_label,self.kernel_select,self.run_MLP_button]:
             self.hbox0.addWidget(w)
             self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.switch_button, self.load_data_button, self.save_picture_button, self.save_result_button, self.save_Para_button, self.save_predict_button]:
+        for w in [ self.load_data_button, self.save_picture_button, self.save_result_button, self.save_Para_button, self.save_predict_button]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -674,6 +677,65 @@ class MyFA(AppForm):
         except Exception as e:
             msg = 'You need to load another data to run SVM.\n '
             self.ErrorEvent(text= msg +repr(e) )
+
+
+    def runMLP(self):
+
+        n = len(self.fa_result)
+
+        # n 是FA后得到的训练集的样本数
+        # 用训练集中样本的维度作为输入层神经元个数
+        # 用训练集中样本的类别标签数作为输出层神经元个数
+        # m 是根据上面参考文献得到的经验公式，作为隐藏神经元层数
+
+        m = int((4 * n**2 + 3)/(n** 2 - 8))
+        input_size = len(self.fa_result.T)
+        output_size = len(set(self.result_to_fit.index))
+        alpha= 2 # 2-10
+
+        # if (2<=m<=10):
+        #     alpha = m  # 2-10
+        # else:
+        #     alpha = 5
+        # n_h 是得到的隐藏层的每一层神经元个数
+        n_h= int(n/(alpha*(input_size+output_size)))
+
+
+        hidden_layer_tuple=(n_h,) * m
+
+        self.MLP = MLPClassifier(solver='lbfgs', alpha=1e-5,
+                                 hidden_layer_sizes=hidden_layer_tuple,
+                                 random_state=1)
+
+        try:
+            self.MLP.fit(self.fa_result,self.result_to_fit.index )
+            self.coefs_ = self.MLP.coefs_
+            self.intercepts_ = self.MLP.intercepts_
+            self.MLP_params = self.MLP.get_params(deep=True)
+
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
+
+        Z = self.MLP.predict(self.fa_data_to_test)
+
+        Z2 = self.MLP.predict_proba(self.fa_data_to_test)
+        proba_df = pd.DataFrame(Z2)
+        proba_df.columns = self.MLP.classes_
+
+        proba_list = []
+        for i in range(len(proba_df)):
+            proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
+        predict_result = pd.concat(
+            [self.data_to_test['Label'], pd.DataFrame({'Classification': Z}),
+             pd.DataFrame({'Confidence probability': proba_list})],
+            axis=1)
+        # print(predict_result)
+
+        self.predictpop = TableViewer(df=predict_result,
+                                      title=self.description + 'Predict Result with All Items')
+        self.predictpop.show()
+
+
 
     def Distance_Calculation(self):
 

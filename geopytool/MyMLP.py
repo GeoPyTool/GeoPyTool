@@ -89,31 +89,10 @@ class MyMLP(AppForm):
         self.m = m  # m 是根据上面参考文献得到的经验公式，作为隐藏神经元层数
         self.n_h = n_h # n_h 是得到的隐藏层的每一层神经元个数
 
-        self.MLP = MLPClassifier(solver='lbfgs', alpha=1e-5,
-                                 hidden_layer_sizes=((n_h,)*m),
-                                 random_state=1)
-
-        # self.MLP = MLPClassifier(solver='lbfgs', alpha=1e-5,
-        #                          random_state=1)
-
         le = LabelEncoder()
         le.fit(self.result_to_fit.index)
         self.original_label = le.transform(self.result_to_fit.index)
 
-        #print(self.result_to_fit.columns.values.tolist())
-        #MLP Fitting
-
-        try:
-            self.MLP.fit(self.result_to_fit.values,self.result_to_fit.index)
-            self.coefs_ = self.MLP.coefs_
-            self.intercepts_ = self.MLP.intercepts_
-            self.MLP_params= self.MLP.get_params(deep = True)
-
-            # 接下来需要做的就是训练参数的保存、加载
-            # 或许可以推广到其他类型模型的参数保存和加载
-
-        except Exception as e:
-            self.ErrorEvent(text=repr(e))
 
         self.create_main_frame()
 
@@ -171,6 +150,15 @@ class MyMLP(AppForm):
         self.load_data_button = QPushButton('&Add Data to Test')
         self.load_data_button.clicked.connect(self.loadDataToTest)
 
+        # self.slider_left_label = QLabel('Same Size Neurons')
+        # self.slider_right_label = QLabel('Asymptotic Neurons')
+        # self.slider = QSlider(Qt.Horizontal)
+        # self.slider.setRange(0, 1)
+        # self.slider.setValue(0)
+        # self.slider.setTracking(True)
+        # self.slider.setTickPosition(QSlider.TicksBothSides)
+        # self.slider.valueChanged.connect(self.Key_Func)  # int
+
         # self.kernel_select = QSlider(Qt.Horizontal)
         # self.kernel_select.setRange(0, len(self.kernel_list)-1)
         # self.kernel_select.setValue(0)
@@ -194,6 +182,10 @@ class MyMLP(AppForm):
         #     self.hbox0.addWidget(w)
         #     self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
+        # for w in [self.slider_left_label,self.slider,self.slider_right_label ]:
+        #     self.hbox0.addWidget(w)
+        #     self.hbox0.setAlignment(w, Qt.AlignVCenter)
+
         for w in [self.load_data_button, self.save_picture_button, self.save_result_button, self.save_Para_button, self.save_predict_button]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
@@ -213,6 +205,13 @@ class MyMLP(AppForm):
     def Key_Func(self):
 
         self.axes.clear()
+        #print(self.result_to_fit.columns.values.tolist())
+        #MLP Fitting
+        hidden_layer_tuple=(self.n_h,) * self.m
+
+        self.MLP = MLPClassifier(solver='lbfgs', alpha=1e-5,
+                                 hidden_layer_sizes=hidden_layer_tuple,
+                                 random_state=1)
 
         try:
             self.MLP.fit(self.result_to_fit.values, self.result_to_fit.index)
@@ -227,6 +226,9 @@ class MyMLP(AppForm):
             self.m # m 是根据上面参考文献得到的经验公式，作为隐藏神经元层数
             self.n_h  # n_h 是得到的隐藏层的每一层神经元个数
 
+
+            # 接下来需要做的就是训练参数的保存、加载
+            # 或许可以推广到其他类型模型的参数保存和加载
 
             center=(0,0)
             circ_input=[]

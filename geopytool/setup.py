@@ -2,8 +2,8 @@
 #coding:utf-8
 import os
 import setuptools
-from ImportDependence import *
-from CustomClass import *
+from geopytool.ImportDependence import *
+from geopytool.CustomClass import *
 
 
 
@@ -15,10 +15,9 @@ except:
     README = 'https://github.com/GeoPyTool/GeoPyTool/blob/master/README.md'
 
 
-
 setuptools.setup(name='geopytool',
-      version=version,
-      description='a tool for daily geology related task. visit com for further information',
+      version="0.8.20.0.205",
+      description='a tool for daily geology related task. visit geopytool.com for further information',
       longdescription=README,
       author='cycleuser',
       author_email='cycleuser@cycleuser.org',
@@ -27,9 +26,7 @@ setuptools.setup(name='geopytool',
       package_data={
           'geopytool': ['*.py','*.png','*.qm','*.ttf','*.ini','*.md'],
       },
-
       include_package_data=True,
-
 
       #py_modules=['CIPW','Cluster','geopytool/CustomClass','Harker','IMP','Magic','MudStone','MultiDimension','OldCustomClass','Pearce','PlotModel','QAPF','QFL','QmFLt','REE','Rose','Stereo','TAS','TableViewer','Temp','Test','Trace','XY','XYZ','ZirconCe','cli'],
 
