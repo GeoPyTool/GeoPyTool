@@ -16,7 +16,7 @@ except:
 
 
 setuptools.setup(name='geopytool',
-      version="0.8.20.0.205",
+      version="0.9.21.0.001",
       description='a tool for daily geology related task. visit geopytool.com for further information',
       longdescription=README,
       author='cycleuser',
@@ -45,5 +45,9 @@ setuptools.setup(name='geopytool',
                         'PyQt5',
                         'scikit-image',
                         'scikit-learn',
+                        'tensorflow',
+                        'torch',
+                        'keras',
+                        'tqdm',
                          ],
      )

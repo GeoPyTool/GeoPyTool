@@ -95,7 +95,7 @@ class MyLDA(AppForm):
 
         #self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
 
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.2, right=0.7, top=0.9)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.2, bottom=0.2, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
@@ -220,7 +220,7 @@ class MyLDA(AppForm):
 
         self.comp = (self.LDA.scalings_.T)
         self.n = len(self.comp)
-        self.lda_result = self.LDA.fit_transform(self.result_to_fit.values, original_label)
+        self.trained_result = self.LDA.fit_transform(self.result_to_fit.values, original_label)
 
         # class 0 and 1 : areas
         #self.text_result='N Components :' + str(n)+'N Components :' + str(comp)+ '\nExplained Variance Ratio :' + str(evr)+'\nExplained Variance :' + str(ev)
@@ -254,8 +254,8 @@ class MyLDA(AppForm):
                 all_alpha.append(alpha)
             if color not in self.color_list:
                 self.color_list.append(color)
-            LDA_X.append([self.lda_result[i, a],
-                          self.lda_result[i, b]])
+            LDA_X.append([self.trained_result[i, a],
+                          self.trained_result[i, b]])
             LDA_Label.append(self._df.at[i, 'Label'])
 
 
@@ -318,16 +318,16 @@ class MyLDA(AppForm):
                 #print(self.data_to_test_to_fit.shape)
 
                 try:
-                    self.lda_data_to_test = self.LDA.transform(self.data_to_test_to_fit)
+                    self.trained_data_to_test = self.LDA.transform(self.data_to_test_to_fit)
 
 
-                    self.load_result = pd.concat([self.load_settings_backup, pd.DataFrame(self.lda_data_to_test)], axis=1)
+                    self.load_result = pd.concat([self.load_settings_backup, pd.DataFrame(self.trained_data_to_test)], axis=1)
 
                     for i in range(len(test_labels)):
 
                         if (self.show_load_data_cb.isChecked()):
-                            self.axes.scatter(self.lda_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
-                                              self.lda_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
+                            self.axes.scatter(self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
+                                              self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
                                               color=test_colors[i],
                                               marker=test_markers[i],
                                               label=test_labels[i],
@@ -337,8 +337,8 @@ class MyLDA(AppForm):
                             '''
                             if (self.shape_cb.isChecked()):
                                 pass
-                                XtoFit = self.lda_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
-                                YtoFit = self.lda_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
+                                XtoFit = self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
+                                YtoFit = self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
 
                                 xmin, xmax = min(XtoFit), max(XtoFit)
                                 ymin, ymax = min(YtoFit), max(YtoFit)
@@ -381,11 +381,11 @@ class MyLDA(AppForm):
         self.axes.set_ylabel("component "+str(b+1))
 
 
-        self.begin_result = pd.concat([self.settings_backup, pd.DataFrame(self.lda_result)], axis=1)
+        self.begin_result = pd.concat([self.settings_backup, pd.DataFrame(self.trained_result)], axis=1)
 
         for i in range(len(all_labels)):
-            self.axes.scatter(self.lda_result[self.result_to_fit.index == all_labels[i], a],
-                              self.lda_result[self.result_to_fit.index == all_labels[i], b],
+            self.axes.scatter(self.trained_result[self.result_to_fit.index == all_labels[i], a],
+                              self.trained_result[self.result_to_fit.index == all_labels[i], b],
                               color=all_colors[i],
                               marker=all_markers[i],
                               label=all_labels[i],
@@ -394,8 +394,8 @@ class MyLDA(AppForm):
 
             if (self.shape_cb.isChecked()):
                 pass
-                XtoFit = self.lda_result[self.result_to_fit.index == all_labels[i], a]
-                YtoFit = self.lda_result[self.result_to_fit.index == all_labels[i], b]
+                XtoFit = self.trained_result[self.result_to_fit.index == all_labels[i], a]
+                YtoFit = self.trained_result[self.result_to_fit.index == all_labels[i], b]
 
                 xmin, xmax = min(XtoFit), max(XtoFit)
                 ymin, ymax = min(YtoFit), max(YtoFit)
@@ -431,19 +431,19 @@ class MyLDA(AppForm):
                         self.axes.clabel(cset, inline=1, fontsize=10)
 
         if (self.show_data_index_cb.isChecked()):
-            for i in range(len(self.lda_result)):
+            for i in range(len(self.trained_result)):
                     if 'Index' in self._df.columns.values:
 
-                        self.axes.text(self.lda_result[i, a], self.lda_result[i, b], self._df_back.at[i, 'Index'], size=self._df.at[i, 'Size'], zorder=1, color=self._df.at[i, 'Color'],
+                        self.axes.text(self.trained_result[i, a], self.trained_result[i, b], self._df_back.at[i, 'Index'], size=self._df.at[i, 'Size'], zorder=1, color=self._df.at[i, 'Color'],
                                    alpha=self._df.at[i, 'Alpha'])
                     else:
-                        self.axes.text(self.lda_result[i, a], self.lda_result[i, b], 'No'+str(i+1), size=self._df.at[i, 'Size'], zorder=1, color=self._df.at[i, 'Color'],
+                        self.axes.text(self.trained_result[i, a], self.trained_result[i, b], 'No'+str(i+1), size=self._df.at[i, 'Size'], zorder=1, color=self._df.at[i, 'Color'],
                                    alpha=self._df.at[i, 'Alpha'])
 
         if (self.hyperplane_cb.isChecked()):
             clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-            svm_x = self.lda_result[:, a]
-            svm_y = self.lda_result[:, b]
+            svm_x = self.trained_result[:, a]
+            svm_y = self.trained_result[:, b]
             xmin, xmax = self.axes.get_xlim()
             ymin, ymax = self.axes.get_ylim()
             self.cmap_trained_data = ListedColormap(self.color_list)
@@ -526,10 +526,10 @@ class MyLDA(AppForm):
 
         try:
             clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-            clf.fit(self.lda_result, self.result_to_fit.index)
-            Z = clf.predict(np.c_[self.lda_data_to_test])
+            clf.fit(self.trained_result, self.result_to_fit.index)
+            Z = clf.predict(np.c_[self.trained_data_to_test])
 
-            Z2 = clf.predict_proba(np.c_[self.lda_data_to_test])
+            Z2 = clf.predict_proba(np.c_[self.trained_data_to_test])
             proba_df = pd.DataFrame(Z2)
             proba_df.columns = clf.classes_
 
@@ -567,63 +567,63 @@ class MyLDA(AppForm):
             self.ErrorEvent(text= msg +repr(e) )
 
 
-
-    def runMLP(self):
-
-        n = len(self.lda_result)
-
-        # n 是LDA后得到的训练集的样本数
-        # 用训练集中样本的维度作为输入层神经元个数
-        # 用训练集中样本的类别标签数作为输出层神经元个数
-        # m 是根据上面参考文献得到的经验公式，作为隐藏神经元层数
-
-        m = int((4 * n**2 + 3)/(n** 2 - 8))
-        input_size = len(self.lda_result.T)
-        output_size = len(set(self.result_to_fit.index))
-        alpha= 2 # 2-10
-
-        # if (2<=m<=10):
-        #     alpha = m  # 2-10
-        # else:
-        #     alpha = 5
-        # n_h 是得到的隐藏层的每一层神经元个数
-        n_h= int(n/(alpha*(input_size+output_size)))
-
-
-        hidden_layer_tuple=(n_h,) * m
-
-        self.MLP = MLPClassifier(solver='lbfgs', alpha=1e-5,
-                                 hidden_layer_sizes=hidden_layer_tuple,
-                                 random_state=1)
-
-        try:
-            self.MLP.fit(self.lda_result,self.result_to_fit.index )
-            self.coefs_ = self.MLP.coefs_
-            self.intercepts_ = self.MLP.intercepts_
-            self.MLP_params = self.MLP.get_params(deep=True)
-
-        except Exception as e:
-            self.ErrorEvent(text=repr(e))
-
-        Z = self.MLP.predict(self.lda_data_to_test)
-
-        Z2 = self.MLP.predict_proba(self.lda_data_to_test)
-        proba_df = pd.DataFrame(Z2)
-        proba_df.columns = self.MLP.classes_
-
-        proba_list = []
-        for i in range(len(proba_df)):
-            proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
-        predict_result = pd.concat(
-            [self.data_to_test['Label'], pd.DataFrame({'Classification': Z}),
-             pd.DataFrame({'Confidence probability': proba_list})],
-            axis=1)
-        # print(predict_result)
-
-        self.predictpop = TableViewer(df=predict_result,
-                                      title=self.description + 'Predict Result with All Items')
-        self.predictpop.show()
-
+    #
+    # def runMLP(self):
+    #
+    #     n = len(self.trained_result)
+    #
+    #     # n 是LDA后得到的训练集的样本数
+    #     # 用训练集中样本的维度作为输入层神经元个数
+    #     # 用训练集中样本的类别标签数作为输出层神经元个数
+    #     # m 是根据上面参考文献得到的经验公式，作为隐藏神经元层数
+    #
+    #     m = int((4 * n**2 + 3)/(n** 2 - 8))
+    #     input_size = len(self.trained_result.T)
+    #     output_size = len(set(self.result_to_fit.index))
+    #     alpha= 2 # 2-10
+    #
+    #     # if (2<=m<=10):
+    #     #     alpha = m  # 2-10
+    #     # else:
+    #     #     alpha = 5
+    #     # n_h 是得到的隐藏层的每一层神经元个数
+    #     n_h= int(n/(alpha*(input_size+output_size)))
+    #
+    #
+    #     hidden_layer_tuple=(n_h,) * m
+    #
+    #     self.MLP = MLPClassifier(solver='lbfgs', alpha=1e-5,
+    #                              hidden_layer_sizes=hidden_layer_tuple,
+    #                              random_state=1)
+    #
+    #     try:
+    #         self.MLP.fit(self.trained_result,self.result_to_fit.index )
+    #         self.coefs_ = self.MLP.coefs_
+    #         self.intercepts_ = self.MLP.intercepts_
+    #         self.MLP_params = self.MLP.get_params(deep=True)
+    #
+    #     except Exception as e:
+    #         self.ErrorEvent(text=repr(e))
+    #
+    #     Z = self.MLP.predict(self.trained_data_to_test)
+    #
+    #     Z2 = self.MLP.predict_proba(self.trained_data_to_test)
+    #     proba_df = pd.DataFrame(Z2)
+    #     proba_df.columns = self.MLP.classes_
+    #
+    #     proba_list = []
+    #     for i in range(len(proba_df)):
+    #         proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
+    #     predict_result = pd.concat(
+    #         [self.data_to_test['Label'], pd.DataFrame({'Classification': Z}),
+    #          pd.DataFrame({'Confidence probability': proba_list})],
+    #         axis=1)
+    #     # print(predict_result)
+    #
+    #     self.predictpop = TableViewer(df=predict_result,
+    #                                   title=self.description + 'Predict Result with All Items')
+    #     self.predictpop.show()
+    #
 
     def Distance_Calculation(self):
 
@@ -635,8 +635,8 @@ class MyLDA(AppForm):
         print(distance_result)
 
         for i in range(len(self.whole_labels)):
-            #print(self.whole_labels[i], self.lda_result[self.result_to_fit.index == self.whole_labels[i]][0])
-            print( self.whole_labels[i], len(self.lda_result[self.result_to_fit.index == self.whole_labels[i]]))
+            #print(self.whole_labels[i], self.trained_result[self.result_to_fit.index == self.whole_labels[i]][0])
+            print( self.whole_labels[i], len(self.trained_result[self.result_to_fit.index == self.whole_labels[i]]))
 
             pass
 
@@ -649,17 +649,17 @@ class MyLDA(AppForm):
                 else:
                     distance_result[self.whole_labels[i] + ' to ' + self.whole_labels[j]] = []
 
-                    self.lda_result[self.result_to_fit.index == self.whole_labels[i]]
+                    self.trained_result[self.result_to_fit.index == self.whole_labels[i]]
 
-                    self.lda_result[self.result_to_fit.index == self.whole_labels[j]]
+                    self.trained_result[self.result_to_fit.index == self.whole_labels[j]]
 
-                    for m in range(len(self.lda_result[self.result_to_fit.index == self.whole_labels[i]])):
-                        for n in range(len(self.lda_result[self.result_to_fit.index == self.whole_labels[j]])):
+                    for m in range(len(self.trained_result[self.result_to_fit.index == self.whole_labels[i]])):
+                        for n in range(len(self.trained_result[self.result_to_fit.index == self.whole_labels[j]])):
                             pass
 
-                            self.lda_result[self.result_to_fit.index == self.whole_labels[i]][m]
+                            self.trained_result[self.result_to_fit.index == self.whole_labels[i]][m]
 
-                            #tmp_dist= self.Hsim_Distance(self.lda_result[self.result_to_fit.index == self.whole_labels[i]][m], self.lda_result[self.result_to_fit.index == self.whole_labels[j]][n])
+                            #tmp_dist= self.Hsim_Distance(self.trained_result[self.result_to_fit.index == self.whole_labels[i]][m], self.trained_result[self.result_to_fit.index == self.whole_labels[j]][n])
                             #print(tmp_dist)
                             #distance_result[self.whole_labels[i] + ' to ' + self.whole_labels[j]].append(tmp_dist)
             pass
@@ -667,10 +667,10 @@ class MyLDA(AppForm):
         '''
 
 
-        #print(self.lda_result)
+        #print(self.trained_result)
 
         try:
-            self.lda_data_to_test[self.data_to_test_to_fit.index == self.whole_labels[0], 0]
+            self.trained_data_to_test[self.data_to_test_to_fit.index == self.whole_labels[0], 0]
         except Exception as e:
             pass
             # self.ErrorEvent(text=repr(e))

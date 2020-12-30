@@ -71,6 +71,7 @@ class MyTrans(AppForm):
         self.center_Geometric_button = QPushButton('&Center by Geometric Mean')
         self.center_Arithmetic_button = QPushButton('&Center by Arithmetic Mean')
 
+        self.min_max_button = QPushButton('&Min-Max Standard')
         self.std_button = QPushButton('&Standard Transform')
         self.log_button = QPushButton('&Log Transform')
         self.log_ten_button = QPushButton('&Log 10 Transform')
@@ -91,6 +92,7 @@ class MyTrans(AppForm):
         self.transpose_button.clicked.connect(self.transpose)
         self.center_Geometric_button.clicked.connect(self.center_Geometric)
         self.center_Arithmetic_button.clicked.connect(self.center_Arithmetic)
+        self.min_max_button.clicked.connect(self.min_max)
         self.std_button.clicked.connect(self.std_trans)
         self.log_button.clicked.connect(self.log_trans)
         self.log_ten_button.clicked.connect(self.log_ten_trans)
@@ -119,6 +121,7 @@ class MyTrans(AppForm):
 
         for w in [self.center_Arithmetic_button,
                   self.center_Geometric_button,
+                  self.min_max_button,
                   self.std_button,
                   self.log_ten_button,
                   self.log_e_button,]:
@@ -268,6 +271,15 @@ class MyTrans(AppForm):
         self.tableView.setModel(self.tableresult)
         self.show()
 
+
+    def min_max(self):
+        # mean=self.result.T.mean(numeric_only= float)
+        # std=self.result.T.std(numeric_only= float)
+        tmpresult = (self.result - self.result.min()) / (self.result.max() - self.result.min())
+        self.result=tmpresult
+        self.tableresult=PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
 
     def std_trans(self):
         mean=self.result.T.mean(numeric_only= float)

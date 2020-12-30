@@ -205,10 +205,18 @@ class MyDT(AppForm):
             proba_list = []
             for i in range(len(proba_df)):
                 proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
+
+            # predict_result = pd.concat(
+            #     [self.data_to_test['Label'], pd.DataFrame({'Decision Tree Classification': Z}),
+            #      pd.DataFrame({'Confidence probability': proba_list}),proba_df],
+            #     axis=1).set_index('Label')
+
+
             predict_result = pd.concat(
                 [self.data_to_test['Label'], pd.DataFrame({'Decision Tree Classification': Z}),
-                 pd.DataFrame({'Confidence probability': proba_list}),proba_df],
-                axis=1).set_index('Label')
+                 pd.DataFrame({'Confidence probability': proba_list})],
+                axis=1)
+
             print(predict_result)
 
             self.predictpop = TableViewer(df=predict_result, title=self.description +' Decision Tree Predict Result with All Items')

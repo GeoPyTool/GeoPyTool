@@ -50,15 +50,20 @@ from Combine import MyCombine
 
 from Flatten import MyFlatten
 
-from MyFA import MyFA
 
-from MyPCA import MyPCA
+
+from MyDT import MyDT
+
+from MyFA import MyFA
 
 from MyLDA import MyLDA
 
+from MyPCA import MyPCA
+
 from MyMLP import MyMLP
 
-from MyDT import MyDT
+from MyGAN import MyGAN
+
 
 from Trans import MyTrans
 
@@ -357,20 +362,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionBar = QtWidgets.QAction(QIcon(LocationOfMySelf + '/bar.png'), u'Bar', self)
         self.actionBar.setObjectName('actionPie')
 
+
+        self.actionDT = QtWidgets.QAction(QIcon(LocationOfMySelf + '/dt.png'), u'DT', self)
+        self.actionDT.setObjectName('actionDT')
+
         self.actionFA = QtWidgets.QAction(QIcon(LocationOfMySelf + '/fa.png'), u'FA', self)
         self.actionFA.setObjectName('actionFA')
-
-        self.actionPCA = QtWidgets.QAction(QIcon(LocationOfMySelf + '/pca.png'), u'PCA', self)
-        self.actionPCA.setObjectName('actionPCA')
 
         self.actionLDA = QtWidgets.QAction(QIcon(LocationOfMySelf + '/lda.png'), u'LDA', self)
         self.actionLDA.setObjectName('actionLDA')
 
+        self.actionPCA = QtWidgets.QAction(QIcon(LocationOfMySelf + '/pca.png'), u'PCA', self)
+        self.actionPCA.setObjectName('actionPCA')
+
         self.actionMLP = QtWidgets.QAction(QIcon(LocationOfMySelf + '/mlp.png'), u'MLP', self)
         self.actionMLP.setObjectName('actionMLP')
 
-        self.actionDT = QtWidgets.QAction(QIcon(LocationOfMySelf + '/dt.png'), u'DT', self)
-        self.actionDT.setObjectName('actionDT')
+        self.actionGAN = QtWidgets.QAction(QIcon(LocationOfMySelf + '/g.png'), u'GAN', self)
+        self.actionGAN.setObjectName('actionGAN')
+
 
         self.actionQAPF = QtWidgets.QAction(QIcon(LocationOfMySelf + '/qapf.png'), u'QAPF', self)
         self.actionQAPF.setObjectName('actionQAPF')
@@ -467,11 +477,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuAdditional.addAction(self.actionPie)
         self.menuAdditional.addAction(self.actionBar)
 
-        self.menuMachineLearn.addAction(self.actionFA)
-        self.menuMachineLearn.addAction(self.actionPCA)
-        self.menuMachineLearn.addAction(self.actionLDA)
         self.menuMachineLearn.addAction(self.actionDT)
+        self.menuMachineLearn.addAction(self.actionFA)
+        self.menuMachineLearn.addAction(self.actionLDA)
+        self.menuMachineLearn.addAction(self.actionPCA)
         self.menuMachineLearn.addAction(self.actionMLP)
+        self.menuMachineLearn.addAction(self.actionGAN)
 
         self.menuHelp.addAction(self.actionWeb)
 
@@ -552,11 +563,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionMultiDimension.triggered.connect(self.MultiDimension)
         self.actionRemoveLOI.triggered.connect(self.RemoveLOI)
 
-        self.actionFA.triggered.connect(self.FA)
-        self.actionPCA.triggered.connect(self.PCA)
-        self.actionLDA.triggered.connect(self.LDA)
+
         self.actionDT.triggered.connect(self.DT)
+        self.actionFA.triggered.connect(self.FA)
+        self.actionLDA.triggered.connect(self.LDA)
+        self.actionPCA.triggered.connect(self.PCA)
         self.actionMLP.triggered.connect(self.MLP)
+        self.actionGAN.triggered.connect(self.GAN)
 
         self.actionDist.triggered.connect(self.Dist)
         self.actionStatistics.triggered.connect(self.Sta)
@@ -680,11 +693,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionPie.setText('5-11 ' + _translate('MainWindow', u'Pie Chart'))
         self.actionBar.setText('5-12 ' + _translate('MainWindow', u'Bar Chart'))
 
-        self.actionFA.setText('6-1 ' + _translate('MainWindow', u'FA'))
-        self.actionPCA.setText('6-2 ' + _translate('MainWindow', u'PCA'))
+        self.actionDT.setText('6-1 ' + _translate('MainWindow', u'DT'))
+        self.actionFA.setText('6-2 ' + _translate('MainWindow', u'FA'))
         self.actionLDA.setText('6-3 ' + _translate('MainWindow', u'LDA'))
-        self.actionDT.setText('6-4 ' + _translate('MainWindow', u'DT'))
+        self.actionPCA.setText('6-4 ' + _translate('MainWindow', u'PCA'))
         self.actionMLP.setText('6-5 ' + _translate('MainWindow', u'MLP'))
+        self.actionGAN.setText('6-6 ' + _translate('MainWindow', u'GAN'))
 
         self.actionVersionCheck.setText(_translate('MainWindow', u'Check Update'))
         self.actionWeb.setText(_translate('MainWindow', u'English Forum'))
@@ -1861,6 +1875,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             try:
                 self.MLPpop.Key_Func()
                 self.MLPpop.show()
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+    def GAN(self):
+        print('GAN called \n')
+        print('self.model._df length: ', len(self.model._df))
+        if (len(self.model._df) <= 0):
+            self.getDataFile()
+        if (len(self.model._df) > 0):
+            self.GANpop = MyGAN(df=self.model._df.fillna(0))
+
+            self.GANpop.Key_Func()
+            self.GANpop.show()
+
+            try:
+                self.GANpop.Key_Func()
+                self.GANpop.show()
             except Exception as e:
                 self.ErrorEvent(text=repr(e))
 

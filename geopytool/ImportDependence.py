@@ -91,6 +91,15 @@ from bs4 import BeautifulSoup
 
 
 
+from sklearn import mixture
+import keras
+from keras.layers import Conv1D, Flatten, Dense, Dropout, Input, Activation, Reshape
+from keras.models import Model,Sequential
+from keras.datasets import mnist
+from keras.layers.advanced_activations import LeakyReLU
+from keras.optimizers import SGD, Adam
+from tqdm import tqdm_notebook as tqdm  # 进度条
+
 LocationOfMySelf=os.path.dirname(__file__)
 
 #print(LocationOfMySelf, 'Import Denpendence')

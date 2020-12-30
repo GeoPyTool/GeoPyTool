@@ -1,4 +1,4 @@
-version = '0.8.20.0.205'
+version="0.9.21.0.001"
 
 date = '2021-01-01'
 
@@ -776,35 +776,6 @@ class TableViewer(QMainWindow):
         self.create_main_frame()
         self.create_status_bar()
 
-    def badcreate_main_frame(self):
-
-        self.resize(800, 600)
-        self.main_frame = QWidget()
-
-        self.save_button = QPushButton('&Save')
-        self.save_button.clicked.connect(self.saveResult)
-
-        self.pie_button = QPushButton('&Pie')
-        self.pie_button.clicked.connect(self.MyPie)
-
-        self.bar_button = QPushButton('&Bar')
-        self.bar_button.clicked.connect(self.MyBar)
-
-        self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName('tableView')
-        self.tableView.setSortingEnabled(True)
-
-        self.vbox = QVBoxLayout()
-
-        self.vbox.addWidget(self.tableView)
-        self.vbox.addWidget(self.save_button)
-
-        self.main_frame.setLayout(self.vbox)
-        self.setCentralWidget(self.main_frame)
-
-        self.model = PandasModel(self.df)
-        self.tableView.setModel(self.model)
-
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.accept()
@@ -866,10 +837,6 @@ class TableViewer(QMainWindow):
 
         self.bar_button = QPushButton('&Bar')
         self.bar_button.clicked.connect(self.MyBar)
-
-        self.tableView = CustomQTableView(self.main_frame)
-        self.tableView.setObjectName('tableView')
-        self.tableView.setSortingEnabled(True)
 
         self.tableView = CustomQTableView(self.main_frame)
         self.tableView.setObjectName('tableView')
@@ -1531,6 +1498,65 @@ class AppForm(QMainWindow):
         # print(tmp)
         result = np.sum(tmp) / (min([len(a), len(b)]))
         return (result)
+
+    def runMLP(self):
+
+        try:
+            n = len(self.trained_result)
+
+            # n 是PCA后得到的训练集的样本数
+            # 用训练集中样本的维度作为输入层神经元个数
+            # 用训练集中样本的类别标签数作为输出层神经元个数
+            # m 是根据上面参考文献得到的经验公式，作为隐藏神经元层数
+
+            m = int((4 * n ** 2 + 3) / (n ** 2 - 8))
+            input_size = len(self.trained_result.T)
+            output_size = len(set(self.result_to_fit.index))
+            alpha = 2  # 2-10
+
+            # if (2<=m<=10):
+            #     alpha = m  # 2-10
+            # else:
+            #     alpha = 5
+            # n_h 是得到的隐藏层的每一层神经元个数
+            n_h = int(n / (alpha * (input_size + output_size)))
+
+            hidden_layer_tuple = (n_h,) * m
+
+            self.MLP = MLPClassifier(solver='lbfgs', alpha=1e-5,
+                                     hidden_layer_sizes=hidden_layer_tuple,
+                                     random_state=1)
+
+            try:
+                self.MLP.fit(self.trained_result, self.result_to_fit.index)
+                self.coefs_ = self.MLP.coefs_
+                self.intercepts_ = self.MLP.intercepts_
+                self.MLP_params = self.MLP.get_params(deep=True)
+
+            except Exception as e:
+                self.ErrorEvent(text=repr(e))
+
+            Z = self.MLP.predict(self.trained_data_to_test)
+
+            Z2 = self.MLP.predict_proba(self.trained_data_to_test)
+            proba_df = pd.DataFrame(Z2)
+            proba_df.columns = self.MLP.classes_
+
+            proba_list = []
+            for i in range(len(proba_df)):
+                proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
+            predict_result = pd.concat(
+                [self.data_to_test['Label'], pd.DataFrame({'Classification': Z}),
+                 pd.DataFrame({'Confidence probability': proba_list})],
+                axis=1)
+            # print(predict_result)
+
+            self.predictpop = TableViewer(df=predict_result,
+                                          title=self.description + ' MLP Predict Result')
+            self.predictpop.show()
+        except Exception as e:
+            self.ErrorEvent(text=repr(e))
+
 
 
 class Pie(AppForm):

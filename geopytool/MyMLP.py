@@ -138,8 +138,8 @@ class MyMLP(AppForm):
         self.save_picture_button = QPushButton('&Save Picture')
         self.save_picture_button.clicked.connect(self.saveImgFile)
 
-        self.save_result_button = QPushButton('&Show MLP Result')
-        self.save_result_button.clicked.connect(self.showResult)
+        # self.save_result_button = QPushButton('&Show MLP Result')
+        # self.save_result_button.clicked.connect(self.showResult)
 
         self.save_Para_button = QPushButton('&Show MLP Para')
         self.save_Para_button.clicked.connect(self.showPara)
@@ -186,7 +186,7 @@ class MyMLP(AppForm):
         #     self.hbox0.addWidget(w)
         #     self.hbox0.setAlignment(w, Qt.AlignVCenter)
 
-        for w in [self.load_data_button, self.save_picture_button, self.save_result_button, self.save_Para_button, self.save_predict_button]:
+        for w in [self.load_data_button, self.save_picture_button, self.save_Para_button, self.save_predict_button]:
             self.hbox1.addWidget(w)
             self.hbox1.setAlignment(w, Qt.AlignVCenter)
 
@@ -411,7 +411,7 @@ class MyMLP(AppForm):
         #print(predict_result)
 
         self.predictpop = TableViewer(df=predict_result,
-                                      title=self.description + 'Predict Result with All Items')
+                                      title=self.description + ' Predict Result')
         self.predictpop.show()
 
         # except Exception as e:

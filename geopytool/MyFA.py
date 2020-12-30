@@ -76,7 +76,7 @@ class MyFA(AppForm):
         self.fig = plt.figure(figsize=(12, 6))
         #self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.1, bottom=0.1, right=0.9, top=0.9)
 
-        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)
+        self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.2, bottom=0.3, right=0.7, top=0.9)
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self.main_frame)
 
@@ -253,7 +253,7 @@ class MyFA(AppForm):
 
 
 
-        self.fa_result = self.fa.fit_transform(self.result_to_fit.values)
+        self.trained_result = self.fa.fit_transform(self.result_to_fit.values)
 
         self.comp = (self.fa.components_)
         #self.n = (self.fa.n_components_)
@@ -281,8 +281,8 @@ class MyFA(AppForm):
             if color not in self.color_list:
                 self.color_list.append(color)
 
-            LDA_X.append([self.fa_result[i, a],
-                          self.fa_result[i, b]])
+            LDA_X.append([self.trained_result[i, a],
+                          self.trained_result[i, b]])
             LDA_Label.append(self._df.at[i, 'Label'])
 
 
@@ -344,26 +344,26 @@ class MyFA(AppForm):
                 #print(self.data_to_test_to_fit.shape)
 
                 try:
-                    self.fa_data_to_test = self.fa.transform(self.data_to_test_to_fit)
+                    self.trained_data_to_test = self.fa.transform(self.data_to_test_to_fit)
 
 
-                    self.load_result = pd.concat([self.load_settings_backup,pd.DataFrame(self.fa_data_to_test)], axis=1)
+                    self.load_result = pd.concat([self.load_settings_backup,pd.DataFrame(self.trained_data_to_test)], axis=1)
 
                     for i in range(len(test_labels)):
 
                         if (self.show_load_data_cb.isChecked()):
                             if (self.switched == False):
-                                self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
-                                                  self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
-                                                  self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], c],
+                                self.axes.scatter(self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
+                                                  self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
+                                                  self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], c],
                                                   color=test_colors[i],
                                                   marker=test_markers[i],
                                                   label=test_labels[i],
                                                   alpha=test_alpha[i])
 
                             else:
-                                self.axes.scatter(self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
-                                                  self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
+                                self.axes.scatter(self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
+                                                  self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
                                                   color=test_colors[i],
                                                   marker=test_markers[i],
                                                   label=test_labels[i],
@@ -373,8 +373,8 @@ class MyFA(AppForm):
                                 '''
                                 if (self.shape_cb.isChecked()):
                                     pass
-                                    XtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
-                                    YtoFit = self.fa_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
+                                    XtoFit = self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
+                                    YtoFit = self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
     
                                     xmin, xmax = min(XtoFit), max(XtoFit)
                                     ymin, ymax = min(YtoFit), max(YtoFit)
@@ -419,14 +419,14 @@ class MyFA(AppForm):
         self.y_element_label.setText("component no."+str(b+1))
 
 
-        self.begin_result = pd.concat([self.settings_backup,pd.DataFrame(self.fa_result)], axis=1)
+        self.begin_result = pd.concat([self.settings_backup,pd.DataFrame(self.trained_result)], axis=1)
 
         for i in range(len(all_labels)):
             if (self.switched == False):
 
-                self.axes.scatter(self.fa_result[self.result_to_fit.index == all_labels[i], a],
-                                  self.fa_result[self.result_to_fit.index == all_labels[i], b],
-                                  self.fa_result[self.result_to_fit.index == all_labels[i], c],
+                self.axes.scatter(self.trained_result[self.result_to_fit.index == all_labels[i], a],
+                                  self.trained_result[self.result_to_fit.index == all_labels[i], b],
+                                  self.trained_result[self.result_to_fit.index == all_labels[i], c],
                                   color=all_colors[i],
                                   marker=all_markers[i],
                                   label=all_labels[i],
@@ -439,8 +439,8 @@ class MyFA(AppForm):
 
             else:
 
-                self.axes.scatter(self.fa_result[self.result_to_fit.index == all_labels[i], a],
-                                  self.fa_result[self.result_to_fit.index == all_labels[i], b],
+                self.axes.scatter(self.trained_result[self.result_to_fit.index == all_labels[i], a],
+                                  self.trained_result[self.result_to_fit.index == all_labels[i], b],
                                   color=all_colors[i],
                                   marker=all_markers[i],
                                   label=all_labels[i],
@@ -450,8 +450,8 @@ class MyFA(AppForm):
 
                 if (self.shape_cb.isChecked()):
                     pass
-                    XtoFit = self.fa_result[self.result_to_fit.index == all_labels[i], a]
-                    YtoFit = self.fa_result[self.result_to_fit.index == all_labels[i], b]
+                    XtoFit = self.trained_result[self.result_to_fit.index == all_labels[i], a]
+                    YtoFit = self.trained_result[self.result_to_fit.index == all_labels[i], b]
 
                     xmin, xmax = min(XtoFit), max(XtoFit)
                     ymin, ymax = min(YtoFit), max(YtoFit)
@@ -485,29 +485,29 @@ class MyFA(AppForm):
 
 
         if (self.show_data_index_cb.isChecked()):
-            for i in range(len(self.fa_result)):
+            for i in range(len(self.trained_result)):
                 if (self.switched == True):
 
                     if 'Index' in self._df_back.columns.values:
                         self.axes.annotate(self._df_back.at[i, 'Index'],
-                                           xy=(self.fa_result[i, a],
-                                               self.fa_result[i, b]),
+                                           xy=(self.trained_result[i, a],
+                                               self.trained_result[i, b]),
                                            color=self._df.at[i, 'Color'],
                                            alpha=self._df.at[i, 'Alpha'])
                     else:
                         self.axes.annotate('No'+str(i+1),
-                                       xy=(self.fa_result[i, a],
-                                        self.fa_result[i, b]),
+                                       xy=(self.trained_result[i, a],
+                                        self.trained_result[i, b]),
                                        color=self._df.at[i,'Color'],
                                        alpha=self._df.at[i,'Alpha'])
                 else:
 
                     if 'Index' in self._df.columns.values:
 
-                        self.axes.text(self.fa_result[i, a], self.fa_result[i, b],self.fa_result[i, c], self._df_back.at[i, 'Index'], size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
+                        self.axes.text(self.trained_result[i, a], self.trained_result[i, b],self.trained_result[i, c], self._df_back.at[i, 'Index'], size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
                                    alpha=self._df.at[i, 'Alpha'])
                     else:
-                        self.axes.text(self.fa_result[i, a], self.fa_result[i, b],self.fa_result[i, c], 'No'+str(i+1), size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
+                        self.axes.text(self.trained_result[i, a], self.trained_result[i, b],self.trained_result[i, c], 'No'+str(i+1), size=self._df.at[i,'Size'], zorder=1,color=self._df.at[i,'Color'],
                                    alpha=self._df.at[i, 'Alpha'])
 
 
@@ -517,9 +517,9 @@ class MyFA(AppForm):
 
             if (self.switched == False):
                 clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability = True)
-                svm_x = self.fa_result[:, a]
-                svm_y = self.fa_result[:, b]
-                svm_z = self.fa_result[:, c]
+                svm_x = self.trained_result[:, a]
+                svm_y = self.trained_result[:, b]
+                svm_z = self.trained_result[:, c]
                 xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
                                          np.arange( min(svm_y), max(svm_y), np.ptp(svm_y) / 100))
 
@@ -542,8 +542,8 @@ class MyFA(AppForm):
 
             else:
                 clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s],probability= True)
-                svm_x = self.fa_result[:, a]
-                svm_y = self.fa_result[:, b]
+                svm_x = self.trained_result[:, a]
+                svm_y = self.trained_result[:, b]
 
 
                 xx, yy = np.meshgrid(np.arange( min(svm_x), max(svm_x), np.ptp(svm_x) / 100),
@@ -638,10 +638,10 @@ class MyFA(AppForm):
 
         try:
             clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-            clf.fit(self.fa_result, self.result_to_fit.index)
-            Z = clf.predict(np.c_[self.fa_data_to_test])
+            clf.fit(self.trained_result, self.result_to_fit.index)
+            Z = clf.predict(np.c_[self.trained_data_to_test])
 
-            Z2 = clf.predict_proba(np.c_[self.fa_data_to_test])
+            Z2 = clf.predict_proba(np.c_[self.trained_data_to_test])
             proba_df = pd.DataFrame(Z2)
             proba_df.columns = clf.classes_
 
@@ -679,61 +679,61 @@ class MyFA(AppForm):
             self.ErrorEvent(text= msg +repr(e) )
 
 
-    def runMLP(self):
-
-        n = len(self.fa_result)
-
-        # n 是FA后得到的训练集的样本数
-        # 用训练集中样本的维度作为输入层神经元个数
-        # 用训练集中样本的类别标签数作为输出层神经元个数
-        # m 是根据上面参考文献得到的经验公式，作为隐藏神经元层数
-
-        m = int((4 * n**2 + 3)/(n** 2 - 8))
-        input_size = len(self.fa_result.T)
-        output_size = len(set(self.result_to_fit.index))
-        alpha= 2 # 2-10
-
-        # if (2<=m<=10):
-        #     alpha = m  # 2-10
-        # else:
-        #     alpha = 5
-        # n_h 是得到的隐藏层的每一层神经元个数
-        n_h= int(n/(alpha*(input_size+output_size)))
-
-
-        hidden_layer_tuple=(n_h,) * m
-
-        self.MLP = MLPClassifier(solver='lbfgs', alpha=1e-5,
-                                 hidden_layer_sizes=hidden_layer_tuple,
-                                 random_state=1)
-
-        try:
-            self.MLP.fit(self.fa_result,self.result_to_fit.index )
-            self.coefs_ = self.MLP.coefs_
-            self.intercepts_ = self.MLP.intercepts_
-            self.MLP_params = self.MLP.get_params(deep=True)
-
-        except Exception as e:
-            self.ErrorEvent(text=repr(e))
-
-        Z = self.MLP.predict(self.fa_data_to_test)
-
-        Z2 = self.MLP.predict_proba(self.fa_data_to_test)
-        proba_df = pd.DataFrame(Z2)
-        proba_df.columns = self.MLP.classes_
-
-        proba_list = []
-        for i in range(len(proba_df)):
-            proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
-        predict_result = pd.concat(
-            [self.data_to_test['Label'], pd.DataFrame({'Classification': Z}),
-             pd.DataFrame({'Confidence probability': proba_list})],
-            axis=1)
-        # print(predict_result)
-
-        self.predictpop = TableViewer(df=predict_result,
-                                      title=self.description + 'Predict Result with All Items')
-        self.predictpop.show()
+    # def runMLP(self):
+    #
+    #     n = len(self.trained_result)
+    #
+    #     # n 是FA后得到的训练集的样本数
+    #     # 用训练集中样本的维度作为输入层神经元个数
+    #     # 用训练集中样本的类别标签数作为输出层神经元个数
+    #     # m 是根据上面参考文献得到的经验公式，作为隐藏神经元层数
+    #
+    #     m = int((4 * n**2 + 3)/(n** 2 - 8))
+    #     input_size = len(self.trained_result.T)
+    #     output_size = len(set(self.result_to_fit.index))
+    #     alpha= 2 # 2-10
+    #
+    #     # if (2<=m<=10):
+    #     #     alpha = m  # 2-10
+    #     # else:
+    #     #     alpha = 5
+    #     # n_h 是得到的隐藏层的每一层神经元个数
+    #     n_h= int(n/(alpha*(input_size+output_size)))
+    #
+    #
+    #     hidden_layer_tuple=(n_h,) * m
+    #
+    #     self.MLP = MLPClassifier(solver='lbfgs', alpha=1e-5,
+    #                              hidden_layer_sizes=hidden_layer_tuple,
+    #                              random_state=1)
+    #
+    #     try:
+    #         self.MLP.fit(self.trained_result,self.result_to_fit.index )
+    #         self.coefs_ = self.MLP.coefs_
+    #         self.intercepts_ = self.MLP.intercepts_
+    #         self.MLP_params = self.MLP.get_params(deep=True)
+    #
+    #     except Exception as e:
+    #         self.ErrorEvent(text=repr(e))
+    #
+    #     Z = self.MLP.predict(self.trained_data_to_test)
+    #
+    #     Z2 = self.MLP.predict_proba(self.trained_data_to_test)
+    #     proba_df = pd.DataFrame(Z2)
+    #     proba_df.columns = self.MLP.classes_
+    #
+    #     proba_list = []
+    #     for i in range(len(proba_df)):
+    #         proba_list.append(round(max(proba_df.iloc[i]) + 0.001, 2))
+    #     predict_result = pd.concat(
+    #         [self.data_to_test['Label'], pd.DataFrame({'Classification': Z}),
+    #          pd.DataFrame({'Confidence probability': proba_list})],
+    #         axis=1)
+    #     # print(predict_result)
+    #
+    #     self.predictpop = TableViewer(df=predict_result,
+    #                                   title=self.description + 'Predict Result with All Items')
+    #     self.predictpop.show()
 
 
 
@@ -747,8 +747,8 @@ class MyFA(AppForm):
         print(distance_result)
 
         for i in range(len(self.whole_labels)):
-            #print(self.whole_labels[i], self.fa_result[self.result_to_fit.index == self.whole_labels[i]][0])
-            print( self.whole_labels[i], len(self.fa_result[self.result_to_fit.index == self.whole_labels[i]]))
+            #print(self.whole_labels[i], self.trained_result[self.result_to_fit.index == self.whole_labels[i]][0])
+            print( self.whole_labels[i], len(self.trained_result[self.result_to_fit.index == self.whole_labels[i]]))
 
             pass
 
@@ -761,17 +761,17 @@ class MyFA(AppForm):
                 else:
                     distance_result[self.whole_labels[i] + ' to ' + self.whole_labels[j]] = []
 
-                    self.fa_result[self.result_to_fit.index == self.whole_labels[i]]
+                    self.trained_result[self.result_to_fit.index == self.whole_labels[i]]
 
-                    self.fa_result[self.result_to_fit.index == self.whole_labels[j]]
+                    self.trained_result[self.result_to_fit.index == self.whole_labels[j]]
 
-                    for m in range(len(self.fa_result[self.result_to_fit.index == self.whole_labels[i]])):
-                        for n in range(len(self.fa_result[self.result_to_fit.index == self.whole_labels[j]])):
+                    for m in range(len(self.trained_result[self.result_to_fit.index == self.whole_labels[i]])):
+                        for n in range(len(self.trained_result[self.result_to_fit.index == self.whole_labels[j]])):
                             pass
 
-                            self.fa_result[self.result_to_fit.index == self.whole_labels[i]][m]
+                            self.trained_result[self.result_to_fit.index == self.whole_labels[i]][m]
 
-                            #tmp_dist= self.Hsim_Distance(self.fa_result[self.result_to_fit.index == self.whole_labels[i]][m],self.fa_result[self.result_to_fit.index == self.whole_labels[j]][n])
+                            #tmp_dist= self.Hsim_Distance(self.trained_result[self.result_to_fit.index == self.whole_labels[i]][m],self.trained_result[self.result_to_fit.index == self.whole_labels[j]][n])
                             #print(tmp_dist)
                             #distance_result[self.whole_labels[i] + ' to ' + self.whole_labels[j]].append(tmp_dist)
             pass
@@ -779,10 +779,10 @@ class MyFA(AppForm):
         '''
 
 
-        #print(self.fa_result)
+        #print(self.trained_result)
 
         try:
-            self.fa_data_to_test[self.data_to_test_to_fit.index == self.whole_labels[0], 0]
+            self.trained_data_to_test[self.data_to_test_to_fit.index == self.whole_labels[0], 0]
         except Exception as e:
             pass
             # self.ErrorEvent(text=repr(e))
