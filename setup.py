@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 #coding:utf-8
 import os
-import setuptools
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
-
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -15,8 +17,8 @@ except:
     README = 'https://github.com/GeoPyTool/GeoPyTool/blob/master/README.md'
 
 
-setuptools.setup(name='geopytool',
-      version="0.9.21.0.001",
+setup(name='geopytool',
+      version="0.9.21.0.002",
       description='a tool for daily geology related task. visit geopytool.com for further information',
       longdescription=README,
       author='cycleuser',
@@ -24,15 +26,9 @@ setuptools.setup(name='geopytool',
       url='https://github.com/GeoPyTool/GeoPyTool',
       packages=['geopytool'],
       package_data={
-          'geopytool': ['*.py','*.png','*.qm','*.ttf','*.ini','*.md'],
-      },
+          'geopytool': ['*.py','*.txt','*.png','*.qm','*.ttf','*.ini','*.md'],},
       include_package_data=True,
-
-      #py_modules=['CIPW','Cluster','geopytool/CustomClass','Harker','IMP','Magic','MudStone','MultiDimension','OldCustomClass','Pearce','PlotModel','QAPF','QFL','QmFLt','REE','Rose','Stereo','TAS','TableViewer','Temp','Test','Trace','XY','XYZ','ZirconCe','cli'],
-
-      #py_modules=['CustomClass'],
-
-      install_requires=[ 
+      install_requires=[
                         'cython',
                         'numpy',
                         'pandas',
@@ -44,10 +40,11 @@ setuptools.setup(name='geopytool',
                         'requests',
                         'PyQt5',
                         'scikit-image',
-                        'scikit-learn',
                         'tensorflow',
                         'torch',
                         'keras',
                         'tqdm',
+                        'gym',
+                        'DRL',
                          ],
      )

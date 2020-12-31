@@ -278,7 +278,7 @@ class MyGAN(AppForm):
                 noise = np.random.normal((self.low+self.high)/2, (self.high-self.low)/2, [batch_size, self.feature_size])
 
                 # clf = mixture.BayesianGaussianMixture(n_components=self.feature_size, covariance_type='full')
-                
+
                 # 产生假数据
                 generated_data = generator.predict(noise)
 

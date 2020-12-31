@@ -1,5 +1,5 @@
 Title: Installation-Expert
-Date: 2020-12-29 19:13:50
+Date: 2020-12-31 19:13:50
 Category: English
 Tags: Doc,English,Support
 
@@ -15,7 +15,7 @@ Find help from [Python official website](https://www.python.org/downloads/) plea
 
 Then run the following commands in **terminal** to install some base modules:
 ```Bash
-pip install cython numpy scipy matplotlib sympy pandas xlrd pyopengl BeautifulSoup4 pyqt5 scikit-learn requests tensorflow torch keras tqdm
+pip install cython numpy scipy matplotlib sympy pandas xlrd pyopengl BeautifulSoup4 pyqt5 scikit-learn requests tensorflow torch keras tqdm gym DRL
 ```
 
 If you encounter errors, which might be related to numpy or tensorflow, please run the following commands to specify a particular version.

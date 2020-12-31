@@ -100,6 +100,29 @@ from keras.layers.advanced_activations import LeakyReLU
 from keras.optimizers import SGD, Adam
 from tqdm import tqdm_notebook as tqdm  # 进度条
 
+import tensorflow as tf
+
+from keras.layers import Input, Dense, Lambda, concatenate
+from keras.models import Model
+from keras.optimizers import Adam
+import keras.backend as K
+
+import os
+import random
+import gym
+from collections import deque
+
+import numpy as np
+import tensorflow as tf
+
+from keras.layers import Input, Dense, Lambda, concatenate
+from keras.models import Model
+from keras.optimizers import Adam
+import keras.backend as K
+
+from DRL import DRL
+
+
 LocationOfMySelf=os.path.dirname(__file__)
 
 #print(LocationOfMySelf, 'Import Denpendence')

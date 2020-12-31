@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 #coding:utf-8
 import os
-import setuptools
 from geopytool.ImportDependence import *
 from geopytool.CustomClass import *
-
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -15,8 +17,8 @@ except:
     README = 'https://github.com/GeoPyTool/GeoPyTool/blob/master/README.md'
 
 
-setuptools.setup(name='geopytool',
-      version="0.9.21.0.001",
+setup(name='geopytool',
+      version="0.9.21.0.002",
       description='a tool for daily geology related task. visit geopytool.com for further information',
       longdescription=README,
       author='cycleuser',
@@ -32,7 +34,7 @@ setuptools.setup(name='geopytool',
 
       #py_modules=['CustomClass'],
 
-      install_requires=[ 
+      install_requires=[
                         'cython',
                         'numpy',
                         'pandas',
@@ -48,5 +50,6 @@ setuptools.setup(name='geopytool',
                         'torch',
                         'keras',
                         'tqdm',
+                        'gym',
                          ],
      )

@@ -12,6 +12,7 @@ requests>=2.18.4
 PyQt5>=5.12
 scikit-learn>=0.19.1
 tensorflow>=2.3.1
-torch>=1.7.0
 keras>=1.18.5
 tqdm>=4.54.1
+gym>=0.18.0
+DRL
