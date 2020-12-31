@@ -1,5 +1,5 @@
 Title: Download
-Date: 2019-5-6 14:33:53
+Date: 2021-1-1 0:0:0
 Category: Doc
 Tags: Doc, English, Chinese
 
@@ -15,7 +15,6 @@ Tags: Doc, English, Chinese
 
 ###### 请一定注意下载正确的平台版本, 你的操作系统是啥就下载对应版本,下错了平台不一致的打包文件是不能用的!
 
-#### 如果你使用百度网盘进行下载发现速度比较慢,可以试试 [http://pandownload.com/](http://pandownload.com/) 这个软件
 
 ## Citation 引用
 
