@@ -68,14 +68,21 @@ class MyTrans(AppForm):
 
 
         self.transpose_button = QPushButton('&Transpose')
-        self.center_Geometric_button = QPushButton('&Center by Geometric Mean')
-        self.center_Arithmetic_button = QPushButton('&Center by Arithmetic Mean')
+        self.center_Geometric_button = QPushButton('&Divide by Geometric Mean')
+        self.center_Arithmetic_button = QPushButton('&Subtract Arithmetic Average')
 
         self.min_max_button = QPushButton('&Min-Max Standard')
-        self.std_button = QPushButton('&Standard Transform')
-        self.log_button = QPushButton('&Log Transform')
-        self.log_ten_button = QPushButton('&Log 10 Transform')
-        self.log_e_button = QPushButton('&Log e Transform')
+        self.std_button = QPushButton('&Standard')
+        self.log_button = QPushButton('&Log')
+
+        self.log_ten_button = QPushButton('&Log 10')
+        self.log_e_button = QPushButton('&Log e')
+
+
+        self.exp_ten_button = QPushButton('&10 Exponential')
+        self.exp_e_button = QPushButton('&e Exponential')
+
+        self.divide_by_sum_button = QPushButton('&Divide by Sum')
 
         self.fill_NaN_button = QPushButton('&Fill Blanks With 0')
         self.remove_row_with_0_button = QPushButton('&Remove Rows With Blanks')
@@ -93,10 +100,17 @@ class MyTrans(AppForm):
         self.center_Geometric_button.clicked.connect(self.center_Geometric)
         self.center_Arithmetic_button.clicked.connect(self.center_Arithmetic)
         self.min_max_button.clicked.connect(self.min_max)
-        self.std_button.clicked.connect(self.std_trans)
-        self.log_button.clicked.connect(self.log_trans)
-        self.log_ten_button.clicked.connect(self.log_ten_trans)
-        self.log_e_button.clicked.connect(self.log_e_trans)
+        self.std_button.clicked.connect(self.std)
+
+        self.log_button.clicked.connect(self.log)
+
+        self.log_ten_button.clicked.connect(self.log_ten)
+        self.log_e_button.clicked.connect(self.log_e)
+
+        self.exp_ten_button.clicked.connect(self.exp_ten)
+        self.exp_e_button.clicked.connect(self.exp_e)
+
+        self.divide_by_sum_button.clicked.connect(self.divide_by_sum)
 
 
 
@@ -111,6 +125,7 @@ class MyTrans(AppForm):
         self.hbox0 =QHBoxLayout()
         self.hbox1 =QHBoxLayout()
         self.hbox2 =QHBoxLayout()
+        self.hbox3 =QHBoxLayout()
 
         #self.vbox.addWidget(self.canvas)
         self.vbox.addWidget(self.tableView)
@@ -122,21 +137,25 @@ class MyTrans(AppForm):
         for w in [self.center_Arithmetic_button,
                   self.center_Geometric_button,
                   self.min_max_button,
-                  self.std_button,
-                  self.log_ten_button,
-                  self.log_e_button,]:
+                  self.std_button]:
             self.hbox1.addWidget(w)
+
+        for w in [self.log_ten_button,self.exp_ten_button,
+                  self.log_e_button,self.exp_e_button,
+                  self.divide_by_sum_button]:
+            self.hbox2.addWidget(w)
 
         for w in [self.transpose_button,
                   self.fill_NaN_button,
                   self.remove_row_with_0_button,
                   self.remove_column_with_0_button]:
-            self.hbox2.addWidget(w)
+            self.hbox3.addWidget(w)
 
 
         self.vbox.addLayout(self.hbox0)
         self.vbox.addLayout(self.hbox1)
         self.vbox.addLayout(self.hbox2)
+        self.vbox.addLayout(self.hbox3)
 
         self.main_frame.setLayout(self.vbox)
         self.setCentralWidget(self.main_frame)
@@ -230,7 +249,6 @@ class MyTrans(AppForm):
     def remove_row_with_0(self):
         self.settings_backup = self._df
         self.settings_backup = self.settings_backup.dropna()
-
         #dataframe = self._df
         ItemsAvalibale = self._df.columns.values.tolist()
 
@@ -271,7 +289,6 @@ class MyTrans(AppForm):
         self.tableView.setModel(self.tableresult)
         self.show()
 
-
     def min_max(self):
         # mean=self.result.T.mean(numeric_only= float)
         # std=self.result.T.std(numeric_only= float)
@@ -281,7 +298,7 @@ class MyTrans(AppForm):
         self.tableView.setModel(self.tableresult)
         self.show()
 
-    def std_trans(self):
+    def std(self):
         mean=self.result.T.mean(numeric_only= float)
         std=self.result.T.std(numeric_only= float)
         tmpresult=(self.result.T-mean)/std
@@ -290,22 +307,41 @@ class MyTrans(AppForm):
         self.tableView.setModel(self.tableresult)
         self.show()
 
-    def log_trans(self):
+    def log(self):
         self.result=np.log(self.result)
         self.tableresult=PandasModel(self.result)
         self.tableView.setModel(self.tableresult)
         self.show()
 
-    def log_ten_trans(self):
+    def log_ten(self):
         self.result=np.log10(self.result)
         self.tableresult=PandasModel(self.result)
         self.tableView.setModel(self.tableresult)
         self.show()
 
-    def log_e_trans(self):
+    def exp_ten(self):
+        self.result = np.power(10,self.result)
+        self.tableresult = PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
+
+    def log_e(self):
         self.result=np.log(self.result)
         self.tableresult=PandasModel(self.result)
         self.tableView.setModel(self.tableresult)
         self.show()
 
+    def exp_e(self):
+        self.result = np.power(np.e,self.result)
+        self.tableresult = PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
 
+    def divide_by_sum(self):
+        sum=self.result.T.sum(numeric_only= float)
+        print(sum)
+        tmpresult=(self.result.T)/sum
+        self.result=tmpresult.T
+        self.tableresult=PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()

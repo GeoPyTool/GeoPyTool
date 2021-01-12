@@ -950,7 +950,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                     if ('csv' in DataFilesInput[i]):
                         DataFramesList.append(pd.read_csv(DataFilesInput[i], engine='python'))
                     elif ('xls' in DataFilesInput[i]):
-                        DataFramesList.append(pd.read_excel(DataFilesInput[i]))
+                        DataFramesList.append(pd.read_excel(DataFilesInput[i]),engine='openpyxl')
                 else:
                     # self.ErrorEvent(text='You can only open up to 6 Data Files at a time.')
                     pass
@@ -971,7 +971,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if ('csv' in DataFileInput):
             self.raw = pd.read_csv(DataFileInput, engine='python')
         elif ('xls' in DataFileInput):
-            self.raw = pd.read_excel(DataFileInput)
+            self.raw = pd.read_excel(DataFileInput,engine='openpyxl')
         # #print(self.raw)
 
         if len(self.raw) > 0:
@@ -1050,7 +1050,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 if ('csv' in i):
                     DataFramesList.append(pd.read_csv(i), engine='python')
                 elif ('xls' in i):
-                    DataFramesList.append(pd.read_excel(i))
+                    DataFramesList.append(pd.read_excel(i),engine='openpyxl')
                 pass
 
         # result = pd.concat(DataFramesList,axis=1,sort=False)
@@ -1087,7 +1087,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 if ('csv' in i):
                     DataFramesList.append(pd.read_csv(i, engine='python'))
                 elif ('xls' in i):
-                    DataFramesList.append(pd.read_excel(i))
+                    DataFramesList.append(pd.read_excel(i),engine='openpyxl')
                 pass
 
             # result = pd.concat(DataFramesList,axis=1,sort=False)
@@ -1120,7 +1120,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 if ('csv' in DataFilesInput[i]):
                     tmpdf = pd.read_csv(DataFilesInput[i], engine='python')
                 elif ('xls' in DataFilesInput[i]):
-                    tmpdf = pd.read_excel(DataFilesInput[i])
+                    tmpdf = pd.read_excel(DataFilesInput[i],engine='openpyxl')
                 # name_list = tmpdf.columns.values.tolist()
                 tmpname_dic = {}
                 tmpname_list = []

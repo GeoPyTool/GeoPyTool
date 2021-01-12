@@ -1,6 +1,6 @@
-version="0.9.21.0.002"
+version="0.9.21.0.003"
 
-date = '2021-01-01'
+date = '2021-01-21'
 
 dpi = 128
 # coding:utf-8
@@ -690,9 +690,9 @@ class NewCustomQTableView(QtWidgets.QTableView):
                     self.path = f
 
                     if ('csv' in f):
-                        self.parent().raw = pd.read_csv(f)
+                        self.parent().raw = pd.read_csv(f,engine='python')
                     elif ('xls' in f):
-                        self.parent().raw = pd.read_excel(f)
+                        self.parent().raw = pd.read_excel(f,engine='openpyxl')
 
                     # #print(self.raw)
 
@@ -1283,9 +1283,9 @@ class AppForm(QMainWindow):
             for i in range(len(DataFilesInput)):
                 if i < limit:
                     if ('csv' in DataFilesInput[i]):
-                        DataFramesList.append(pd.read_csv(DataFilesInput[i]))
+                        DataFramesList.append(pd.read_csv(DataFilesInput[i]),engine='python')
                     elif ('xls' in DataFilesInput[i]):
-                        DataFramesList.append(pd.read_excel(DataFilesInput[i]))
+                        DataFramesList.append(pd.read_excel(DataFilesInput[i]),engine='openpyxl')
                 else:
                     # self.ErrorEvent(text='You can only open up to 6 Data Files at a time.')
                     pass
@@ -1302,10 +1302,12 @@ class AppForm(QMainWindow):
 
         raw_input_data = pd.DataFrame()
 
+
+
         if ('csv' in DataFileInput):
-            raw_input_data = pd.read_csv(DataFileInput)
+            raw_input_data = pd.read_csv(DataFileInput, engine='python')
         elif ('xls' in DataFileInput):
-            raw_input_data = pd.read_excel(DataFileInput)
+            raw_input_data = pd.read_excel(DataFileInput,engine='openpyxl')
 
         if len(raw_input_data) > 0:
             return (raw_input_data, DataFileInput)

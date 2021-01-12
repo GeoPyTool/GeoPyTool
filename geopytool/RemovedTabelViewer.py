@@ -139,9 +139,9 @@ class NewCustomQTableView(QtWidgets.QTableView):
                     self.path=f
 
                     if ('csv' in f):
-                        self.parent().raw = pd.read_csv(f)
+                        self.parent().raw = pd.read_csv(f,engine='python')
                     elif ('xls' in f):
-                        self.parent().raw = pd.read_excel(f)
+                        self.parent().raw = pd.read_excel(f,engine='openpyxl')
 
                     # #print(self.raw)
 
