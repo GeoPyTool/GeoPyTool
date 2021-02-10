@@ -1,5 +1,5 @@
 Title: Download
-Date: 2021-1-1 0:0:0
+Date: 2021-2-10 0:0:0
 Category: Doc
 Tags: Doc, English, Chinese
 
@@ -10,6 +10,8 @@ Tags: Doc, English, Chinese
 
 ### GeoPyTool packs:
 [Baidu Download 百度网盘](https://pan.baidu.com/s/1ReLXKdNtpKBbqn7_bWH3OA) 
+
+[Google Drive](https://drive.google.com/drive/folders/1vSneUfJII2_agpJc1kDZpMXZtkCjLHpU?usp=sharing)
 
 ###### Notice that you need to download the Right Version for Your Platform! Download the Windows Pack if you are using Windows, same to the Mac users.
 

@@ -1,22 +1,22 @@
 Title: Download
-Date: 2019-1-24 10:05:25
+Date: 2021-2-10 0:0:0
 Category: Doc
 Tags: Doc, English, Chinese
 
 #GeoPyTool Application Download Links
 ># GeoPyTool 打包的可执行程序下载链接
 
+### [Click Here](https://github.com/GeoPyTool/GeoPyTool/issues/new) to get the latest link to [join the GeoPyTool Slack](https://geopytool.slack.com/)
 
 ### GeoPyTool packs:
-[Baidu Download 百度网盘](https://pan.baidu.com/s/1ewNlNrDQNjtCLS9ibBPW5Q#list/path=%2Fsharelink1763171575-261348695782281%2FRelease&parentPath=%2Fsharelink1763171575-261348695782281)
+[Baidu Download 百度网盘](https://pan.baidu.com/s/1ReLXKdNtpKBbqn7_bWH3OA) 
 
-[OneDrive](https://1drv.ms/f/s!AnIw_Lqr4g5tgTMqT9tXxIK9PYNI)
+[Google Drive](https://drive.google.com/drive/folders/1vSneUfJII2_agpJc1kDZpMXZtkCjLHpU?usp=sharing)
 
 ###### Notice that you need to download the Right Version for Your Platform! Download the Windows Pack if you are using Windows, same to the Mac users.
 
 ###### 请一定注意下载正确的平台版本, 你的操作系统是啥就下载对应版本,下错了平台不一致的打包文件是不能用的!
 
-#### 如果你使用百度网盘进行下载发现速度比较慢,可以试试 [http://pandownload.com/](http://pandownload.com/) 这个软件
 
 ## Citation 引用
 
@@ -57,7 +57,7 @@ GeoPyTool 包含了一些常用的传统方法，也实现了一些近年来新�
 You can share your ideas or problems on [Github](https://github.com/GeoPyTool/GeoPyTool/issues).
 If you encounter problems using GeoPyTool, please screenshot the error message from the cmd or other ternimal window and send it with your post (shown as the sample below).
 
-大家有各种问题交流，除了在[Github](https://github.com/GeoPyTool/GeoPyTool/issues)，还可以加入咱们的QQ群： 560675626 （为避免无关人员骚扰，加群申请填写暗号 大胖哥是个好人 来通过验证）。
+大家有各种问题交流，除了在[Github](https://github.com/GeoPyTool/GeoPyTool/issues)，还可以加入咱们的QQ群： 560675626 （为避免无关人员骚扰，加群申请填写暗号 **大胖哥是个好人** 来通过验证）。
 如果你在使用的时候遇到出错的情况,请按下图所示将命令行窗口里面的出错信息截图发来,这会很有帮助:
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/HowToAskForHelp.png)
