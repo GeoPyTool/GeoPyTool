@@ -7,9 +7,6 @@ Tags: Doc,English
 
 [![Build Status](https://travis-ci.org/GeoPyTool/GeoPyTool.svg?branch=master)](https://travis-ci.org/GeoPyTool/GeoPyTool)
 
-[Click Here to Join the Discussions of GeoPyTool 点击该链接进行 GeoPyTool 相关讨论](https://github.com/GeoPyTool/GeoPyTool/discussions)
-
-
 
 
 ## Preface
