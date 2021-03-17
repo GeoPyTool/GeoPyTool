@@ -171,7 +171,7 @@ class MyGAN(AppForm):
                 if self._df.at[i, 'Label'] == k:
                     # tmp_list.append(self._df.loc[i])
                     tmp_list.append(self.result_to_fit.values[i])
-                self.data_indexed_dict[k] = tmp_list
+                # self.data_indexed_dict[k] = tmp_list
             self.data_indexed_dict[k]=tmp_list
 
             tmp_data=pd.DataFrame(tmp_list)
@@ -205,7 +205,6 @@ class MyGAN(AppForm):
                 #self.ErrorEvent(text=repr('Epochs must be larger than 1.'))
         except:
             pass
-
     def Set_Batch_Size(self,text):
         try:
             self.batch_size= int(text)

@@ -158,7 +158,7 @@ class Pearce(AppForm):
 
         self.resize(900, 900)
         self.main_frame = QWidget()
-        self.dpi = 128
+        self.dpi = 64
         self.fig ,self.axes= plt.subplots(2, 2,figsize=(16.0, 16.0),dpi=self.dpi)
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5,left=0.1, bottom=0.2, right=0.8, top=0.9)
         self.canvas = FigureCanvas(self.fig)
@@ -583,22 +583,22 @@ class Pearce(AppForm):
             for i in self.TagsA:
                 self.axes[0,0].annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
                                    textcoords='offset points',
-                                   fontsize=8, color='grey', alpha=0.8)
+                                   fontsize=4, color='grey', alpha=0.8)
 
             for i in self.TagsB:
                 self.axes[0,1].annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
                                    textcoords='offset points',
-                                   fontsize=8, color='grey', alpha=0.8)
+                                   fontsize=4, color='grey', alpha=0.8)
 
             for i in self.TagsC:
                 self.axes[1,0].annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
                                    textcoords='offset points',
-                                   fontsize=8, color='grey', alpha=0.8)
+                                   fontsize=4, color='grey', alpha=0.8)
 
             for i in self.TagsD:
                 self.axes[1,1].annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
                                    textcoords='offset points',
-                                   fontsize=8, color='grey', alpha=0.8)
+                                   fontsize=4, color='grey', alpha=0.8)
 
 
 

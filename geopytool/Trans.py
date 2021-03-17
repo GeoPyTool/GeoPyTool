@@ -68,8 +68,10 @@ class MyTrans(AppForm):
 
 
         self.transpose_button = QPushButton('&Transpose')
-        self.center_Geometric_button = QPushButton('&Divide by Geometric Mean')
-        self.center_Arithmetic_button = QPushButton('&Subtract Arithmetic Average')
+        self.divide_Geometric_button = QPushButton('&Divide by Geometric Mean')
+        self.subtract_Geometric_button = QPushButton('&Subtract Geometric Mean')
+        self.divide_Arithmetic_button = QPushButton('&Divide By Arithmetic Average')
+        self.subtract_Arithmetic_button = QPushButton('&Subtract Arithmetic Average')
 
         self.min_max_button = QPushButton('&Min-Max Standard')
         self.std_button = QPushButton('&Standard')
@@ -97,8 +99,12 @@ class MyTrans(AppForm):
         self.reset_button.clicked.connect(self.resetResult)
 
         self.transpose_button.clicked.connect(self.transpose)
-        self.center_Geometric_button.clicked.connect(self.center_Geometric)
-        self.center_Arithmetic_button.clicked.connect(self.center_Arithmetic)
+        self.divide_Geometric_button.clicked.connect(self.divide_Geometric)
+        self.subtract_Geometric_button.clicked.connect(self.subtract_Geometric)
+        self.divide_Arithmetic_button.clicked.connect(self.divide_Arithmetic)
+        self.subtract_Arithmetic_button.clicked.connect(self.subtract_Arithmetic)
+
+
         self.min_max_button.clicked.connect(self.min_max)
         self.std_button.clicked.connect(self.std)
 
@@ -134,8 +140,10 @@ class MyTrans(AppForm):
                   self.save_button,]:
             self.hbox0.addWidget(w)
 
-        for w in [self.center_Arithmetic_button,
-                  self.center_Geometric_button,
+        for w in [self.subtract_Arithmetic_button,
+                  self.divide_Arithmetic_button,
+                  self.subtract_Geometric_button,
+                  self.divide_Geometric_button,
                   self.min_max_button,
                   self.std_button]:
             self.hbox1.addWidget(w)
@@ -271,7 +279,7 @@ class MyTrans(AppForm):
         self.tableView.setModel(self.tableresult)
         self.show()
 
-    def center_Geometric(self):
+    def divide_Geometric(self):
 
         gmean=st.gmean(self.result.T)
         tmpresult=self.result.T/gmean
@@ -281,9 +289,30 @@ class MyTrans(AppForm):
         self.show()
 
 
-    def center_Arithmetic(self):
+    def subtract_Geometric(self):
+
+        gmean=st.gmean(self.result.T)
+        tmpresult=self.result.T-gmean
+        self.result=tmpresult.T
+        self.tableresult=PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
+
+
+
+    def subtract_Arithmetic(self):
         mean=self.result.T.mean(numeric_only= float)
         tmpresult=self.result.T-mean
+        self.result=tmpresult.T
+        self.tableresult=PandasModel(self.result)
+        self.tableView.setModel(self.tableresult)
+        self.show()
+
+
+
+    def divide_Arithmetic(self):
+        mean=self.result.T.mean(numeric_only= float)
+        tmpresult=self.result.T/mean
         self.result=tmpresult.T
         self.tableresult=PandasModel(self.result)
         self.tableView.setModel(self.tableresult)
