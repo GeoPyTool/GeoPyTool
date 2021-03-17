@@ -1,4 +1,4 @@
-version="0.9.21.0.004"
+version="0.9.21.0.005"
 
 date = '2021-03-17'
 
@@ -1472,7 +1472,8 @@ class AppForm(QMainWindow):
                 df = df.drop(i, 1)
 
         df = df.apply(pd.to_numeric, errors='coerce')
-        df = df.dropna(axis='columns')
+        # df = df.dropna(axis='columns')
+        df = df.dropna(axis='rows')
 
         return (df)
 

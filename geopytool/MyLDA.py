@@ -314,8 +314,8 @@ class MyLDA(AppForm):
                     if i not in Load_ItemsToTest:
                         self.load_settings_backup = self.load_settings_backup .drop(i, 1)
 
-                #print(self.data_to_test_to_fit)
-                #print(self.data_to_test_to_fit.shape)
+                print(self.data_to_test_to_fit)
+                print(self.data_to_test_to_fit.shape)
 
                 try:
                     self.trained_data_to_test = self.LDA.transform(self.data_to_test_to_fit)
