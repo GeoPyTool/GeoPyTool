@@ -18,7 +18,7 @@ except:
 
 
 setup(name='geopytool',
-      version="0.9.21.0.005",
+      version="0.9.21.0.006",
       description='a tool for daily geology related task. visit geopytool.com for further information',
       longdescription=README,
       author='cycleuser',
