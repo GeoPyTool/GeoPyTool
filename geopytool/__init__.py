@@ -588,7 +588,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionSet.triggered.connect(self.SetUpDataFile)
         self.actionFillNaN.triggered.connect(self.FillNaN)
         self.actionSave.triggered.connect(self.saveDataFile)
-        self.actionQuit.triggered.connect(qApp.quit)
+        self.actionQuit.triggered.connect(QApplication.quit)
 
         self.actionWeb.triggered.connect(self.goDiscussion)
         self.actionGoGithub.triggered.connect(self.goGitHub)
@@ -770,7 +770,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if buttonReply == QMessageBox.Yes:
                     print('Yes clicked.')
-                    # qApp.quit
+                    # QApplication.quit
                     # pip.main(['install', 'geopytool', '--upgrade --no-cache-dir'])
 
                     # self.UpDate
