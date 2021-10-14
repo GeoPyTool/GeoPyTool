@@ -97,14 +97,14 @@ from keras.layers import Conv1D, Flatten, Dense, Dropout, Input, Activation, Res
 from keras.models import Model,Sequential
 from keras.datasets import mnist
 from keras.layers.advanced_activations import LeakyReLU
-from keras.optimizers import SGD, Adam
 from tqdm import tqdm_notebook as tqdm  # 进度条
 
 import tensorflow as tf
 
 from keras.layers import Input, Dense, Lambda, concatenate
 from keras.models import Model
-from keras.optimizers import Adam
+# from keras.optimizers import Adam
+from tensorflow.keras.optimizers import SGD, Adam
 import keras.backend as K
 
 import os
@@ -117,7 +117,6 @@ import tensorflow as tf
 
 from keras.layers import Input, Dense, Lambda, concatenate
 from keras.models import Model
-from keras.optimizers import Adam
 import keras.backend as K
 
 
