@@ -129,7 +129,7 @@ class HarkerDIY(AppForm):
         self.resize(800, 800)
 
         self.main_frame = QWidget()
-        self.dpi = 128
+        self.dpi = 64
         self.fig = Figure((8.0, 8.0), dpi=self.dpi)
 
         self.fig.subplots_adjust(hspace=0.5, wspace=0.5, left=0.3, bottom=0.3, right=0.7, top=0.9)

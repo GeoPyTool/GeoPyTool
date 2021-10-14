@@ -113,7 +113,7 @@ class HarkerOld(AppForm):
     def create_main_frame(self):
         self.resize(800, 1000)
         self.main_frame = QWidget()
-        self.dpi = 128
+        self.dpi = 64
         self.fig ,self.axes= plt.subplots(4, 2,figsize=(15, 20),dpi=self.dpi)
         self.fig.subplots_adjust(hspace=0.2, wspace=0.4,left=0.1, bottom=0.2, right=0.7, top=0.95)
         self.canvas = FigureCanvas(self.fig)

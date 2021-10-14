@@ -133,7 +133,7 @@ fprop = font_manager.FontProperties(fname=fpath)
 
 ttfFontProp = ttfFontProperty(font)
 fontprop = font_manager.FontProperties(family='sans-serif', 
-                            size=9, 
+                            size=4,
                             fname=ttfFontProp.fname, 
                             stretch=ttfFontProp.stretch, 
                             style=ttfFontProp.style, 

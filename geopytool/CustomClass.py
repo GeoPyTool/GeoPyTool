@@ -1,8 +1,8 @@
-version="0.9.21.0.008"
+version="0.9.21.0.009"
 
 date = '2021-10-14'
 
-dpi = 128
+dpi = 64
 # coding:utf-8
 
 from ImportDependence import *
