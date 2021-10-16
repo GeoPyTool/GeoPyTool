@@ -583,22 +583,22 @@ class Pearce(AppForm):
             for i in self.TagsA:
                 self.axes[0,0].annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
                                    textcoords='offset points',
-                                   fontsize=4, color='grey', alpha=0.8)
+                                   fontsize=8, color='grey', alpha=0.8)
 
             for i in self.TagsB:
                 self.axes[0,1].annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
                                    textcoords='offset points',
-                                   fontsize=4, color='grey', alpha=0.8)
+                                   fontsize=8, color='grey', alpha=0.8)
 
             for i in self.TagsC:
                 self.axes[1,0].annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
                                    textcoords='offset points',
-                                   fontsize=4, color='grey', alpha=0.8)
+                                   fontsize=8, color='grey', alpha=0.8)
 
             for i in self.TagsD:
                 self.axes[1,1].annotate(i.Label, xy=i.Location, xycoords='data', xytext=(i.X_offset, i.Y_offset),
                                    textcoords='offset points',
-                                   fontsize=4, color='grey', alpha=0.8)
+                                   fontsize=8, color='grey', alpha=0.8)
 
 
 
