@@ -939,7 +939,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print('get Multiple Data Files  called \n')
         DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, u'Choose Data File',
                                                                 '~/',
-                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+                                                                'CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 2003 Files (*.xls)')  # 设置文件扩展名过滤,注意用双分号间隔
         # print(DataFileInput,filetype)
 
         DataFramesList = []
@@ -962,7 +962,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         DataFileInput, filetype = QFileDialog.getOpenFileName(self, _translate('MainWindow', u'Choose Data File'),
                                                               '~/',
-                                                              'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+                                                              'CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 2003 Files (*.xls)')  # 设置文件扩展名过滤,注意用双分号间隔
         # #print(DataFileInput,filetype)
 
         self.DataLocation = DataFileInput
@@ -1040,7 +1040,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
                                                                 '~/',
-                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+                                                                'CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 2003 Files (*.xls)')  # 设置文件扩展名过滤,注意用双分号间隔
         # #print(DataFileInput,filetype)
 
         DataFramesList = []
@@ -1077,7 +1077,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
                                                                 '~/',
-                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+                                                                'CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 2003 Files (*.xls)')  # 设置文件扩展名过滤,注意用双分号间隔
         # #print(DataFileInput,filetype)
 
         DataFramesList = []
@@ -1111,7 +1111,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         print('Combine called \n')
         DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, _translate('MainWindow', u'Choose Data File'),
                                                                 '~/',
-                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+                                                                'CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 2003 Files (*.xls)')  # 设置文件扩展名过滤,注意用双分号间隔
         DataFramesList = []
         filenamelist = self.getFileName(DataFilesInput)
         if len(DataFilesInput) > 1:

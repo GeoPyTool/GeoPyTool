@@ -1,6 +1,6 @@
-version="0.9.21.0.009"
+version="0.9.21.0.010"
 
-date = '2021-10-14'
+date = '2021-10-17'
 
 dpi = 64
 # coding:utf-8
@@ -1274,7 +1274,7 @@ class AppForm(QMainWindow):
         print('get Multiple Data Files  called \n')
         DataFilesInput, filetype = QFileDialog.getOpenFileNames(self, u'Choose Data File',
                                                                 '~/',
-                                                                'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+                                                                'CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 2003 Files (*.xls)')  # 设置文件扩展名过滤,注意用双分号间隔
         # print(DataFileInput,filetype)
 
         DataFramesList = []
@@ -1297,7 +1297,7 @@ class AppForm(QMainWindow):
 
         DataFileInput, filetype = QFileDialog.getOpenFileName(self, _translate('MainWindow', u'Choose Data File'),
                                                               '~/',
-                                                              'Excel Files (*.xlsx);;Excel 2003 Files (*.xls);;CSV Files (*.csv)')  # 设置文件扩展名过滤,注意用双分号间隔
+                                                              'CSV Files (*.csv);;Excel Files (*.xlsx);;Excel 2003 Files (*.xls)')  # 设置文件扩展名过滤,注意用双分号间隔
         print(DataFileInput)
 
         raw_input_data = pd.DataFrame()
