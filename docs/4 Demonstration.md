@@ -13,7 +13,9 @@ To start a plot or calculation, raw data file should be imported to GeoPyTool fi
 ![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/01.ImportData.png?raw=true)
 
 
-The Data file can be Xlsx/Xls or CSV.
+The Data file can be Xlsx/Xls or CSV, For Windows User, Please use CSV with UTF-8 code without BOM.
+An NAN problem seems like to be caused by the different behavior of Pandas, used to import data sheet, on Windows it generate a lot of NAN, which didn't happen on Linux or macOS. So, at the moment, the data sheet should better be CSV coded with UTF-8 without BOM.
+
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/ChooseAndImport.png)
 
 ## Data Unit

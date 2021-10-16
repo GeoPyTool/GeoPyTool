@@ -113,7 +113,11 @@ It will update the GeoPyTool inside your GeoPyTool.app file. Remember that never
 
 
 ### For Windows Users
-On Windows 8/8.1/10, everything is also extremely easy to use GeoPyTool. Just download and unzip the file, then double click on a bat file in the unzipped folder, and make sure that you don't delete any file form the unzipped folder because they are all required by the program, then you will find the APP available as the following picture shows.
+On Windows 8/8.1/10/11, everything is also extremely easy to use GeoPyTool. Just download and unzip the file, then double click on a bat file in the unzipped folder, and make sure that you don't delete any file form the unzipped folder because they are all required by the program, then you will find the APP available as the following picture shows.
+
+The Data file can be Xlsx/Xls or CSV, For Windows User, Please use CSV with UTF-8 code without BOM.
+An NAN problem seems like to be caused by the different behavior of Pandas, used to import data sheet, on Windows it generate a lot of NAN, which didn't happen on Linux or macOS. So, at the moment, the data sheet should better be CSV coded with UTF-8 without BOM.
+
 
 ![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/RunWin.jpg)
 
