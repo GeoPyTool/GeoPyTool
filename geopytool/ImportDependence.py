@@ -96,7 +96,8 @@ import keras
 from keras.layers import Conv1D, Flatten, Dense, Dropout, Input, Activation, Reshape
 from keras.models import Model,Sequential
 from keras.datasets import mnist
-from keras.layers.advanced_activations import LeakyReLU
+# from keras.layers.advanced_activations import LeakyReLU
+from keras.layers import LeakyReLU
 from tqdm import tqdm_notebook as tqdm  # 进度条
 
 import tensorflow as tf
