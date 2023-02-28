@@ -398,7 +398,7 @@ class XY(AppForm):
         w=self.width()
         h=self.height()
 
-        #self.load_data_button.setFixedWidth(w/4)
+        #self.load_data_button.setFixedWidth(int(w/4))
 
 
         self.kernel_select = QSlider(Qt.Horizontal)
@@ -473,45 +473,45 @@ class XY(AppForm):
         w=self.width()
         h=self.height()
 
-        self.x_seter.setFixedWidth(w/10)
-        self.y_seter.setFixedWidth(w/10)
+        self.x_seter.setFixedWidth(int(w/10))
+        self.y_seter.setFixedWidth(int(w/10))
 
-        self.x_multiplier.setFixedWidth(w/10)
-        self.y_multiplier.setFixedWidth(w/10)
+        self.x_multiplier.setFixedWidth(int(w/10))
+        self.y_multiplier.setFixedWidth(int(w/10))
 
 
         '''
-        self.save_plot_button.setFixedWidth(w/10)
-        self.stat_button.setFixedWidth(w/10)
-        self.load_data_button.setFixedWidth(w/4)
-        self.save_predict_button_selected.setFixedWidth(w/4)
-        self.save_predict_button.setFixedWidth(w/4)
+        self.save_plot_button.setFixedWidth(int(w/10))
+        self.stat_button.setFixedWidth(int(w/10))
+        self.load_data_button.setFixedWidth(int(w/4))
+        self.save_predict_button_selected.setFixedWidth(int(w/4))
+        self.save_predict_button.setFixedWidth(int(w/4))
         '''
 
         self.standard_slider.setFixedWidth(w/5)
 
         self.right_label.setFixedWidth(w/5)
 
-        self.fit_seter.setFixedWidth(w/20)
+        self.fit_seter.setFixedWidth(int(w/20))
 
         self.load_img_button.setFixedWidth(w/5)
         self.unload_img_button.setFixedWidth(w/5)
 
-        self.width_size_seter_label.setFixedWidth(w/10)
-        self.height_size_seter_label.setFixedWidth(w/10)
+        self.width_size_seter_label.setFixedWidth(int(w/10))
+        self.height_size_seter_label.setFixedWidth(int(w/10))
 
-        self.width_size_seter.setMinimumWidth(w/20)
-        self.height_size_seter.setMinimumWidth(w/20)
+        self.width_size_seter.setMinimumWidth(int(w/20))
+        self.height_size_seter.setMinimumWidth(int(w/20))
 
-        self.Right_size_seter_label.setFixedWidth(w/10)
-        self.Left_size_seter_label.setFixedWidth(w/10)
-        self.Up_size_seter_label.setFixedWidth(w/10)
-        self.Down_size_seter_label.setFixedWidth(w/10)
+        self.Right_size_seter_label.setFixedWidth(int(w/10))
+        self.Left_size_seter_label.setFixedWidth(int(w/10))
+        self.Up_size_seter_label.setFixedWidth(int(w/10))
+        self.Down_size_seter_label.setFixedWidth(int(w/10))
 
-        self.Right_size_seter.setFixedWidth(w/20)
-        self.Left_size_seter.setFixedWidth(w/20)
-        self.Up_size_seter.setFixedWidth(w/20)
-        self.Down_size_seter.setFixedWidth(w/20)
+        self.Right_size_seter.setFixedWidth(int(w/20))
+        self.Left_size_seter.setFixedWidth(int(w/20))
+        self.Up_size_seter.setFixedWidth(int(w/20))
+        self.Down_size_seter.setFixedWidth(int(w/20))
 
 
     def loadDataToTest(self):

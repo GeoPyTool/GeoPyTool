@@ -106,8 +106,8 @@ class Stereo(AppForm):
         w=self.width()
         h=self.height()
 
-        self.shape_slider.setFixedWidth(w/20)
-        self.type_slider.setFixedWidth(w/20)
+        self.shape_slider.setFixedWidth(int(w/20))
+        self.type_slider.setFixedWidth(int(w/20))
 
 
 

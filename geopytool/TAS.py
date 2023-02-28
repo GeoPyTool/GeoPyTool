@@ -201,11 +201,11 @@ class TAS(AppForm):
         h=self.height()
 
 
-        self.slider_left_label.setFixedWidth(w/10)
+        self.slider_left_label.setFixedWidth(int(w/10))
 
-        self.slider.setFixedWidth(w/10)
+        self.slider.setFixedWidth(int(w/10))
 
-        self.slider_right_label.setFixedWidth(w/10)
+        self.slider_right_label.setFixedWidth(int(w/10))
 
     def Irvine(self,x, a = 39.0, b = 3.9492, c = -2.1111, d = 0.86096, e = -0.15188, f = 0.012030, g = -(3.3539 / 10000)):
 

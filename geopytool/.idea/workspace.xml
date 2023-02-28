@@ -2,14 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="68a0e41f-8c70-4841-8076-ecb9acf1613f" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/geopython.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/geopython.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackTrace.py" beforeDir="false" afterPath="$PROJECT_DIR$/BackTrace.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CustomClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/CustomClass.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ImportDependence.py" beforeDir="false" afterPath="$PROJECT_DIR$/ImportDependence.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OldTrace.py" beforeDir="false" afterPath="$PROJECT_DIR$/OldTrace.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QAPF.py" beforeDir="false" afterPath="$PROJECT_DIR$/QAPF.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/REE.py" beforeDir="false" afterPath="$PROJECT_DIR$/REE.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Saccani.py" beforeDir="false" afterPath="$PROJECT_DIR$/Saccani.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stereo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Stereo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TAS.py" beforeDir="false" afterPath="$PROJECT_DIR$/TAS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trace.py" beforeDir="false" afterPath="$PROJECT_DIR$/Trace.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TraceNew.py" beforeDir="false" afterPath="$PROJECT_DIR$/TraceNew.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XY.py" beforeDir="false" afterPath="$PROJECT_DIR$/XY.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XYZ.py" beforeDir="false" afterPath="$PROJECT_DIR$/XYZ.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,11 +90,11 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Frederick&quot;
+  }
+}</component>
   <component name="RunManager" selected="Python.__init__">
     <configuration name="Test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="geopython" />
@@ -190,9 +197,6 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/__init__.py">

@@ -447,11 +447,11 @@ class QAPF(AppForm, Tool):
         w=self.width()
         h=self.height()
 
-        #setFixedWidth(w/10)
+        #setFixedWidth(int(w/10))
 
-        self.slider.setMinimumWidth(w/10)
-        self.slider_left_label.setMinimumWidth(w/10)
-        self.slider_right_label.setMinimumWidth(w/10)
+        self.slider.setMinimumWidth(int(w/10))
+        self.slider_left_label.setMinimumWidth(int(w/10))
+        self.slider_right_label.setMinimumWidth(int(w/10))
 
 
     def QAPF(self):

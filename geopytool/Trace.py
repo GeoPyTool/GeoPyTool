@@ -212,12 +212,12 @@ class Trace(AppForm):
         w=self.width()
         h=self.height()
 
-        #setFixedWidth(w/10)
+        #setFixedWidth(int(w/10))
 
-        self.type_slider.setFixedWidth(w/10)
-        self.standard_slider.setMinimumWidth(w/4)
-        self.right_label.setMinimumWidth(w/10)
-        self.item_left_label.setFixedWidth(w/10)
+        self.type_slider.setFixedWidth(int(w/10))
+        self.standard_slider.setMinimumWidth(int(w/4))
+        self.right_label.setMinimumWidth(int(w/10))
+        self.item_left_label.setFixedWidth(int(w/10))
 
 
 

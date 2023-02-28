@@ -240,14 +240,14 @@ class REE(AppForm):
         w=self.width()
         h=self.height()
 
-        #setFixedWidth(w/10)
+        #setFixedWidth(int(w/10))
 
-        self.standard_slider.setMinimumWidth(w/4)
-        self.standard_right_label.setFixedWidth(w/2)
-        self.item_left_label.setMinimumWidth(w/4)
+        self.standard_slider.setMinimumWidth(int(w/4))
+        self.standard_right_label.setFixedWidth(int(w/2))
+        self.item_left_label.setMinimumWidth(int(w/4))
         #self.item_left_label.setMinimumWidth(w/5)
 
-        self.item_left_label.setFixedWidth(w/10)
+        self.item_left_label.setFixedWidth(int(w/10))
 
     def REE(self, Left=0, Right=16, X0=1, X1=15, X_Gap=15, Base=-1,
             Top=6, Y0=-1,

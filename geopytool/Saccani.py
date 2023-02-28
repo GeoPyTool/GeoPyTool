@@ -118,8 +118,8 @@ class Saccani(AppForm):
         w=self.width()
         h=self.height()
 
-        self.standard_slider.setMinimumWidth(w/4)
-        self.right_label.setMinimumWidth(w/10)
+        self.standard_slider.setMinimumWidth(int(w/4))
+        self.right_label.setMinimumWidth(int(w/10))
 
 
     def Saccani(self):

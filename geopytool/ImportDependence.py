@@ -92,19 +92,19 @@ from bs4 import BeautifulSoup
 
 
 from sklearn import mixture
-import keras
-from keras.layers import Conv1D, Flatten, Dense, Dropout, Input, Activation, Reshape
-from keras.models import Model,Sequential
-from keras.datasets import mnist
-# from keras.layers.advanced_activations import LeakyReLU
-from keras.layers import LeakyReLU
+import tensorflow.keras as keras
+from tensorflow.keras.layers import Conv1D, Flatten, Dense, Dropout, Input, Activation, Reshape
+from tensorflow.keras.models import Model,Sequential
+from tensorflow.keras.datasets import mnist
+# from tensorflow.keras.layers.advanced_activations import LeakyReLU
+from tensorflow.keras.layers import LeakyReLU
 from tqdm import tqdm_notebook as tqdm  # 进度条
 
 import tensorflow as tf
 
-from keras.layers import Input, Dense, Lambda, concatenate
-from keras.models import Model
-# from keras.optimizers import Adam
+from tensorflow.keras.layers import Input, Dense, Lambda, concatenate
+from tensorflow.keras.models import Model
+# from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.optimizers import SGD, Adam
 import keras.backend as K
 
@@ -116,8 +116,8 @@ from collections import deque
 import numpy as np
 import tensorflow as tf
 
-from keras.layers import Input, Dense, Lambda, concatenate
-from keras.models import Model
+from tensorflow.keras.layers import Input, Dense, Lambda, concatenate
+from tensorflow.keras.models import Model
 import keras.backend as K
 
 

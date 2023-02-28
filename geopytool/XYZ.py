@@ -484,13 +484,13 @@ class XYZ(AppForm):
 
         w=self.width()
         h=self.height()
-        self.x_seter.setFixedWidth(w/10)
-        self.y_seter.setFixedWidth(w/10)
-        self.z_seter.setFixedWidth(w/10)
+        self.x_seter.setFixedWidth(int(w/10))
+        self.y_seter.setFixedWidth(int(w/10))
+        self.z_seter.setFixedWidth(int(w/10))
 
-        self.x_multiplier.setFixedWidth(w/10)
-        self.y_multiplier.setFixedWidth(w/10)
-        self.z_multiplier.setFixedWidth(w/10)
+        self.x_multiplier.setFixedWidth(int(w/10))
+        self.y_multiplier.setFixedWidth(int(w/10))
+        self.z_multiplier.setFixedWidth(int(w/10))
 
 
         #self.standard_slider.setMinimumWidth(w/5)
