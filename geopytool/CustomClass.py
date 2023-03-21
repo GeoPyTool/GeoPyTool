@@ -1,6 +1,6 @@
-version="0.9.23.0.001"
+version="0.9.23.0.002"
 
-date = '2023-2-28'
+date = '2023-3-21'
 
 dpi = 64
 # coding:utf-8
@@ -27,7 +27,7 @@ class GrowingTextEdit(QtWidgets.QTextEdit):
     def sizeChange(self):
         docHeight = self.document().size().height()
         if self.heightMin <= docHeight <= self.heightMax:
-            self.setMinimumHeight(docHeight)
+            self.setMinimumHeight(int(docHeight))
 
 
 class Tool():
