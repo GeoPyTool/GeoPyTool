@@ -232,12 +232,12 @@ class Harker(AppForm):
         w=self.width()
         h=self.height()
 
-        self.seter_left_label.setFixedWidth(w / 20)
-        self.seter_left.setFixedWidth(w / 20)
-        self.seter_right_label.setFixedWidth(w / 20)
-        self.seter_right.setFixedWidth(w / 20)
-        self.fit_slider.setFixedWidth(w / 20)
-        self.fit_seter.setFixedWidth(w / 20)
+        self.seter_left_label.setFixedWidth(int(w / 20))
+        self.seter_left.setFixedWidth(int(w / 20))
+        self.seter_right_label.setFixedWidth(int(w / 20))
+        self.seter_right.setFixedWidth(int(w / 20))
+        self.fit_slider.setFixedWidth(int(w / 20))
+        self.fit_seter.setFixedWidth(int(w / 20))
 
 
     def FitChanged(self, text):
