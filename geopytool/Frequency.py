@@ -137,16 +137,16 @@ class Frequency(AppForm):
         w=self.width()
         h=self.height()
 
-        self.seter.setFixedWidth(w / 20)
-        self.seter_alpha.setFixedWidth(w / 20)
-        self.seter_Left_label.setFixedWidth(w / 20)
-        self.seter_Left.setFixedWidth(w / 20)
-        self.seter_Right_label.setFixedWidth(w / 20)
-        self.seter_Right.setFixedWidth(w / 20)
-        self.seter_Bottom_label.setFixedWidth(w / 20)
-        self.seter_Bottom.setFixedWidth(w / 20)
-        self.seter_Top_label.setFixedWidth(w / 20)
-        self.seter_Top.setFixedWidth(w / 20)
+        self.seter.setFixedWidth(int(w / 20))
+        self.seter_alpha.setFixedWidth(int(w / 20))
+        self.seter_Left_label.setFixedWidth(int(w / 20))
+        self.seter_Left.setFixedWidth(int(w / 20))
+        self.seter_Right_label.setFixedWidth(int(w / 20))
+        self.seter_Right.setFixedWidth(int(w / 20))
+        self.seter_Bottom_label.setFixedWidth(int(w / 20))
+        self.seter_Bottom.setFixedWidth(int(w / 20))
+        self.seter_Top_label.setFixedWidth(int(w / 20))
+        self.seter_Top.setFixedWidth(int(w / 20))
 
 
     def Frequency(self):
