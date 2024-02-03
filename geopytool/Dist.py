@@ -67,9 +67,9 @@ class MyDist(AppForm):
 
         for i in ItemsAvalibale:
             if i in ItemsToTest:
-                self.result =  self.result.drop(i, 1)
+                self.result =  self.result.drop(i,axis=1)
             elif( i != 'Label'):
-                self.settings_backup = self.settings_backup.drop(i, 1)
+                self.settings_backup = self.settings_backup.drop(i,axis=1)
 
         self.result = self.result.apply(pd.to_numeric, errors='coerce')
         self.result = self.result.dropna(axis='columns')
@@ -102,8 +102,8 @@ class MyDist(AppForm):
 
         w=self.width()
         h=self.height()
-        self.distance_slider.setFixedWidth(w / 2)
-        self.distance_slider_label.setFixedWidth(w / 5)
+        self.distance_slider.setFixedWidth(int(w/ 2))
+        self.distance_slider_label.setFixedWidth(int(w/ 5))
 
         self.tableView = CustomQTableView(self.main_frame)
         self.tableView.setObjectName('tableView')

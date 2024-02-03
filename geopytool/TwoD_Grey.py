@@ -92,11 +92,11 @@ class MyTwoD_Grey(AppForm):
 
         w = self.width()
         for i in self.cb_list:
-            i.setFixedWidth(w / 8)
+            i.setFixedWidth(int(w/ 8))
             i.stateChanged.connect(self.TwoD)  # int
 
         for i in self.setter_list:
-            i.setFixedWidth(w / 8)
+            i.setFixedWidth(int(w/ 8))
             i.textChanged[str].connect(self.TwoD)  # int
 
         self.save_img_button = QPushButton('&Save Image')
@@ -159,7 +159,7 @@ class MyTwoD_Grey(AppForm):
                                    'Style', 'Width']
                     for j in ItemsToTest:
                         if j in ItemsAvalibale:
-                            dataframe = dataframe.drop(j, 1)
+                            dataframe = dataframe.drop(j,axis=1)
 
                     dataframe = dataframe.apply(pd.to_numeric, errors='coerce')
                     dataframe = dataframe.dropna(axis='columns')

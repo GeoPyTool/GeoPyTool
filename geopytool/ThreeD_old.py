@@ -106,7 +106,7 @@ class MyThreeD(AppForm):
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
-                dataframe = dataframe.drop(i, 1)
+                dataframe = dataframe.drop(i,axis=1)
 
         dataframe = dataframe.apply(pd.to_numeric, errors='coerce')
         dataframe = dataframe.dropna(axis='columns')

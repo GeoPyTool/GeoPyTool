@@ -85,7 +85,7 @@ class MultiDimension(AppForm):
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
-                dataframe = dataframe.drop(i, 1)
+                dataframe = dataframe.drop(i,axis=1)
 
         dataframe_values_only = dataframe.apply(pd.to_numeric, errors='coerce')
         dataframe_values_only = dataframe_values_only.dropna(axis='columns')
@@ -299,7 +299,7 @@ class MultiDimension(AppForm):
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
-                dataframe = dataframe.drop(i, 1)
+                dataframe = dataframe.drop(i,axis=1)
 
         ItemsAvalibale = dataframe.columns.values.tolist()
 
@@ -536,7 +536,7 @@ class MultiDimension(AppForm):
         m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author','Name','Type','Ref']
         for i in m:
             if i in df.columns.values:
-                df = df.drop(i, 1)
+                df = df.drop(i,axis=1)
         df.set_index('Label', inplace=True)
 
         items = df.columns.values

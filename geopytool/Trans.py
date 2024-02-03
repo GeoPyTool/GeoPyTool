@@ -191,9 +191,9 @@ class MyTrans(AppForm):
 
         for i in ItemsAvalibale:
             if i in ItemsToTest:
-                dataframe = dataframe.drop(i, 1)
+                dataframe = dataframe.drop(i,axis=1)
             elif( i != 'Label'):
-                self.settings_backup = self.settings_backup.drop(i, 1)
+                self.settings_backup = self.settings_backup.drop(i,axis=1)
 
 
         dataframe = dataframe.apply(pd.to_numeric, errors='coerce')
@@ -267,7 +267,7 @@ class MyTrans(AppForm):
             if i in ItemsToTest:
                 pass
             elif (i != 'Label'):
-                self.settings_backup = self.settings_backup.drop(i, 1)
+                self.settings_backup = self.settings_backup.drop(i,axis=1)
         self.result = self.result.dropna()
         self.tableresult = PandasModel(self.result)
         self.tableView.setModel(self.tableresult)

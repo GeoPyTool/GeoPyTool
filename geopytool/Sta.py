@@ -112,9 +112,9 @@ class MySta(AppForm):
         ItemsToTest = ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha', 'Style', 'Width']
         for i in ItemsAvalibale:
             if i in ItemsToTest:
-                dataframe = dataframe.drop(i, 1)
+                dataframe = dataframe.drop(i,axis=1)
             elif( i != 'Label'):
-                self.settings_backup = self.settings_backup.drop(i, 1)
+                self.settings_backup = self.settings_backup.drop(i,axis=1)
 
         #if 'Label' in self.settings_backup.columns.values.tolist(): self.settings_backup = self.settings_backup.set_index('Label')
         dataframe = dataframe.apply(pd.to_numeric, errors='coerce')

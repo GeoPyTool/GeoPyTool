@@ -148,7 +148,7 @@ class MyHist(AppForm):
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
-                df = df.drop(i, 1)
+                df = df.drop(i,axis=1)
 
         df = df.apply(pd.to_numeric, errors='coerce')
 

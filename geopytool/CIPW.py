@@ -1561,7 +1561,7 @@ class CIPW(AppForm):
 
         for i in m:
             if i in df.columns.values:
-                df = df.drop(i, 1)
+                df = df.drop(i,axis=1)
         df = df.loc[:, (df != 0).any(axis=0)]
         return(df)
 
@@ -1572,7 +1572,7 @@ class CIPW(AppForm):
 
         for i in df.columns.values:
             if i not in m:
-                df = df.drop(i, 1)
+                df = df.drop(i,axis=1)
         df = df.loc[:, (df != 0).any(axis=0)]
         return(df)
 

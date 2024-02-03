@@ -59,7 +59,7 @@ class MyGAN(AppForm):
                        'Style', 'Width']
         for i in self._df.columns.values.tolist():
             if i not in ItemsToTest:
-                self.settings_backup = self.settings_backup.drop(i, 1)
+                self.settings_backup = self.settings_backup.drop(i,axis=1)
         #print(self.settings_backup)
 
 
@@ -159,35 +159,40 @@ class MyGAN(AppForm):
 
 
     def Key_Func(self):
-        df_list=[]
+
+        try:
+            df_list=[]
 
 
-        print('feature_size ',self.feature_size,'\noriginal_size ',
-              self.original_size,'\ntarget_size ',self.target_size,'\nepochs_number ',self.epochs_number)
+            print('feature_size ',self.feature_size,'\noriginal_size ',
+                self.original_size,'\ntarget_size ',self.target_size,'\nepochs_number ',self.epochs_number)
 
-        for k in self.all_labels:
-            tmp_list=[]
-            for i in range(len(self.Slim(self._df))):
-                if self._df.at[i, 'Label'] == k:
-                    # tmp_list.append(self._df.loc[i])
-                    tmp_list.append(self.result_to_fit.values[i])
-                # self.data_indexed_dict[k] = tmp_list
-            self.data_indexed_dict[k]=tmp_list
+            for k in self.all_labels:
+                tmp_list=[]
+                for i in range(len(self.Slim(self._df))):
+                    if self._df.at[i, 'Label'] == k:
+                        # tmp_list.append(self._df.loc[i])
+                        tmp_list.append(self.result_to_fit.values[i])
+                    # self.data_indexed_dict[k] = tmp_list
+                self.data_indexed_dict[k]=tmp_list
 
-            tmp_data=pd.DataFrame(tmp_list)
-            tmp_result = self.training(epochs = self.epochs_number, batch_size = self.batch_size, data=tmp_data)
-            tmp_label = (k,)*len(tmp_result)
-            tmp_combine = pd.concat(
-                [pd.DataFrame(tmp_label), pd.DataFrame(tmp_result)],
-                axis=1)
-            tmp_combine.columns=['Label']+self.columns_list
-            df_list.append(tmp_combine)
+                tmp_data=pd.DataFrame(tmp_list)
+                tmp_result = self.training(epochs = self.epochs_number, batch_size = self.batch_size, data=tmp_data)
+                tmp_label = (k,)*len(tmp_result)
+                tmp_combine = pd.concat(
+                    [pd.DataFrame(tmp_label), pd.DataFrame(tmp_result)],
+                    axis=1)
+                tmp_combine.columns=['Label']+self.columns_list
+                df_list.append(tmp_combine)
 
-        self.whole_labels = self.all_labels
+            self.whole_labels = self.all_labels
 
-        self.result = pd.concat(df_list, sort=False, axis=0)
-        self.model = PandasModel(self.result)
-        self.tableView.setModel(self.model)
+            self.result = pd.concat(df_list, sort=False, axis=0)
+            self.model = PandasModel(self.result)
+            self.tableView.setModel(self.model)
+
+        except:
+            pass
 
     def Set_Target_Size(self,text):
         try:

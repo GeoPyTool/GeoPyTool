@@ -151,7 +151,7 @@ class XYZ(AppForm):
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
-                dataframe = dataframe.drop(i, 1)
+                dataframe = dataframe.drop(i,axis=1)
 
         dataframe_values_only = dataframe.apply(pd.to_numeric, errors='coerce')
         dataframe_values_only = dataframe_values_only.dropna(axis='columns')
@@ -493,9 +493,9 @@ class XYZ(AppForm):
         self.z_multiplier.setFixedWidth(int(w/10))
 
 
-        #self.standard_slider.setMinimumWidth(w/5)
+        #self.standard_slider.setMinimumWidth(int(w/5))
 
-        #self.right_label.setFixedWidth(w/5)
+        #self.right_label.setFixedWidth(int(w/5))
 
 
     def Read(self, inpoints):
@@ -652,7 +652,7 @@ class XYZ(AppForm):
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
-                dataframe = dataframe.drop(i, 1)
+                dataframe = dataframe.drop(i,axis=1)
         dataframe_values_only = dataframe.apply(pd.to_numeric, errors='coerce')
         dataframe_values_only = dataframe_values_only.dropna(axis='columns')
         ItemsAvalibale = dataframe_values_only.columns.values.tolist()
@@ -1279,7 +1279,7 @@ class XYZ(AppForm):
                                     'Style', 'Width']
                 for i in self.data_to_test.columns.values.tolist():
                     if i not in Load_ItemsToTest:
-                        self.load_settings_backup = self.load_settings_backup.drop(i, 1)
+                        self.load_settings_backup = self.load_settings_backup.drop(i,axis=1)
 
                 #print(self.load_settings_backup, self.data_to_test)
 
@@ -1355,7 +1355,7 @@ class XYZ(AppForm):
         m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
         for i in m:
             if i in df.columns.values:
-                df = df.drop(i, 1)
+                df = df.drop(i,axis=1)
         df.set_index('Label', inplace=True)
 
         items = df.columns.values

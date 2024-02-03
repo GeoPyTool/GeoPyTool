@@ -160,7 +160,7 @@ class Cluster(AppForm):
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
-                dataframe = dataframe.drop(i, 1)
+                dataframe = dataframe.drop(i,axis=1)
 
 
 
@@ -353,7 +353,7 @@ class Cluster(AppForm):
         m = ['Width', 'Style', 'Alpha', 'Size', 'Color', 'Marker', 'Author']
         for i in m:
             if i in df.columns.values:
-                df = df.drop(i, 1)
+                df = df.drop(i,axis=1)
         #df.set_index('Label', inplace=True)
 
         items = df.columns.values

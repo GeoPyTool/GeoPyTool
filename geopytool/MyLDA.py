@@ -47,7 +47,7 @@ class MyLDA(AppForm):
                        'Style', 'Width']
         for i in self._df.columns.values.tolist():
             if i not in ItemsToTest:
-                self.settings_backup = self.settings_backup.drop(i, 1)
+                self.settings_backup = self.settings_backup.drop(i,axis=1)
         #print(self.settings_backup)
 
         self.result_to_fit= self.Slim(self._df)
@@ -195,331 +195,334 @@ class MyLDA(AppForm):
 
 
     def Key_Func(self):
+        try:
+            a = 0
+            b = 1
 
-        a = 0
-        b = 1
+            k_s = int(self.kernel_select.value())
+            self.color_list=[]
 
-        k_s = int(self.kernel_select.value())
-        self.color_list=[]
-
-        self.axes.clear()
-
-        le = LabelEncoder()
-        le.fit(self.result_to_fit.index)
-        original_label = le.transform(self.result_to_fit.index)
-
-        #print(self.result_to_fit.values.tolist())
-
-
-        self.LDA.fit(self.result_to_fit.values.tolist(), original_label)
-
-        #print('\n coef is ',self.LDA.coef_, '\n intercept is ', self.LDA.intercept_)
-
-        # f(x) = -self.LDA.coef_[0][0]/self.LDA.coef_[0][1] * x - self.LDA.intercept_/self.LDA.coef_[0][1]
-
-
-        self.comp = (self.LDA.scalings_.T)
-        self.n = len(self.comp)
-        self.trained_result = self.LDA.fit_transform(self.result_to_fit.values, original_label)
-
-        # class 0 and 1 : areas
-        #self.text_result='N Components :' + str(n)+'N Components :' + str(comp)+ '\nExplained Variance Ratio :' + str(evr)+'\nExplained Variance :' + str(ev)
-
-        title=[]
-        for i in range(len(self.comp)):
-            title.append('Components No.'+ str(i+1))
-
-        self.nvs = zip(title, self.comp)
-        self.compdict = dict((title, self.comp) for title, self.comp in self.nvs)
-
-        self.Para=pd.DataFrame(self.compdict)
-
-        all_labels=[]
-        all_colors=[]
-        all_markers=[]
-        all_alpha=[]
-        LDA_X = []
-        LDA_Label = []
-
-        for i in range(len(self._df)):
-            target =self._df.at[i, 'Label']
-            color = self._df.at[i, 'Color']
-            marker = self._df.at[i, 'Marker']
-            alpha = self._df.at[i, 'Alpha']
-
-            if target not in all_labels:
-                all_labels.append(target)
-                all_colors.append(color)
-                all_markers.append(marker)
-                all_alpha.append(alpha)
-            if color not in self.color_list:
-                self.color_list.append(color)
-            LDA_X.append([self.trained_result[i, a],
-                          self.trained_result[i, b]])
-            LDA_Label.append(self._df.at[i, 'Label'])
-
-
-
-
-        self.whole_labels = all_labels
-
-        if(len(self.data_to_test)>0):
-
-            contained = True
-            missing = 'Miss setting infor:'
-
-            for i in ['Label', 'Color', 'Marker', 'Alpha']:
-                if i not in self.data_to_test.columns.values.tolist():
-                    contained = False
-                    missing = missing +'\n' + i
-
-            if contained == True:
-
-                for i in self.data_to_test.columns.values.tolist():
-                    if i not in self._df.columns.values.tolist():
-                        self.data_to_test=self.data_to_test.drop(columns=i)
-
-                #print(self.data_to_test)
-
-                test_labels=[]
-                test_colors=[]
-                test_markers=[]
-                test_alpha=[]
-
-
-                for i in range(len(self.data_to_test)):
-                    target = self.data_to_test.at[i, 'Label']
-                    color = self.data_to_test.at[i, 'Color']
-                    marker = self.data_to_test.at[i, 'Marker']
-                    alpha = self.data_to_test.at[i, 'Alpha']
-
-                    if target not in test_labels and target not in all_labels:
-                        test_labels.append(target)
-                        test_colors.append(color)
-                        test_markers.append(marker)
-                        test_alpha.append(alpha)
-
-
-                self.whole_labels = self.whole_labels +test_labels
-
-                self.data_to_test_to_fit= self.Slim(self.data_to_test)
-
-
-                self.load_settings_backup = self.data_to_test
-                Load_ItemsToTest = ['Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
-                                    'Size',
-                                    'Alpha',
-                                    'Style', 'Width']
-                for i in self.data_to_test.columns.values.tolist():
-                    if i not in Load_ItemsToTest:
-                        self.load_settings_backup = self.load_settings_backup .drop(i, 1)
-
-                print(self.data_to_test_to_fit)
-                print(self.data_to_test_to_fit.shape)
-
-                try:
-                    self.trained_data_to_test = self.LDA.transform(self.data_to_test_to_fit)
-
-
-                    self.load_result = pd.concat([self.load_settings_backup, pd.DataFrame(self.trained_data_to_test)], axis=1)
-
-                    for i in range(len(test_labels)):
-
-                        if (self.show_load_data_cb.isChecked()):
-                            self.axes.scatter(self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
-                                              self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
-                                              color=test_colors[i],
-                                              marker=test_markers[i],
-                                              label=test_labels[i],
-                                              alpha=test_alpha[i])
-
-
-                            '''
-                            if (self.shape_cb.isChecked()):
-                                pass
-                                XtoFit = self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
-                                YtoFit = self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
-
-                                xmin, xmax = min(XtoFit), max(XtoFit)
-                                ymin, ymax = min(YtoFit), max(YtoFit)
-
-                                DensityColorMap = 'Blues'
-                                DensityAlpha = 0.1
-
-                                DensityLineColor = test_colors[i]
-                                DensityLineAlpha = 0.1
-                                # Peform the kernel density estimate
-                                xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
-                                positions = np.vstack([xx.ravel(), yy.ravel()])
-                                values = np.vstack([XtoFit, YtoFit])
-                                kernelstatus = True
-                                try:
-                                    st.gaussian_kde(values)
-                                except Exception as e:
-                                    self.ErrorEvent(text=repr(e))
-                                    kernelstatus = False
-                                if kernelstatus == True:
-                                    kernel = st.gaussian_kde(values)
-                                    f = np.reshape(kernel(positions).T, xx.shape)
-                                    # Contourf plot
-                                    cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
-                                    # Contour plot
-                                    cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
-                                    # Label plot
-                                    self.axes.clabel(cset, inline=1, fontsize=10)                            
-                            '''
-                except Exception as e:
-                    self.ErrorEvent(text=repr(e))
-
-            else:
-                self.ErrorEvent(text=missing)
-
-
-        self.kernel_select_label.setText(self.kernel_list[k_s])
-        self.axes.set_xlabel("component "+str(a+1))
-
-        self.axes.set_ylabel("component "+str(b+1))
-
-
-        self.begin_result = pd.concat([self.settings_backup, pd.DataFrame(self.trained_result)], axis=1)
-
-        for i in range(len(all_labels)):
-            self.axes.scatter(self.trained_result[self.result_to_fit.index == all_labels[i], a],
-                              self.trained_result[self.result_to_fit.index == all_labels[i], b],
-                              color=all_colors[i],
-                              marker=all_markers[i],
-                              label=all_labels[i],
-                              alpha=all_alpha[i])
-
-
-            if (self.shape_cb.isChecked()):
-                pass
-                XtoFit = self.trained_result[self.result_to_fit.index == all_labels[i], a]
-                YtoFit = self.trained_result[self.result_to_fit.index == all_labels[i], b]
-
-                xmin, xmax = min(XtoFit), max(XtoFit)
-                ymin, ymax = min(YtoFit), max(YtoFit)
-
-                xmin, xmax = self.axes.get_xlim()
-                ymin, ymax = self.axes.get_ylim()
-
-                DensityColorMap = 'Greys'
-                DensityAlpha = 0.1
-
-                DensityLineColor = all_colors[i]
-                DensityLineAlpha = 0.3
-                # Peform the kernel density estimate
-                xx, yy = np.mgrid[xmin:xmax:8192j, ymin:ymax:8192j]
-                positions = np.vstack([xx.ravel(), yy.ravel()])
-                values = np.vstack([XtoFit, YtoFit])
-                kernelstatus = True
-                try:
-                    st.gaussian_kde(values)
-                except Exception as e:
-                    self.ErrorEvent(text=repr(e))
-                    kernelstatus = False
-
-                if kernelstatus == True:
-                    kernel = st.gaussian_kde(values)
-                    f = np.reshape(kernel(positions).T, xx.shape)
-                    # Contourf plot
-                    cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
-                    # Contour plot
-                    cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
-                    # Label plot
-                    if (self.legend_cb.isChecked()):
-                        self.axes.clabel(cset, inline=1, fontsize=10)
-
-        if (self.show_data_index_cb.isChecked()):
-            for i in range(len(self.trained_result)):
-                    if 'Index' in self._df.columns.values:
-
-                        self.axes.text(self.trained_result[i, a], self.trained_result[i, b], self._df_back.at[i, 'Index'], size=self._df.at[i, 'Size'], zorder=1, color=self._df.at[i, 'Color'],
-                                   alpha=self._df.at[i, 'Alpha'])
-                    else:
-                        self.axes.text(self.trained_result[i, a], self.trained_result[i, b], 'No'+str(i+1), size=self._df.at[i, 'Size'], zorder=1, color=self._df.at[i, 'Color'],
-                                   alpha=self._df.at[i, 'Alpha'])
-
-        if (self.hyperplane_cb.isChecked()):
-            clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
-            svm_x = self.trained_result[:, a]
-            svm_y = self.trained_result[:, b]
-            xmin, xmax = self.axes.get_xlim()
-            ymin, ymax = self.axes.get_ylim()
-            self.cmap_trained_data = ListedColormap(self.color_list)
-            #xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200), np.linspace(ymin, ymax, 200))
-
-
-            xx, yy = np.mgrid[xmin:xmax:8192j, ymin:ymax:8192j]
+            self.axes.clear()
 
             le = LabelEncoder()
             le.fit(self.result_to_fit.index)
-            class_label = le.transform(self.result_to_fit.index)
-            svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y)], axis=1)
+            original_label = le.transform(self.result_to_fit.index)
 
-            svm_train = svm_train.values
-            clf.fit(svm_train, class_label)
-            Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
-            #self.axes.contourf(xx, yy, Z,cmap=ListedColormap(self.color_list), alpha=0.2)
-
-            CS = self.axes.contourf(xx, yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
-                                    cmap=ListedColormap(self.color_list), alpha=0.2)
-            CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',
-                                    alpha=0)
-            if (self.line_cb.isChecked()):
-                for l in CS2.allsegs:
-                    if len(l) > 0:
-                        a = np.array(l[0])
-                        print(a)
-                        x = a[:, 0]
-                        y = a[:, 1]
-                        self.axes.plot(x, y, color='red', alpha=0.3)
-                        #self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k', alpha=0.3)
-            self.axes.set_xlim(xmin, xmax)
-            self.axes.set_ylim(ymin, ymax)
-
-        if (self.legend_cb.isChecked()):
-            self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
+            #print(self.result_to_fit.values.tolist())
 
 
-        self.result = pd.concat([self.begin_result , self.load_result], sort=False, axis=0).set_index('Label')
+            self.LDA.fit(self.result_to_fit.values.tolist(), original_label)
 
-        if (self.lda_cb.isChecked()):
-            le = LabelEncoder()
-            le.fit(LDA_Label)
-            original_label = le.transform(LDA_Label)
-            # print(self.result_to_fit.values.tolist())
-            model = LinearDiscriminantAnalysis()
-            model.fit(LDA_X, original_label)
-            xmin, xmax = self.axes.get_xlim()
-            ymin, ymax = self.axes.get_ylim()
-            self.model = model
-            self.cmap_trained_data = ListedColormap(self.color_list)
-            #xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200), np.linspace(ymin, ymax, 200))
+            #print('\n coef is ',self.LDA.coef_, '\n intercept is ', self.LDA.intercept_)
 
-            xx, yy = np.mgrid[xmin:xmax:8192j, ymin:ymax:8192j]
-            Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-            #self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+            # f(x) = -self.LDA.coef_[0][0]/self.LDA.coef_[0][1] * x - self.LDA.intercept_/self.LDA.coef_[0][1]
 
-            CS = self.axes.contourf(xx, yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
-                                    cmap=ListedColormap(self.color_list), alpha=0.2)
-            CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',
-                                    alpha=0)
-            if (self.line_cb.isChecked()):
-                for l in CS2.allsegs:
-                    if len(l) > 0:
-                        a = np.array(l[0])
-                        print(a)
-                        x = a[:, 0]
-                        y = a[:, 1]
-                        self.axes.plot(x, y, color='blue', alpha=0.3)
-                        #self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k', alpha=0.3)
-            self.axes.set_xlim(xmin, xmax)
-            self.axes.set_ylim(ymin, ymax)
 
-        self.canvas.draw()
+            self.comp = (self.LDA.scalings_.T)
+            self.n = len(self.comp)
+            self.trained_result = self.LDA.fit_transform(self.result_to_fit.values, original_label)
 
+            # class 0 and 1 : areas
+            #self.text_result='N Components :' + str(n)+'N Components :' + str(comp)+ '\nExplained Variance Ratio :' + str(evr)+'\nExplained Variance :' + str(ev)
+
+            title=[]
+            for i in range(len(self.comp)):
+                title.append('Components No.'+ str(i+1))
+
+            self.nvs = zip(title, self.comp)
+            self.compdict = dict((title, self.comp) for title, self.comp in self.nvs)
+
+            self.Para=pd.DataFrame(self.compdict)
+
+            all_labels=[]
+            all_colors=[]
+            all_markers=[]
+            all_alpha=[]
+            LDA_X = []
+            LDA_Label = []
+
+            for i in range(len(self._df)):
+                target =self._df.at[i, 'Label']
+                color = self._df.at[i, 'Color']
+                marker = self._df.at[i, 'Marker']
+                alpha = self._df.at[i, 'Alpha']
+
+                if target not in all_labels:
+                    all_labels.append(target)
+                    all_colors.append(color)
+                    all_markers.append(marker)
+                    all_alpha.append(alpha)
+                if color not in self.color_list:
+                    self.color_list.append(color)
+                LDA_X.append([self.trained_result[i, a],
+                            self.trained_result[i, b]])
+                LDA_Label.append(self._df.at[i, 'Label'])
+
+
+
+
+            self.whole_labels = all_labels
+
+            if(len(self.data_to_test)>0):
+
+                contained = True
+                missing = 'Miss setting infor:'
+
+                for i in ['Label', 'Color', 'Marker', 'Alpha']:
+                    if i not in self.data_to_test.columns.values.tolist():
+                        contained = False
+                        missing = missing +'\n' + i
+
+                if contained == True:
+
+                    for i in self.data_to_test.columns.values.tolist():
+                        if i not in self._df.columns.values.tolist():
+                            self.data_to_test=self.data_to_test.drop(columns=i)
+
+                    #print(self.data_to_test)
+
+                    test_labels=[]
+                    test_colors=[]
+                    test_markers=[]
+                    test_alpha=[]
+
+
+                    for i in range(len(self.data_to_test)):
+                        target = self.data_to_test.at[i, 'Label']
+                        color = self.data_to_test.at[i, 'Color']
+                        marker = self.data_to_test.at[i, 'Marker']
+                        alpha = self.data_to_test.at[i, 'Alpha']
+
+                        if target not in test_labels and target not in all_labels:
+                            test_labels.append(target)
+                            test_colors.append(color)
+                            test_markers.append(marker)
+                            test_alpha.append(alpha)
+
+
+                    self.whole_labels = self.whole_labels +test_labels
+
+                    self.data_to_test_to_fit= self.Slim(self.data_to_test)
+
+
+                    self.load_settings_backup = self.data_to_test
+                    Load_ItemsToTest = ['Number', 'Tag', 'Type', 'Index', 'Name', 'Author', 'DataType', 'Marker', 'Color',
+                                        'Size',
+                                        'Alpha',
+                                        'Style', 'Width']
+                    for i in self.data_to_test.columns.values.tolist():
+                        if i not in Load_ItemsToTest:
+                            self.load_settings_backup = self.load_settings_backup .drop(i,axis=1)
+
+                    print(self.data_to_test_to_fit)
+                    print(self.data_to_test_to_fit.shape)
+
+                    try:
+                        self.trained_data_to_test = self.LDA.transform(self.data_to_test_to_fit)
+
+
+                        self.load_result = pd.concat([self.load_settings_backup, pd.DataFrame(self.trained_data_to_test)], axis=1)
+
+                        for i in range(len(test_labels)):
+
+                            if (self.show_load_data_cb.isChecked()):
+                                self.axes.scatter(self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a],
+                                                self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b],
+                                                color=test_colors[i],
+                                                marker=test_markers[i],
+                                                label=test_labels[i],
+                                                alpha=test_alpha[i])
+
+
+                                '''
+                                if (self.shape_cb.isChecked()):
+                                    pass
+                                    XtoFit = self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], a]
+                                    YtoFit = self.trained_data_to_test[self.data_to_test_to_fit.index == test_labels[i], b]
+
+                                    xmin, xmax = min(XtoFit), max(XtoFit)
+                                    ymin, ymax = min(YtoFit), max(YtoFit)
+
+                                    DensityColorMap = 'Blues'
+                                    DensityAlpha = 0.1
+
+                                    DensityLineColor = test_colors[i]
+                                    DensityLineAlpha = 0.1
+                                    # Peform the kernel density estimate
+                                    xx, yy = np.mgrid[xmin:xmax:200j, ymin:ymax:200j]
+                                    positions = np.vstack([xx.ravel(), yy.ravel()])
+                                    values = np.vstack([XtoFit, YtoFit])
+                                    kernelstatus = True
+                                    try:
+                                        st.gaussian_kde(values)
+                                    except Exception as e:
+                                        self.ErrorEvent(text=repr(e))
+                                        kernelstatus = False
+                                    if kernelstatus == True:
+                                        kernel = st.gaussian_kde(values)
+                                        f = np.reshape(kernel(positions).T, xx.shape)
+                                        # Contourf plot
+                                        cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
+                                        # Contour plot
+                                        cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
+                                        # Label plot
+                                        self.axes.clabel(cset, inline=1, fontsize=10)                            
+                                '''
+                    except Exception as e:
+                        self.ErrorEvent(text=repr(e))
+
+                else:
+                    self.ErrorEvent(text=missing)
+
+
+            self.kernel_select_label.setText(self.kernel_list[k_s])
+            self.axes.set_xlabel("component "+str(a+1))
+
+            self.axes.set_ylabel("component "+str(b+1))
+
+
+            self.begin_result = pd.concat([self.settings_backup, pd.DataFrame(self.trained_result)], axis=1)
+
+            for i in range(len(all_labels)):
+                self.axes.scatter(self.trained_result[self.result_to_fit.index == all_labels[i], a],
+                                self.trained_result[self.result_to_fit.index == all_labels[i], b],
+                                color=all_colors[i],
+                                marker=all_markers[i],
+                                label=all_labels[i],
+                                alpha=all_alpha[i])
+
+
+                if (self.shape_cb.isChecked()):
+                    pass
+                    XtoFit = self.trained_result[self.result_to_fit.index == all_labels[i], a]
+                    YtoFit = self.trained_result[self.result_to_fit.index == all_labels[i], b]
+
+                    xmin, xmax = min(XtoFit), max(XtoFit)
+                    ymin, ymax = min(YtoFit), max(YtoFit)
+
+                    xmin, xmax = self.axes.get_xlim()
+                    ymin, ymax = self.axes.get_ylim()
+
+                    DensityColorMap = 'Greys'
+                    DensityAlpha = 0.1
+
+                    DensityLineColor = all_colors[i]
+                    DensityLineAlpha = 0.3
+                    # Peform the kernel density estimate
+                    xx, yy = np.mgrid[xmin:xmax:8192j, ymin:ymax:8192j]
+                    positions = np.vstack([xx.ravel(), yy.ravel()])
+                    values = np.vstack([XtoFit, YtoFit])
+                    kernelstatus = True
+                    try:
+                        st.gaussian_kde(values)
+                    except Exception as e:
+                        self.ErrorEvent(text=repr(e))
+                        kernelstatus = False
+
+                    if kernelstatus == True:
+                        kernel = st.gaussian_kde(values)
+                        f = np.reshape(kernel(positions).T, xx.shape)
+                        # Contourf plot
+                        cfset = self.axes.contourf(xx, yy, f, cmap=DensityColorMap, alpha=DensityAlpha)
+                        # Contour plot
+                        cset = self.axes.contour(xx, yy, f, colors=DensityLineColor, alpha=DensityLineAlpha)
+                        # Label plot
+                        if (self.legend_cb.isChecked()):
+                            self.axes.clabel(cset, inline=1, fontsize=10)
+
+            if (self.show_data_index_cb.isChecked()):
+                for i in range(len(self.trained_result)):
+                        if 'Index' in self._df.columns.values:
+
+                            self.axes.text(self.trained_result[i, a], self.trained_result[i, b], self._df_back.at[i, 'Index'], size=self._df.at[i, 'Size'], zorder=1, color=self._df.at[i, 'Color'],
+                                    alpha=self._df.at[i, 'Alpha'])
+                        else:
+                            self.axes.text(self.trained_result[i, a], self.trained_result[i, b], 'No'+str(i+1), size=self._df.at[i, 'Size'], zorder=1, color=self._df.at[i, 'Color'],
+                                    alpha=self._df.at[i, 'Alpha'])
+
+            if (self.hyperplane_cb.isChecked()):
+                clf = svm.SVC(C=1.0, kernel=self.kernel_list[k_s], probability=True)
+                svm_x = self.trained_result[:, a]
+                svm_y = self.trained_result[:, b]
+                xmin, xmax = self.axes.get_xlim()
+                ymin, ymax = self.axes.get_ylim()
+                self.cmap_trained_data = ListedColormap(self.color_list)
+                #xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200), np.linspace(ymin, ymax, 200))
+
+
+                xx, yy = np.mgrid[xmin:xmax:8192j, ymin:ymax:8192j]
+
+                le = LabelEncoder()
+                le.fit(self.result_to_fit.index)
+                class_label = le.transform(self.result_to_fit.index)
+                svm_train = pd.concat([pd.DataFrame(svm_x), pd.DataFrame(svm_y)], axis=1)
+
+                svm_train = svm_train.values
+                clf.fit(svm_train, class_label)
+                Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+                Z = Z.reshape(xx.shape)
+                #self.axes.contourf(xx, yy, Z,cmap=ListedColormap(self.color_list), alpha=0.2)
+
+                CS = self.axes.contourf(xx, yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
+                                        cmap=ListedColormap(self.color_list), alpha=0.2)
+                CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',
+                                        alpha=0)
+                if (self.line_cb.isChecked()):
+                    for l in CS2.allsegs:
+                        if len(l) > 0:
+                            a = np.array(l[0])
+                            print(a)
+                            x = a[:, 0]
+                            y = a[:, 1]
+                            self.axes.plot(x, y, color='red', alpha=0.3)
+                            #self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k', alpha=0.3)
+                self.axes.set_xlim(xmin, xmax)
+                self.axes.set_ylim(ymin, ymax)
+
+            if (self.legend_cb.isChecked()):
+                self.axes.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0, prop=fontprop)
+
+
+            self.result = pd.concat([self.begin_result , self.load_result], sort=False, axis=0).set_index('Label')
+
+            if (self.lda_cb.isChecked()):
+                le = LabelEncoder()
+                le.fit(LDA_Label)
+                original_label = le.transform(LDA_Label)
+                # print(self.result_to_fit.values.tolist())
+                model = LinearDiscriminantAnalysis()
+                model.fit(LDA_X, original_label)
+                xmin, xmax = self.axes.get_xlim()
+                ymin, ymax = self.axes.get_ylim()
+                self.model = model
+                self.cmap_trained_data = ListedColormap(self.color_list)
+                #xx, yy = np.meshgrid(np.linspace(xmin, xmax, 200), np.linspace(ymin, ymax, 200))
+
+                xx, yy = np.mgrid[xmin:xmax:8192j, ymin:ymax:8192j]
+                Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+                #self.axes.contourf(xx, yy, Z.reshape(xx.shape), cmap=ListedColormap(self.color_list), alpha=0.2)
+
+                CS = self.axes.contourf(xx, yy, Z.reshape(xx.shape), levels=len(self.color_list) + 1,
+                                        cmap=ListedColormap(self.color_list), alpha=0.2)
+                CS2 = self.axes.contour(CS, levels=CS.levels[::len(self.color_list)], colors='k', origin='lower',
+                                        alpha=0)
+                if (self.line_cb.isChecked()):
+                    for l in CS2.allsegs:
+                        if len(l) > 0:
+                            a = np.array(l[0])
+                            print(a)
+                            x = a[:, 0]
+                            y = a[:, 1]
+                            self.axes.plot(x, y, color='blue', alpha=0.3)
+                            #self.axes.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='k', alpha=0.3)
+                self.axes.set_xlim(xmin, xmax)
+                self.axes.set_ylim(ymin, ymax)
+
+            self.canvas.draw()
+        except:
+            pass
+
+        
     def showPredictResult(self):
 
         k_s = int(self.kernel_select.value())

@@ -563,7 +563,7 @@ class OldTrace(AppForm):
                        'Style', 'Width']:
                 pass
             else:
-                self.data_to_norm = self.data_to_norm.drop(i, 1)
+                self.data_to_norm = self.data_to_norm.drop(i,axis=1)
 
         self.OutPutData = self.data_to_norm.set_index('Label')
         self.tablepop = TableViewer(df=self.OutPutData,title='Trace Element Norm Result')

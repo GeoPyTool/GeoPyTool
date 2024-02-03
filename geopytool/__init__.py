@@ -15,14 +15,13 @@ sign = '''
 created on Sat Dec 17 22:28:24 2016
 @author: cycleuser
 # Create Date: 2015-07-13
-# Modify Date: 2018-02-09
+# Modify Date: 2024-02-03
 a tool set for daily geology related task.
 # prerequisite:
 #   based on Python 3.x
 #   need math,numpy,pandas,matplotlib,xlrd,pyqt5,BeautifulSoup4,pyopengl,pyqtgraph
     Any issues or improvements please contact cycleuser@cycleuser.org
-    or Open An Issue at GitHub:https://github.com/GeoPyTool/GeoPyTool/issues     
-    Website For Chinese Users：https://zhuanlan.zhihu.com/p/28908475
+    or Open An Issue at GitHub:https://github.com/GeoPyTool/GeoPyTool/issues
 '''
 
 t = 'You are using GeoPyTool ' + version + ', released on' + date + '\n' + sign

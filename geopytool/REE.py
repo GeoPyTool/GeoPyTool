@@ -245,7 +245,7 @@ class REE(AppForm):
         self.standard_slider.setMinimumWidth(int(w/4))
         self.standard_right_label.setFixedWidth(int(w/2))
         self.item_left_label.setMinimumWidth(int(w/4))
-        #self.item_left_label.setMinimumWidth(w/5)
+        #self.item_left_label.setMinimumWidth(int(w/5))
 
         self.item_left_label.setFixedWidth(int(w/10))
 
@@ -386,7 +386,7 @@ class REE(AppForm):
             '''
             for i in self.data_to_norm.columns.values.tolist():
                 if i not in self.Element:
-                    self.data_to_norm = self.data_to_norm.drop(i, 1)            
+                    self.data_to_norm = self.data_to_norm.drop(i,axis=1)            
             '''
 
             Y_bottom=0
@@ -596,7 +596,7 @@ class REE(AppForm):
             #elif i in ['Label','Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha','Style', 'Width']: pass
             elif i in ['Number', 'Tag', 'Name', 'Author', 'DataType', 'Marker', 'Color', 'Size', 'Alpha','Style', 'Width']: pass
             else:
-                self.data_to_norm = self.data_to_norm.drop(i, 1)
+                self.data_to_norm = self.data_to_norm.drop(i,axis=1)
 
         #print('last',len(self.OutPutData['Eu/Eu*(algebra)']))
 

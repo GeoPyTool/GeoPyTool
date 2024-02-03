@@ -182,7 +182,7 @@ class CIA(AppForm):
 
         for i in ItemsAvalibale:
             if 'O' not in i and i !='Label':
-                dataframe = dataframe.drop(i, 1)
+                dataframe = dataframe.drop(i,axis=1)
 
 
 

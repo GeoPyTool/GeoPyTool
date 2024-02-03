@@ -430,7 +430,7 @@ class TiAlCaMgMnKNaSi(AppForm):
                                         'Style', 'Width']
                     for i in self.data_to_test.columns.values.tolist():
                         if i not in Load_ItemsToTest:
-                            self.load_settings_backup = self.load_settings_backup.drop(i, 1)
+                            self.load_settings_backup = self.load_settings_backup.drop(i,axis=1)
 
                     print(self.load_settings_backup, self.data_to_test)
 

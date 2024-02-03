@@ -46,7 +46,7 @@ class MyFA(AppForm):
                        'Style', 'Width']
         for i in self._df.columns.values.tolist():
             if i not in ItemsToTest:
-                self.settings_backup = self.settings_backup.drop(i, 1)
+                self.settings_backup = self.settings_backup.drop(i,axis=1)
         print(self.settings_backup)
 
 
@@ -339,7 +339,7 @@ class MyFA(AppForm):
 
                 for i in self.data_to_test.columns.values.tolist():
                     if i not in Load_ItemsToTest:
-                        self.load_settings_backup = self.load_settings_backup .drop(i, 1)
+                        self.load_settings_backup = self.load_settings_backup .drop(i,axis=1)
 
                 print(self.data_to_test_to_fit)
                 print(self.data_to_test_to_fit.shape)

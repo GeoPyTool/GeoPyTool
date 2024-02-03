@@ -46,7 +46,7 @@ class MyDT(AppForm):
                        'Style', 'Width']
         for i in self._df.columns.values.tolist():
             if i not in ItemsToTest:
-                self.settings_backup = self.settings_backup.drop(i, 1)
+                self.settings_backup = self.settings_backup.drop(i,axis=1)
         #print(self.settings_backup)
 
 

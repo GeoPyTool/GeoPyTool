@@ -1,6 +1,6 @@
-version="0.9.23.0.003"
+version="1.0"
 
-date = '2023-10-08'
+date = '2024-02-03'
 
 dpi = 64
 # coding:utf-8
@@ -1047,11 +1047,11 @@ class AppForm(QMainWindow):
             if raw.dtypes[i] != float and raw.dtypes[i] != int and i not in ['Marker', 'Color', 'Size', 'Alpha',
                                                                              'Style', 'Width', 'Label'] and i not in self.itemstocheck:
                 print(raw.dtypes[i], i, 'droped')
-                raw = raw.drop(i, 1)
+                raw = raw.drop(i,axis=1)
 
         for i in raw.columns.values.tolist():
             if i == '':
-                raw = raw.drop(i, 1)
+                raw = raw.drop(i,axis=1)
 
         raw = raw.dropna(axis=1, how='all')
 
@@ -1452,7 +1452,7 @@ class AppForm(QMainWindow):
 
         for i in m:
             if i in df.columns.values:
-                df = df.drop(i, 1)
+                df = df.drop(i,axis=1)
         df = df.loc[:, (df != 0).any(axis=0)]
         return (df)
 
@@ -1469,7 +1469,7 @@ class AppForm(QMainWindow):
 
         for i in ItemsToTest:
             if i in ItemsAvalibale:
-                df = df.drop(i, 1)
+                df = df.drop(i,axis=1)
 
         df = df.apply(pd.to_numeric, errors='coerce')
         # df = df.dropna(axis='columns')
