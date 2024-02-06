@@ -44,7 +44,7 @@ python -c "import geopytool;geopytool.main()"
 
 If you installed GeoPyTool as a module in Python, you can use the following command in the **terminal** to update GeoPyTool to the latest version on any operating system:
 ```Bash
-pip install geopytool --update --no-cache-dir
+pip install geopytool -U --no-cache-dir
 ```
 
 It is a good idea to update **GeoPyTool** with pip everytime before you use it.
