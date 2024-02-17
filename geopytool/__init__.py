@@ -1,6 +1,10 @@
 ﻿#!/usr/bin/python3
 # coding:utf-8
 import sys, os
+import platform
+
+if platform.system() == 'Linux':
+    os.environ['QT_QPA_PLATFORM'] = 'wayland'
 
 print(sys.path)
 

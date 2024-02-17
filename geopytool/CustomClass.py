@@ -1,6 +1,6 @@
-version="1.1"
+version="1.2"
 
-date = '2024-02-07'
+date = '2024-02-18'
 
 dpi = 64
 # coding:utf-8
