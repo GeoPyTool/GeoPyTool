@@ -189,7 +189,7 @@ class Rose(AppForm):
             for i in range(len(self.raw)):
                 S.append(self.raw.at[i, Name[k]])
 
-            s = np.linspace(0, 360, 360 / self.Gap + 1)
+            s = np.linspace(0, 360, int(360 / self.Gap + 1))
             t = tuple(s.tolist())
             count = []
 
@@ -213,7 +213,8 @@ class Rose(AppForm):
             for i in range(len(self.raw)):
                 S.append(self.raw.at[i, Name[k]])
 
-            s = np.linspace(0, 360, 360 / self.Gap + 1)
+            # s = np.linspace(0, 360, 360 / self.Gap + 1)
+            s = np.linspace(0, 360, int(360 / self.Gap + 1))
             t = tuple(s.tolist())
             count = []
 
@@ -224,7 +225,8 @@ class Rose(AppForm):
                         if t[i] < j <= t[i + 1]:
                             tmp_count += 1
                 count.append(tmp_count)
-            s = np.linspace(0, 360, 360 / self.Gap + 1)
+            # s = np.linspace(0, 360, 360 / self.Gap + 1)
+            s = np.linspace(0, 360, int(360 / self.Gap + 1))
             t = tuple(s.tolist())
 
             R_factor = 90 / maxuse
@@ -235,7 +237,7 @@ class Rose(AppForm):
 
             m, n = self.Trans(t, R)
             self.axes.plot(m, n, color=Color[k], linewidth=1, alpha=0.6, marker='')
-            self.axes.fill(m, n, Color=Color[k], Alpha=0.6, )
+            self.axes.fill(m, n, color=Color[k], alpha=0.6, )
 
         if (self.Type_cb.isChecked()):
             self.Type_cb.setText('Wulf')
@@ -255,7 +257,7 @@ class Rose(AppForm):
         except(ValueError):
             pass
         list2.reverse()
-        self.axes.set_rgrids(list1, list2)
+        # self.axes.set_rgrids(list1, list2)
 
         #self.axes.set_thetagrids(range(360 + 90, 0 + 90, -15), [str(x) for x in range(0, 360, 15)])
 
@@ -312,7 +314,8 @@ class Rose(AppForm):
                 if self.raw.at[i, 'Label'] == k:
                     Whole[k].append(self.raw.at[i, Name])
 
-        t = tuple(np.linspace(0, 360, 360 / self.Gap + 1).tolist())
+        t = tuple(np.linspace(0, 360, int(360 / self.Gap + 1)).tolist())
+
         real_max = 0
 
         for j in range(len(Label)):
