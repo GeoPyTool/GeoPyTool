@@ -17,7 +17,6 @@ except:
     README = 'https://github.com/GeoPyTool/GeoPyTool/blob/master/README.md'
 
 
-
 setup(name='geopytool',
       version= version,
       description='a tool for daily geology related task. visit geopytool.com for further information',
@@ -27,8 +26,14 @@ setup(name='geopytool',
       url='https://github.com/GeoPyTool/GeoPyTool',
       packages=['geopytool'],
       package_data={
-          'geopytool': ['*.py','*.txt','*.png','*.qm','*.ttf','*.ini','*.md'],},
+          'geopytool': ['*.py','*.png','*.qm','*.ttf','*.ini','*.md'],
+      },
       include_package_data=True,
+
+      #py_modules=['CIPW','Cluster','geopytool/CustomClass','Harker','IMP','Magic','MudStone','MultiDimension','OldCustomClass','Pearce','PlotModel','QAPF','QFL','QmFLt','REE','Rose','Stereo','TAS','TableViewer','Temp','Test','Trace','XY','XYZ','ZirconCe','cli'],
+
+      #py_modules=['CustomClass'],
+
       install_requires=[
                         'cython',
                         'numpy',
@@ -41,8 +46,6 @@ setup(name='geopytool',
                         'requests',
                         'PyQt5',
                         'scikit-image',
-                        'torch',
-                        'keras',
                         'tqdm',
                         'gym',
                          ],

@@ -19,7 +19,7 @@ sign = '''
 created on Sat Dec 17 22:28:24 2016
 @author: cycleuser
 # Create Date: 2015-07-13
-# Modify Date: 2024-02-03
+# Modify Date: 2025-01-22
 a tool set for daily geology related task.
 # prerequisite:
 #   based on Python 3.x
@@ -512,11 +512,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menuGeoCalc.menuAction())
         self.menubar.addSeparator()
 
-        self.menubar.addAction(self.menuAdditional.menuAction())
-        self.menubar.addSeparator()
+        # self.menubar.addAction(self.menuAdditional.menuAction())
+        # self.menubar.addSeparator()
 
-        self.menubar.addAction(self.menuMachineLearn.menuAction())
-        self.menubar.addSeparator()
+        # self.menubar.addAction(self.menuMachineLearn.menuAction())
+        # self.menubar.addSeparator()
 
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menubar.addSeparator()

@@ -165,6 +165,11 @@ Blanks can not be used in matrix calculation and data fitting, that is how math 
 
 A detailed demonstration can be found at [Demonstration](http://geopytool.com/demonstration.html).
 
+### About Additional Functions and Machine Learning Functions
+
+The additional functions and machine learning functions are not included in the default installation of GeoPyTool right now.
+Because these funcions should be done in other single tools and will not be contained in the default installation of GeoPyTool from now on.
+
 ## Outcome
 
 ### Figures 
