@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 #coding:utf-8
+version="1.5"
 import os
-from geopytool.ImportDependence import *
-from geopytool.CustomClass import *
 try:
     from setuptools import setup
 except ImportError:
