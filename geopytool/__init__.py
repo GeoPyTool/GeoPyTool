@@ -1,6 +1,20 @@
 ﻿#!/usr/bin/python3
 # coding:utf-8
 import sys, os
+
+
+import os
+
+# 获取当前文件的绝对路径
+current_file_path = os.path.abspath(__file__)
+
+# 获取当前文件的目录
+current_directory = os.path.dirname(current_file_path)
+print(current_directory)
+# 改变当前工作目录
+os.chdir(current_directory)
+
+
 import platform
 
 if platform.system() == 'Linux':

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #coding:utf-8
-version="1.6"
+version="1.7"
 import os
 try:
     from setuptools import setup
