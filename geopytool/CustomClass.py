@@ -1,4 +1,4 @@
-version="1.5"
+version="1.6"
 
 date = '2025-01-22'
 

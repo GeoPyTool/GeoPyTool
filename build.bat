@@ -1,2 +1,2 @@
-python setup.py sdist  --formats=zip
-twine upload dist/*zip
+python setup.py sdist
+twine upload dist/*
