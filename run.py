@@ -341,6 +341,78 @@ def load_background_image(diagram_type):
     
     return None
 
+# Color assignment utility function
+def get_color_mapping(df):
+    """
+    Get color mapping for data points based on data file content
+    Returns: (colors_list, legend_labels)
+    """
+    colors_list = []
+    legend_labels = []
+    
+    # Enhanced default color palette with better contrast
+    default_colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan', 
+                     'magenta', 'darkblue', 'darkgreen', 'darkred', 'lightblue', 'lightgreen', 
+                     'coral', 'gold', 'indigo', 'crimson', 'forestgreen', 'navy', 'maroon', 'teal', 
+                     'slategray', 'chocolate', 'mediumorchid', 'darkorange', 'steelblue', 'darkslategray']
+    
+    # Check for color-related columns (case insensitive)
+    color_columns = []
+    for col in df.columns:
+        col_lower = col.lower().strip()
+        if col_lower in ['color', 'colour', 'colors', 'colours', 'type', 'label', 'group', 'groups', 
+                        'category', 'categories', 'class', 'classification', 'rock_type', 'rocktype', 
+                        'sample_type', 'sampletype', 'formation', 'unit', 'lithology']:
+            color_columns.append(col)
+    
+    if color_columns:
+        # Use the first color-related column found
+        color_col = color_columns[0]
+        unique_values = pd.Series(df[color_col].unique()).dropna().tolist()
+        
+        # Add NaN values if they exist
+        if df[color_col].isna().any():
+            unique_values.append(np.nan)
+        
+        # Create color mapping for unique values
+        color_map = {}
+        
+        # Define standard color names that can be used directly
+        standard_colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'grey', 
+                          'olive', 'cyan', 'magenta', 'yellow', 'black', 'white', 'darkblue', 'darkgreen', 
+                          'darkred', 'lightblue', 'lightgreen', 'coral', 'gold', 'indigo', 'crimson',
+                          'forestgreen', 'navy', 'maroon', 'teal', 'chocolate', 'darkorange']
+        
+        for i, value in enumerate(unique_values):
+            if pd.isna(value):
+                color_map[value] = 'gray'
+            else:
+                # Check if the value itself is a recognizable color name
+                value_str = str(value).lower().strip()
+                if value_str in standard_colors:
+                    color_map[value] = value_str if value_str != 'grey' else 'gray'
+                else:
+                    color_map[value] = default_colors[i % len(default_colors)]
+        
+        # Assign colors to each data point
+        for idx, row in df.iterrows():
+            value = row[color_col]
+            colors_list.append(color_map.get(value, 'gray'))
+            
+            if pd.isna(value):
+                legend_labels.append(f'Sample {idx+1} (Undefined)')
+            else:
+                # Clean label for better display
+                clean_label = str(value).strip()
+                legend_labels.append(clean_label)
+    else:
+        # No color column found, use default coloring by sample
+        for i in range(len(df)):
+            colors_list.append(default_colors[i % len(default_colors)])
+            legend_labels.append(f'Sample {i+1}')
+    
+    return colors_list, legend_labels
+
 # We'll implement our own simplified versions of the GeoPyTool modules
 # instead of importing them directly to avoid dependencies issues
 
@@ -349,6 +421,7 @@ class BasePlot:
     def __init__(self, df=None, fig=None):
         self.df = df
         self.fig = fig or plt.figure(figsize=(10, 8))
+        self.colors, self.legend_labels = get_color_mapping(df) if df is not None else ([], [])
         
     def plot(self):
         pass
@@ -389,12 +462,12 @@ class TAS(BasePlot):
         self.draw_irvine_line(ax)
         
         # Plot the data points
-        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
         for i, (idx, row) in enumerate(self.df.iterrows()):
-            color = colors[i % len(colors)]
+            color = self.colors[i] if i < len(self.colors) else 'blue'
+            label = self.legend_labels[i] if i < len(self.legend_labels) else f'Sample {i+1}'
             ax.scatter(row['SiO2'], row['Na2O'] + row['K2O'], 
                       marker='o', color=color, s=60, alpha=0.8, 
-                      label=f'Sample {i+1}', edgecolors='black', linewidth=0.5)
+                      label=label, edgecolors='black', linewidth=0.5)
         
         # Add field labels (exact coordinates from TAS.py)
         self.add_tas_labels(ax)
@@ -527,14 +600,40 @@ class Harker(BasePlot):
         # Create a figure with subplots
         for i, oxide in enumerate(available_oxides):
             ax = self.fig.add_subplot(rows, cols, i+1)
-            ax.scatter(self.df['SiO2'], self.df[oxide], marker='o', color='blue', alpha=0.6)
+            
+            # Plot each sample with consistent colors
+            for j, (idx, row) in enumerate(self.df.iterrows()):
+                color = self.colors[j] if j < len(self.colors) else 'blue'
+                label = self.legend_labels[j] if j < len(self.legend_labels) else f'Sample {j+1}'
+                ax.scatter(row['SiO2'], row[oxide], marker='o', color=color, alpha=0.6, 
+                          label=label if i == 0 else '', s=40, edgecolors='black', linewidth=0.3)
+            
             ax.set_xlabel('SiO2 (wt%)')
             ax.set_ylabel(f'{oxide} (wt%)')
             ax.grid(True, linestyle='--', alpha=0.5)
             
+        # Add legend to the entire figure if multiple samples with distinct groups
+        if len(self.df) > 1 and len(self.df) <= 10:
+            # Create a legend for the whole figure using unique labels
+            handles, labels = [], []
+            unique_labels = []
+            for i, label in enumerate(self.legend_labels):
+                if label not in unique_labels:
+                    unique_labels.append(label)
+                    color = self.colors[i] if i < len(self.colors) else 'blue'
+                    # Create a dummy scatter plot for the legend
+                    from matplotlib.lines import Line2D
+                    handles.append(Line2D([0], [0], marker='o', color='w', markerfacecolor=color, 
+                                        markersize=8, alpha=0.8, markeredgecolor='black'))
+                    labels.append(label)
+            
+            if handles:
+                self.fig.legend(handles, labels, loc='center right', bbox_to_anchor=(0.98, 0.5), 
+                              fontsize=10, frameon=True, fancybox=True, shadow=True)
+        
         self.fig.tight_layout()
         self.fig.suptitle('Harker Diagrams', fontsize=16)
-        self.fig.subplots_adjust(top=0.92)
+        self.fig.subplots_adjust(top=0.92, right=0.85 if len(self.df) > 1 and len(self.df) <= 10 else 0.95)
 
 # REE diagram implementation based on REE.py
 class REE(BasePlot):
@@ -597,11 +696,11 @@ class REE(BasePlot):
         
         # Track Y range for proper scaling
         y_bottom, y_top = float('inf'), float('-inf')
-        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
         
         # Plot each sample
         for i, (idx, row) in enumerate(self.df.iterrows()):
-            color = colors[i % len(colors)]
+            color = self.colors[i] if i < len(self.colors) else 'blue'
+            label = self.legend_labels[i] if i < len(self.legend_labels) else f'Sample {i+1}'
             
             # Calculate normalized values and log transform
             lines_x = []
@@ -631,7 +730,7 @@ class REE(BasePlot):
             # Connect points with lines (exact behavior from REE.py)
             if len(lines_x) > 1:
                 ax.plot(lines_x, lines_y, color=color, linewidth=1.5, 
-                       alpha=0.8, label=f'Sample {i+1}')
+                       alpha=0.8, label=label)
         
         # Set proper axis ranges and ticks according to REE.py
         xticks = list(range(1, len(available_rees) + 1))
@@ -764,11 +863,11 @@ class Trace(BasePlot):
         
         # Track Y range for proper scaling
         y_bottom, y_top = float('inf'), float('-inf')
-        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
         
         # Plot each sample
         for i, (idx, row) in enumerate(self.df.iterrows()):
-            color = colors[i % len(colors)]
+            color = self.colors[i] if i < len(self.colors) else 'blue'
+            label = self.legend_labels[i] if i < len(self.legend_labels) else f'Sample {i+1}'
             
             # Calculate normalized values and log transform
             lines_x = []
@@ -810,7 +909,7 @@ class Trace(BasePlot):
             # Connect points with lines
             if len(lines_x) > 1:
                 ax.plot(lines_x, lines_y, color=color, linewidth=1.5, 
-                       alpha=0.8, label=f'Sample {i+1}')
+                       alpha=0.8, label=label)
         
         # Set proper axis ranges and ticks
         xticks = list(range(1, len(available_elements) + 1))
@@ -884,13 +983,13 @@ class Pearce(BasePlot):
         self.draw_pearce_lines(ax)
         
         # Plot the data points
-        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
         for i, (idx, row) in enumerate(self.df.iterrows()):
-            color = colors[i % len(colors)]
+            color = self.colors[i] if i < len(self.colors) else 'blue'
+            label = self.legend_labels[i] if i < len(self.legend_labels) else f'Sample {i+1}'
             x_val = row['Y'] + row['Nb']
             y_val = row['Rb']
             ax.scatter(x_val, y_val, marker='o', color=color, s=50, alpha=0.8, 
-                      label=f'Sample {i+1}', edgecolors='black', linewidth=0.5)
+                      label=label, edgecolors='black', linewidth=0.5)
         
         # Set labels and title
         ax.set_xlabel('Y + Nb (ppm)', fontsize=12)
@@ -1070,7 +1169,6 @@ class QAPF(BasePlot):
         self.draw_qapf_lines(ax)
         
         # Calculate and plot QAPF parameters
-        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
         qapf_points = []
         
         for i, row in norm_df.iterrows():
@@ -1096,9 +1194,10 @@ class QAPF(BasePlot):
                 else:
                     x_coord, y_coord = 50, 50
                 
-                color = colors[i % len(colors)]
+                color = self.colors[i] if i < len(self.colors) else 'blue'
+                label = self.legend_labels[i] if i < len(self.legend_labels) else f'Sample {i+1}'
                 ax.scatter(x_coord, y_coord, marker='o', color=color, s=60, alpha=0.8, 
-                          label=f'Sample {i+1}', edgecolors='black', linewidth=0.5)
+                          label=label, edgecolors='black', linewidth=0.5)
                 qapf_points.append((x_coord, y_coord, q_norm, a_norm, p_norm, f_norm))
         
         # Set labels and title
