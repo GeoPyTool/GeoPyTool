@@ -668,57 +668,196 @@ class REE(BasePlot):
         ax.text(0.02, 0.98, f'Standard: {self.standard}', 
                 transform=ax.transAxes, fontsize=8, verticalalignment='top', style='italic')
 
-# Trace element diagram implementation
+# Trace element diagram implementation based on Trace.py and TraceNew.py
 class Trace(BasePlot):
+    def __init__(self, df=None, fig=None, standard='PM', element_set='cs_lu'):
+        super().__init__(df, fig)
+        self.standard = standard
+        self.element_set = element_set
+        
+        # All available standards from Trace.py
+        self.standards = {
+            'PM': {
+                'Cs': 0.032, 'Tl': 0.005, 'Rb': 0.635, 'Ba': 6.989, 'W': 0.02, 'Th': 0.085, 'U': 0.021, 'Nb': 0.713,
+                'Ta': 0.041, 'K': 250, 'La': 0.687, 'Ce': 1.775, 'Pb': 0.185, 'Pr': 0.276, 'Mo': 0.063, 'Sr': 21.1,
+                'P': 95, 'Nd': 1.354, 'F': 26, 'Sm': 0.444, 'Zr': 11.2, 'Hf': 0.309, 'Eu': 0.168, 'Sn': 0.17,
+                'Sb': 0.005, 'Ti': 1300, 'Gd': 0.596, 'Tb': 0.108, 'Dy': 0.736, 'Li': 1.6, 'Y': 4.55, 'Ho': 0.164,
+                'Er': 0.48, 'Tm': 0.074, 'Yb': 0.493, 'Lu': 0.074
+            },
+            'OIB': {
+                'Cs': 0.387, 'Tl': 0.077, 'Rb': 31, 'Ba': 350, 'W': 0.56, 'Th': 4, 'U': 1.02, 'Nb': 48, 'Ta': 2.7,
+                'K': 12000, 'La': 36, 'Ce': 80, 'Pb': 3.2, 'Pr': 9.7, 'Mo': 2.4, 'Sr': 660, 'P': 2700, 'Nd': 38.5,
+                'F': 1150, 'Sm': 10, 'Zr': 280, 'Hf': 7.8, 'Eu': 3, 'Sn': 2.7, 'Sb': 0.03, 'Ti': 17200, 'Gd': 7.62,
+                'Tb': 1.05, 'Dy': 5.6, 'Li': 5.6, 'Y': 29, 'Ho': 1.06, 'Er': 2.62, 'Tm': 0.35, 'Yb': 2.16, 'Lu': 0.3
+            },
+            'EMORB': {
+                'Cs': 0.063, 'Tl': 0.013, 'Rb': 5.04, 'Ba': 57, 'W': 0.092, 'Th': 0.6, 'U': 0.18, 'Nb': 8.3,
+                'Ta': 0.47, 'K': 2100, 'La': 6.3, 'Ce': 15, 'Pb': 0.6, 'Pr': 2.05, 'Mo': 0.47, 'Sr': 155, 'P': 620,
+                'Nd': 9, 'F': 250, 'Sm': 2.6, 'Zr': 73, 'Hf': 2.03, 'Eu': 0.91, 'Sn': 0.8, 'Sb': 0.01, 'Ti': 6000,
+                'Gd': 2.97, 'Tb': 0.53, 'Dy': 3.55, 'Li': 3.5, 'Y': 22, 'Ho': 0.79, 'Er': 2.31, 'Tm': 0.356,
+                'Yb': 2.36, 'Lu': 0.354
+            },
+            'C1': {
+                'Cs': 0.188, 'Tl': 0.14, 'Rb': 2.32, 'Ba': 2.41, 'W': 0.095, 'Th': 0.029, 'U': 0.008, 'Nb': 0.246,
+                'Ta': 0.014, 'K': 545, 'La': 0.236, 'Ce': 0.612, 'Pb': 2.47, 'Pr': 0.095, 'Mo': 0.92, 'Sr': 7.26,
+                'P': 1220, 'Nd': 0.467, 'F': 60.7, 'Sm': 0.153, 'Zr': 3.87, 'Hf': 0.1066, 'Eu': 0.058, 'Sn': 1.72,
+                'Sb': 0.16, 'Ti': 445, 'Gd': 0.2055, 'Tb': 0.0364, 'Dy': 0.254, 'Li': 1.57, 'Y': 1.57, 'Ho': 0.0566,
+                'Er': 0.1655, 'Tm': 0.0255, 'Yb': 0.17, 'Lu': 0.0254
+            },
+            'NMORB': {
+                'Cs': 0.007, 'Tl': 0.0014, 'Rb': 0.56, 'Ba': 6.3, 'W': 0.01, 'Th': 0.12, 'U': 0.047, 'Nb': 2.33,
+                'Ta': 0.132, 'K': 600, 'La': 2.5, 'Ce': 7.5, 'Pb': 0.3, 'Pr': 1.32, 'Mo': 0.31, 'Sr': 90, 'P': 510,
+                'Nd': 7.3, 'F': 210, 'Sm': 2.63, 'Zr': 74, 'Hf': 2.05, 'Eu': 1.02, 'Sn': 1.1, 'Sb': 0.01, 'Ti': 7600,
+                'Gd': 3.68, 'Tb': 0.67, 'Dy': 4.55, 'Li': 4.3, 'Y': 28, 'Ho': 1.01, 'Er': 2.97, 'Tm': 0.456,
+                'Yb': 3.05, 'Lu': 0.455
+            },
+            'UCC_Rudnick & Gao2003': {
+                'K': 23244.13676, 'Ti': 3835.794545, 'P': 654.6310022, 'Li': 24, 'Be': 2.1, 'B': 17, 'N': 83, 'F': 557, 'S': 62, 'Cl': 360, 'Sc': 14, 'V': 97, 'Cr': 92,
+                'Co': 17.3, 'Ni': 47, 'Cu': 28, 'Zn': 67, 'Ga': 17.5, 'Ge': 1.4, 'As': 4.8, 'Se': 0.09,
+                'Br': 1.6, 'Rb': 84, 'Sr': 320, 'Y': 21, 'Zr': 193, 'Nb': 12, 'Mo': 1.1, 'Ru': 0.34,
+                'Pd': 0.52, 'Ag': 53, 'Cd': 0.09, 'In': 0.056, 'Sn': 2.1, 'Sb': 0.4, 'I': 1.4, 'Cs': 4.9,
+                'Ba': 628, 'La': 31, 'Ce': 63, 'Pr': 7.1, 'Nd': 27, 'Sm': 4.7, 'Eu': 1, 'Gd': 4, 'Tb': 0.7,
+                'Dy': 3.9, 'Ho': 0.83, 'Er': 2.3, 'Tm': 0.3, 'Yb': 1.96, 'Lu': 0.31, 'Hf': 5.3, 'Ta': 0.9,
+                'W': 1.9, 'Re': 0.198, 'Os': 0.031, 'Ir': 0.022, 'Pt': 0.5, 'Au': 1.5, 'Hg': 0.05, 'Tl': 0.9,
+                'Pb': 17, 'Bi': 0.16, 'Th': 10.5, 'U': 2.7
+            }
+        }
+        
+        # Element sequences (exact order from Trace.py and TraceNew.py)
+        self.element_sets = {
+            'cs_lu': ['Cs', 'Tl', 'Rb', 'Ba', 'W', 'Th', 'U', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Pb', 'Pr', 'Mo',
+                     'Sr', 'P', 'Nd', 'F', 'Sm', 'Zr', 'Hf', 'Eu', 'Sn', 'Sb', 'Ti', 'Gd', 'Tb', 'Dy',
+                     'Li', 'Y', 'Ho', 'Er', 'Tm', 'Yb', 'Lu'],
+            'rb_lu': ['Rb', 'Ba', 'Th', 'U', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Pr', 'Sr', 'P', 'Nd',
+                     'Zr', 'Hf', 'Sm', 'Eu', 'Ti', 'Tb', 'Dy', 'Y', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
+        }
+    
     def plot(self):
         if self.df is None or self.fig is None:
             return
             
-        # Common trace elements
-        trace_elements = ['Rb', 'Ba', 'Th', 'U', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Pr', 'Sr', 'Nd', 'P', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Zr', 'Hf', 'Ti', 'Y', 'Sc', 'V', 'Cr', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Cs', 'Pb']
-        available_traces = [elem for elem in trace_elements if elem in self.df.columns]
+        # Get element sequence and normalization values
+        element_sequence = self.element_sets.get(self.element_set, self.element_sets['cs_lu'])
+        normalization_values = self.standards.get(self.standard, self.standards['PM'])
         
-        if not available_traces:
-            plt.text(0.5, 0.5, 'No trace element columns found', 
-                    horizontalalignment='center', verticalalignment='center', transform=self.fig.transFigure)
+        # Find available elements in data
+        available_elements = []
+        missing_elements = []
+        for element in element_sequence:
+            if element in self.df.columns:
+                available_elements.append(element)
+            elif element == 'K' and 'K2O' in self.df.columns:
+                available_elements.append(element)  # We'll convert K2O to K
+            elif element == 'Ti' and 'TiO2' in self.df.columns:
+                available_elements.append(element)  # We'll convert TiO2 to Ti
+            else:
+                missing_elements.append(element)
+        
+        if not available_elements:
+            plt.text(0.5, 0.5, f'No trace element columns found\nRequired elements from {element_set_name} sequence not available\nMissing elements: {", ".join(missing_elements[:10])}{"..." if len(missing_elements) > 10 else ""}', 
+                    horizontalalignment='center', verticalalignment='center', transform=self.fig.transFigure,
+                    fontsize=12, bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
             return
             
         # Get the axes
         ax = self.fig.add_subplot(111)
         
-        # Primitive mantle normalization values (simplified)
-        pm_values = {
-            'Rb': 0.635, 'Ba': 6.989, 'Th': 0.085, 'U': 0.021, 'Nb': 0.713, 'Ta': 0.041,
-            'K': 250, 'La': 0.687, 'Ce': 1.775, 'Pr': 0.254, 'Sr': 21.1, 'Nd': 1.354, 'P': 95,
-            'Sm': 0.444, 'Eu': 0.168, 'Gd': 0.596, 'Tb': 0.108, 'Dy': 0.737, 'Ho': 0.164,
-            'Er': 0.480, 'Tm': 0.074, 'Yb': 0.493, 'Lu': 0.074, 'Zr': 11.2, 'Hf': 0.309,
-            'Ti': 1300, 'Y': 4.55, 'Sc': 16.5, 'V': 132, 'Cr': 2650, 'Co': 105, 'Ni': 1960,
-            'Cu': 30, 'Zn': 55, 'Ga': 4.0, 'Cs': 0.032, 'Pb': 0.15
-        }
+        # Track Y range for proper scaling
+        y_bottom, y_top = float('inf'), float('-inf')
+        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
         
         # Plot each sample
-        for i, row in self.df.iterrows():
-            trace_values = [row[elem] / pm_values[elem] if not pd.isna(row[elem]) else np.nan for elem in available_traces]
-            ax.plot(range(len(available_traces)), trace_values, marker='o', label=f'Sample {i+1}')
+        for i, (idx, row) in enumerate(self.df.iterrows()):
+            color = colors[i % len(colors)]
             
-        # Set x-axis labels to trace element names
-        ax.set_xticks(range(len(available_traces)))
-        ax.set_xticklabels(available_traces, rotation=45)
+            # Calculate normalized values and log transform
+            lines_x = []
+            lines_y = []
+            
+            for j, element in enumerate(available_elements):
+                if element in normalization_values:
+                    # Get the raw value
+                    if element in self.df.columns and not pd.isna(row[element]) and row[element] > 0:
+                        raw_value = row[element]
+                    elif element == 'K' and 'K2O' in self.df.columns and not pd.isna(row['K2O']):
+                        # Convert K2O to K (from Trace.py)
+                        raw_value = row['K2O'] * (2 * 39.0983 / 94.1956) * 10000
+                    elif element == 'Ti' and 'TiO2' in self.df.columns and not pd.isna(row['TiO2']):
+                        # Convert TiO2 to Ti (from Trace.py)
+                        raw_value = row['TiO2'] * (47.867 / 79.865) * 10000
+                    else:
+                        continue
+                    
+                    try:
+                        normalized_value = raw_value / normalization_values[element]
+                        log_value = np.log10(normalized_value)
+                        
+                        lines_x.append(j + 1)  # X positions start from 1
+                        lines_y.append(log_value)
+                        
+                        # Track Y range
+                        if log_value < y_bottom:
+                            y_bottom = log_value
+                        if log_value > y_top:
+                            y_top = log_value
+                            
+                        # Plot points
+                        ax.scatter(j + 1, log_value, marker='o', color=color, s=50, 
+                                  alpha=0.8, edgecolors='black', linewidth=0.5)
+                    except (ValueError, ZeroDivisionError):
+                        continue
+            
+            # Connect points with lines
+            if len(lines_x) > 1:
+                ax.plot(lines_x, lines_y, color=color, linewidth=1.5, 
+                       alpha=0.8, label=f'Sample {i+1}')
         
-        # Set y-axis to log scale
-        ax.set_yscale('log')
+        # Set proper axis ranges and ticks
+        xticks = list(range(1, len(available_elements) + 1))
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(available_elements, rotation=-45, fontsize=10)
+        
+        # Set Y axis with proper range
+        if y_bottom != float('inf') and y_top != float('-inf'):
+            y_range = y_top - y_bottom
+            ax.set_ylim(y_bottom - y_range * 0.1, y_top + y_range * 0.1)
+            
+            # Create Y tick labels showing actual values (not log values)
+            y_ticks = ax.get_yticks()
+            y_tick_labels = [f'{10**tick:.2g}' for tick in y_ticks]
+            ax.set_yticklabels(y_tick_labels, fontsize=8)
+        
+        # Remove top and right spines
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
         
         # Set labels and title
-        ax.set_xlabel('Trace Elements')
-        ax.set_ylabel('Sample/Primitive Mantle')
-        ax.set_title('Trace Element Pattern')
+        element_set_name = 'Cs-Lu (36 Elements)' if self.element_set == 'cs_lu' else 'Rb-Lu (26 Elements)'
+        ax.set_xlabel(f'Trace Elements Standardized Pattern', fontsize=12)
+        ax.set_ylabel(f'Sample/{self.standard}', fontsize=12)
+        ax.set_title(f'Trace Element Standardized Pattern Diagram\n{element_set_name} - {len(available_elements)} Elements Available', 
+                    fontsize=14, fontweight='bold')
         
         # Add a grid
-        ax.grid(True, linestyle='--', alpha=0.7)
+        ax.grid(True, linestyle='--', alpha=0.3)
         
-        # Add a legend if there are multiple samples
-        if len(self.df) > 1:
-            ax.legend(loc='upper right', fontsize='small')
+        # Add legend if multiple samples
+        if len(self.df) > 1 and len(self.df) <= 10:
+            ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
+        
+        # Add comprehensive reference information
+        reference_map = {
+            'PM': 'Sun, S.S. & McDonough, W.F. (1989)',
+            'OIB': 'Sun, S.S. & McDonough, W.F. (1989)', 
+            'EMORB': 'Sun, S.S. & McDonough, W.F. (1989)',
+            'C1': 'Sun, S.S. & McDonough, W.F. (1989)',
+            'NMORB': 'Sun, S.S. & McDonough, W.F. (1989)',
+            'UCC_Rudnick & Gao2003': 'Rudnick, R.L. & Gao, S. (2003)'
+        }
+        
+        reference_text = f'Standard: {self.standard} ({reference_map.get(self.standard, "")}) \nElements: {len(available_elements)} of {element_set_name}'
+        ax.text(0.02, 0.98, reference_text, 
+                transform=ax.transAxes, fontsize=8, verticalalignment='top', style='italic')
 
 # Pearce diagram implementation
 class Pearce(BasePlot):
@@ -1131,6 +1270,8 @@ def process():
     plot_type = request.form.get('plot_type')
     image_format = request.form.get('image_format', 'png')
     ree_standard = request.form.get('ree_standard', 'C1 Chondrite Sun and McDonough,1989')
+    trace_standard = request.form.get('trace_standard', 'PM')
+    trace_element_set = request.form.get('trace_element_set', 'cs_lu')
     
     try:
         df = read_dataframe(file_path)
@@ -1143,7 +1284,7 @@ def process():
         elif plot_type == 'ree':
             img_str, result, content_type = process_ree(df, ree_standard, image_format)
         elif plot_type == 'trace':
-            img_str, result, content_type = process_trace(df, image_format)
+            img_str, result, content_type = process_trace(df, trace_standard, trace_element_set, image_format)
         elif plot_type == 'pearce':
             img_str, result, content_type = process_pearce(df, image_format)
         elif plot_type == 'cipw':
@@ -1196,8 +1337,8 @@ def process_ree(df, standard='C1 Chondrite Sun and McDonough,1989', image_format
     plt.close(fig)
     return img_str, None, content_type
 
-def process_trace(df, image_format='png'):
-    trace = Trace(df=df)
+def process_trace(df, standard='PM', element_set='cs_lu', image_format='png'):
+    trace = Trace(df=df, standard=standard, element_set=element_set)
     fig = plt.figure(figsize=(10, 8))
     trace.fig = fig
     trace.plot()
@@ -1309,7 +1450,7 @@ def process_qapf(df, image_format='png'):
 os.makedirs('templates', exist_ok=True)
 
 # Create index.html template
-with open('templates/index.html', 'w') as f:
+with open('templates/index.html', 'w', encoding='utf-8') as f:
     f.write('''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1595,6 +1736,27 @@ with open('templates/index.html', 'w') as f:
                                 <div class="form-text">Select the normalization standard for REE patterns</div>
                             </div>
                             
+                            <!-- Trace Element Options -->
+                            <div class="mb-3" id="trace-options" style="display: none;">
+                                <label for="trace-standard" class="form-label">Trace Element Normalization Standard</label>
+                                <select class="form-select" id="trace-standard" name="trace_standard">
+                                    <option value="PM">PM - Primitive Mantle (Sun & McDonough, 1989)</option>
+                                    <option value="OIB">OIB - Ocean Island Basalt (Sun & McDonough, 1989)</option>
+                                    <option value="EMORB">EMORB - Enriched Mid-Ocean Ridge Basalt</option>
+                                    <option value="C1">C1 - C1 Chondrite (Sun & McDonough, 1989)</option>
+                                    <option value="NMORB">NMORB - Normal Mid-Ocean Ridge Basalt</option>
+                                    <option value="UCC_Rudnick & Gao2003">UCC - Upper Continental Crust (Rudnick & Gao, 2003)</option>
+                                </select>
+                                <div class="form-text">Select the normalization standard for trace element spider diagrams</div>
+                                
+                                <label for="trace-element-set" class="form-label mt-2">Element Sequence</label>
+                                <select class="form-select" id="trace-element-set" name="trace_element_set">
+                                    <option value="cs_lu">Cs-Lu (36 Elements) - Full Incompatible Element Sequence</option>
+                                    <option value="rb_lu">Rb-Lu (26 Elements) - Simplified Sequence (Rb to Lu)</option>
+                                </select>
+                                <div class="form-text">Choose element sequence: Full 36-element or simplified 26-element pattern</div>
+                            </div>
+                            
                             <!-- Image Format Selection -->
                             <div class="mb-3">
                                 <label for="image-format" class="form-label">Output Format</label>
@@ -1614,6 +1776,18 @@ with open('templates/index.html', 'w') as f:
                             <i class="fas fa-info-circle"></i> 
                             <strong>Note:</strong> QAPF diagrams require CIPW norm calculations. 
                             Run CIPW calculation first for best results.
+                        </div>
+                        
+                        <div class="alert alert-info alert-custom mt-3" style="display: none;" id="trace-note">
+                            <i class="fas fa-info-circle"></i> 
+                            <strong>Trace Element Spider Diagrams:</strong> 
+                            <ul class="mb-0 mt-2" style="text-align: left;">
+                                <li>Supports automatic K2O→K and TiO2→Ti conversions</li>
+                                <li>Elements ordered by incompatibility (most to least incompatible)</li>
+                                <li>Choice of 6 normalization standards (PM, OIB, EMORB, C1, NMORB, UCC)</li>
+                                <li>Two element sequences: Full (Cs-Lu, 36 elements) or Simplified (Rb-Lu, 26 elements)</li>
+                                <li>Reference: Sun, S.S. & McDonough, W.F. (1989), Rudnick & Gao (2003)</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -1791,6 +1965,8 @@ with open('templates/index.html', 'w') as f:
         document.getElementById('plot-type').addEventListener('change', function() {
             const cipwNote = document.getElementById('cipw-note');
             const reeStandardSelection = document.getElementById('ree-standard-selection');
+            const traceOptions = document.getElementById('trace-options');
+            const traceNote = document.getElementById('trace-note');
             
             if (this.value === 'qapf') {
                 cipwNote.style.display = 'block';
@@ -1803,6 +1979,15 @@ with open('templates/index.html', 'w') as f:
                 reeStandardSelection.style.display = 'block';
             } else {
                 reeStandardSelection.style.display = 'none';
+            }
+            
+            // Show trace options only for trace plots
+            if (this.value === 'trace') {
+                traceOptions.style.display = 'block';
+                traceNote.style.display = 'block';
+            } else {
+                traceOptions.style.display = 'none';
+                traceNote.style.display = 'none';
             }
         });
 
