@@ -958,101 +958,209 @@ class Trace(BasePlot):
         ax.text(0.02, 0.98, reference_text, 
                 transform=ax.transAxes, fontsize=8, verticalalignment='top', style='italic')
 
-# Pearce diagram implementation
+# Pearce diagram implementation based on Pearce.py
 class Pearce(BasePlot):
+    def __init__(self, df=None, fig=None):
+        super().__init__(df, fig)
+        
+        # Define the four different conditions from Pearce.py
+        self.conditions = [
+            {
+                'BaseLines': [[(2, 80), (55, 300)],
+                             [(55, 300), (400, 2000)],
+                             [(55, 300), (51.5, 8)],
+                             [(51.5, 8), (50, 1)],
+                             [(51.5, 8), (2000, 400)]],
+                'xLabel': 'Y+Nb (ppm)',
+                'yLabel': 'Rb (ppm)',
+                'Labels': ['syn-COLG', 'VAG', 'WPG', 'ORG'],
+                'Locations': [(1, 3), (1, 1), (2.4, 2.4), (3, 1)],
+                'xlim': (0.3, 3.2),
+                'ylim': (0, 3.2),
+                'xticks': [1, 2, 3],
+                'xticklabels': [10, 100, 1000],
+                'yticks': [0, 1, 2, 3],
+                'yticklabels': [1, 10, 100, 1000]
+            },
+            {
+                'BaseLines': [[(0.5, 140), (6, 200)],
+                             [(6, 200), (50, 2000)],
+                             [(6, 200), (6, 8)],
+                             [(6, 8), (6, 1)],
+                             [(6, 8), (200, 400)]],
+                'xLabel': 'Yb+Ta (ppm)',
+                'yLabel': 'Rb (ppm)',
+                'Labels': ['syn-COLG', 'VAG', 'WPG', 'ORG'],
+                'Locations': [(0.5, 3), (0.5, 1), (1.5, 2.4), (2, 1)],
+                'xlim': (-0.2, 2.5),
+                'ylim': (0, 3.2),
+                'xticks': [0, 1, 2],
+                'xticklabels': [1, 10, 100],
+                'yticks': [0, 1, 2, 3],
+                'yticklabels': [1, 10, 100, 1000]
+            },
+            {
+                'BaseLines': [[(1, 2000), (50, 10)],
+                             [(40, 1), (50, 10)],
+                             [(50, 10), (1000, 100)],
+                             [(25, 25), (1000, 400)]],
+                'xLabel': 'Y (ppm)',
+                'yLabel': 'Nb (ppm)',
+                'Labels': ['syn-COLG', 'VAG', 'WPG', 'ORG'],
+                'Locations': [(0.5, 1.5), (0.5, 2), (2, 2), (2.2, 0.5)],
+                'xlim': (0, 3.2),
+                'ylim': (0, 3.2),
+                'xticks': [0, 1, 2, 3],
+                'xticklabels': [1, 10, 100, 1000],
+                'yticks': [0, 1, 2, 3],
+                'yticklabels': [1, 10, 100, 1000]
+            },
+            {
+                'BaseLines': [[(0.55, 20), (3, 2)],
+                             [(0.1, 0.35), (3, 2)],
+                             [(3, 2), (5, 1)],
+                             [(5, 0.05), (5, 1)],
+                             [(5, 1), (100, 7)],
+                             [(3, 2), (100, 20)]],
+                'xLabel': 'Yb (ppm)',
+                'yLabel': 'Ta (ppm)',
+                'Labels': ['syn-COLG', 'VAG', 'WPG', 'ORG'],
+                'Locations': [(-0.5, 0.1), (-0.5, -1), (0.7, 1), (1.5, 0)],
+                'xlim': (-1, 2),
+                'ylim': (-1.2, 2),
+                'xticks': [-1, 0, 1, 2],
+                'xticklabels': [0.1, 1, 10, 100],
+                'yticks': [-1, 0, 1, 2],
+                'yticklabels': [0.1, 1, 10, 100]
+            }
+        ]
+    
     def plot(self):
         if self.df is None or self.fig is None:
             return
             
         # Check if required columns exist
-        required_cols = ['Rb', 'Y', 'Nb']
-        if not all(col in self.df.columns for col in required_cols):
-            plt.text(0.5, 0.5, 'Missing required columns: Rb, Y, Nb', 
-                    horizontalalignment='center', verticalalignment='center', transform=self.fig.transFigure)
+        required_cols = ['Rb', 'Y', 'Nb', 'Yb', 'Ta']
+        missing_cols = [col for col in required_cols if col not in self.df.columns]
+        
+        if missing_cols:
+            plt.text(0.5, 0.5, f'Missing required columns: {", ".join(missing_cols)}\nRequired: Rb, Y, Nb, Yb, Ta', 
+                    horizontalalignment='center', verticalalignment='center', transform=self.fig.transFigure,
+                    fontsize=12, bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
             return
-            
-        # Get the axes
-        ax = self.fig.add_subplot(111)
         
-        # Try to load background image
-        bg_img = load_background_image('pearce')
-        if bg_img is not None:
-            ax.imshow(bg_img, extent=[1, 2000, 0.1, 2000], aspect='auto', alpha=0.3)
+        # Clear the figure and create 2x2 subplots
+        self.fig.clear()
+        axes = self.fig.subplots(2, 2)
+        self.fig.subplots_adjust(hspace=0.4, wspace=0.4, left=0.1, bottom=0.1, right=0.9, top=0.95)
         
-        # Draw Pearce classification lines
-        self.draw_pearce_lines(ax)
-        
-        # Plot the data points
+        # Calculate data values for each diagram
+        plot_data = []
         for i, (idx, row) in enumerate(self.df.iterrows()):
-            color = self.colors[i] if i < len(self.colors) else 'blue'
-            label = self.legend_labels[i] if i < len(self.legend_labels) else f'Sample {i+1}'
-            x_val = row['Y'] + row['Nb']
-            y_val = row['Rb']
-            ax.scatter(x_val, y_val, marker='o', color=color, s=50, alpha=0.8, 
-                      label=label, edgecolors='black', linewidth=0.5)
+            plot_data.append({
+                'xa': row['Y'] + row['Nb'],    # Y+Nb vs Rb
+                'ya': row['Rb'],
+                'xb': row['Yb'] + row['Ta'],   # Yb+Ta vs Rb  
+                'yb': row['Rb'],
+                'xc': row['Y'],                # Y vs Nb
+                'yc': row['Nb'],
+                'xd': row['Yb'],               # Yb vs Ta
+                'yd': row['Ta'],
+                'color': self.colors[i] if i < len(self.colors) else 'blue',
+                'label': self.legend_labels[i] if i < len(self.legend_labels) else f'Sample {i+1}'
+            })
         
-        # Set labels and title
-        ax.set_xlabel('Y + Nb (ppm)', fontsize=12)
-        ax.set_ylabel('Rb (ppm)', fontsize=12)
-        ax.set_title('Pearce Diagram for Granite Discrimination', fontsize=14, fontweight='bold')
+        # Plot each of the four diagrams
+        diagram_coords = [(0, 0), (0, 1), (1, 0), (1, 1)]
+        data_keys = [('xa', 'ya'), ('xb', 'yb'), ('xc', 'yc'), ('xd', 'yd')]
         
-        # Set log scales
-        ax.set_xscale('log')
-        ax.set_yscale('log')
+        for diagram_idx, ((row_idx, col_idx), (x_key, y_key)) in enumerate(zip(diagram_coords, data_keys)):
+            ax = axes[row_idx, col_idx]
+            condition = self.conditions[diagram_idx]
+            
+            # Set up the axes
+            ax.set_xlabel(condition['xLabel'], fontsize=12)
+            ax.set_ylabel(condition['yLabel'], fontsize=12)
+            ax.set_xlim(condition['xlim'])
+            ax.set_ylim(condition['ylim'])
+            ax.set_xticks(condition['xticks'])
+            ax.set_xticklabels(condition['xticklabels'])
+            ax.set_yticks(condition['yticks'])
+            ax.set_yticklabels(condition['yticklabels'])
+            
+            # Remove top and right spines
+            ax.spines['right'].set_color('none')
+            ax.spines['top'].set_color('none')
+            
+            # Draw boundary lines
+            for line in condition['BaseLines']:
+                x_coords = [np.log10(point[0]) for point in line]
+                y_coords = [np.log10(point[1]) for point in line]
+                
+                # Special styling for certain lines (from original code)
+                if diagram_idx == 2 and line == [(25, 25), (1000, 400)]:
+                    ax.plot(x_coords, y_coords, linestyle=':', color='grey', linewidth=0.8, alpha=0.3)
+                elif diagram_idx == 3 and line == [(3, 2), (100, 20)]:
+                    ax.plot(x_coords, y_coords, linestyle=':', color='grey', linewidth=0.8, alpha=0.3)
+                else:
+                    ax.plot(x_coords, y_coords, color='black', linewidth=0.8, alpha=0.5)
+            
+            # Plot data points
+            for i, data in enumerate(plot_data):
+                try:
+                    x_val = data[x_key]
+                    y_val = data[y_key]
+                    
+                    if x_val > 0 and y_val > 0:  # Only plot positive values for log scale
+                        ax.scatter(np.log10(x_val), np.log10(y_val), 
+                                  marker='o', color=data['color'], s=50, alpha=0.8,
+                                  label=data['label'] if diagram_idx == 0 else '',  # Only show legend on first plot
+                                  edgecolors='black', linewidth=0.5)
+                except (ValueError, TypeError):
+                    continue
+            
+            # Add field labels
+            for label, location in zip(condition['Labels'], condition['Locations']):
+                ax.annotate(label, xy=location, xycoords='data', 
+                           fontsize=9, color='grey', alpha=0.8, fontweight='bold',
+                           ha='center', va='center',
+                           bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
+            
+            # Add grid
+            ax.grid(True, linestyle='--', alpha=0.3)
         
-        # Set axis limits
-        ax.set_xlim(1, 2000)
-        ax.set_ylim(0.1, 2000)
+        # Add overall title
+        self.fig.suptitle('Pearce Diagrams for Granite Discrimination (Pearce et al., 1984)', 
+                         fontsize=16, fontweight='bold')
         
-        # Add field labels
-        self.add_pearce_labels(ax)
-        
-        # Add a grid
-        ax.grid(True, linestyle='--', alpha=0.3, which='both')
-        
-        # Add legend if multiple samples
+        # Add legend to the top-right subplot
         if len(self.df) > 1 and len(self.df) <= 10:
-            ax.legend(loc='upper left', fontsize=8)
+            # Get unique labels for legend
+            unique_labels = []
+            unique_colors = []
+            for i, data in enumerate(plot_data):
+                if data['label'] not in unique_labels:
+                    unique_labels.append(data['label'])
+                    unique_colors.append(data['color'])
+            
+            # Create legend handles
+            from matplotlib.lines import Line2D
+            handles = [Line2D([0], [0], marker='o', color='w', markerfacecolor=color, 
+                            markersize=8, alpha=0.8, markeredgecolor='black') 
+                      for color in unique_colors]
+            
+            axes[0, 1].legend(handles, unique_labels, bbox_to_anchor=(1.05, 1), 
+                             loc='upper left', fontsize=10)
+        
+        # Add description text
+        description = ('syn-COLG: syn-collision granites, VAG: volcanic arc granites\n'
+                      'WPG: within plate granites, ORG: ocean ridge granites')
+        self.fig.text(0.5, 0.02, description, ha='center', va='bottom', 
+                     fontsize=10, style='italic')
         
         # Add reference
-        ax.text(0.02, 0.98, 'After Pearce et al. (1984)', transform=ax.transAxes, 
-                fontsize=8, verticalalignment='top', style='italic')
-    
-    def draw_pearce_lines(self, ax):
-        """Draw Pearce classification boundary lines"""
-        # Main boundary lines for Y+Nb vs Rb diagram
-        # syn-COLG / VAG boundary
-        ax.plot([2, 55], [80, 300], 'k-', linewidth=1.5)
-        
-        # VAG / WPG boundary  
-        ax.plot([55, 400], [300, 2000], 'k-', linewidth=1.5)
-        
-        # VAG / ORG boundary
-        ax.plot([55, 51.5], [300, 8], 'k-', linewidth=1.5)
-        ax.plot([51.5, 50], [8, 1], 'k-', linewidth=1.5)
-        
-        # WPG / ORG boundary
-        ax.plot([51.5, 2000], [8, 400], 'k-', linewidth=1.5)
-    
-    def add_pearce_labels(self, ax):
-        """Add tectonic setting labels to Pearce diagram"""
-        # Tectonic setting labels with improved positioning
-        ax.text(5, 200, 'syn-COLG', fontsize=11, ha='center', va='center',
-               bbox=dict(boxstyle='round,pad=0.3', facecolor='lightblue', alpha=0.8),
-               fontweight='bold')
-        ax.text(200, 800, 'VAG', fontsize=11, ha='center', va='center',
-               bbox=dict(boxstyle='round,pad=0.3', facecolor='lightgreen', alpha=0.8),
-               fontweight='bold')
-        ax.text(300, 20, 'WPG', fontsize=11, ha='center', va='center',
-               bbox=dict(boxstyle='round,pad=0.3', facecolor='lightyellow', alpha=0.8),
-               fontweight='bold')
-        ax.text(200, 2, 'ORG', fontsize=11, ha='center', va='center',
-               bbox=dict(boxstyle='round,pad=0.3', facecolor='lightcoral', alpha=0.8),
-               fontweight='bold')
-        
-        # Add explanations
-        ax.text(0.02, 0.02, 'syn-COLG: syn-collision granites\nVAG: volcanic arc granites\nWPG: within plate granites\nORG: ocean ridge granites', 
-                transform=ax.transAxes, fontsize=8, verticalalignment='bottom')
+        self.fig.text(0.02, 0.98, 'Reference: Pearce, J.A. et al. (1984) J. Petrology, v.25, p.956-983', 
+                     ha='left', va='top', fontsize=8, style='italic')
 
 # CIPW norm calculation implementation
 class CIPW:
@@ -1447,7 +1555,7 @@ def process_trace(df, standard='PM', element_set='cs_lu', image_format='png'):
 
 def process_pearce(df, image_format='png'):
     pearce = Pearce(df=df)
-    fig = plt.figure(figsize=(10, 8))
+    fig = plt.figure(figsize=(16, 16))  # Larger size for 2x2 subplots
     pearce.fig = fig
     pearce.plot()
     img_str, content_type = fig_to_base64(fig, image_format)
@@ -1949,6 +2057,18 @@ with open('templates/index.html', 'w', encoding='utf-8') as f:
                                 <li><strong>Reference:</strong> Sun, S.S. & McDonough, W.F. (1989), Rudnick & Gao (2003)</li>
                             </ul>
                         </div>
+                        
+                        <div class="alert alert-info alert-custom mt-3" style="display: none;" id="pearce-note">
+                            <i class="fas fa-mountain"></i> 
+                            <strong>Pearce Diagrams for Granite Discrimination (4 Diagrams):</strong> 
+                            <ul class="mb-0 mt-2" style="text-align: left; font-size: 0.9rem;">
+                                <li><strong>Required Elements:</strong> Rb, Y, Nb, Yb, Ta (ppm)</li>
+                                <li><strong>Four Diagrams:</strong> Y+Nb vs Rb, Yb+Ta vs Rb, Y vs Nb, Yb vs Ta</li>
+                                <li><strong>Tectonic Settings:</strong> syn-COLG, VAG, WPG, ORG</li>
+                                <li><strong>Reference:</strong> Pearce, J.A. et al. (1984) J. Petrology, v.25, p.956-983</li>
+                                <li><strong>Note:</strong> All axes use logarithmic scale</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2023,7 +2143,7 @@ with open('templates/index.html', 'w', encoding='utf-8') as f:
             'harker': 'Harker Diagrams',
             'ree': 'REE Patterns',
             'trace': 'Trace Element Spider Diagram',
-            'pearce': 'Pearce Diagram',
+            'pearce': 'Pearce Diagrams',
             'cipw': 'CIPW Norm Calculation',
             'qapf': 'QAPF Diagram'
         };
@@ -2158,12 +2278,14 @@ with open('templates/index.html', 'w', encoding='utf-8') as f:
             const reeStandardSelection = document.getElementById('ree-standard-selection');
             const traceOptions = document.getElementById('trace-options');
             const traceNote = document.getElementById('trace-note');
+            const pearceNote = document.getElementById('pearce-note');
             
             // Hide all options first
             cipwNote.style.display = 'none';
             reeStandardSelection.style.display = 'none';
             traceOptions.style.display = 'none';
             traceNote.style.display = 'none';
+            pearceNote.style.display = 'none';
             
             // Show relevant options based on selection
             if (this.value === 'qapf') {
@@ -2174,6 +2296,8 @@ with open('templates/index.html', 'w', encoding='utf-8') as f:
                 traceOptions.style.display = 'block';
                 traceNote.style.display = 'block';
                 console.log('Trace options should now be visible'); // Debug log
+            } else if (this.value === 'pearce') {
+                pearceNote.style.display = 'block';
             }
         });
 

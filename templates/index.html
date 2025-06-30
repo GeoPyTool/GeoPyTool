@@ -397,6 +397,18 @@
                                 <li><strong>Reference:</strong> Sun, S.S. & McDonough, W.F. (1989), Rudnick & Gao (2003)</li>
                             </ul>
                         </div>
+                        
+                        <div class="alert alert-info alert-custom mt-3" style="display: none;" id="pearce-note">
+                            <i class="fas fa-mountain"></i> 
+                            <strong>Pearce Diagrams for Granite Discrimination (4 Diagrams):</strong> 
+                            <ul class="mb-0 mt-2" style="text-align: left; font-size: 0.9rem;">
+                                <li><strong>Required Elements:</strong> Rb, Y, Nb, Yb, Ta (ppm)</li>
+                                <li><strong>Four Diagrams:</strong> Y+Nb vs Rb, Yb+Ta vs Rb, Y vs Nb, Yb vs Ta</li>
+                                <li><strong>Tectonic Settings:</strong> syn-COLG, VAG, WPG, ORG</li>
+                                <li><strong>Reference:</strong> Pearce, J.A. et al. (1984) J. Petrology, v.25, p.956-983</li>
+                                <li><strong>Note:</strong> All axes use logarithmic scale</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -471,7 +483,7 @@
             'harker': 'Harker Diagrams',
             'ree': 'REE Patterns',
             'trace': 'Trace Element Spider Diagram',
-            'pearce': 'Pearce Diagram',
+            'pearce': 'Pearce Diagrams',
             'cipw': 'CIPW Norm Calculation',
             'qapf': 'QAPF Diagram'
         };
@@ -606,12 +618,14 @@
             const reeStandardSelection = document.getElementById('ree-standard-selection');
             const traceOptions = document.getElementById('trace-options');
             const traceNote = document.getElementById('trace-note');
+            const pearceNote = document.getElementById('pearce-note');
             
             // Hide all options first
             cipwNote.style.display = 'none';
             reeStandardSelection.style.display = 'none';
             traceOptions.style.display = 'none';
             traceNote.style.display = 'none';
+            pearceNote.style.display = 'none';
             
             // Show relevant options based on selection
             if (this.value === 'qapf') {
@@ -622,6 +636,8 @@
                 traceOptions.style.display = 'block';
                 traceNote.style.display = 'block';
                 console.log('Trace options should now be visible'); // Debug log
+            } else if (this.value === 'pearce') {
+                pearceNote.style.display = 'block';
             }
         });
 
