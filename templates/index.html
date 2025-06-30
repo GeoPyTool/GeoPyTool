@@ -3,17 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoPyTool Web</title>
+    <title>GeoPyTool Web - Advanced Geochemical Analysis</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             padding-top: 20px;
             padding-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .header {
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e5e5e5;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
             margin-bottom: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .header h1 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        .header .lead {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: bold;
+            padding: 15px 20px;
         }
         .plot-container {
             margin-top: 20px;
@@ -22,86 +54,303 @@
             display: none;
             text-align: center;
             margin: 20px 0;
+            color: white;
+        }
+        .loading .spinner-border {
+            width: 3rem;
+            height: 3rem;
         }
         .result-container {
             margin-top: 20px;
+        }
+        
+        /* Enhanced table styling with scrollbars */
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 0;
+        }
+        
+        .table-responsive::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        .table th {
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+            border-top: none;
+            z-index: 10;
+            font-weight: 600;
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Data preview styling */
+        #data-preview .table-responsive {
+            max-height: 300px;
+        }
+        
+        /* Plot image styling */
+        #plot-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Button styling */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 10px 12px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.25);
+        }
+        
+        /* Alert styling for better error messages */
+        .alert-custom {
+            border-radius: 10px;
+            border: none;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #0c5460;
+        }
+        
+        /* Progress indicator */
+        .progress-indicator {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .progress-bar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 4px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .table-responsive {
+                max-height: 250px;
+                font-size: 0.8rem;
+            }
+            
+            .header {
+                padding: 20px 0;
+                margin-bottom: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>GeoPyTool Web</h1>
-            <p class="lead">Web version of GeoPyTool for geochemical analysis and plotting</p>
+        <div class="header text-center">
+            <h1><i class="fas fa-mountain"></i> GeoPyTool Web</h1>
+            <p class="lead">Advanced Geochemical Analysis and Visualization Platform</p>
+            <p class="text-white-50">Upload your geochemical data and generate professional diagrams</p>
         </div>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-lg-4 col-md-5">
                 <div class="card">
                     <div class="card-header">
-                        Upload Data
+                        <i class="fas fa-upload"></i> Upload Data
                     </div>
                     <div class="card-body">
                         <form id="upload-form" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="file" class="form-label">Select CSV or Excel file</label>
                                 <input type="file" class="form-control" id="file" name="file" accept=".csv,.xlsx,.xls">
+                                <div class="form-text">Supported formats: CSV, Excel (.xlsx, .xls)</div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Upload</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload & Process
+                            </button>
                         </form>
+                        
+                        <div class="progress-indicator" id="upload-progress">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                            </div>
+                            <small class="text-muted">Processing your data...</small>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card mt-3" id="plot-options" style="display: none;">
+                <div class="card" id="plot-options" style="display: none;">
                     <div class="card-header">
-                        Plot Options
+                        <i class="fas fa-chart-line"></i> Analysis Options
                     </div>
                     <div class="card-body">
                         <form id="plot-form">
                             <div class="mb-3">
-                                <label for="plot-type" class="form-label">Select Plot Type</label>
+                                <label for="plot-type" class="form-label">Select Diagram Type</label>
                                 <select class="form-select" id="plot-type" name="plot_type">
-                                    <option value="tas">TAS Diagram</option>
-                                    <option value="harker">Harker Diagram</option>
-                                    <option value="ree">REE Diagram</option>
-                                    <option value="trace">Trace Element Diagram</option>
-                                    <option value="pearce">Pearce Diagram</option>
-                                    <option value="cipw">CIPW Norm Calculation</option>
-                                    <option value="qapf">QAPF Diagram</option>
+                                    <optgroup label="Classification Diagrams">
+                                        <option value="tas">TAS Diagram (Total Alkali-Silica)</option>
+                                        <option value="qapf">QAPF Diagram (Plutonic Rocks)</option>
+                                    </optgroup>
+                                    <optgroup label="Variation Diagrams">
+                                        <option value="harker">Harker Diagrams</option>
+                                    </optgroup>
+                                    <optgroup label="Trace Element Patterns">
+                                        <option value="ree">REE Patterns</option>
+                                        <option value="trace">Trace Element Spider Diagram</option>
+                                    </optgroup>
+                                    <optgroup label="Tectonic Discrimination">
+                                        <option value="pearce">Pearce Diagram (Granite Discrimination)</option>
+                                    </optgroup>
+                                    <optgroup label="Norm Calculations">
+                                        <option value="cipw">CIPW Norm Calculation</option>
+                                    </optgroup>
                                 </select>
+                                <div class="form-text">Choose the type of geochemical analysis</div>
                             </div>
-                            <button type="submit" class="btn btn-success">Generate Plot</button>
+                            
+                            <!-- REE Standard Selection -->
+                            <div class="mb-3" id="ree-standard-selection" style="display: none;">
+                                <label for="ree-standard" class="form-label">REE Normalization Standard</label>
+                                <select class="form-select" id="ree-standard" name="ree_standard">
+                                    <option value="C1 Chondrite Sun and McDonough,1989">C1 Chondrite (Sun & McDonough, 1989)</option>
+                                    <option value="Chondrite Taylor and McLennan,1985">Chondrite (Taylor & McLennan, 1985)</option>
+                                    <option value="Chondrite Haskin et al.,1966">Chondrite (Haskin et al., 1966)</option>
+                                    <option value="Chondrite Nakamura,1977">Chondrite (Nakamura, 1977)</option>
+                                    <option value="MORB Sun and McDonough,1989">MORB (Sun & McDonough, 1989)</option>
+                                    <option value="UCC_Rudnick & Gao2003">UCC (Rudnick & Gao, 2003)</option>
+                                </select>
+                                <div class="form-text">Select the normalization standard for REE patterns</div>
+                            </div>
+                            
+                            <!-- Image Format Selection -->
+                            <div class="mb-3">
+                                <label for="image-format" class="form-label">Output Format</label>
+                                <select class="form-select" id="image-format" name="image_format">
+                                    <option value="png">PNG (Raster)</option>
+                                    <option value="svg">SVG (Vector)</option>
+                                </select>
+                                <div class="form-text">Choose image format for download</div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-chart-area"></i> Generate Diagram
+                            </button>
                         </form>
+                        
+                        <div class="alert alert-info alert-custom mt-3" style="display: none;" id="cipw-note">
+                            <i class="fas fa-info-circle"></i> 
+                            <strong>Note:</strong> QAPF diagrams require CIPW norm calculations. 
+                            Run CIPW calculation first for best results.
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-8">
+            <div class="col-lg-8 col-md-7">
                 <div class="card">
                     <div class="card-header">
-                        Data Preview
+                        <i class="fas fa-table"></i> Data Preview
                     </div>
                     <div class="card-body">
                         <div id="data-preview">
-                            <p>No data uploaded yet. Please upload a file.</p>
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-file-upload fa-3x mb-3"></i>
+                                <h5>No data uploaded yet</h5>
+                                <p>Please upload a CSV or Excel file to begin analysis</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="loading" id="loading">
-                    <div class="spinner-border text-primary" role="status">
+                    <div class="spinner-border text-light" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <p>Processing data...</p>
+                    <h5 class="mt-3">Processing your data...</h5>
+                    <p>This may take a few moments depending on your data size</p>
                 </div>
 
                 <div class="plot-container" id="plot-container" style="display: none;">
                     <div class="card">
                         <div class="card-header">
-                            Plot Result
+                            <i class="fas fa-chart-line"></i> <span id="plot-title">Analysis Result</span>
                         </div>
                         <div class="card-body text-center">
-                            <img id="plot-image" class="img-fluid" alt="Plot Result">
+                            <img id="plot-image" class="img-fluid" alt="Analysis Result">
+                            <div class="mt-3">
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="downloadImage()">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="copyImageUrl()">
+                                        <i class="fas fa-link"></i> Copy Link
+                                    </button>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">Format: <span id="current-format">PNG</span></small>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -109,7 +358,7 @@
                 <div class="result-container" id="result-container" style="display: none;">
                     <div class="card">
                         <div class="card-header">
-                            Calculation Results
+                            <i class="fas fa-calculator"></i> Calculation Results
                         </div>
                         <div class="card-body">
                             <div id="result-data"></div>
@@ -122,10 +371,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Plot type titles
+        const plotTitles = {
+            'tas': 'TAS Diagram',
+            'harker': 'Harker Diagrams',
+            'ree': 'REE Patterns',
+            'trace': 'Trace Element Spider Diagram',
+            'pearce': 'Pearce Diagram',
+            'cipw': 'CIPW Norm Calculation',
+            'qapf': 'QAPF Diagram'
+        };
+
         document.getElementById('upload-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
+            const uploadButton = this.querySelector('button[type="submit"]');
+            const originalText = uploadButton.innerHTML;
+            
+            // Show progress
+            uploadButton.disabled = true;
+            uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            document.getElementById('upload-progress').style.display = 'block';
             
             fetch('/upload', {
                 method: 'POST',
@@ -134,15 +401,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    alert(data.error);
+                    showAlert(data.error, 'danger');
                 } else {
                     document.getElementById('data-preview').innerHTML = data.preview;
                     document.getElementById('plot-options').style.display = 'block';
+                    showAlert('Data uploaded successfully! ' + data.columns.length + ' columns detected.', 'success');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred during upload');
+                showAlert('An error occurred during upload. Please try again.', 'danger');
+            })
+            .finally(() => {
+                uploadButton.disabled = false;
+                uploadButton.innerHTML = originalText;
+                document.getElementById('upload-progress').style.display = 'none';
             });
         });
 
@@ -150,8 +423,13 @@
             e.preventDefault();
             
             const formData = new FormData(this);
+            const plotType = formData.get('plot_type');
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
             
             // Show loading spinner
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
             document.getElementById('loading').style.display = 'block';
             document.getElementById('plot-container').style.display = 'none';
             document.getElementById('result-container').style.display = 'none';
@@ -162,15 +440,18 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Hide loading spinner
-                document.getElementById('loading').style.display = 'none';
-                
                 if (data.error) {
-                    alert(data.error);
+                    showAlert(data.error, 'danger');
                 } else {
                     // Display the plot
-                    document.getElementById('plot-image').src = 'data:image/png;base64,' + data.image;
+                    const imageFormat = data.image_format || 'png';
+                    const mimeType = imageFormat === 'svg' ? 'image/svg+xml' : 'image/png';
+                    document.getElementById('plot-image').src = `data:${mimeType};base64,${data.image}`;
+                    document.getElementById('plot-title').textContent = plotTitles[plotType] || 'Analysis Result';
                     document.getElementById('plot-container').style.display = 'block';
+                    
+                    // Update format display
+                    document.getElementById('current-format').textContent = imageFormat.toUpperCase();
                     
                     // Display results if available
                     if (data.result) {
@@ -179,13 +460,92 @@
                     } else {
                         document.getElementById('result-container').style.display = 'none';
                     }
+                    
+                    showAlert('Analysis completed successfully!', 'success');
                 }
             })
             .catch(error => {
-                // Hide loading spinner
-                document.getElementById('loading').style.display = 'none';
                 console.error('Error:', error);
-                alert('An error occurred during processing');
+                showAlert('An error occurred during processing. Please try again.', 'danger');
+            })
+            .finally(() => {
+                document.getElementById('loading').style.display = 'none';
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+            });
+        });
+
+        // Show CIPW note when QAPF is selected
+        document.getElementById('plot-type').addEventListener('change', function() {
+            const cipwNote = document.getElementById('cipw-note');
+            const reeStandardSelection = document.getElementById('ree-standard-selection');
+            
+            if (this.value === 'qapf') {
+                cipwNote.style.display = 'block';
+            } else {
+                cipwNote.style.display = 'none';
+            }
+            
+            // Show REE standard selection only for REE plots
+            if (this.value === 'ree') {
+                reeStandardSelection.style.display = 'block';
+            } else {
+                reeStandardSelection.style.display = 'none';
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show alert-custom`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild.nextSibling);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function downloadImage() {
+            const img = document.getElementById('plot-image');
+            const link = document.createElement('a');
+            const imageFormat = document.getElementById('image-format').value;
+            const plotType = document.getElementById('plot-type').value;
+            
+            link.download = `geochemical_analysis_${plotType}.${imageFormat}`;
+            link.href = img.src;
+            link.click();
+            
+            showAlert(`Image downloaded as ${imageFormat.toUpperCase()} format!`, 'success');
+        }
+
+        function copyImageUrl() {
+            const img = document.getElementById('plot-image');
+            navigator.clipboard.writeText(img.src).then(function() {
+                showAlert('Image URL copied to clipboard!', 'success');
+            }).catch(function(err) {
+                showAlert('Failed to copy URL: ' + err, 'danger');
+            });
+        }
+
+        // Update format display
+        document.getElementById('image-format').addEventListener('change', function() {
+            document.getElementById('current-format').textContent = this.value.toUpperCase();
+        });
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
     </script>

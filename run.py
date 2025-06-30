@@ -12,11 +12,14 @@ import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 os.environ['QT_QPA_PLATFORM'] = ''  # Disable Qt platform detection
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from matplotlib.figure import Figure
+from matplotlib.patches import Polygon
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_file, session
 from werkzeug.utils import secure_filename
 import zipfile
 from io import BytesIO
+import re
 
 # Import necessary GeoPyTool modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -28,6 +31,315 @@ class WebDependence:
 # Create a simplified CustomClass for web
 class WebCustomClass:
     pass
+
+# Function to standardize column names
+def standardize_column_names(df):
+    """
+    Standardize column names by removing units and converting to standard chemical notation
+    """
+    # Define mapping for major elements
+    major_elements_map = {
+        # SiO2 variations
+        'sio2': 'SiO2', 'SIO2': 'SiO2', 'si02': 'SiO2', 'SI02': 'SiO2',
+        'sio2(wt%)': 'SiO2', 'sio2(wt.%)': 'SiO2', 'sio2(%)': 'SiO2',
+        'sio2_wt%': 'SiO2', 'sio2_wt': 'SiO2', 'sio2_weight%': 'SiO2',
+        
+        # TiO2 variations
+        'tio2': 'TiO2', 'TIO2': 'TiO2', 'ti02': 'TiO2', 'TI02': 'TiO2',
+        'tio2(wt%)': 'TiO2', 'tio2(wt.%)': 'TiO2', 'tio2(%)': 'TiO2',
+        'tio2_wt%': 'TiO2', 'tio2_wt': 'TiO2', 'tio2_weight%': 'TiO2',
+        
+        # Al2O3 variations
+        'al2o3': 'Al2O3', 'AL2O3': 'Al2O3', 'al203': 'Al2O3', 'AL203': 'Al2O3',
+        'al2o3(wt%)': 'Al2O3', 'al2o3(wt.%)': 'Al2O3', 'al2o3(%)': 'Al2O3',
+        'al2o3_wt%': 'Al2O3', 'al2o3_wt': 'Al2O3', 'al2o3_weight%': 'Al2O3',
+        
+        # Fe2O3 variations
+        'fe2o3': 'Fe2O3', 'FE2O3': 'Fe2O3', 'fe203': 'Fe2O3', 'FE203': 'Fe2O3',
+        'fe2o3(wt%)': 'Fe2O3', 'fe2o3(wt.%)': 'Fe2O3', 'fe2o3(%)': 'Fe2O3',
+        'fe2o3_wt%': 'Fe2O3', 'fe2o3_wt': 'Fe2O3', 'fe2o3_weight%': 'Fe2O3',
+        
+        # FeO variations
+        'feo': 'FeO', 'FEO': 'FeO',
+        'feo(wt%)': 'FeO', 'feo(wt.%)': 'FeO', 'feo(%)': 'FeO',
+        'feo_wt%': 'FeO', 'feo_wt': 'FeO', 'feo_weight%': 'FeO',
+        
+        # MnO variations
+        'mno': 'MnO', 'MNO': 'MnO',
+        'mno(wt%)': 'MnO', 'mno(wt.%)': 'MnO', 'mno(%)': 'MnO',
+        'mno_wt%': 'MnO', 'mno_wt': 'MnO', 'mno_weight%': 'MnO',
+        
+        # MgO variations
+        'mgo': 'MgO', 'MGO': 'MgO',
+        'mgo(wt%)': 'MgO', 'mgo(wt.%)': 'MgO', 'mgo(%)': 'MgO',
+        'mgo_wt%': 'MgO', 'mgo_wt': 'MgO', 'mgo_weight%': 'MgO',
+        
+        # CaO variations
+        'cao': 'CaO', 'CAO': 'CaO',
+        'cao(wt%)': 'CaO', 'cao(wt.%)': 'CaO', 'cao(%)': 'CaO',
+        'cao_wt%': 'CaO', 'cao_wt': 'CaO', 'cao_weight%': 'CaO',
+        
+        # Na2O variations
+        'na2o': 'Na2O', 'NA2O': 'Na2O', 'na20': 'Na2O', 'NA20': 'Na2O',
+        'na2o(wt%)': 'Na2O', 'na2o(wt.%)': 'Na2O', 'na2o(%)': 'Na2O',
+        'na2o_wt%': 'Na2O', 'na2o_wt': 'Na2O', 'na2o_weight%': 'Na2O',
+        
+        # K2O variations
+        'k2o': 'K2O', 'K2O': 'K2O', 'k20': 'K2O', 'K20': 'K2O',
+        'k2o(wt%)': 'K2O', 'k2o(wt.%)': 'K2O', 'k2o(%)': 'K2O',
+        'k2o_wt%': 'K2O', 'k2o_wt': 'K2O', 'k2o_weight%': 'K2O',
+        
+        # P2O5 variations
+        'p2o5': 'P2O5', 'P2O5': 'P2O5', 'p205': 'P2O5', 'P205': 'P2O5',
+        'p2o5(wt%)': 'P2O5', 'p2o5(wt.%)': 'P2O5', 'p2o5(%)': 'P2O5',
+        'p2o5_wt%': 'P2O5', 'p2o5_wt': 'P2O5', 'p2o5_weight%': 'P2O5',
+    }
+    
+    # Define mapping for trace elements
+    trace_elements_map = {
+        # Rb variations
+        'rb': 'Rb', 'RB': 'Rb',
+        'rb(ppm)': 'Rb', 'rb(ppb)': 'Rb', 'rb(ppt)': 'Rb',
+        'rb_ppm': 'Rb', 'rb_ppb': 'Rb', 'rb_ppt': 'Rb',
+        
+        # Ba variations
+        'ba': 'Ba', 'BA': 'Ba',
+        'ba(ppm)': 'Ba', 'ba(ppb)': 'Ba', 'ba(ppt)': 'Ba',
+        'ba_ppm': 'Ba', 'ba_ppb': 'Ba', 'ba_ppt': 'Ba',
+        
+        # Th variations
+        'th': 'Th', 'TH': 'Th',
+        'th(ppm)': 'Th', 'th(ppb)': 'Th', 'th(ppt)': 'Th',
+        'th_ppm': 'Th', 'th_ppb': 'Th', 'th_ppt': 'Th',
+        
+        # U variations
+        'u': 'U', 'U': 'U',
+        'u(ppm)': 'U', 'u(ppb)': 'U', 'u(ppt)': 'U',
+        'u_ppm': 'U', 'u_ppb': 'U', 'u_ppt': 'U',
+        
+        # Nb variations
+        'nb': 'Nb', 'NB': 'Nb',
+        'nb(ppm)': 'Nb', 'nb(ppb)': 'Nb', 'nb(ppt)': 'Nb',
+        'nb_ppm': 'Nb', 'nb_ppb': 'Nb', 'nb_ppt': 'Nb',
+        
+        # Ta variations
+        'ta': 'Ta', 'TA': 'Ta',
+        'ta(ppm)': 'Ta', 'ta(ppb)': 'Ta', 'ta(ppt)': 'Ta',
+        'ta_ppm': 'Ta', 'ta_ppb': 'Ta', 'ta_ppt': 'Ta',
+        
+        # K variations (when as trace element)
+        'k': 'K', 'K': 'K',
+        'k(ppm)': 'K', 'k(ppb)': 'K', 'k(ppt)': 'K',
+        'k_ppm': 'K', 'k_ppb': 'K', 'k_ppt': 'K',
+        
+        # La variations
+        'la': 'La', 'LA': 'La',
+        'la(ppm)': 'La', 'la(ppb)': 'La', 'la(ppt)': 'La',
+        'la_ppm': 'La', 'la_ppb': 'La', 'la_ppt': 'La',
+        
+        # Ce variations
+        'ce': 'Ce', 'CE': 'Ce',
+        'ce(ppm)': 'Ce', 'ce(ppb)': 'Ce', 'ce(ppt)': 'Ce',
+        'ce_ppm': 'Ce', 'ce_ppb': 'Ce', 'ce_ppt': 'Ce',
+        
+        # Pr variations
+        'pr': 'Pr', 'PR': 'Pr',
+        'pr(ppm)': 'Pr', 'pr(ppb)': 'Pr', 'pr(ppt)': 'Pr',
+        'pr_ppm': 'Pr', 'pr_ppb': 'Pr', 'pr_ppt': 'Pr',
+        
+        # Nd variations
+        'nd': 'Nd', 'ND': 'Nd',
+        'nd(ppm)': 'Nd', 'nd(ppb)': 'Nd', 'nd(ppt)': 'Nd',
+        'nd_ppm': 'Nd', 'nd_ppb': 'Nd', 'nd_ppt': 'Nd',
+        
+        # P variations (when as trace element)
+        'p': 'P', 'P': 'P',
+        'p(ppm)': 'P', 'p(ppb)': 'P', 'p(ppt)': 'P',
+        'p_ppm': 'P', 'p_ppb': 'P', 'p_ppt': 'P',
+        
+        # Sm variations
+        'sm': 'Sm', 'SM': 'Sm',
+        'sm(ppm)': 'Sm', 'sm(ppb)': 'Sm', 'sm(ppt)': 'Sm',
+        'sm_ppm': 'Sm', 'sm_ppb': 'Sm', 'sm_ppt': 'Sm',
+        
+        # Eu variations
+        'eu': 'Eu', 'EU': 'Eu',
+        'eu(ppm)': 'Eu', 'eu(ppb)': 'Eu', 'eu(ppt)': 'Eu',
+        'eu_ppm': 'Eu', 'eu_ppb': 'Eu', 'eu_ppt': 'Eu',
+        
+        # Gd variations
+        'gd': 'Gd', 'GD': 'Gd',
+        'gd(ppm)': 'Gd', 'gd(ppb)': 'Gd', 'gd(ppt)': 'Gd',
+        'gd_ppm': 'Gd', 'gd_ppb': 'Gd', 'gd_ppt': 'Gd',
+        
+        # Tb variations
+        'tb': 'Tb', 'TB': 'Tb',
+        'tb(ppm)': 'Tb', 'tb(ppb)': 'Tb', 'tb(ppt)': 'Tb',
+        'tb_ppm': 'Tb', 'tb_ppb': 'Tb', 'tb_ppt': 'Tb',
+        
+        # Dy variations
+        'dy': 'Dy', 'DY': 'Dy',
+        'dy(ppm)': 'Dy', 'dy(ppb)': 'Dy', 'dy(ppt)': 'Dy',
+        'dy_ppm': 'Dy', 'dy_ppb': 'Dy', 'dy_ppt': 'Dy',
+        
+        # Ho variations
+        'ho': 'Ho', 'HO': 'Ho',
+        'ho(ppm)': 'Ho', 'ho(ppb)': 'Ho', 'ho(ppt)': 'Ho',
+        'ho_ppm': 'Ho', 'ho_ppb': 'Ho', 'ho_ppt': 'Ho',
+        
+        # Er variations
+        'er': 'Er', 'ER': 'Er',
+        'er(ppm)': 'Er', 'er(ppb)': 'Er', 'er(ppt)': 'Er',
+        'er_ppm': 'Er', 'er_ppb': 'Er', 'er_ppt': 'Er',
+        
+        # Tm variations
+        'tm': 'Tm', 'TM': 'Tm',
+        'tm(ppm)': 'Tm', 'tm(ppb)': 'Tm', 'tm(ppt)': 'Tm',
+        'tm_ppm': 'Tm', 'tm_ppb': 'Tm', 'tm_ppt': 'Tm',
+        
+        # Yb variations
+        'yb': 'Yb', 'YB': 'Yb',
+        'yb(ppm)': 'Yb', 'yb(ppb)': 'Yb', 'yb(ppt)': 'Yb',
+        'yb_ppm': 'Yb', 'yb_ppb': 'Yb', 'yb_ppt': 'Yb',
+        
+        # Lu variations
+        'lu': 'Lu', 'LU': 'Lu',
+        'lu(ppm)': 'Lu', 'lu(ppb)': 'Lu', 'lu(ppt)': 'Lu',
+        'lu_ppm': 'Lu', 'lu_ppb': 'Lu', 'lu_ppt': 'Lu',
+        
+        # Sr variations
+        'sr': 'Sr', 'SR': 'Sr',
+        'sr(ppm)': 'Sr', 'sr(ppb)': 'Sr', 'sr(ppt)': 'Sr',
+        'sr_ppm': 'Sr', 'sr_ppb': 'Sr', 'sr_ppt': 'Sr',
+        
+        # Zr variations
+        'zr': 'Zr', 'ZR': 'Zr',
+        'zr(ppm)': 'Zr', 'zr(ppb)': 'Zr', 'zr(ppt)': 'Zr',
+        'zr_ppm': 'Zr', 'zr_ppb': 'Zr', 'zr_ppt': 'Zr',
+        
+        # Hf variations
+        'hf': 'Hf', 'HF': 'Hf',
+        'hf(ppm)': 'Hf', 'hf(ppb)': 'Hf', 'hf(ppt)': 'Hf',
+        'hf_ppm': 'Hf', 'hf_ppb': 'Hf', 'hf_ppt': 'Hf',
+        
+        # Ti variations (when as trace element)
+        'ti': 'Ti', 'TI': 'Ti',
+        'ti(ppm)': 'Ti', 'ti(ppb)': 'Ti', 'ti(ppt)': 'Ti',
+        'ti_ppm': 'Ti', 'ti_ppb': 'Ti', 'ti_ppt': 'Ti',
+        
+        # Y variations
+        'y': 'Y', 'Y': 'Y',
+        'y(ppm)': 'Y', 'y(ppb)': 'Y', 'y(ppt)': 'Y',
+        'y_ppm': 'Y', 'y_ppb': 'Y', 'y_ppt': 'Y',
+        
+        # Additional elements
+        # Sc variations
+        'sc': 'Sc', 'SC': 'Sc',
+        'sc(ppm)': 'Sc', 'sc(ppb)': 'Sc', 'sc(ppt)': 'Sc',
+        'sc_ppm': 'Sc', 'sc_ppb': 'Sc', 'sc_ppt': 'Sc',
+        
+        # V variations
+        'v': 'V', 'V': 'V',
+        'v(ppm)': 'V', 'v(ppb)': 'V', 'v(ppt)': 'V',
+        'v_ppm': 'V', 'v_ppb': 'V', 'v_ppt': 'V',
+        
+        # Cr variations
+        'cr': 'Cr', 'CR': 'Cr',
+        'cr(ppm)': 'Cr', 'cr(ppb)': 'Cr', 'cr(ppt)': 'Cr',
+        'cr_ppm': 'Cr', 'cr_ppb': 'Cr', 'cr_ppt': 'Cr',
+        
+        # Co variations
+        'co': 'Co', 'CO': 'Co',
+        'co(ppm)': 'Co', 'co(ppb)': 'Co', 'co(ppt)': 'Co',
+        'co_ppm': 'Co', 'co_ppb': 'Co', 'co_ppt': 'Co',
+        
+        # Ni variations
+        'ni': 'Ni', 'NI': 'Ni',
+        'ni(ppm)': 'Ni', 'ni(ppb)': 'Ni', 'ni(ppt)': 'Ni',
+        'ni_ppm': 'Ni', 'ni_ppb': 'Ni', 'ni_ppt': 'Ni',
+        
+        # Cu variations
+        'cu': 'Cu', 'CU': 'Cu',
+        'cu(ppm)': 'Cu', 'cu(ppb)': 'Cu', 'cu(ppt)': 'Cu',
+        'cu_ppm': 'Cu', 'cu_ppb': 'Cu', 'cu_ppt': 'Cu',
+        
+        # Zn variations
+        'zn': 'Zn', 'ZN': 'Zn',
+        'zn(ppm)': 'Zn', 'zn(ppb)': 'Zn', 'zn(ppt)': 'Zn',
+        'zn_ppm': 'Zn', 'zn_ppb': 'Zn', 'zn_ppt': 'Zn',
+        
+        # Ga variations
+        'ga': 'Ga', 'GA': 'Ga',
+        'ga(ppm)': 'Ga', 'ga(ppb)': 'Ga', 'ga(ppt)': 'Ga',
+        'ga_ppm': 'Ga', 'ga_ppb': 'Ga', 'ga_ppt': 'Ga',
+        
+        # Cs variations
+        'cs': 'Cs', 'CS': 'Cs',
+        'cs(ppm)': 'Cs', 'cs(ppb)': 'Cs', 'cs(ppt)': 'Cs',
+        'cs_ppm': 'Cs', 'cs_ppb': 'Cs', 'cs_ppt': 'Cs',
+        
+        # Pb variations
+        'pb': 'Pb', 'PB': 'Pb',
+        'pb(ppm)': 'Pb', 'pb(ppb)': 'Pb', 'pb(ppt)': 'Pb',
+        'pb_ppm': 'Pb', 'pb_ppb': 'Pb', 'pb_ppt': 'Pb',
+    }
+    
+    # Combine all mappings
+    all_mappings = {**major_elements_map, **trace_elements_map}
+    
+    # Create a new dataframe with standardized column names
+    new_columns = []
+    for col in df.columns:
+        # First, try direct mapping
+        col_clean = col.strip()
+        if col_clean.lower() in all_mappings:
+            new_columns.append(all_mappings[col_clean.lower()])
+        else:
+            # Try to extract element name using regex
+            # Remove common units and symbols
+            cleaned_col = re.sub(r'\s*\([^)]*\)\s*', '', col_clean)  # Remove anything in parentheses
+            cleaned_col = re.sub(r'[_\-]\s*(ppm|ppb|ppt|wt%?|weight%?|%)\s*$', '', cleaned_col, flags=re.IGNORECASE)  # Remove units at end
+            cleaned_col = cleaned_col.strip()
+            
+            if cleaned_col.lower() in all_mappings:
+                new_columns.append(all_mappings[cleaned_col.lower()])
+            else:
+                # Keep original column name if no mapping found
+                new_columns.append(col)
+    
+    # Create new dataframe with standardized column names
+    df_standardized = df.copy()
+    df_standardized.columns = new_columns
+    
+    return df_standardized
+
+# Function to load background image for diagrams
+def load_background_image(diagram_type):
+    """
+    Load background image for different diagram types
+    """
+    bg_path = None
+    
+    # Define background image paths for different diagrams
+    bg_paths = {
+        'tas': 'PNG to Load/TAS.png',
+        'pearce': 'PNG to Load/Pearce.png',
+        'qapf': 'PNG to Load/QAPF.png',
+        'harker': 'PNG to Load/Harker.png'
+    }
+    
+    if diagram_type in bg_paths:
+        bg_path = bg_paths[diagram_type]
+        
+    # Check if background image exists
+    if bg_path and os.path.exists(bg_path):
+        try:
+            return mpimg.imread(bg_path)
+        except Exception as e:
+            print(f"Error loading background image: {e}")
+            return None
+    
+    return None
 
 # We'll implement our own simplified versions of the GeoPyTool modules
 # instead of importing them directly to avoid dependencies issues
@@ -41,7 +353,7 @@ class BasePlot:
     def plot(self):
         pass
 
-# TAS diagram implementation
+# TAS diagram implementation based on Wilson et al. 1989
 class TAS(BasePlot):
     def plot(self):
         if self.df is None or self.fig is None:
@@ -57,34 +369,134 @@ class TAS(BasePlot):
         # Get the axes
         ax = self.fig.add_subplot(111)
         
+        # Set proper axis ranges and ticks according to TAS.py
+        ax.set_xlim(30, 90)
+        ax.set_ylim(0, 20)
+        ax.set_xticks([30, 40, 50, 60, 70, 80, 90])
+        ax.set_xticklabels([30, 40, 50, 60, 70, 80, 90])
+        ax.set_yticks([0, 5, 10, 15, 20])
+        ax.set_yticklabels([0, 5, 10, 15, 20])
+        
+        # Try to load background image
+        bg_img = load_background_image('tas')
+        if bg_img is not None:
+            ax.imshow(bg_img, extent=[30, 90, 0, 20], aspect='auto', alpha=0.3)
+        
+        # Draw TAS classification lines (exact coordinates from TAS.py)
+        self.draw_tas_lines(ax)
+        
+        # Draw Irvine-Baragar line
+        self.draw_irvine_line(ax)
+        
         # Plot the data points
-        ax.scatter(self.df['SiO2'], self.df['Na2O'] + self.df['K2O'], marker='o', color='red', alpha=0.6)
+        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
+        for i, (idx, row) in enumerate(self.df.iterrows()):
+            color = colors[i % len(colors)]
+            ax.scatter(row['SiO2'], row['Na2O'] + row['K2O'], 
+                      marker='o', color=color, s=60, alpha=0.8, 
+                      label=f'Sample {i+1}', edgecolors='black', linewidth=0.5)
+        
+        # Add field labels (exact coordinates from TAS.py)
+        self.add_tas_labels(ax)
         
         # Set labels and title
-        ax.set_xlabel('SiO2 (wt%)')
-        ax.set_ylabel('Na2O + K2O (wt%)')
-        ax.set_title('TAS Diagram')
+        ax.set_xlabel('SiO₂ wt%', fontsize=12)
+        ax.set_ylabel('Na₂O + K₂O wt%', fontsize=12)
+        ax.set_title('TAS (Total Alkali–Silica) Diagram Volcanic (Wilson et al. 1989)', fontsize=14, fontweight='bold')
         
-        # Set axis limits
-        ax.set_xlim(35, 80)
-        ax.set_ylim(0, 16)
-        
-        # Draw the TAS fields (simplified)
-        ax.text(43, 11, 'Foidite', fontsize=8)
-        ax.text(48, 7, 'Tephrite\nBasanite', fontsize=8)
-        ax.text(45, 3, 'Picro-\nbasalt', fontsize=8)
-        ax.text(52, 3, 'Basalt', fontsize=8)
-        ax.text(57, 5, 'Basaltic\nAndesite', fontsize=8)
-        ax.text(63, 6, 'Andesite', fontsize=8)
-        ax.text(69, 7, 'Dacite', fontsize=8)
-        ax.text(74, 8, 'Rhyolite', fontsize=8)
-        ax.text(60, 12, 'Phonolite', fontsize=8)
-        ax.text(57, 9, 'Trachyte', fontsize=8)
-        ax.text(52, 10, 'Tephri-\nphonolite', fontsize=8)
-        ax.text(49, 8, 'Phono-\ntephrite', fontsize=8)
+        # Remove top and right spines
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
         
         # Add a grid
-        ax.grid(True, linestyle='--', alpha=0.7)
+        ax.grid(True, linestyle='--', alpha=0.3)
+        
+        # Add legend if multiple samples
+        if len(self.df) > 1 and len(self.df) <= 10:
+            ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
+        
+        # Add reference
+        ax.text(0.02, 0.98, 'Reference: Wilson et al. (1989)', transform=ax.transAxes, 
+                fontsize=8, verticalalignment='top', style='italic')
+    
+    def draw_tas_lines(self, ax):
+        """Draw TAS classification boundary lines using exact coordinates from TAS.py"""
+        # Exact boundary lines from TAS.py
+        lines = [
+            [(41, 0), (41, 3), (45, 3)],
+            [(45, 0), (45, 3), (45, 5), (49.4, 7.3), (53, 9.3), (57.6, 11.7), (61, 13.5), (63, 16.2)],
+            [(52, 5), (57, 5.9), (63, 7), (69, 8), (71.8, 13.5), (61, 8.6)],
+            [(45, 2), (45, 5), (52, 5), (45, 2)],
+            [(69, 8), (77.3, 0), (87.5, 4.7), (85.9, 6.8), (71.8, 13.5), (63, 16.2), (57, 18), (52.5, 18), (37, 14), (35, 9), (37, 3), (41, 3)],
+            [(63, 0), (63, 7), (57.6, 11.7), (52.5, 14), (52.5, 18)],
+            [(57, 0), (57, 5.9), (53, 9.3), (48.4, 11.5)],
+            [(52, 0), (52, 5), (49.4, 7.3), (45, 9.4)],
+            [(41, 3), (41, 7), (45, 9.4)],
+            [(45, 9.4), (48.4, 11.5), (52.5, 14)]
+        ]
+        
+        for line in lines:
+            x_coords = [point[0] for point in line]
+            y_coords = [point[1] for point in line]
+            ax.plot(x_coords, y_coords, 'k-', linewidth=1, alpha=0.8)
+    
+    def draw_irvine_line(self, ax):
+        """Draw Irvine-Baragar line using exact formula from TAS.py"""
+        y_irvine = np.arange(0, 10.2, 0.1)
+        x_irvine = []
+        
+        # Exact Irvine formula from TAS.py
+        a, b, c, d, e, f, g = 39.0, 3.9492, -2.1111, 0.86096, -0.15188, 0.012030, -(3.3539 / 10000)
+        
+        for y in y_irvine:
+            x = a + b * np.power(y, 1) + c * np.power(y, 2) + d * np.power(y, 3) + e * np.power(y, 4) + f * np.power(y, 5) + g * np.power(y, 6)
+            x_irvine.append(x)
+        
+        ax.plot(x_irvine, y_irvine, color='black', linewidth=1, 
+               linestyle=':', alpha=0.6, label='Irvine & Baragar (1971)')
+    
+    def add_tas_labels(self, ax):
+        """Add rock type labels using exact coordinates from TAS.py"""
+        # Exact label positions from TAS.py
+        locations = [(39, 10), (43, 1.5), (44, 6), (47.5, 3.5), (49.5, 1.5), (49, 5.2), (49, 9.5), 
+                    (54, 3), (53, 7), (53, 12), (60, 4), (57, 8.5), (57, 14), (67, 5), (65, 12), 
+                    (67, 9), (75, 9), (85, 1), (55, 18.5)]
+        
+        # Volcanic labels from TAS.py
+        labels = ['F', 'Pc', 'U1', 'Ba', 'Bs', 'S1', 'U2', 'O1', 'S2', 'U3', 'O2', 'S3', 
+                 'Ph', 'O3', 'T', 'Td', 'R', 'Q', 'S/N/L']
+        
+        # Full names for tooltips
+        full_names = {
+            'F': 'Foidite', 'Ph': 'Phonolite', 'Pc': 'Picrobasalt', 
+            'U1': 'Tephrite/Basanite', 'U2': 'Phonotephrite', 'U3': 'Tephriphonolite',
+            'Ba': 'Alkalic Basalt', 'Bs': 'Subalkalic Basalt', 
+            'S1': 'Trachybasalt', 'S2': 'Basaltic Trachyandesite', 'S3': 'Trachyandesite',
+            'O1': 'Basaltic Andesite', 'O2': 'Andesite', 'O3': 'Dacite',
+            'T': 'Trachyte', 'Td': 'Trachydacite', 'R': 'Rhyolite', 'Q': 'Silexite',
+            'S/N/L': 'Sodalitite/Nephelinolith/Leucitolith'
+        }
+        
+        x_offset, y_offset = -6, 3
+        
+        for i, (location, label) in enumerate(zip(locations, labels)):
+            if i < len(locations) and i < len(labels):
+                x, y = location
+                if 30 <= x <= 90 and 0 <= y <= 20:  # Within plot bounds
+                    ax.annotate(label, (x, y), xytext=(x_offset, y_offset),
+                               textcoords='offset points', fontsize=9, 
+                               color='grey', alpha=0.8, fontweight='bold')
+        
+        # Add description text
+        description = ('F: Foidite, Ph: Phonolite, Pc: Picrobasalt, U1: Tephrite (ol < 10%) Basanite(ol > 10%),\n'
+                      'U2: Phonotephrite, U3: Tephriphonolite, Ba: alkalic basalt, Bs: subalkalic basalt,\n'
+                      'S1: Trachybasalt, S2: Basaltic Trachyandesite, S3: Trachyandesite,\n'
+                      'O1: Basaltic Andesite, O2: Andesite, O3: Dacite, T: Trachyte, Td: Trachydacite,\n'
+                      'R: Rhyolite, Q: Silexite, S/N/L: Sodalitite/Nephelinolith/Leucitolith')
+        
+        ax.text(0.02, 0.02, description, transform=ax.transAxes, fontsize=7,
+               verticalalignment='bottom', style='italic', 
+               bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
 
 # Harker diagram implementation
 class Harker(BasePlot):
@@ -124,54 +536,137 @@ class Harker(BasePlot):
         self.fig.suptitle('Harker Diagrams', fontsize=16)
         self.fig.subplots_adjust(top=0.92)
 
-# REE diagram implementation
+# REE diagram implementation based on REE.py
 class REE(BasePlot):
+    def __init__(self, df=None, fig=None, standard='C1 Chondrite Sun and McDonough,1989'):
+        super().__init__(df, fig)
+        self.standard = standard
+        
+        # All available standards from REE.py
+        self.standards = {
+            'C1 Chondrite Sun and McDonough,1989': {
+                'La': 0.237, 'Ce': 0.612, 'Pr': 0.095, 'Nd': 0.467, 'Sm': 0.153,
+                'Eu': 0.058, 'Gd': 0.2055, 'Tb': 0.0374, 'Dy': 0.254, 'Ho': 0.0566,
+                'Er': 0.1655, 'Tm': 0.0255, 'Yb': 0.17, 'Lu': 0.0254
+            },
+            'Chondrite Taylor and McLennan,1985': {
+                'La': 0.367, 'Ce': 0.957, 'Pr': 0.137, 'Nd': 0.711, 'Sm': 0.231,
+                'Eu': 0.087, 'Gd': 0.306, 'Tb': 0.058, 'Dy': 0.381, 'Ho': 0.0851,
+                'Er': 0.249, 'Tm': 0.0356, 'Yb': 0.248, 'Lu': 0.0381
+            },
+            'Chondrite Haskin et al.,1966': {
+                'La': 0.32, 'Ce': 0.787, 'Pr': 0.112, 'Nd': 0.58, 'Sm': 0.185, 'Eu': 0.071,
+                'Gd': 0.256, 'Tb': 0.05, 'Dy': 0.343, 'Ho': 0.07, 'Er': 0.225, 'Tm': 0.03,
+                'Yb': 0.186, 'Lu': 0.034
+            },
+            'Chondrite Nakamura,1977': {
+                'La': 0.33, 'Ce': 0.865, 'Pr': 0.112, 'Nd': 0.63, 'Sm': 0.203, 'Eu': 0.077,
+                'Gd': 0.276, 'Tb': 0.047, 'Dy': 0.343, 'Ho': 0.07, 'Er': 0.225, 'Tm': 0.03,
+                'Yb': 0.22, 'Lu': 0.034
+            },
+            'MORB Sun and McDonough,1989': {
+                'La': 2.5, 'Ce': 7.5, 'Pr': 1.32, 'Nd': 7.3, 'Sm': 2.63, 'Eu': 1.02, 'Gd': 3.68,
+                'Tb': 0.67, 'Dy': 4.55, 'Ho': 1.052, 'Er': 2.97, 'Tm': 0.46, 'Yb': 3.05,
+                'Lu': 0.46
+            },
+            'UCC_Rudnick & Gao2003': {
+                'La': 31, 'Ce': 63, 'Pr': 7.1, 'Nd': 27, 'Sm': 4.7, 'Eu': 1, 'Gd': 4, 'Tb': 0.7,
+                'Dy': 3.9, 'Ho': 0.83, 'Er': 2.3, 'Tm': 0.3, 'Yb': 1.96, 'Lu': 0.31
+            }
+        }
+    
     def plot(self):
         if self.df is None or self.fig is None:
             return
             
-        # REE elements in order
+        # REE elements in exact order from REE.py
         ree_elements = ['La', 'Ce', 'Pr', 'Nd', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
         available_rees = [ree for ree in ree_elements if ree in self.df.columns]
         
         if not available_rees:
-            plt.text(0.5, 0.5, 'No REE columns found', 
-                    horizontalalignment='center', verticalalignment='center', transform=self.fig.transFigure)
+            plt.text(0.5, 0.5, 'No REE columns found\nRequired: La, Ce, Pr, Nd, Sm, Eu, Gd, Tb, Dy, Ho, Er, Tm, Yb, Lu', 
+                    horizontalalignment='center', verticalalignment='center', transform=self.fig.transFigure,
+                    fontsize=12, bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
             return
             
         # Get the axes
         ax = self.fig.add_subplot(111)
         
-        # Chondrite normalization values (simplified)
-        chondrite = {
-            'La': 0.237, 'Ce': 0.612, 'Pr': 0.095, 'Nd': 0.467, 'Sm': 0.153,
-            'Eu': 0.058, 'Gd': 0.2055, 'Tb': 0.0374, 'Dy': 0.254, 'Ho': 0.0566,
-            'Er': 0.1655, 'Tm': 0.0255, 'Yb': 0.17, 'Lu': 0.0254
-        }
+        # Get the selected normalization standard
+        normalization_values = self.standards.get(self.standard, self.standards['C1 Chondrite Sun and McDonough,1989'])
+        
+        # Track Y range for proper scaling
+        y_bottom, y_top = float('inf'), float('-inf')
+        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
         
         # Plot each sample
-        for i, row in self.df.iterrows():
-            ree_values = [row[ree] / chondrite[ree] if not pd.isna(row[ree]) else np.nan for ree in available_rees]
-            ax.plot(range(len(available_rees)), ree_values, marker='o', label=f'Sample {i+1}')
+        for i, (idx, row) in enumerate(self.df.iterrows()):
+            color = colors[i % len(colors)]
             
-        # Set x-axis labels to REE names
-        ax.set_xticks(range(len(available_rees)))
-        ax.set_xticklabels(available_rees, rotation=45)
+            # Calculate normalized values and log transform
+            lines_x = []
+            lines_y = []
+            
+            for j, ree in enumerate(available_rees):
+                if ree in normalization_values and not pd.isna(row[ree]) and row[ree] > 0:
+                    try:
+                        normalized_value = row[ree] / normalization_values[ree]
+                        log_value = np.log10(normalized_value)
+                        
+                        lines_x.append(j + 1)  # X positions start from 1
+                        lines_y.append(log_value)
+                        
+                        # Track Y range
+                        if log_value < y_bottom:
+                            y_bottom = log_value
+                        if log_value > y_top:
+                            y_top = log_value
+                            
+                        # Plot points
+                        ax.scatter(j + 1, log_value, marker='o', color=color, s=50, 
+                                  alpha=0.8, edgecolors='black', linewidth=0.5)
+                    except (ValueError, ZeroDivisionError):
+                        continue
+            
+            # Connect points with lines (exact behavior from REE.py)
+            if len(lines_x) > 1:
+                ax.plot(lines_x, lines_y, color=color, linewidth=1.5, 
+                       alpha=0.8, label=f'Sample {i+1}')
         
-        # Set y-axis to log scale
-        ax.set_yscale('log')
+        # Set proper axis ranges and ticks according to REE.py
+        xticks = list(range(1, len(available_rees) + 1))
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(available_rees, rotation=45, fontsize=10)
+        
+        # Set Y axis with proper range
+        if y_bottom != float('inf') and y_top != float('-inf'):
+            y_range = y_top - y_bottom
+            ax.set_ylim(y_bottom - y_range * 0.1, y_top + y_range * 0.1)
+            
+            # Create Y tick labels showing actual values (not log values)
+            y_ticks = ax.get_yticks()
+            y_tick_labels = [f'{10**tick:.2g}' for tick in y_ticks]
+            ax.set_yticklabels(y_tick_labels, fontsize=8)
+        
+        # Remove top and right spines
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
         
         # Set labels and title
-        ax.set_xlabel('Rare Earth Elements')
-        ax.set_ylabel('Sample/Chondrite')
-        ax.set_title('REE Pattern')
+        ax.set_xlabel('REE Standardized Pattern', fontsize=12)
+        ax.set_ylabel(f'Sample/{self.standard.split(" ")[0]}', fontsize=12)
+        ax.set_title('REE Standardized Pattern Diagram', fontsize=14, fontweight='bold')
         
         # Add a grid
-        ax.grid(True, linestyle='--', alpha=0.7)
+        ax.grid(True, linestyle='--', alpha=0.3)
         
-        # Add a legend if there are multiple samples
-        if len(self.df) > 1:
-            ax.legend(loc='upper right', fontsize='small')
+        # Add legend if multiple samples
+        if len(self.df) > 1 and len(self.df) <= 10:
+            ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
+        
+        # Add reference
+        ax.text(0.02, 0.98, f'Standard: {self.standard}', 
+                transform=ax.transAxes, fontsize=8, verticalalignment='top', style='italic')
 
 # Trace element diagram implementation
 class Trace(BasePlot):
@@ -180,7 +675,7 @@ class Trace(BasePlot):
             return
             
         # Common trace elements
-        trace_elements = ['Rb', 'Ba', 'Th', 'U', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Sr', 'Nd', 'P', 'Sm', 'Zr', 'Hf', 'Ti', 'Tb', 'Y', 'Yb']
+        trace_elements = ['Rb', 'Ba', 'Th', 'U', 'Nb', 'Ta', 'K', 'La', 'Ce', 'Pr', 'Sr', 'Nd', 'P', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Zr', 'Hf', 'Ti', 'Y', 'Sc', 'V', 'Cr', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Cs', 'Pb']
         available_traces = [elem for elem in trace_elements if elem in self.df.columns]
         
         if not available_traces:
@@ -194,8 +689,11 @@ class Trace(BasePlot):
         # Primitive mantle normalization values (simplified)
         pm_values = {
             'Rb': 0.635, 'Ba': 6.989, 'Th': 0.085, 'U': 0.021, 'Nb': 0.713, 'Ta': 0.041,
-            'K': 250, 'La': 0.687, 'Ce': 1.775, 'Sr': 21.1, 'Nd': 1.354, 'P': 95,
-            'Sm': 0.444, 'Zr': 11.2, 'Hf': 0.309, 'Ti': 1300, 'Tb': 0.108, 'Y': 4.55, 'Yb': 0.493
+            'K': 250, 'La': 0.687, 'Ce': 1.775, 'Pr': 0.254, 'Sr': 21.1, 'Nd': 1.354, 'P': 95,
+            'Sm': 0.444, 'Eu': 0.168, 'Gd': 0.596, 'Tb': 0.108, 'Dy': 0.737, 'Ho': 0.164,
+            'Er': 0.480, 'Tm': 0.074, 'Yb': 0.493, 'Lu': 0.074, 'Zr': 11.2, 'Hf': 0.309,
+            'Ti': 1300, 'Y': 4.55, 'Sc': 16.5, 'V': 132, 'Cr': 2650, 'Co': 105, 'Ni': 1960,
+            'Cu': 30, 'Zn': 55, 'Ga': 4.0, 'Cs': 0.032, 'Pb': 0.15
         }
         
         # Plot each sample
@@ -238,13 +736,27 @@ class Pearce(BasePlot):
         # Get the axes
         ax = self.fig.add_subplot(111)
         
+        # Try to load background image
+        bg_img = load_background_image('pearce')
+        if bg_img is not None:
+            ax.imshow(bg_img, extent=[1, 2000, 0.1, 2000], aspect='auto', alpha=0.3)
+        
+        # Draw Pearce classification lines
+        self.draw_pearce_lines(ax)
+        
         # Plot the data points
-        ax.scatter(self.df['Y'] + self.df['Nb'], self.df['Rb'], marker='o', color='green', alpha=0.6)
+        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
+        for i, (idx, row) in enumerate(self.df.iterrows()):
+            color = colors[i % len(colors)]
+            x_val = row['Y'] + row['Nb']
+            y_val = row['Rb']
+            ax.scatter(x_val, y_val, marker='o', color=color, s=50, alpha=0.8, 
+                      label=f'Sample {i+1}', edgecolors='black', linewidth=0.5)
         
         # Set labels and title
-        ax.set_xlabel('Y + Nb (ppm)')
-        ax.set_ylabel('Rb (ppm)')
-        ax.set_title('Pearce Diagram (Rb vs Y+Nb)')
+        ax.set_xlabel('Y + Nb (ppm)', fontsize=12)
+        ax.set_ylabel('Rb (ppm)', fontsize=12)
+        ax.set_title('Pearce Diagram for Granite Discrimination', fontsize=14, fontweight='bold')
         
         # Set log scales
         ax.set_xscale('log')
@@ -255,13 +767,54 @@ class Pearce(BasePlot):
         ax.set_ylim(0.1, 2000)
         
         # Add field labels
-        ax.text(5, 1000, 'Syn-COLG', fontsize=10)
-        ax.text(200, 1000, 'VAG', fontsize=10)
-        ax.text(200, 5, 'ORG', fontsize=10)
-        ax.text(50, 5, 'WPG', fontsize=10)
+        self.add_pearce_labels(ax)
         
         # Add a grid
-        ax.grid(True, linestyle='--', alpha=0.7)
+        ax.grid(True, linestyle='--', alpha=0.3, which='both')
+        
+        # Add legend if multiple samples
+        if len(self.df) > 1 and len(self.df) <= 10:
+            ax.legend(loc='upper left', fontsize=8)
+        
+        # Add reference
+        ax.text(0.02, 0.98, 'After Pearce et al. (1984)', transform=ax.transAxes, 
+                fontsize=8, verticalalignment='top', style='italic')
+    
+    def draw_pearce_lines(self, ax):
+        """Draw Pearce classification boundary lines"""
+        # Main boundary lines for Y+Nb vs Rb diagram
+        # syn-COLG / VAG boundary
+        ax.plot([2, 55], [80, 300], 'k-', linewidth=1.5)
+        
+        # VAG / WPG boundary  
+        ax.plot([55, 400], [300, 2000], 'k-', linewidth=1.5)
+        
+        # VAG / ORG boundary
+        ax.plot([55, 51.5], [300, 8], 'k-', linewidth=1.5)
+        ax.plot([51.5, 50], [8, 1], 'k-', linewidth=1.5)
+        
+        # WPG / ORG boundary
+        ax.plot([51.5, 2000], [8, 400], 'k-', linewidth=1.5)
+    
+    def add_pearce_labels(self, ax):
+        """Add tectonic setting labels to Pearce diagram"""
+        # Tectonic setting labels with improved positioning
+        ax.text(5, 200, 'syn-COLG', fontsize=11, ha='center', va='center',
+               bbox=dict(boxstyle='round,pad=0.3', facecolor='lightblue', alpha=0.8),
+               fontweight='bold')
+        ax.text(200, 800, 'VAG', fontsize=11, ha='center', va='center',
+               bbox=dict(boxstyle='round,pad=0.3', facecolor='lightgreen', alpha=0.8),
+               fontweight='bold')
+        ax.text(300, 20, 'WPG', fontsize=11, ha='center', va='center',
+               bbox=dict(boxstyle='round,pad=0.3', facecolor='lightyellow', alpha=0.8),
+               fontweight='bold')
+        ax.text(200, 2, 'ORG', fontsize=11, ha='center', va='center',
+               bbox=dict(boxstyle='round,pad=0.3', facecolor='lightcoral', alpha=0.8),
+               fontweight='bold')
+        
+        # Add explanations
+        ax.text(0.02, 0.02, 'syn-COLG: syn-collision granites\nVAG: volcanic arc granites\nWPG: within plate granites\nORG: ocean ridge granites', 
+                transform=ax.transAxes, fontsize=8, verticalalignment='bottom')
 
 # CIPW norm calculation implementation
 class CIPW:
@@ -340,62 +893,132 @@ class CIPW:
 
 # QAPF diagram implementation
 class QAPF(BasePlot):
+    def __init__(self, df=None, fig=None, cipw_result=None):
+        super().__init__(df, fig)
+        self.cipw_result = cipw_result
+    
     def plot(self):
-        if self.df is None or self.fig is None:
+        if self.fig is None:
             return
             
-        # Check if we have CIPW norm results
-        cipw_cols = ['Quartz', 'Orthoclase', 'Albite', 'Anorthite']
-        if not all(col in self.df.columns for col in cipw_cols):
-            # Try to calculate CIPW norm
+        # Use CIPW results if provided, otherwise try to calculate
+        if self.cipw_result is not None:
+            norm_df = self.cipw_result
+        elif self.df is not None:
+            # Calculate CIPW norm
             cipw = CIPW(df=self.df)
             cipw.calculate()
             if cipw.result_df is not None:
                 norm_df = cipw.result_df
             else:
-                plt.text(0.5, 0.5, 'Missing required CIPW norm columns and unable to calculate them', 
+                plt.text(0.5, 0.5, 'Unable to calculate CIPW norm for QAPF diagram', 
                         horizontalalignment='center', verticalalignment='center', transform=self.fig.transFigure)
                 return
         else:
-            norm_df = self.df
+            plt.text(0.5, 0.5, 'No data provided for QAPF diagram', 
+                    horizontalalignment='center', verticalalignment='center', transform=self.fig.transFigure)
+            return
             
         # Get the axes
         ax = self.fig.add_subplot(111)
         
-        # Calculate QAPF parameters
+        # Try to load background image
+        bg_img = load_background_image('qapf')
+        if bg_img is not None:
+            ax.imshow(bg_img, extent=[0, 100, 0, 100], aspect='auto', alpha=0.3)
+        
+        # Draw QAPF classification lines
+        self.draw_qapf_lines(ax)
+        
+        # Calculate and plot QAPF parameters
+        colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan']
+        qapf_points = []
+        
         for i, row in norm_df.iterrows():
-            q = row['Quartz']
-            a = row['Orthoclase']
-            p = row['Albite']
-            f = row['Anorthite']
+            q = max(0, row['Quartz']) if 'Quartz' in row and not pd.isna(row['Quartz']) else 0
+            a = max(0, row['Orthoclase']) if 'Orthoclase' in row and not pd.isna(row['Orthoclase']) else 0
+            p = max(0, row['Albite']) if 'Albite' in row and not pd.isna(row['Albite']) else 0
+            f = max(0, row['Anorthite']) if 'Anorthite' in row and not pd.isna(row['Anorthite']) else 0
             
-            # Normalize to 100%
-            total = q + a + p + f
-            if total > 0:
-                q_norm = q / total * 100
-                a_norm = a / total * 100
-                p_norm = p / total * 100
-                f_norm = f / total * 100
+            # Calculate QAPF parameters
+            qapf_total = q + a + p + f
+            if qapf_total > 0:
+                q_norm = q / qapf_total * 100
+                a_norm = a / qapf_total * 100
+                p_norm = p / qapf_total * 100
+                f_norm = f / qapf_total * 100
                 
-                # Plot in ternary diagram (simplified as a scatter plot)
-                # This is a very simplified representation of a ternary plot
-                ax.scatter(a_norm, p_norm, marker='o', color='purple', alpha=0.6)
+                # Convert to 2D coordinates for plotting
+                # A on x-axis, P on y-axis (simplified projection)
+                ap_total = a_norm + p_norm
+                if ap_total > 0:
+                    x_coord = a_norm / ap_total * 100
+                    y_coord = p_norm / ap_total * 100
+                else:
+                    x_coord, y_coord = 50, 50
+                
+                color = colors[i % len(colors)]
+                ax.scatter(x_coord, y_coord, marker='o', color=color, s=60, alpha=0.8, 
+                          label=f'Sample {i+1}', edgecolors='black', linewidth=0.5)
+                qapf_points.append((x_coord, y_coord, q_norm, a_norm, p_norm, f_norm))
         
         # Set labels and title
-        ax.set_xlabel('Orthoclase (A)')
-        ax.set_ylabel('Plagioclase (P)')
-        ax.set_title('Simplified QAPF Diagram')
+        ax.set_xlabel('Alkali Feldspar (A)', fontsize=12)
+        ax.set_ylabel('Plagioclase (P)', fontsize=12)
+        ax.set_title('QAPF Diagram (Q-A-P-F Classification)', fontsize=14, fontweight='bold')
         
         # Set axis limits
         ax.set_xlim(0, 100)
         ax.set_ylim(0, 100)
         
-        # Add a grid
-        ax.grid(True, linestyle='--', alpha=0.7)
+        # Add field labels
+        self.add_qapf_labels(ax)
         
-        # Add a note about the simplification
-        ax.text(50, 50, 'Note: This is a simplified 2D representation\nof the QAPF diagram', 
-                horizontalalignment='center', verticalalignment='center', fontsize=8)
+        # Add a grid
+        ax.grid(True, linestyle='--', alpha=0.3)
+        
+        # Add legend if multiple samples
+        if len(norm_df) > 1 and len(norm_df) <= 10:
+            ax.legend(loc='upper right', fontsize=8)
+        
+        # Add reference and note
+        ax.text(0.02, 0.98, 'After Streckeisen (1976)', transform=ax.transAxes, 
+                fontsize=8, verticalalignment='top', style='italic')
+        ax.text(0.02, 0.02, 'Based on CIPW normative minerals', 
+                transform=ax.transAxes, fontsize=8, verticalalignment='bottom', style='italic')
+    
+    def draw_qapf_lines(self, ax):
+        """Draw QAPF classification boundary lines"""
+        # Simplified QAPF field boundaries
+        # These are approximate boundaries for a 2D projection
+        ax.plot([20, 20], [0, 100], 'k-', linewidth=1)  # Syenite boundary
+        ax.plot([35, 35], [0, 100], 'k-', linewidth=1)  # Monzonite boundary
+        ax.plot([65, 65], [0, 100], 'k-', linewidth=1)  # Granodiorite boundary
+        ax.plot([90, 90], [0, 100], 'k-', linewidth=1)  # Tonalite boundary
+        
+        # Horizontal divisions
+        ax.plot([0, 100], [10, 10], 'k-', linewidth=1)  # Syenogranite boundary
+        ax.plot([0, 100], [90, 90], 'k-', linewidth=1)  # Anorthosite boundary
+    
+    def add_qapf_labels(self, ax):
+        """Add rock type labels to QAPF diagram"""
+        # Rock type labels with positioning
+        labels_data = [
+            (10, 50, 'Syenite'),
+            (27, 50, 'Monzonite'),
+            (50, 50, 'Granodiorite'),
+            (77, 50, 'Tonalite'),
+            (95, 50, 'Anorthosite'),
+            (10, 5, 'Alkali\nFeldspar\nSyenite'),
+            (50, 5, 'Granite'),
+            (95, 5, 'Plagioclase'),
+            (50, 95, 'Diorite')
+        ]
+        
+        for x, y, label in labels_data:
+            ax.text(x, y, label, fontsize=9, ha='center', va='center',
+                   bbox=dict(boxstyle='round,pad=0.2', facecolor='white', alpha=0.7),
+                   fontweight='bold')
 
 # Create Flask app
 app = Flask(__name__)
@@ -421,12 +1044,17 @@ def read_dataframe(file_path):
     else:
         raise ValueError("Unsupported file format")
 
-def fig_to_base64(fig):
+def fig_to_base64(fig, format='png'):
     buf = BytesIO()
-    fig.savefig(buf, format='png', dpi=300, bbox_inches='tight')
+    if format.lower() == 'svg':
+        fig.savefig(buf, format='svg', bbox_inches='tight')
+        content_type = 'image/svg+xml'
+    else:
+        fig.savefig(buf, format='png', dpi=300, bbox_inches='tight')
+        content_type = 'image/png'
     buf.seek(0)
     img_str = base64.b64encode(buf.read()).decode('utf-8')
-    return img_str
+    return img_str, content_type
 
 def process_plot(plot_function, df, **kwargs):
     try:
@@ -437,13 +1065,13 @@ def process_plot(plot_function, df, **kwargs):
         result = plot_function(df=df, fig=fig, **kwargs)
         
         # Convert the figure to base64 string
-        img_str = fig_to_base64(fig)
+        img_str, content_type = fig_to_base64(fig)
         plt.close(fig)
         
-        return img_str, result
+        return img_str, result, content_type
     except Exception as e:
         plt.close()
-        return None, str(e)
+        return None, str(e), None
 
 # Routes
 @app.route('/')
@@ -467,6 +1095,16 @@ def upload_file():
         
         try:
             df = read_dataframe(file_path)
+            
+            # Standardize column names
+            df = standardize_column_names(df)
+            
+            # Save the standardized dataframe back to file
+            if file_path.endswith('.csv'):
+                df.to_csv(file_path, index=False)
+            elif file_path.endswith('.xlsx') or file_path.endswith('.xls'):
+                df.to_excel(file_path, index=False, engine='openpyxl')
+            
             session['current_file'] = file_path
             
             # Return the first few rows as preview
@@ -491,25 +1129,27 @@ def process():
         return jsonify({'error': 'File not found'})
     
     plot_type = request.form.get('plot_type')
+    image_format = request.form.get('image_format', 'png')
+    ree_standard = request.form.get('ree_standard', 'C1 Chondrite Sun and McDonough,1989')
     
     try:
         df = read_dataframe(file_path)
         
         # Process based on plot type
         if plot_type == 'tas':
-            img_str, result = process_tas(df)
+            img_str, result, content_type = process_tas(df, image_format)
         elif plot_type == 'harker':
-            img_str, result = process_harker(df)
+            img_str, result, content_type = process_harker(df, image_format)
         elif plot_type == 'ree':
-            img_str, result = process_ree(df)
+            img_str, result, content_type = process_ree(df, ree_standard, image_format)
         elif plot_type == 'trace':
-            img_str, result = process_trace(df)
+            img_str, result, content_type = process_trace(df, image_format)
         elif plot_type == 'pearce':
-            img_str, result = process_pearce(df)
+            img_str, result, content_type = process_pearce(df, image_format)
         elif plot_type == 'cipw':
-            img_str, result = process_cipw(df)
+            img_str, result, content_type = process_cipw(df, image_format)
         elif plot_type == 'qapf':
-            img_str, result = process_qapf(df)
+            img_str, result, content_type = process_qapf(df, image_format)
         # Add more plot types as needed
         else:
             return jsonify({'error': f'Unknown plot type: {plot_type}'})
@@ -518,7 +1158,9 @@ def process():
             return jsonify({
                 'success': True,
                 'image': img_str,
-                'result': result if isinstance(result, str) else None
+                'result': result if isinstance(result, str) else None,
+                'content_type': content_type,
+                'image_format': image_format
             })
         else:
             return jsonify({'error': result})
@@ -527,87 +1169,141 @@ def process():
         return jsonify({'error': str(e)})
 
 # Plot processing functions
-def process_tas(df):
+def process_tas(df, image_format='png'):
     tas = TAS(df=df)
     fig = plt.figure(figsize=(10, 8))
     tas.fig = fig
     tas.plot()
-    img_str = fig_to_base64(fig)
+    img_str, content_type = fig_to_base64(fig, image_format)
     plt.close(fig)
-    return img_str, None
+    return img_str, None, content_type
 
-def process_harker(df):
+def process_harker(df, image_format='png'):
     harker = Harker(df=df)
     fig = plt.figure(figsize=(10, 8))
     harker.fig = fig
     harker.plot()
-    img_str = fig_to_base64(fig)
+    img_str, content_type = fig_to_base64(fig, image_format)
     plt.close(fig)
-    return img_str, None
+    return img_str, None, content_type
 
-def process_ree(df):
-    ree = REE(df=df)
+def process_ree(df, standard='C1 Chondrite Sun and McDonough,1989', image_format='png'):
+    ree = REE(df=df, standard=standard)
     fig = plt.figure(figsize=(10, 8))
     ree.fig = fig
     ree.plot()
-    img_str = fig_to_base64(fig)
+    img_str, content_type = fig_to_base64(fig, image_format)
     plt.close(fig)
-    return img_str, None
+    return img_str, None, content_type
 
-def process_trace(df):
+def process_trace(df, image_format='png'):
     trace = Trace(df=df)
     fig = plt.figure(figsize=(10, 8))
     trace.fig = fig
     trace.plot()
-    img_str = fig_to_base64(fig)
+    img_str, content_type = fig_to_base64(fig, image_format)
     plt.close(fig)
-    return img_str, None
+    return img_str, None, content_type
 
-def process_pearce(df):
+def process_pearce(df, image_format='png'):
     pearce = Pearce(df=df)
     fig = plt.figure(figsize=(10, 8))
     pearce.fig = fig
     pearce.plot()
-    img_str = fig_to_base64(fig)
+    img_str, content_type = fig_to_base64(fig, image_format)
     plt.close(fig)
-    return img_str, None
+    return img_str, None, content_type
 
-def process_cipw(df):
+def process_cipw(df, image_format='png'):
     cipw = CIPW(df=df)
     cipw.calculate()
     result_df = cipw.result_df
     
     if result_df is None:
-        return None, "Failed to calculate CIPW norm. Check if all required oxide columns are present."
+        return None, "Failed to calculate CIPW norm. Check if all required oxide columns are present.", None
     
-    # Convert result to HTML table
-    result_html = result_df.to_html(classes='table table-striped table-sm')
+    # Store CIPW result in session for QAPF use
+    session['cipw_result'] = result_df.to_json()
     
-    # Create a simple bar chart of the results
-    fig = plt.figure(figsize=(10, 8))
-    ax = fig.add_subplot(111)
+    # Convert result to HTML table with better formatting
+    result_html = f"""
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        {result_df.round(2).to_html(classes='table table-striped table-sm table-hover', table_id='cipw-table')}
+    </div>
+    """
     
-    # Plot the first sample as a bar chart
-    if len(result_df) > 0:
-        result_df.iloc[0].plot(kind='bar', ax=ax)
-        ax.set_title('CIPW Norm Results (Sample 1)')
+    # Create a comprehensive visualization of CIPW results
+    fig = plt.figure(figsize=(12, 8))
+    
+    if len(result_df) == 1:
+        # Single sample - show as pie chart and bar chart
+        ax1 = fig.add_subplot(121)
+        ax2 = fig.add_subplot(122)
+        
+        sample_data = result_df.iloc[0]
+        # Filter out very small values for better visualization
+        sample_data_filtered = sample_data[sample_data > 1.0]
+        
+        # Pie chart
+        ax1.pie(sample_data_filtered.values, labels=sample_data_filtered.index, autopct='%1.1f%%', startangle=90)
+        ax1.set_title('CIPW Norm Distribution', fontweight='bold')
+        
+        # Bar chart
+        sample_data.plot(kind='bar', ax=ax2, color='skyblue', alpha=0.7)
+        ax2.set_title('CIPW Norm Results', fontweight='bold')
+        ax2.set_ylabel('Weight %')
+        ax2.grid(True, linestyle='--', alpha=0.3)
+        ax2.tick_params(axis='x', rotation=45)
+        
+    else:
+        # Multiple samples - show stacked bar chart
+        ax = fig.add_subplot(111)
+        result_df.T.plot(kind='bar', stacked=True, ax=ax, alpha=0.8)
+        ax.set_title('CIPW Norm Results - All Samples', fontweight='bold')
         ax.set_ylabel('Weight %')
-        ax.grid(True, linestyle='--', alpha=0.7)
+        ax.set_xlabel('Mineral Phase')
+        ax.grid(True, linestyle='--', alpha=0.3)
+        ax.legend(title='Samples', bbox_to_anchor=(1.05, 1), loc='upper left')
+        ax.tick_params(axis='x', rotation=45)
     
     plt.tight_layout()
-    img_str = fig_to_base64(fig)
+    img_str, content_type = fig_to_base64(fig, image_format)
     plt.close(fig)
     
-    return img_str, result_html
+    return img_str, result_html, content_type
 
-def process_qapf(df):
-    qapf = QAPF(df=df)
+def process_qapf(df, image_format='png'):
+    # Try to get CIPW result from session
+    cipw_result = None
+    if 'cipw_result' in session:
+        try:
+            cipw_result = pd.read_json(session['cipw_result'])
+        except:
+            cipw_result = None
+    
+    # If no CIPW result in session, calculate it
+    if cipw_result is None:
+        cipw = CIPW(df=df)
+        cipw.calculate()
+        cipw_result = cipw.result_df
+        
+        if cipw_result is None:
+            fig = plt.figure(figsize=(10, 8))
+            plt.text(0.5, 0.5, 'Unable to calculate CIPW norm for QAPF diagram.\nPlease run CIPW calculation first.', 
+                    horizontalalignment='center', verticalalignment='center', transform=fig.transFigure, 
+                    fontsize=12, bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+            img_str, content_type = fig_to_base64(fig, image_format)
+            plt.close(fig)
+            return img_str, "Error: Unable to calculate CIPW norm. Please ensure your data contains the required oxide columns and run CIPW calculation first.", content_type
+    
+    # Create QAPF diagram with CIPW results
     fig = plt.figure(figsize=(10, 8))
-    qapf.fig = fig
+    qapf = QAPF(df=df, fig=fig, cipw_result=cipw_result)
     qapf.plot()
-    img_str = fig_to_base64(fig)
+    img_str, content_type = fig_to_base64(fig, image_format)
     plt.close(fig)
-    return img_str, None
+    
+    return img_str, None, content_type
 
 # Create HTML templates directory and files
 os.makedirs('templates', exist_ok=True)
@@ -619,17 +1315,49 @@ with open('templates/index.html', 'w') as f:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoPyTool Web</title>
+    <title>GeoPyTool Web - Advanced Geochemical Analysis</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             padding-top: 20px;
             padding-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .header {
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e5e5e5;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
             margin-bottom: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .header h1 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        .header .lead {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: bold;
+            padding: 15px 20px;
         }
         .plot-container {
             margin-top: 20px;
@@ -638,86 +1366,303 @@ with open('templates/index.html', 'w') as f:
             display: none;
             text-align: center;
             margin: 20px 0;
+            color: white;
+        }
+        .loading .spinner-border {
+            width: 3rem;
+            height: 3rem;
         }
         .result-container {
             margin-top: 20px;
+        }
+        
+        /* Enhanced table styling with scrollbars */
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 0;
+        }
+        
+        .table-responsive::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        .table th {
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+            border-top: none;
+            z-index: 10;
+            font-weight: 600;
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Data preview styling */
+        #data-preview .table-responsive {
+            max-height: 300px;
+        }
+        
+        /* Plot image styling */
+        #plot-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Button styling */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 10px 12px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.25);
+        }
+        
+        /* Alert styling for better error messages */
+        .alert-custom {
+            border-radius: 10px;
+            border: none;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #0c5460;
+        }
+        
+        /* Progress indicator */
+        .progress-indicator {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .progress-bar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 4px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .table-responsive {
+                max-height: 250px;
+                font-size: 0.8rem;
+            }
+            
+            .header {
+                padding: 20px 0;
+                margin-bottom: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>GeoPyTool Web</h1>
-            <p class="lead">Web version of GeoPyTool for geochemical analysis and plotting</p>
+        <div class="header text-center">
+            <h1><i class="fas fa-mountain"></i> GeoPyTool Web</h1>
+            <p class="lead">Advanced Geochemical Analysis and Visualization Platform</p>
+            <p class="text-white-50">Upload your geochemical data and generate professional diagrams</p>
         </div>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-lg-4 col-md-5">
                 <div class="card">
                     <div class="card-header">
-                        Upload Data
+                        <i class="fas fa-upload"></i> Upload Data
                     </div>
                     <div class="card-body">
                         <form id="upload-form" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="file" class="form-label">Select CSV or Excel file</label>
                                 <input type="file" class="form-control" id="file" name="file" accept=".csv,.xlsx,.xls">
+                                <div class="form-text">Supported formats: CSV, Excel (.xlsx, .xls)</div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Upload</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload & Process
+                            </button>
                         </form>
+                        
+                        <div class="progress-indicator" id="upload-progress">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                            </div>
+                            <small class="text-muted">Processing your data...</small>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card mt-3" id="plot-options" style="display: none;">
+                <div class="card" id="plot-options" style="display: none;">
                     <div class="card-header">
-                        Plot Options
+                        <i class="fas fa-chart-line"></i> Analysis Options
                     </div>
                     <div class="card-body">
                         <form id="plot-form">
                             <div class="mb-3">
-                                <label for="plot-type" class="form-label">Select Plot Type</label>
+                                <label for="plot-type" class="form-label">Select Diagram Type</label>
                                 <select class="form-select" id="plot-type" name="plot_type">
-                                    <option value="tas">TAS Diagram</option>
-                                    <option value="harker">Harker Diagram</option>
-                                    <option value="ree">REE Diagram</option>
-                                    <option value="trace">Trace Element Diagram</option>
-                                    <option value="pearce">Pearce Diagram</option>
-                                    <option value="cipw">CIPW Norm Calculation</option>
-                                    <option value="qapf">QAPF Diagram</option>
+                                    <optgroup label="Classification Diagrams">
+                                        <option value="tas">TAS Diagram (Total Alkali-Silica)</option>
+                                        <option value="qapf">QAPF Diagram (Plutonic Rocks)</option>
+                                    </optgroup>
+                                    <optgroup label="Variation Diagrams">
+                                        <option value="harker">Harker Diagrams</option>
+                                    </optgroup>
+                                    <optgroup label="Trace Element Patterns">
+                                        <option value="ree">REE Patterns</option>
+                                        <option value="trace">Trace Element Spider Diagram</option>
+                                    </optgroup>
+                                    <optgroup label="Tectonic Discrimination">
+                                        <option value="pearce">Pearce Diagram (Granite Discrimination)</option>
+                                    </optgroup>
+                                    <optgroup label="Norm Calculations">
+                                        <option value="cipw">CIPW Norm Calculation</option>
+                                    </optgroup>
                                 </select>
+                                <div class="form-text">Choose the type of geochemical analysis</div>
                             </div>
-                            <button type="submit" class="btn btn-success">Generate Plot</button>
+                            
+                            <!-- REE Standard Selection -->
+                            <div class="mb-3" id="ree-standard-selection" style="display: none;">
+                                <label for="ree-standard" class="form-label">REE Normalization Standard</label>
+                                <select class="form-select" id="ree-standard" name="ree_standard">
+                                    <option value="C1 Chondrite Sun and McDonough,1989">C1 Chondrite (Sun & McDonough, 1989)</option>
+                                    <option value="Chondrite Taylor and McLennan,1985">Chondrite (Taylor & McLennan, 1985)</option>
+                                    <option value="Chondrite Haskin et al.,1966">Chondrite (Haskin et al., 1966)</option>
+                                    <option value="Chondrite Nakamura,1977">Chondrite (Nakamura, 1977)</option>
+                                    <option value="MORB Sun and McDonough,1989">MORB (Sun & McDonough, 1989)</option>
+                                    <option value="UCC_Rudnick & Gao2003">UCC (Rudnick & Gao, 2003)</option>
+                                </select>
+                                <div class="form-text">Select the normalization standard for REE patterns</div>
+                            </div>
+                            
+                            <!-- Image Format Selection -->
+                            <div class="mb-3">
+                                <label for="image-format" class="form-label">Output Format</label>
+                                <select class="form-select" id="image-format" name="image_format">
+                                    <option value="png">PNG (Raster)</option>
+                                    <option value="svg">SVG (Vector)</option>
+                                </select>
+                                <div class="form-text">Choose image format for download</div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-chart-area"></i> Generate Diagram
+                            </button>
                         </form>
+                        
+                        <div class="alert alert-info alert-custom mt-3" style="display: none;" id="cipw-note">
+                            <i class="fas fa-info-circle"></i> 
+                            <strong>Note:</strong> QAPF diagrams require CIPW norm calculations. 
+                            Run CIPW calculation first for best results.
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-8">
+            <div class="col-lg-8 col-md-7">
                 <div class="card">
                     <div class="card-header">
-                        Data Preview
+                        <i class="fas fa-table"></i> Data Preview
                     </div>
                     <div class="card-body">
                         <div id="data-preview">
-                            <p>No data uploaded yet. Please upload a file.</p>
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-file-upload fa-3x mb-3"></i>
+                                <h5>No data uploaded yet</h5>
+                                <p>Please upload a CSV or Excel file to begin analysis</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="loading" id="loading">
-                    <div class="spinner-border text-primary" role="status">
+                    <div class="spinner-border text-light" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <p>Processing data...</p>
+                    <h5 class="mt-3">Processing your data...</h5>
+                    <p>This may take a few moments depending on your data size</p>
                 </div>
 
                 <div class="plot-container" id="plot-container" style="display: none;">
                     <div class="card">
                         <div class="card-header">
-                            Plot Result
+                            <i class="fas fa-chart-line"></i> <span id="plot-title">Analysis Result</span>
                         </div>
                         <div class="card-body text-center">
-                            <img id="plot-image" class="img-fluid" alt="Plot Result">
+                            <img id="plot-image" class="img-fluid" alt="Analysis Result">
+                            <div class="mt-3">
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="downloadImage()">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="copyImageUrl()">
+                                        <i class="fas fa-link"></i> Copy Link
+                                    </button>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">Format: <span id="current-format">PNG</span></small>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -725,7 +1670,7 @@ with open('templates/index.html', 'w') as f:
                 <div class="result-container" id="result-container" style="display: none;">
                     <div class="card">
                         <div class="card-header">
-                            Calculation Results
+                            <i class="fas fa-calculator"></i> Calculation Results
                         </div>
                         <div class="card-body">
                             <div id="result-data"></div>
@@ -738,10 +1683,28 @@ with open('templates/index.html', 'w') as f:
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Plot type titles
+        const plotTitles = {
+            'tas': 'TAS Diagram',
+            'harker': 'Harker Diagrams',
+            'ree': 'REE Patterns',
+            'trace': 'Trace Element Spider Diagram',
+            'pearce': 'Pearce Diagram',
+            'cipw': 'CIPW Norm Calculation',
+            'qapf': 'QAPF Diagram'
+        };
+
         document.getElementById('upload-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
+            const uploadButton = this.querySelector('button[type="submit"]');
+            const originalText = uploadButton.innerHTML;
+            
+            // Show progress
+            uploadButton.disabled = true;
+            uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            document.getElementById('upload-progress').style.display = 'block';
             
             fetch('/upload', {
                 method: 'POST',
@@ -750,15 +1713,21 @@ with open('templates/index.html', 'w') as f:
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    alert(data.error);
+                    showAlert(data.error, 'danger');
                 } else {
                     document.getElementById('data-preview').innerHTML = data.preview;
                     document.getElementById('plot-options').style.display = 'block';
+                    showAlert('Data uploaded successfully! ' + data.columns.length + ' columns detected.', 'success');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred during upload');
+                showAlert('An error occurred during upload. Please try again.', 'danger');
+            })
+            .finally(() => {
+                uploadButton.disabled = false;
+                uploadButton.innerHTML = originalText;
+                document.getElementById('upload-progress').style.display = 'none';
             });
         });
 
@@ -766,8 +1735,13 @@ with open('templates/index.html', 'w') as f:
             e.preventDefault();
             
             const formData = new FormData(this);
+            const plotType = formData.get('plot_type');
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
             
             // Show loading spinner
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
             document.getElementById('loading').style.display = 'block';
             document.getElementById('plot-container').style.display = 'none';
             document.getElementById('result-container').style.display = 'none';
@@ -778,15 +1752,18 @@ with open('templates/index.html', 'w') as f:
             })
             .then(response => response.json())
             .then(data => {
-                // Hide loading spinner
-                document.getElementById('loading').style.display = 'none';
-                
                 if (data.error) {
-                    alert(data.error);
+                    showAlert(data.error, 'danger');
                 } else {
                     // Display the plot
-                    document.getElementById('plot-image').src = 'data:image/png;base64,' + data.image;
+                    const imageFormat = data.image_format || 'png';
+                    const mimeType = imageFormat === 'svg' ? 'image/svg+xml' : 'image/png';
+                    document.getElementById('plot-image').src = `data:${mimeType};base64,${data.image}`;
+                    document.getElementById('plot-title').textContent = plotTitles[plotType] || 'Analysis Result';
                     document.getElementById('plot-container').style.display = 'block';
+                    
+                    // Update format display
+                    document.getElementById('current-format').textContent = imageFormat.toUpperCase();
                     
                     // Display results if available
                     if (data.result) {
@@ -795,13 +1772,92 @@ with open('templates/index.html', 'w') as f:
                     } else {
                         document.getElementById('result-container').style.display = 'none';
                     }
+                    
+                    showAlert('Analysis completed successfully!', 'success');
                 }
             })
             .catch(error => {
-                // Hide loading spinner
-                document.getElementById('loading').style.display = 'none';
                 console.error('Error:', error);
-                alert('An error occurred during processing');
+                showAlert('An error occurred during processing. Please try again.', 'danger');
+            })
+            .finally(() => {
+                document.getElementById('loading').style.display = 'none';
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+            });
+        });
+
+        // Show CIPW note when QAPF is selected
+        document.getElementById('plot-type').addEventListener('change', function() {
+            const cipwNote = document.getElementById('cipw-note');
+            const reeStandardSelection = document.getElementById('ree-standard-selection');
+            
+            if (this.value === 'qapf') {
+                cipwNote.style.display = 'block';
+            } else {
+                cipwNote.style.display = 'none';
+            }
+            
+            // Show REE standard selection only for REE plots
+            if (this.value === 'ree') {
+                reeStandardSelection.style.display = 'block';
+            } else {
+                reeStandardSelection.style.display = 'none';
+            }
+        });
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show alert-custom`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild.nextSibling);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function downloadImage() {
+            const img = document.getElementById('plot-image');
+            const link = document.createElement('a');
+            const imageFormat = document.getElementById('image-format').value;
+            const plotType = document.getElementById('plot-type').value;
+            
+            link.download = `geochemical_analysis_${plotType}.${imageFormat}`;
+            link.href = img.src;
+            link.click();
+            
+            showAlert(`Image downloaded as ${imageFormat.toUpperCase()} format!`, 'success');
+        }
+
+        function copyImageUrl() {
+            const img = document.getElementById('plot-image');
+            navigator.clipboard.writeText(img.src).then(function() {
+                showAlert('Image URL copied to clipboard!', 'success');
+            }).catch(function(err) {
+                showAlert('Failed to copy URL: ' + err, 'danger');
+            });
+        }
+
+        // Update format display
+        document.getElementById('image-format').addEventListener('change', function() {
+            document.getElementById('current-format').textContent = this.value.toUpperCase();
+        });
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
     </script>
