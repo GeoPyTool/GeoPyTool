@@ -96,6 +96,8 @@
         .table {
             margin-bottom: 0;
             font-size: 0.9rem;
+            min-width: 100%;
+            white-space: nowrap;
         }
         
         .table th {
@@ -105,15 +107,70 @@
             border-top: none;
             z-index: 10;
             font-weight: 600;
+            white-space: nowrap;
+            min-width: 100px;
+        }
+        
+        .table td {
+            white-space: nowrap;
+            min-width: 100px;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .table-hover tbody tr:hover {
             background-color: #f8f9fa;
         }
         
-        /* Data preview styling */
+        /* Data preview styling - BALANCED APPROACH */
+        #data-preview {
+            max-width: 100% !important;
+            width: 100% !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            box-sizing: border-box !important;
+        }
+        
         #data-preview .table-responsive {
-            max-height: 300px;
+            max-height: 350px !important;
+            width: 100% !important;
+            overflow: auto !important;
+            display: block !important;
+            box-sizing: border-box !important;
+        }
+        
+        #data-preview .table {
+            font-size: 0.85rem !important;
+            width: auto !important;
+            min-width: 100% !important;
+            margin: 0 !important;
+            white-space: nowrap !important;
+        }
+        
+        #data-preview .table th,
+        #data-preview .table td {
+            padding: 8px 12px !important;
+            border: 1px solid #dee2e6 !important;
+            min-width: 120px !important;
+            white-space: nowrap !important;
+            box-sizing: border-box !important;
+            vertical-align: middle !important;
+        }
+        
+        #data-preview .table th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+            font-weight: 600 !important;
+            color: #495057 !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 10 !important;
+        }
+        
+        /* Force container constraints */
+        .card-body {
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
         }
         
         /* Plot image styling */
@@ -283,9 +340,11 @@
                                 <div class="form-text">Select the normalization standard for REE patterns</div>
                             </div>
                             
-                            <!-- Trace Element Options -->
+                            <!-- Trace Element Options - COMPLETE SECTION -->
                             <div class="mb-3" id="trace-options" style="display: none;">
-                                <label for="trace-standard" class="form-label">Trace Element Normalization Standard</label>
+                                <label for="trace-standard" class="form-label">
+                                    <i class="fas fa-atom"></i> Trace Element Normalization Standard
+                                </label>
                                 <select class="form-select" id="trace-standard" name="trace_standard">
                                     <option value="PM">PM - Primitive Mantle (Sun & McDonough, 1989)</option>
                                     <option value="OIB">OIB - Ocean Island Basalt (Sun & McDonough, 1989)</option>
@@ -296,7 +355,9 @@
                                 </select>
                                 <div class="form-text">Select the normalization standard for trace element spider diagrams</div>
                                 
-                                <label for="trace-element-set" class="form-label mt-2">Element Sequence</label>
+                                <label for="trace-element-set" class="form-label mt-3">
+                                    <i class="fas fa-list-ol"></i> Element Sequence
+                                </label>
                                 <select class="form-select" id="trace-element-set" name="trace_element_set">
                                     <option value="cs_lu">Cs-Lu (36 Elements) - Full Incompatible Element Sequence</option>
                                     <option value="rb_lu">Rb-Lu (26 Elements) - Simplified Sequence (Rb to Lu)</option>
@@ -326,14 +387,14 @@
                         </div>
                         
                         <div class="alert alert-info alert-custom mt-3" style="display: none;" id="trace-note">
-                            <i class="fas fa-info-circle"></i> 
+                            <i class="fas fa-atom"></i> 
                             <strong>Trace Element Spider Diagrams:</strong> 
-                            <ul class="mb-0 mt-2" style="text-align: left;">
-                                <li>Supports automatic K2O→K and TiO2→Ti conversions</li>
-                                <li>Elements ordered by incompatibility (most to least incompatible)</li>
-                                <li>Choice of 6 normalization standards (PM, OIB, EMORB, C1, NMORB, UCC)</li>
-                                <li>Two element sequences: Full (Cs-Lu, 36 elements) or Simplified (Rb-Lu, 26 elements)</li>
-                                <li>Reference: Sun, S.S. & McDonough, W.F. (1989), Rudnick & Gao (2003)</li>
+                            <ul class="mb-0 mt-2" style="text-align: left; font-size: 0.9rem;">
+                                <li><strong>6 Normalization Standards:</strong> PM, OIB, EMORB, C1, NMORB, UCC</li>
+                                <li><strong>Auto Conversions:</strong> K2O to K and TiO2 to Ti</li>
+                                <li><strong>Element Order:</strong> By incompatibility (most to least)</li>
+                                <li><strong>Two Sequences:</strong> Full (Cs-Lu, 36 elements) or Simplified (Rb-Lu, 26 elements)</li>
+                                <li><strong>Reference:</strong> Sun, S.S. & McDonough, W.F. (1989), Rudnick & Gao (2003)</li>
                             </ul>
                         </div>
                     </div>
@@ -346,7 +407,7 @@
                         <i class="fas fa-table"></i> Data Preview
                     </div>
                     <div class="card-body">
-                        <div id="data-preview">
+                        <div id="data-preview" style="max-width: 100%; overflow-x: auto; overflow-y: hidden;">
                             <div class="text-center text-muted py-5">
                                 <i class="fas fa-file-upload fa-3x mb-3"></i>
                                 <h5>No data uploaded yet</h5>
@@ -437,6 +498,37 @@
                     showAlert(data.error, 'danger');
                 } else {
                     document.getElementById('data-preview').innerHTML = data.preview;
+                    
+                    // Force table constraints immediately after data load
+                    const dataPreview = document.getElementById('data-preview');
+                    const tables = dataPreview.querySelectorAll('table');
+                    tables.forEach(table => {
+                        // Allow table to expand naturally but ensure container scrolls
+                        table.style.width = 'auto';
+                        table.style.minWidth = '100%';
+                        table.style.whiteSpace = 'nowrap';
+                        
+                        // Wrap table in responsive container if not already wrapped
+                        if (!table.parentElement.classList.contains('table-responsive')) {
+                            const wrapper = document.createElement('div');
+                            wrapper.className = 'table-responsive';
+                            wrapper.style.maxHeight = '350px';
+                            wrapper.style.overflow = 'auto';
+                            wrapper.style.width = '100%';
+                            table.parentNode.insertBefore(wrapper, table);
+                            wrapper.appendChild(table);
+                        }
+                        
+                        // Set reasonable cell constraints
+                        const cells = table.querySelectorAll('th, td');
+                        cells.forEach(cell => {
+                            cell.style.minWidth = '120px';
+                            cell.style.padding = '8px 12px';
+                            cell.style.whiteSpace = 'nowrap';
+                            cell.style.verticalAlign = 'middle';
+                        });
+                    });
+                    
                     document.getElementById('plot-options').style.display = 'block';
                     showAlert('Data uploaded successfully! ' + data.columns.length + ' columns detected.', 'success');
                 }
@@ -508,33 +600,28 @@
             });
         });
 
-        // Show CIPW note when QAPF is selected
+        // Show options based on plot type selection - ENHANCED TRACE SUPPORT
         document.getElementById('plot-type').addEventListener('change', function() {
             const cipwNote = document.getElementById('cipw-note');
             const reeStandardSelection = document.getElementById('ree-standard-selection');
             const traceOptions = document.getElementById('trace-options');
             const traceNote = document.getElementById('trace-note');
             
+            // Hide all options first
+            cipwNote.style.display = 'none';
+            reeStandardSelection.style.display = 'none';
+            traceOptions.style.display = 'none';
+            traceNote.style.display = 'none';
+            
+            // Show relevant options based on selection
             if (this.value === 'qapf') {
                 cipwNote.style.display = 'block';
-            } else {
-                cipwNote.style.display = 'none';
-            }
-            
-            // Show REE standard selection only for REE plots
-            if (this.value === 'ree') {
+            } else if (this.value === 'ree') {
                 reeStandardSelection.style.display = 'block';
-            } else {
-                reeStandardSelection.style.display = 'none';
-            }
-            
-            // Show trace options only for trace plots
-            if (this.value === 'trace') {
+            } else if (this.value === 'trace') {
                 traceOptions.style.display = 'block';
                 traceNote.style.display = 'block';
-            } else {
-                traceOptions.style.display = 'none';
-                traceNote.style.display = 'none';
+                console.log('Trace options should now be visible'); // Debug log
             }
         });
 
@@ -591,6 +678,9 @@
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
+            
+            // Debug: Check if trace elements are available
+            console.log('GeoPyTool Web loaded with trace element support');
         });
     </script>
 </body>
