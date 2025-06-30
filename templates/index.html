@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoPyTool Web</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .header {
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 30px;
+        }
+        .plot-container {
+            margin-top: 20px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .result-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>GeoPyTool Web</h1>
+            <p class="lead">Web version of GeoPyTool for geochemical analysis and plotting</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Upload Data
+                    </div>
+                    <div class="card-body">
+                        <form id="upload-form" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="file" class="form-label">Select CSV or Excel file</label>
+                                <input type="file" class="form-control" id="file" name="file" accept=".csv,.xlsx,.xls">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mt-3" id="plot-options" style="display: none;">
+                    <div class="card-header">
+                        Plot Options
+                    </div>
+                    <div class="card-body">
+                        <form id="plot-form">
+                            <div class="mb-3">
+                                <label for="plot-type" class="form-label">Select Plot Type</label>
+                                <select class="form-select" id="plot-type" name="plot_type">
+                                    <option value="tas">TAS Diagram</option>
+                                    <option value="harker">Harker Diagram</option>
+                                    <option value="ree">REE Diagram</option>
+                                    <option value="trace">Trace Element Diagram</option>
+                                    <option value="pearce">Pearce Diagram</option>
+                                    <option value="cipw">CIPW Norm Calculation</option>
+                                    <option value="qapf">QAPF Diagram</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success">Generate Plot</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        Data Preview
+                    </div>
+                    <div class="card-body">
+                        <div id="data-preview">
+                            <p>No data uploaded yet. Please upload a file.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Processing data...</p>
+                </div>
+
+                <div class="plot-container" id="plot-container" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            Plot Result
+                        </div>
+                        <div class="card-body text-center">
+                            <img id="plot-image" class="img-fluid" alt="Plot Result">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-container" id="result-container" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            Calculation Results
+                        </div>
+                        <div class="card-body">
+                            <div id="result-data"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('data-preview').innerHTML = data.preview;
+                    document.getElementById('plot-options').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during upload');
+            });
+        });
+
+        document.getElementById('plot-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            // Show loading spinner
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('plot-container').style.display = 'none';
+            document.getElementById('result-container').style.display = 'none';
+            
+            fetch('/process', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading spinner
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // Display the plot
+                    document.getElementById('plot-image').src = 'data:image/png;base64,' + data.image;
+                    document.getElementById('plot-container').style.display = 'block';
+                    
+                    // Display results if available
+                    if (data.result) {
+                        document.getElementById('result-data').innerHTML = data.result;
+                        document.getElementById('result-container').style.display = 'block';
+                    } else {
+                        document.getElementById('result-container').style.display = 'none';
+                    }
+                }
+            })
+            .catch(error => {
+                // Hide loading spinner
+                document.getElementById('loading').style.display = 'none';
+                console.error('Error:', error);
+                alert('An error occurred during processing');
+            });
+        });
+    </script>
+</body>
+</html>
