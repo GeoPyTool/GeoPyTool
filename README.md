@@ -201,10 +201,9 @@ After all, please find your own way to open these files and do not act like a ba
 
 ![](https://github.com/GeoPyTool/GeoPyTool/blob/master/img/Samples.png?raw=true)
 
-# Support Us
+# Citation
 
-If you want to support GeoPyTool and you also use WeChat, please scan the following QR code to reward us.
-I can use this money to pay for medical expenses to stay healthy and add more functions to GeoPyTool.
-![](https://raw.githubusercontent.com/GeoPyTool/GeoPyTool/master/img/WeChatQrCode.png)
-
-
+[1] Yu, Q.-Y., Bagas, L., Yang, P.-H., Zhang, D., GeoPyTool: a cross-platform
+software solution for common geological calculations and plots, Geoscience Frontiers (2018), doi:
+10.1016/j.gsf.2018.08.001.
+[2] YU Qiu-ye, LI Shao-hong, WANG Zhi-yan. TAS-PF: Extended TAS diagram powered with probability field of big data[J]. Geology and Resources, 2025, 34(2): 255-264. doi: 10.13686/j.cnki.dzyzy.2025.02.013
