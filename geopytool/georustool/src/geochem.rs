@@ -1,5 +1,5 @@
 use egui::{Color32, Ui};
-use egui_plot::{Line, Plot, PlotPoints, Points, Legend, MarkerShape};
+use egui_plot::{Line, Plot, PlotPoints, Points, Legend, MarkerShape, Text as PlotText, PlotPoint};
 use serde::{Deserialize, Serialize};
 
 use crate::AppState;
@@ -217,7 +217,7 @@ pub fn show_k2o_sio2_plot(ui: &mut Ui, state: &crate::AppState) {
     let mut l2 = Vec::new();
     for x in (45..=85).step_by(1) { let xf = x as f64; l1.push([xf, y1(xf)]); l2.push([xf, y2(xf)]); }
 
-    Plot::new("k2o_sio2").include_x(30.0).include_x(90.0).view_aspect(1.6).legend(Legend::default()).show(ui, |plot_ui| {
+    Plot::new("k2o_sio2").include_x(30.0).include_x(90.0).include_y(0.0).include_y(6.0).view_aspect(1.6).legend(Legend::default()).show(ui, |plot_ui| {
         plot_ui.line(Line::new(l1).color(Color32::from_rgb(200, 0, 0)).name("High/Med boundary"));
         plot_ui.line(Line::new(l2).color(Color32::from_rgb(0, 120, 200)).name("Med/Low boundary"));
         let palette = egui_palette();
@@ -533,6 +533,14 @@ pub fn show_tas_plot(ui: &mut Ui, state: &crate::AppState) {
             let mut closed = poly.clone(); if let Some(first) = closed.first().cloned() { closed.push(first); }
             plot_ui.line(Line::new(closed).color(Color32::from_gray(120)).name(format!("{}", name)));
         }
+        // Abbreviation labels placed similar to original
+        let labels = vec![
+            ("F", [39.0,10.0]), ("Pc", [43.0,1.5]), ("U1", [44.0,6.0]), ("Ba", [47.5,3.5]), ("Bs", [49.5,1.5]),
+            ("S1", [49.0,5.2]), ("U2", [49.0,9.5]), ("O1", [54.0,3.0]), ("S2", [53.0,7.0]), ("U3", [53.0,12.0]),
+            ("O2", [60.0,4.0]), ("S3", [57.6,11.7]), ("Ph", [61.0,8.6]), ("O3", [67.0,5.0]), ("T", [65.0,12.0]),
+            ("Td", [67.0,9.0]), ("R", [75.0,9.0]), ("Q", [85.0,1.0]), ("S/N/L", [55.0,18.5])
+        ];
+        for (t, [x,y]) in labels { plot_ui.text(PlotText::new(PlotPoint::new(x, y), t)); }
         let palette = egui_palette();
         let mut idx = 0usize;
         for (label, pts) in groups {
@@ -629,17 +637,30 @@ pub fn show_ree_plot(ui: &mut Ui, state: &crate::AppState) {
     let mut group_color: BTreeMap<String, Color32> = BTreeMap::new();
     let idx_label = resolver.find_index("Label");
     let idx_color = resolver.find_index("Color");
+    let std = ree_standard_values(state.ree_standard_idx);
     for r in &state.raw_table.rows {
         let label = idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string());
         let mut series = Vec::new();
         for (i, e) in elems.iter().enumerate() {
-            if let Some(ix) = resolver.find_index(e) { if let Some(v) = resolver.parse_value(r, ix, false) { series.push([i as f64 + 1.0, v]); } }
+            if let Some(ix) = resolver.find_index(e) { if let Some(mut v) = resolver.parse_value(r, ix, false) {
+                let denom = std.get(*e).copied().unwrap_or(1.0); if denom>0.0 { v /= denom; }
+                if v>0.0 { series.push([i as f64 + 1.0, v.log10()]); }
+            } }
         }
         if !series.is_empty() { groups.entry(label.clone()).or_default().extend(series); }
         if let Some(i) = idx_color { if let Some(cstr) = r.get(i) { if let Some(c) = parse_egui_color(cstr) { group_color.entry(label.clone()).or_insert(c); } } }
     }
-    let ticks: Vec<[f64;2]> = (1..=14).map(|i| [i as f64, 0.0]).collect();
-    Plot::new("ree").include_x(0.5).include_x(14.5).legend(Legend::default()).show(ui, |plot_ui| {
+    // Determine y-range and draw element names on x-axis
+    let mut miny = 1e9f64; let mut maxy = -1e9f64;
+    for (_l, pts) in &groups { for p in pts { miny = miny.min(p[1]); maxy = maxy.max(p[1]); } }
+    let axis_y = (miny - 0.2);
+    Plot::new("ree").include_x(0.5).include_x(14.5).include_y(miny).include_y(maxy).legend(Legend::default()).show(ui, |plot_ui| {
+        // x labels
+        let names = ["La","Ce","Pr","Nd","Sm","Eu","Gd","Tb","Dy","Ho","Er","Tm","Yb","Lu"];
+        for (i, name) in names.iter().enumerate() { plot_ui.text(PlotText::new(PlotPoint::new((i as f64)+1.0, axis_y), *name)); }
+        // standard name annotation
+        let std_name = REE_STANDARD_NAMES.get(state.ree_standard_idx).copied().unwrap_or(REE_STANDARD_NAMES[0]);
+        plot_ui.text(PlotText::new(PlotPoint::new(1.2, (maxy + 0.1)), format!("Standard: {}", std_name)));
         let palette = egui_palette();
         let mut idx = 0usize;
         for (label, pts) in groups {

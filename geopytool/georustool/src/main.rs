@@ -183,9 +183,11 @@ impl eframe::App for GeoRusToolApp {
                 if ui.button("REE").clicked() { self.state.ree_view_open = true; }
                 ui.label("REE Standard:");
                 egui::ComboBox::from_label("")
-                    .selected_text(format!("{}", self.state.ree_standard_idx))
+                    .selected_text(format!("{}", geochem::REE_STANDARD_NAMES.get(self.state.ree_standard_idx).copied().unwrap_or(geochem::REE_STANDARD_NAMES[0])))
                     .show_ui(ui, |ui| {
-                        for i in 0..=5 { if ui.selectable_label(self.state.ree_standard_idx==i, format!("{}", i)).clicked() { self.state.ree_standard_idx=i; } }
+                        for (i, name) in geochem::REE_STANDARD_NAMES.iter().enumerate() {
+                            if ui.selectable_label(self.state.ree_standard_idx==i, *name).clicked() { self.state.ree_standard_idx=i; }
+                        }
                     });
                 if ui.button("Export REE PNG").clicked() {
                     if let Some(path) = rfd::FileDialog::new().set_file_name("ree.png").save_file() {
