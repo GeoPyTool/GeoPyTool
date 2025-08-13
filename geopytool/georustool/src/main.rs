@@ -22,6 +22,15 @@ pub struct AppState {
     // Views
     #[serde(skip)]
     k2o_view: geochem::K2OSiO2ViewState,
+    #[serde(skip)]
+    tas_view_open: bool,
+    #[serde(skip)]
+    ree_view_open: bool,
+    // Settings
+    #[serde(skip)]
+    tas_group_by_label: bool,
+    #[serde(skip)]
+    ree_standard_idx: usize,
 }
 
 #[derive(Default, Serialize, Deserialize, Clone)]
@@ -159,6 +168,35 @@ impl eframe::App for GeoRusToolApp {
                         else { self.state.status = format!("Saved PNG to {:?}", path); }
                     }
                 }
+                if ui.button("TAS").clicked() { self.state.tas_view_open = true; }
+                if ui.button("Export TAS PNG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("tas.png").save_file() {
+                        if let Err(e) = geochem::export_tas_png(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                    }
+                }
+                if ui.button("Export TAS SVG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("tas.svg").save_file() {
+                        if let Err(e) = geochem::export_tas_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                    }
+                }
+
+                if ui.button("REE").clicked() { self.state.ree_view_open = true; }
+                ui.label("REE Standard:");
+                egui::ComboBox::from_label("")
+                    .selected_text(format!("{}", self.state.ree_standard_idx))
+                    .show_ui(ui, |ui| {
+                        for i in 0..=5 { if ui.selectable_label(self.state.ree_standard_idx==i, format!("{}", i)).clicked() { self.state.ree_standard_idx=i; } }
+                    });
+                if ui.button("Export REE PNG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("ree.png").save_file() {
+                        if let Err(e) = geochem::export_ree_png(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                    }
+                }
+                if ui.button("Export REE SVG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("ree.svg").save_file() {
+                        if let Err(e) = geochem::export_ree_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                    }
+                }
                 if ui.button("Export K2O-SiO2 SVG").clicked() {
                     if let Some(path) = rfd::FileDialog::new().set_file_name("k2o_sio2.svg").save_file() {
                         if let Err(e) = geochem::export_k2o_sio2_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); }
@@ -229,6 +267,24 @@ impl eframe::App for GeoRusToolApp {
                 geochem::show_k2o_sio2_plot(ui, &state_snapshot);
             });
             self.state.k2o_view.is_open = open_flag;
+        }
+
+        if self.state.tas_view_open {
+            let state_snapshot = self.state.clone();
+            let mut open_flag = self.state.tas_view_open;
+            egui::Window::new("TAS").open(&mut open_flag).show(ctx, |ui| {
+                geochem::show_tas_plot(ui, &state_snapshot);
+            });
+            self.state.tas_view_open = open_flag;
+        }
+
+        if self.state.ree_view_open {
+            let state_snapshot = self.state.clone();
+            let mut open_flag = self.state.ree_view_open;
+            egui::Window::new("REE").open(&mut open_flag).show(ctx, |ui| {
+                geochem::show_ree_plot(ui, &state_snapshot);
+            });
+            self.state.ree_view_open = open_flag;
         }
     }
 }
