@@ -26,11 +26,21 @@ pub struct AppState {
     tas_view_open: bool,
     #[serde(skip)]
     ree_view_open: bool,
+    #[serde(skip)]
+    pearson_view_open: bool,
+    #[serde(skip)]
+    cipw_done: bool,
+    #[serde(skip)]
+    qapf_view_open: bool,
+    #[serde(skip)]
+    cipw_results: Vec<geochem::CipwNorm>,
     // Settings
     #[serde(skip)]
     tas_group_by_label: bool,
     #[serde(skip)]
     ree_standard_idx: usize,
+    #[serde(skip)]
+    tas_mode_is_volcanic: bool,
 }
 
 #[derive(Default, Serialize, Deserialize, Clone)]
@@ -157,6 +167,16 @@ impl eframe::App for GeoRusToolApp {
         TopBottomPanel::top("menu").show(ctx, |ui| {
             ui.horizontal_wrapped(|ui| {
                 if ui.button("Open Data").clicked() { self.state.open_data(); }
+                if ui.button("Load Geochemistry.csv").clicked() {
+                    use std::path::PathBuf;
+                    let p = PathBuf::from("Geochemistry.csv");
+                    if p.exists() {
+                        match load_table(&p) {
+                            Ok(t) => { self.state.filename = Some(p.clone()); self.state.raw_table = t; self.state.status = format!("Loaded {} rows from Geochemistry.csv", self.state.raw_table.rows.len()); }
+                            Err(e) => { self.state.status = format!("Load failed: {e}"); }
+                        }
+                    } else { self.state.status = "Geochemistry.csv not found in current directory".to_string(); }
+                }
                 if ui.button("Save Data").clicked() { self.state.save_data(); }
                 if ui.button("Remove LOI").clicked() { self.state.geochem_remove_loi(); }
                 ui.separator();
@@ -169,6 +189,9 @@ impl eframe::App for GeoRusToolApp {
                     }
                 }
                 if ui.button("TAS").clicked() { self.state.tas_view_open = true; }
+                ui.label("TAS Mode:");
+                ui.selectable_value(&mut self.state.tas_mode_is_volcanic, true, "VOL");
+                ui.selectable_value(&mut self.state.tas_mode_is_volcanic, false, "PLT");
                 if ui.button("Export TAS PNG").clicked() {
                     if let Some(path) = rfd::FileDialog::new().set_file_name("tas.png").save_file() {
                         if let Err(e) = geochem::export_tas_png(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
@@ -199,6 +222,98 @@ impl eframe::App for GeoRusToolApp {
                         if let Err(e) = geochem::export_ree_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
                     }
                 }
+                ui.separator();
+                if ui.button("Pearson (4 views)").clicked() { self.state.pearson_view_open = true; }
+                ui.menu_button("Pearson Export", |ui| {
+                    if ui.button("Export PNG (Y+Nb, Rb)").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson0.png").save_file() {
+                            if let Err(e) = geochem::export_pearson_png(&self.state, &path, 0) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                        }
+                    }
+                    if ui.button("Export SVG (Y+Nb, Rb)").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson0.svg").save_file() {
+                            if let Err(e) = geochem::export_pearson_svg(&self.state, &path, 0) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                        }
+                    }
+                    ui.separator();
+                    if ui.button("Export PNG (Yb+Ta, Rb)").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson1.png").save_file() {
+                            if let Err(e) = geochem::export_pearson_png(&self.state, &path, 1) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                        }
+                    }
+                    if ui.button("Export SVG (Yb+Ta, Rb)").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson1.svg").save_file() {
+                            if let Err(e) = geochem::export_pearson_svg(&self.state, &path, 1) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                        }
+                    }
+                    ui.separator();
+                    if ui.button("Export PNG (Y, Nb)").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson2.png").save_file() {
+                            if let Err(e) = geochem::export_pearson_png(&self.state, &path, 2) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                        }
+                    }
+                    if ui.button("Export SVG (Y, Nb)").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson2.svg").save_file() {
+                            if let Err(e) = geochem::export_pearson_svg(&self.state, &path, 2) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                        }
+                    }
+                    ui.separator();
+                    if ui.button("Export PNG (Yb, Ta)").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson3.png").save_file() {
+                            if let Err(e) = geochem::export_pearson_png(&self.state, &path, 3) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                        }
+                    }
+                    if ui.button("Export SVG (Yb, Ta)").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson3.svg").save_file() {
+                            if let Err(e) = geochem::export_pearson_svg(&self.state, &path, 3) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                        }
+                    }
+                    if ui.button("Export 4-in-1 PNG").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson_4in1.png").save_file() {
+                            if let Err(e) = geochem::export_pearson_4in1_png(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                        }
+                    }
+                    if ui.button("Export 4-in-1 SVG").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().set_file_name("pearson_4in1.svg").save_file() {
+                            if let Err(e) = geochem::export_pearson_4in1_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                        }
+                    }
+                });
+                ui.separator();
+                if ui.button("Ti/100-Zr-3Y").clicked() { geochem::show_tizry_plot(ui, &self.state); }
+                if ui.button("Export TiZrY PNG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("tizry.png").save_file() {
+                        if let Err(e) = geochem::export_tizry_png(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                    }
+                }
+                ui.separator();
+                if ui.button("Ab-Or-An").clicked() { geochem::show_aboran_plot(ui, &self.state); }
+                if ui.button("Export Ab-Or-An PNG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("aboran.png").save_file() {
+                        if let Err(e) = geochem::export_aboran_png(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                    }
+                }
+                if ui.button("Export Ab-Or-An SVG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("aboran.svg").save_file() {
+                        if let Err(e) = geochem::export_aboran_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                    }
+                }
+                if ui.button("Al-FeTi-Mg").clicked() { geochem::show_alfetimg_plot(ui, &self.state); }
+                if ui.button("Export Al-FeTi-Mg PNG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("alfetimg.png").save_file() {
+                        if let Err(e) = geochem::export_alfetimg_png(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                    }
+                }
+                if ui.button("Export Al-FeTi-Mg SVG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("alfetimg.svg").save_file() {
+                        if let Err(e) = geochem::export_alfetimg_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                    }
+                }
+                if ui.button("Export TiZrY SVG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("tizry.svg").save_file() {
+                        if let Err(e) = geochem::export_tizry_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                    }
+                }
                 if ui.button("Export K2O-SiO2 SVG").clicked() {
                     if let Some(path) = rfd::FileDialog::new().set_file_name("k2o_sio2.svg").save_file() {
                         if let Err(e) = geochem::export_k2o_sio2_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); }
@@ -210,7 +325,24 @@ impl eframe::App for GeoRusToolApp {
                 ui.separator();
                 ui.label("Sedimentary: QFL/QmFLt/Clastic/CIA (todo)");
                 ui.separator();
-                ui.label("Calculation: ZirconCe/ZirconTiTemp/RutileZrTemp/Isotope (todo)");
+                ui.label("Calculation: CIPW/QAPF/ZirconCe/ZirconTiTemp/RutileZrTemp/Isotope (todo)");
+                if ui.button("Compute CIPW").clicked() { geochem::compute_cipw_and_store(&mut self.state); self.state.cipw_done = true; }
+                if ui.button("QAPF").clicked() { self.state.qapf_view_open = true; }
+                if ui.button("Export CIPW CSV").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("cipw.csv").save_file() {
+                        if let Err(e) = geochem::export_cipw_csv(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved CSV to {:?}", path); }
+                    }
+                }
+                if ui.button("Export QAPF PNG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("qapf.png").save_file() {
+                        if let Err(e) = geochem::export_qapf_png(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved PNG to {:?}", path); }
+                    }
+                }
+                if ui.button("Export QAPF SVG").clicked() {
+                    if let Some(path) = rfd::FileDialog::new().set_file_name("qapf.svg").save_file() {
+                        if let Err(e) = geochem::export_qapf_svg(&self.state, &path) { self.state.status = format!("Export error: {e}"); } else { self.state.status = format!("Saved SVG to {:?}", path); }
+                    }
+                }
                 ui.separator();
                 ui.label("Additional: XY/XYZ/Cluster/Multi/Dist/Sta/TwoD/Grey/Hist/Pie/Bar (todo)");
                 ui.separator();
@@ -287,6 +419,24 @@ impl eframe::App for GeoRusToolApp {
                 geochem::show_ree_plot(ui, &state_snapshot);
             });
             self.state.ree_view_open = open_flag;
+        }
+
+        if self.state.pearson_view_open {
+            let state_snapshot = self.state.clone();
+            let mut open_flag = self.state.pearson_view_open;
+            egui::Window::new("Pearson (Pearce) 4 views").open(&mut open_flag).show(ctx, |ui| {
+                geochem::show_pearson_grid(ui, &state_snapshot);
+            });
+            self.state.pearson_view_open = open_flag;
+        }
+
+        if self.state.qapf_view_open {
+            let state_snapshot = self.state.clone();
+            let mut open_flag = self.state.qapf_view_open;
+            egui::Window::new("QAPF").open(&mut open_flag).show(ctx, |ui| {
+                geochem::show_qapf_plot(ui, &state_snapshot);
+            });
+            self.state.qapf_view_open = open_flag;
         }
     }
 }

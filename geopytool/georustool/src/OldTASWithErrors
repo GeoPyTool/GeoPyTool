@@ -1,0 +1,177 @@
+@@ -0,0 +1,176 @@
+{
+  "comment": "This is a sample JSON file for Cords of GeoChem Plots. ",
+  "date": "2020-10-9",
+  "version": "0.01",
+  "author": "fred yu",
+  "title": "TAS",
+  "type": "xy",
+  "reference": "Maitre, R. W. L., Streckeisen, A., Zanettin, B., Bas, M. J. L., Bonin, B., and Bateman, P., 2004, Igneous Rocks: A Classification and Glossary of Terms: Cambridge University Press, v. -1, no. 70, p. 93–120.",
+
+  "cords": {
+    "F": [
+      [41, 3],
+      [37, 3],
+      [35, 9],
+      [37, 14],
+      [52.5, 18],
+      [52.5, 14],
+      [48.4, 11.5]
+    ],
+    "Pc": [
+      [45, 9.4],
+      [41, 7]
+    ],
+    "U1": [
+      [41, 0],
+      [41, 3],
+      [45, 3],
+      [45, 0]
+    ],
+    "Ba": [
+      [41, 3],
+      [41, 7],
+      [45, 9.4],
+      [49.4, 7.3],
+      [45, 5],
+      [45, 3]
+    ],
+    "Bs": [
+      [45, 9.4],
+      [48.4, 11.5],
+      [53, 9.3],
+      [49.4, 7.3]
+    ],
+    "S1": [
+      [48.4, 11.5],
+      [52.5, 14],
+      [57.6, 11.7],
+      [53, 9.3]
+    ],
+    "U2": [
+      [52.5, 14],
+      [52.5, 18],
+      [57, 18],
+      [63, 16.2],
+      [61, 13.5],
+      [57.6, 11.7]
+    ],
+    "O1": [
+      [45, 0],
+      [45, 2],
+      [52, 5],
+      [52, 0]
+    ],
+    "S2": [
+      [45, 2],
+      [45, 5],
+      [52, 5]
+    ],
+    "U3": [
+      [45, 5],
+      [49.4, 7.3],
+      [52, 5]
+    ],
+    "O2": [
+      [49.4, 7.3],
+      [53, 9.3],
+      [57, 5.9],
+      [52, 5]
+    ],
+    "S3": [
+      [53, 9.3],
+      [57.6, 11.7],
+      [61, 8.6],
+      [63, 7],
+      [57, 5.9]
+    ],
+    "Ph": [
+      [57.6, 11.7],
+      [61, 13.5],
+      [63, 16.2],
+      [71.8, 13.5],
+      [61, 8.6]
+    ],
+    "O3": [
+      [61, 8.6],
+      [71.8, 13.5],
+      [69, 8],
+      [63, 7]
+    ],
+    "T": [
+      [52, 0],
+      [52, 5],
+      [57, 5.9],
+      [57, 0]
+    ],
+    "Td": [
+      [57, 0],
+      [57, 5.9],
+      [63, 7],
+      [63, 0]
+    ],
+    "R": [
+      [63, 0],
+      [63, 7],
+      [69, 8],
+      [77.3, 0]
+    ],
+    "Q": [
+      [77.3, 0],
+      [69, 8],
+      [71.8, 13.5],
+      [85.9, 6.8],
+      [87.5, 4.7]
+    ],
+    "SNL/TUI": [
+      [77.3, 0],
+      [87.5, 4.7],
+      [90, 4.7],
+      [90, 0]
+    ]
+  },
+
+  "Volcanic": {
+    "F": "Foidite",
+    "Ph": "Phonolite",
+    "Pc": "Pocrobasalt",
+    "U1": "Tephrite (ol < 10%) Basanite(ol > 10%)",
+    "U2": "Phonotephrite",
+    "U3": "Tephriphonolite",
+    "Ba": "alkalic basalt",
+    "Bs": "subalkalic baslt",
+    "S1": "Trachybasalt",
+    "S2": "Basaltic Trachyandesite",
+    "S3": "Trachyandesite",
+    "O1": "Basaltic Andesite",
+    "O2": "Andesite",
+    "O3": "Dacite",
+    "T": "Trachyte",
+    "Td": "Trachydacite",
+    "R": "Rhyolite",
+    "Q": "Silexite",
+    "S/N/L": "Sodalitite/Nephelinolith/Leucitolith"
+  },
+
+  "Plutonic": {
+    "F": "Foidolite",
+    "Ph": "Foid Syenite",
+    "Pc": "Peridotgabbro",
+    "U1": "Foid Gabbro",
+    "U2": "Foid Monzodiorite",
+    "U3": "Foid Monzosyenite",
+    "Ba": "alkalic gabbro",
+    "Bs": "subalkalic gabbro",
+    "S1": "Monzogabbro",
+    "S2": "Monzodiorite",
+    "S3": "Monzonite",
+    "O1": "Gabbroic Diorite",
+    "O2": "Diorite",
+    "O3": "Graodiorite",
+    "T": "Syenite",
+    "Td": "Quartz Monzonite",
+    "R": "Granite",
+    "Q": "Quartzolite",
+    "T/U/I": "Tawite/Urtite/Italite"
+  }
+}

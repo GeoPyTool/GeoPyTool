@@ -263,24 +263,66 @@ SiO2 wt%
 90.0
 </text>
 <polyline fill="none" opacity="1" stroke="#000000" stroke-width="1" points="1179,720 1179,725 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="281,619 208,619 171,419 208,253 492,119 492,253 417,336 354,406 281,486 281,619 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="281,719 281,619 354,619 354,719 281,719 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="281,719 281,486 354,406 417,336 492,253 428,200 343,131 171,131 171,719 281,719 "/>
 <polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="281,619 281,486 354,406 435,476 354,553 354,619 281,619 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="281,719 281,619 354,619 354,719 281,719 "/>
 <polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="354,406 417,336 501,409 435,476 354,406 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="417,336 492,253 585,329 501,409 417,336 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="492,253 492,119 574,119 684,179 647,269 585,329 492,253 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="354,719 354,653 482,553 482,719 354,719 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="354,653 354,553 482,553 354,653 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="354,553 435,476 482,553 354,553 "/>
 <polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="435,476 501,409 574,523 482,553 435,476 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="501,409 585,329 647,433 684,486 574,523 501,409 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="585,329 647,269 684,179 845,269 647,433 585,329 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="647,433 845,269 794,453 684,486 647,433 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="482,719 482,553 574,523 574,719 482,719 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="417,336 492,253 585,329 501,409 417,336 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="501,409 585,329 684,486 574,523 501,409 "/>
 <polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="574,719 574,523 684,486 684,719 574,719 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="343,131 492,253 585,329 647,269 794,131 343,131 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="794,131 794,286 794,453 946,719 995,719 995,131 794,131 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="354,719 354,619 354,553 482,553 482,719 354,719 "/>
 <polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="684,719 684,486 794,453 946,719 684,719 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="946,719 794,453 845,269 1103,493 1133,563 946,719 "/>
-<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="946,719 1133,563 1179,563 1179,719 946,719 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="354,553 435,476 482,553 354,553 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="482,719 482,553 574,523 574,719 482,719 "/>
+<polyline fill="none" opacity="1" stroke="#787878" stroke-width="1" points="794,131 647,269 585,329 684,486 794,453 794,286 794,131 794,131 "/>
+<text x="572" y="223" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+Ph
+</text>
+<text x="326" y="376" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+F
+</text>
+<text x="777" y="594" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+O3
+</text>
+<text x="424" y="527" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+S1
+</text>
+<text x="528" y="629" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+O1
+</text>
+<text x="727" y="298" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+T
+</text>
+<text x="406" y="633" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+B
+</text>
+<text x="629" y="612" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+O2
+</text>
+<text x="498" y="332" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+U3
+</text>
+<text x="318" y="669" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+Pc
+</text>
+<text x="498" y="490" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+S2
+</text>
+<text x="586" y="437" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+S3
+</text>
+<text x="886" y="407" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+R
+</text>
+<text x="343" y="527" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+U1
+</text>
+<text x="427" y="407" dy="0.76em" text-anchor="start" font-family="Microsoft YaHei, Arial, SimHei, DejaVu Sans" font-size="9.67741935483871" opacity="1" fill="#000000">
+U2
+</text>
 <circle cx="444" cy="640" r="3" opacity="1" fill="#00FF00" stroke="none" stroke-width="1"/>
 <circle cx="439" cy="642" r="3" opacity="1" fill="#00FF00" stroke="none" stroke-width="1"/>
 <circle cx="446" cy="633" r="3" opacity="1" fill="#00FF00" stroke="none" stroke-width="1"/>

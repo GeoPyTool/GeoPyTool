@@ -1,0 +1,21 @@
+{
+  "comment": "This is a sample JSON file for coords of GeoChem Plots. ",
+  "date": "2020-10-9",
+  "version": "0.01",
+  "author": "author",
+  "title": "Title",
+  "type": "xy",
+  "reference": "",
+
+  "coords": {
+    "Line Name": [
+      [41, 3],
+      [37, 3],
+      [35, 9],
+      [37, 14],
+      [52.5, 18],
+      [52.5, 14],
+      [48.4, 11.5]
+    ]
+  }
+}

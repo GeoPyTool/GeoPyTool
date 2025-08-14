@@ -1,6 +1,8 @@
 use egui::{Color32, Ui};
 use egui_plot::{Line, Plot, PlotPoints, Points, Legend, MarkerShape, Text as PlotText, PlotPoint};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::fs;
 
 use crate::AppState;
 use plotters::prelude::*;
@@ -314,34 +316,36 @@ fn plotters_palette() -> Vec<RGBColor> {
     ]
 }
 
-fn tas_regions() -> Vec<(&'static str, Vec<[f64;2]>)> {
-    // Ported from geopytool TAS.py LocationAreas / boundaries for plutonic/volcanic mix
-    vec![
-        ("Foidolite", vec![[41.0, 3.0], [37.0, 3.0], [35.0, 9.0], [37.0, 14.0], [52.5, 18.0], [52.5, 14.0], [48.4, 11.5], [45.0, 9.4], [41.0, 7.0]]),
-        ("Peridotgabbro", vec![[41.0, 0.0], [41.0, 3.0], [45.0, 3.0], [45.0, 0.0]]),
-        ("Foid Gabbro", vec![[41.0, 3.0], [41.0, 7.0], [45.0, 9.4], [49.4, 7.3], [45.0, 5.0], [45.0, 3.0]]),
-        ("Foid Monzodiorite", vec![[45.0, 9.4], [48.4, 11.5], [53.0, 9.3], [49.4, 7.3]]),
-        ("Foid Monzosyenite", vec![[48.4, 11.5], [52.5, 14.0], [57.6, 11.7], [53.0, 9.3]]),
-        ("Foid Syenite", vec![[52.5, 14.0], [52.5, 18.0], [57.0, 18.0], [63.0, 16.2], [61.0, 13.5], [57.6, 11.7]]),
-        ("Gabbro Bs", vec![[45.0, 0.0], [45.0, 2.0], [52.0, 5.0], [52.0, 0.0]]),
-        ("Gabbro Ba", vec![[45.0, 2.0], [45.0, 5.0], [52.0, 5.0]]),
-        ("Monzogabbro", vec![[45.0, 5.0], [49.4, 7.3], [52.0, 5.0]]),
-        ("Monzodiorite", vec![[49.4, 7.3], [53.0, 9.3], [57.0, 5.9], [52.0, 5.0]]),
-        ("Monzonite", vec![[53.0, 9.3], [57.6, 11.7], [61.0, 8.6], [63.0, 7.0], [57.0, 5.9]]),
-        ("Syenite", vec![[57.6, 11.7], [61.0, 13.5], [63.0, 16.2], [71.8, 13.5], [61.0, 8.6]]),
-        ("Quartz Monzonite", vec![[61.0, 8.6], [71.8, 13.5], [69.0, 8.0], [63.0, 7.0]]),
-        ("Gabbroic Diorite", vec![[52.0, 0.0], [52.0, 5.0], [57.0, 5.9], [57.0, 0.0]]),
-        ("Diorite", vec![[57.0, 0.0], [57.0, 5.9], [63.0, 7.0], [63.0, 0.0]]),
-        ("Granodiorite", vec![[63.0, 0.0], [63.0, 7.0], [69.0, 8.0], [77.3, 0.0]]),
-        ("Granite", vec![[77.3, 0.0], [69.0, 8.0], [71.8, 13.5], [85.9, 6.8], [87.5, 4.7]]),
-        ("Quartzolite", vec![[77.3, 0.0], [87.5, 4.7], [90.0, 4.7], [90.0, 0.0]]),
-    ]
+#[derive(Deserialize)]
+struct TasJson {
+    coords: HashMap<String, Vec<[f64;2]>>,
+    #[serde(rename = "Volcanic", default)]
+    volcanic: HashMap<String, String>,
+    #[serde(rename = "Plutonic", default)]
+    plutonic: HashMap<String, String>,
+}
+
+fn load_tas_json() -> anyhow::Result<TasJson> {
+    let s = fs::read_to_string("src/TAS.json")?;
+    let v: TasJson = serde_json::from_str(&s)?;
+    Ok(v)
+}
+
+fn tas_regions() -> Vec<(String, (String, Vec<[f64;2]>))> {
+    if let Ok(js) = load_tas_json() {
+        let mut v = Vec::new();
+        for (abbr, poly) in js.coords {
+            let full = js.volcanic.get(&abbr).or_else(|| js.plutonic.get(&abbr)).cloned().unwrap_or(abbr.clone());
+            v.push((abbr, (full, poly)));
+        }
+        v
+    } else { Vec::new() }
 }
 
 fn classify_tas(x_sio2: f64, y_alk: f64) -> Option<&'static str> {
     let regions = tas_regions();
-    for (name, poly) in regions {
-        if point_in_polygon(x_sio2, y_alk, &poly) { return Some(name); }
+    for (abbr, (_full, poly)) in regions {
+        if point_in_polygon(x_sio2, y_alk, &poly) { return Some(Box::leak(abbr.into_boxed_str())); }
     }
     None
 }
@@ -372,6 +376,800 @@ pub const REE_STANDARD_NAMES: [&str; 6] = [
     "MORB Sun and McDonough,1989",
     "UCC_Rudnick & Gao2003",
 ];
+
+// ---------------- Pearson (XY, log-log) ----------------
+#[derive(Deserialize)]
+struct PearsonSet {
+    #[serde(rename = "BaseLines")] baselines: Vec<Vec<[f64;2]>>,
+    #[serde(rename = "xLabel")] xlabel: String,
+    #[serde(rename = "yLabel")] ylabel: String,
+    #[serde(rename = "Labels")] labels: Vec<String>,
+    #[serde(rename = "LabelsLocations")] label_locs: Vec<[f64;2]>,
+}
+
+#[derive(Deserialize)]
+struct PearsonJson {
+    #[serde(rename = "coords0")] c0: PearsonSet,
+    #[serde(rename = "coords1")] c1: PearsonSet,
+    #[serde(rename = "coords2")] c2: PearsonSet,
+    #[serde(rename = "coords3")] c3: PearsonSet,
+}
+
+fn load_pearson_json() -> anyhow::Result<PearsonJson> {
+    let s = fs::read_to_string("src/Pearson.json")?;
+    Ok(serde_json::from_str(&s)?)
+}
+
+fn pearson_variant(idx: usize) -> anyhow::Result<PearsonSet> {
+    let js = load_pearson_json()?;
+    Ok(match idx { 0=>js.c0, 1=>js.c1, 2=>js.c2, _=>js.c3 })
+}
+
+fn pearson_xy_for_row(resolver: &HeaderResolver, row: &[String], variant: usize) -> Option<(f64,f64)> {
+    // Compute raw values (ppm). Return log10 if >0 for both.
+    let get = |name: &str| resolver.find_index(name).and_then(|i| resolver.parse_value(row, i, false));
+    let (x_raw, y_raw) = match variant {
+        0 => { // x = Y+Nb, y = Rb
+            let x = get("Y").unwrap_or(0.0) + get("Nb").unwrap_or(0.0);
+            let y = get("Rb")?; (x, y)
+        }
+        1 => { // x = Yb+Ta, y = Rb
+            let x = get("Yb").unwrap_or(0.0) + get("Ta").unwrap_or(0.0);
+            let y = get("Rb")?; (x, y)
+        }
+        2 => { // x = Y, y = Nb
+            (get("Y")?, get("Nb")?)
+        }
+        _ => { // 3: x = Yb, y = Ta
+            (get("Yb")?, get("Ta")?)
+        }
+    };
+    if x_raw > 0.0 && y_raw > 0.0 {
+        Some((x_raw.log10(), y_raw.log10()))
+    } else { None }
+}
+
+pub fn show_pearson_plot(ui: &mut Ui, state: &crate::AppState, variant: usize) {
+    let headers = &state.raw_table.headers;
+    let resolver = build_resolver(headers);
+    let Ok(set) = pearson_variant(variant) else { ui.label("Missing Pearson.json"); return; };
+    use std::collections::BTreeMap;
+    let mut groups: BTreeMap<String, Vec<[f64;2]>> = BTreeMap::new();
+    let mut group_color: BTreeMap<String, Color32> = BTreeMap::new();
+    let idx_label = resolver.find_index("Label");
+    let idx_color = resolver.find_index("Color");
+    for r in &state.raw_table.rows {
+        if let Some((x,y)) = pearson_xy_for_row(&resolver, r, variant) {
+            let label = idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string());
+            groups.entry(label.clone()).or_default().push([x,y]);
+            if let Some(i) = idx_color { if let Some(cstr) = r.get(i) { if let Some(c) = parse_egui_color(cstr) { group_color.entry(label.clone()).or_insert(c); } } }
+        }
+    }
+    // axis bounds from data and baselines
+    let mut minx = f64::INFINITY; let mut maxx = f64::NEG_INFINITY;
+    let mut miny = f64::INFINITY; let mut maxy = f64::NEG_INFINITY;
+    for (_, pts) in &groups { for p in pts { minx = minx.min(p[0]); maxx = maxx.max(p[0]); miny = miny.min(p[1]); maxy = maxy.max(p[1]); } }
+    for seg in &set.baselines { for p in seg { let x=p[0].log10(); let y=p[1].log10(); minx=minx.min(x); maxx=maxx.max(x); miny=miny.min(y); maxy=maxy.max(y); } }
+    if !minx.is_finite() { minx = 0.0; maxx = 3.0; miny = 0.0; maxy = 3.0; }
+
+    let plot_id = format!("pearson_{}", variant);
+    Plot::new(plot_id).view_aspect(1.0).include_x(minx).include_x(maxx).include_y(miny).include_y(maxy).legend(Legend::default()).show(ui, |plot_ui| {
+        // draw baselines
+        for seg in &set.baselines {
+            let line_pts: Vec<[f64;2]> = seg.iter().map(|p| [p[0].log10(), p[1].log10()]).collect();
+            plot_ui.line(Line::new(line_pts).color(Color32::from_gray(120)));
+        }
+        // region labels at provided log locations
+        for (i, lab) in set.labels.iter().enumerate() {
+            if let Some(pos) = set.label_locs.get(i) {
+                plot_ui.text(PlotText::new(PlotPoint::new(pos[0], pos[1]), lab.as_str()));
+            }
+        }
+        // draw points
+        let palette = egui_palette();
+        let mut idx = 0usize;
+        for (label, pts) in groups {
+            let color = group_color.get(&label).cloned().unwrap_or_else(|| { let c = palette[idx % palette.len()]; idx+=1; c });
+            let pp: PlotPoints = pts.into();
+            plot_ui.points(Points::new(pp).color(color).radius(2.5).name(label));
+        }
+    });
+}
+
+pub fn show_pearson_plot_sized(ui: &mut Ui, state: &crate::AppState, variant: usize, side: f32) {
+    let headers = &state.raw_table.headers;
+    let resolver = build_resolver(headers);
+    let Ok(set) = pearson_variant(variant) else { ui.label("Missing Pearson.json"); return; };
+    use std::collections::BTreeMap;
+    let mut groups: BTreeMap<String, Vec<[f64;2]>> = BTreeMap::new();
+    let mut group_color: BTreeMap<String, Color32> = BTreeMap::new();
+    let idx_label = resolver.find_index("Label");
+    let idx_color = resolver.find_index("Color");
+    for r in &state.raw_table.rows {
+        if let Some((x,y)) = pearson_xy_for_row(&resolver, r, variant) {
+            let label = idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string());
+            groups.entry(label.clone()).or_default().push([x,y]);
+            if let Some(i) = idx_color { if let Some(cstr) = r.get(i) { if let Some(c) = parse_egui_color(cstr) { group_color.entry(label.clone()).or_insert(c); } } }
+        }
+    }
+    let mut minx = f64::INFINITY; let mut maxx = f64::NEG_INFINITY; let mut miny = f64::INFINITY; let mut maxy = f64::NEG_INFINITY;
+    for (_, pts) in &groups { for p in pts { minx = minx.min(p[0]); maxx = maxx.max(p[0]); miny = miny.min(p[1]); maxy = maxy.max(p[1]); } }
+    for seg in &set.baselines { for p in seg { let x=p[0].log10(); let y=p[1].log10(); minx=minx.min(x); maxx=maxx.max(x); miny=miny.min(y); maxy=maxy.max(y); } }
+    if !minx.is_finite() { minx = 0.0; maxx = 3.0; miny = 0.0; maxy = 3.0; }
+    let plot_id = format!("pearson_sized_{}", variant);
+    let plot = Plot::new(plot_id).view_aspect(1.0)
+        .include_x(minx).include_x(maxx)
+        .include_y(miny).include_y(maxy)
+        .legend(Legend::default());
+    ui.allocate_ui_with_layout(egui::vec2(side, side), egui::Layout::top_down(egui::Align::Min), |sub_ui| {
+        plot.show(sub_ui, |plot_ui| {
+            for seg in &set.baselines {
+                let line_pts: Vec<[f64;2]> = seg.iter().map(|p| [p[0].log10(), p[1].log10()]).collect();
+                plot_ui.line(Line::new(line_pts).color(Color32::from_gray(120)));
+            }
+            for (i, lab) in set.labels.iter().enumerate() {
+                if let Some(pos) = set.label_locs.get(i) { plot_ui.text(PlotText::new(PlotPoint::new(pos[0], pos[1]), lab.as_str())); }
+            }
+            let palette = egui_palette(); let mut idx = 0usize;
+            for (label, pts) in groups.clone() {
+                let color = group_color.get(&label).cloned().unwrap_or_else(|| { let c = palette[idx % palette.len()]; idx+=1; c });
+                let pp: PlotPoints = pts.into(); plot_ui.points(Points::new(pp).color(color).radius(2.5).name(label));
+            }
+        });
+    });
+}
+
+pub fn show_pearson_grid(ui: &mut Ui, state: &crate::AppState) {
+    let avail = ui.available_size();
+    let side = ((avail.x - 8.0) / 2.0).min((avail.y - 8.0) / 2.0).max(120.0);
+    ui.horizontal(|row| {
+        show_pearson_plot_sized(row, state, 0, side);
+        row.add_space(8.0);
+        show_pearson_plot_sized(row, state, 1, side);
+    });
+    ui.add_space(8.0);
+    ui.horizontal(|row| {
+        show_pearson_plot_sized(row, state, 2, side);
+        row.add_space(8.0);
+        show_pearson_plot_sized(row, state, 3, side);
+    });
+}
+
+pub fn export_pearson_png(state: &crate::AppState, path: &std::path::Path, variant: usize) -> anyhow::Result<()> {
+    let root: DrawingArea<BitMapBackend<'_>, _> = BitMapBackend::new(path.to_str().unwrap(), (1200, 800)).into_drawing_area();
+    export_pearson_with_area(state, root, variant)
+}
+pub fn export_pearson_svg(state: &crate::AppState, path: &std::path::Path, variant: usize) -> anyhow::Result<()> {
+    let root: DrawingArea<SVGBackend<'_>, _> = SVGBackend::new(path.to_str().unwrap(), (1200, 800)).into_drawing_area();
+    export_pearson_with_area(state, root, variant)
+}
+
+pub fn export_pearson_4in1_png(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> {
+    let root: DrawingArea<BitMapBackend<'_>, _> = BitMapBackend::new(path.to_str().unwrap(), (1600, 1600)).into_drawing_area();
+    export_pearson_4in1_with_area(state, root)
+}
+pub fn export_pearson_4in1_svg(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> {
+    let root: DrawingArea<SVGBackend<'_>, _> = SVGBackend::new(path.to_str().unwrap(), (1600, 1600)).into_drawing_area();
+    export_pearson_4in1_with_area(state, root)
+}
+
+fn export_pearson_with_area<B: DrawingBackend>(state: &crate::AppState, root: DrawingArea<B, Shift>, variant: usize) -> anyhow::Result<()>
+where <B as DrawingBackend>::ErrorType: 'static {
+    root.fill(&WHITE)?;
+    let title_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 28).into_font();
+    let axis_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font();
+    let legend_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font();
+    let set = pearson_variant(variant)?;
+    // Gather points and ranges
+    let headers = &state.raw_table.headers; let resolver = build_resolver(headers);
+    use std::collections::BTreeMap; let idx_label = resolver.find_index("Label"); let idx_color = resolver.find_index("Color");
+    let mut groups: BTreeMap<String, Vec<(f64,f64)>> = BTreeMap::new(); let mut gcolors: BTreeMap<String, RGBColor> = BTreeMap::new();
+    let palette = plotters_palette(); let mut n = 0usize;
+    let mut minx = f64::INFINITY; let mut maxx = f64::NEG_INFINITY; let mut miny = f64::INFINITY; let mut maxy = f64::NEG_INFINITY;
+    for r in &state.raw_table.rows { if let Some((x,y)) = pearson_xy_for_row(&resolver, r, variant) {
+        let label = idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string()); groups.entry(label.clone()).or_default().push((x,y));
+        if let Some(i) = idx_color { if let Some(cstr) = r.get(i) { if let Some(c) = parse_plotters_color(cstr) { gcolors.entry(label.clone()).or_insert(c); } } }
+        if !gcolors.contains_key(&label) { gcolors.insert(label.clone(), palette[n % palette.len()].clone()); n+=1; }
+        minx=minx.min(x); maxx=maxx.max(x); miny=miny.min(y); maxy=maxy.max(y);
+    }}
+    for seg in &set.baselines { for p in seg { let x=p[0].log10(); let y=p[1].log10(); minx=minx.min(x); maxx=maxx.max(x); miny=miny.min(y); maxy=maxy.max(y); } }
+    if !minx.is_finite() { minx=0.0; maxx=3.0; miny=0.0; maxy=3.0; }
+
+    let mut chart = ChartBuilder::on(&root).margin(20).caption("Pearson Diagram", title_font)
+        .set_label_area_size(LabelAreaPosition::Left, 60).set_label_area_size(LabelAreaPosition::Bottom, 60)
+        .build_cartesian_2d(minx..maxx, miny..maxy)?;
+    chart.configure_mesh().x_desc(set.xlabel).y_desc(set.ylabel).label_style(axis_font.clone()).axis_desc_style(axis_font.clone())
+        .disable_x_mesh().disable_y_mesh().draw()?;
+
+    // baselines
+    for seg in &set.baselines {
+        let pts: Vec<(f64,f64)> = seg.iter().map(|p| (p[0].log10(), p[1].log10())).collect();
+        chart.draw_series(LineSeries::new(pts.into_iter(), RGBColor(120,120,120)))?;
+    }
+    // region labels
+    let lab_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font();
+    chart.draw_series(set.labels.iter().enumerate().filter_map(|(i, s)| set.label_locs.get(i).map(|p| (s, p))).map(|(s,p)| Text::new(s.clone(), (p[0], p[1]), lab_font.clone())))?;
+
+    for (label, pts) in groups {
+        let col = gcolors.get(&label).cloned().unwrap_or(BLACK);
+        chart.draw_series(pts.into_iter().map(|(x,y)| Circle::new((x,y), 3, col.filled())))?.label(label)
+            .legend(move |(x,y)| Circle::new((x,y), 4, col.filled()));
+    }
+    chart.configure_series_labels().border_style(&BLACK).background_style(&WHITE.mix(0.8)).label_font(legend_font)
+        .position(SeriesLabelPosition::UpperRight).draw()?;
+    root.present()?; Ok(())
+}
+
+fn export_pearson_4in1_with_area<B: DrawingBackend>(state: &crate::AppState, root: DrawingArea<B, Shift>) -> anyhow::Result<()>
+where <B as DrawingBackend>::ErrorType: 'static {
+    root.fill(&WHITE)?;
+    // split 2x2 using split_horizontally and split_vertically to create equal squares
+    let (left, right) = root.split_horizontally(root.dim_in_pixel().0 / 2);
+    let (tl, bl) = left.split_vertically(left.dim_in_pixel().1 / 2);
+    let (tr, br) = right.split_vertically(right.dim_in_pixel().1 / 2);
+    let areas = [tl, tr, bl, br];
+    for (i, area) in areas.into_iter().enumerate() { export_pearson_with_area(state, area, i)?; }
+    root.present()?; Ok(())
+}
+
+// ---------------- Ternary helpers (for AbOrAn, AlFeTiMg, TiZrY) ----------------
+fn ternary_to_cartesian(a: f64, b: f64, c: f64) -> (f64, f64) {
+    // Equilateral triangle with height 1, convert barycentric (sum=100) to 2D
+    let s = a + b + c; let (a, b, c) = if s == 0.0 { (0.0,0.0,0.0) } else { (a/s, b/s, c/s) };
+    let x = 0.5*(2.0*b + c);
+    let y = (3.0f64).sqrt()/2.0 * c;
+    (x, y)
+}
+
+// ---------------- Ti/100 - Zr - 3*Y ternary (TiZrY.json) ----------------
+#[derive(Deserialize)]
+struct TernaryRegionsJson { coords: HashMap<String, Vec<[f64;3]>> }
+
+fn load_tizry_json() -> anyhow::Result<TernaryRegionsJson> {
+    let s = fs::read_to_string("src/TiZrY.json")?;
+    #[derive(Deserialize)]
+    struct Root { #[serde(rename="coords")] coords: HashMap<String, Vec<[f64;3]>> }
+    let root: Root = serde_json::from_str(&s)?;
+    Ok(TernaryRegionsJson { coords: root.coords })
+}
+
+fn load_aboran_json() -> anyhow::Result<TernaryRegionsJson> {
+    let s = fs::read_to_string("src/AbOrAn.json")?;
+    #[derive(Deserialize)]
+    struct Root { #[serde(rename="coords")] coords: HashMap<String, Vec<[f64;3]>> }
+    let root: Root = serde_json::from_str(&s)?;
+    Ok(TernaryRegionsJson { coords: root.coords })
+}
+
+fn load_alfetimg_json() -> anyhow::Result<TernaryRegionsJson> {
+    let s = fs::read_to_string("src/AlFeTiMg.json")?;
+    #[derive(Deserialize)]
+    struct Root { #[serde(rename="coords")] coords: HashMap<String, Vec<[f64;3]>> }
+    let root: Root = serde_json::from_str(&s)?;
+    Ok(TernaryRegionsJson { coords: root.coords })
+}
+
+pub fn show_tizry_plot(ui: &mut Ui, state: &crate::AppState) {
+    // Build groups from data
+    let headers = &state.raw_table.headers;
+    let resolver = build_resolver(headers);
+    let idx_ti = resolver.find_index("Ti").or_else(|| resolver.find_index("TiO2"));
+    let idx_zr = resolver.find_index("Zr");
+    let idx_y = resolver.find_index("Y");
+    if idx_ti.is_none() || idx_zr.is_none() || idx_y.is_none() { ui.label("Need Ti/Zr/Y columns"); return; }
+    use std::collections::BTreeMap;
+    let mut groups: BTreeMap<String, Vec<[f64;2]>> = BTreeMap::new();
+    let mut group_color: BTreeMap<String, Color32> = BTreeMap::new();
+    let idx_label = resolver.find_index("Label");
+    let idx_color = resolver.find_index("Color");
+    for r in &state.raw_table.rows {
+        let ti = idx_ti.and_then(|i| resolver.parse_value(r, i, false));
+        let zr = idx_zr.and_then(|i| resolver.parse_value(r, i, false));
+        let yv = idx_y.and_then(|i| resolver.parse_value(r, i, false));
+        if let (Some(mut ti), Some(zr), Some(yv)) = (ti, zr, yv) {
+            // If Ti column is TiO2 wt%, convert approximately to Ti ppm? Lacking unit clarity; follow JSON note: Ti/100 used
+            // Here we assume if values are large (>100), they are ppm; we still apply /100 as defined.
+            ti = ti / 100.0;
+            let y3 = yv * 3.0;
+            let (x,y) = ternary_to_cartesian(ti, zr, y3);
+            let label = idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string());
+            groups.entry(label.clone()).or_default().push([x,y]);
+            if let Some(i) = idx_color { if let Some(cstr) = r.get(i) { if let Some(c) = parse_egui_color(cstr) { group_color.entry(label.clone()).or_insert(c); } } }
+        }
+    }
+    // Load region boundaries
+    let Ok(js) = load_tizry_json() else { ui.label("Missing TiZrY.json"); return; };
+    Plot::new("tizry").view_aspect(1.0).include_x(0.0).include_x(1.0).include_y(0.0).include_y((3.0f64).sqrt()/2.0)
+        .legend(Legend::default()).show(ui, |plot_ui| {
+        // outer triangle
+        let h = (3.0f64).sqrt()/2.0; let tri = vec![[0.0,0.0],[1.0,0.0],[0.5,h],[0.0,0.0]];
+        plot_ui.line(Line::new(tri).color(Color32::from_gray(120)));
+        // regions
+        for (_name, poly3) in js.coords.iter() {
+            let mut poly2 = Vec::new(); for p in poly3 { let (x,y) = ternary_to_cartesian(p[0], p[1], p[2]); poly2.push([x,y]); }
+            let mut closed = poly2.clone(); if let Some(first) = closed.first().cloned() { closed.push(first); }
+            plot_ui.line(Line::new(closed).color(Color32::from_gray(100)));
+        }
+        // points
+        let palette = egui_palette(); let mut idx = 0usize;
+        for (label, pts) in groups {
+            let color = group_color.get(&label).cloned().unwrap_or_else(|| { let c = palette[idx % palette.len()]; idx+=1; c });
+            let pp: PlotPoints = pts.into(); plot_ui.points(Points::new(pp).color(color).radius(2.5).name(label));
+        }
+    });
+}
+
+pub fn export_tizry_png(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> {
+    let root: DrawingArea<BitMapBackend<'_>, _> = BitMapBackend::new(path.to_str().unwrap(), (1200, 1200)).into_drawing_area();
+    export_tizry_with_area(state, root)
+}
+pub fn export_tizry_svg(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> {
+    let root: DrawingArea<SVGBackend<'_>, _> = SVGBackend::new(path.to_str().unwrap(), (1200, 1200)).into_drawing_area();
+    export_tizry_with_area(state, root)
+}
+
+fn export_tizry_with_area<B: DrawingBackend>(state: &crate::AppState, root: DrawingArea<B, Shift>) -> anyhow::Result<()>
+where <B as DrawingBackend>::ErrorType: 'static {
+    root.fill(&WHITE)?;
+    let axis_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font();
+    let mut chart = ChartBuilder::on(&root).margin(20)
+        .set_label_area_size(LabelAreaPosition::Left, 40)
+        .set_label_area_size(LabelAreaPosition::Bottom, 40)
+        .build_cartesian_2d(0.0..1.0, 0.0..(3.0f64).sqrt()/2.0)?;
+    chart.configure_mesh().label_style(axis_font.clone()).axis_desc_style(axis_font.clone())
+        .disable_x_mesh().disable_y_mesh().draw()?;
+    // draw outer triangle
+    let h = (3.0f64).sqrt()/2.0; let tri = vec![(0.0,0.0),(1.0,0.0),(0.5,h),(0.0,0.0)];
+    chart.draw_series(LineSeries::new(tri.into_iter(), RGBColor(120,120,120)))?;
+    // regions
+    let js = load_tizry_json()?;
+    for (_name, poly3) in js.coords.iter() {
+        let mut poly2: Vec<(f64,f64)> = Vec::new(); for p in poly3 { let (x,y) = ternary_to_cartesian(p[0], p[1], p[2]); poly2.push((x,y)); }
+        let mut closed = poly2.clone(); if let Some(first) = closed.first().cloned() { closed.push(first); }
+        chart.draw_series(LineSeries::new(closed.into_iter(), RGBColor(100,100,100)))?;
+    }
+    // points
+    let headers = &state.raw_table.headers; let resolver = build_resolver(headers);
+    let idx_ti = resolver.find_index("Ti").or_else(|| resolver.find_index("TiO2"));
+    let idx_zr = resolver.find_index("Zr"); let idx_y = resolver.find_index("Y");
+    use std::collections::BTreeMap; let idx_label = resolver.find_index("Label"); let idx_color = resolver.find_index("Color");
+    let mut groups: BTreeMap<String, Vec<(f64,f64)>> = BTreeMap::new(); let mut gcolors: BTreeMap<String, RGBColor> = BTreeMap::new();
+    let palette = plotters_palette(); let mut n = 0usize;
+    for r in &state.raw_table.rows {
+        let ti = idx_ti.and_then(|i| resolver.parse_value(r, i, false));
+        let zr = idx_zr.and_then(|i| resolver.parse_value(r, i, false));
+        let yv = idx_y.and_then(|i| resolver.parse_value(r, i, false));
+        if let (Some(mut ti), Some(zr), Some(yv)) = (ti, zr, yv) {
+            ti = ti/100.0; let y3 = yv*3.0; let (x,y) = ternary_to_cartesian(ti, zr, y3);
+            let label = idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string());
+            groups.entry(label.clone()).or_default().push((x,y));
+            if let Some(i) = idx_color { if let Some(cstr) = r.get(i) { if let Some(c) = parse_plotters_color(cstr) { gcolors.entry(label.clone()).or_insert(c); } } }
+            if !gcolors.contains_key(&label) { gcolors.insert(label.clone(), palette[n % palette.len()].clone()); n+=1; }
+        }
+    }
+    for (label, pts) in groups {
+        let col = gcolors.get(&label).cloned().unwrap_or(BLACK);
+        chart.draw_series(pts.into_iter().map(|(x,y)| Circle::new((x,y), 3, col.filled())))?.label(label)
+            .legend(move |(x,y)| Circle::new((x,y), 4, col.filled()));
+    }
+    chart.configure_series_labels().border_style(&BLACK).background_style(&WHITE.mix(0.8))
+        .label_font(("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font())
+        .position(SeriesLabelPosition::UpperRight).draw()?;
+    root.present()?; Ok(())
+}
+
+pub fn show_aboran_plot(ui: &mut Ui, state: &crate::AppState) {
+    let headers = &state.raw_table.headers; let resolver = build_resolver(headers);
+    let idx_ab = resolver.find_index("Ab").or_else(|| resolver.find_index("Na2O"));
+    let idx_or = resolver.find_index("Or").or_else(|| resolver.find_index("K2O"));
+    let idx_an = resolver.find_index("An").or_else(|| resolver.find_index("CaO"));
+    if idx_ab.is_none() || idx_or.is_none() || idx_an.is_none() { ui.label("Need Ab/Or/An (or Na2O/K2O/CaO)"); return; }
+    use std::collections::BTreeMap; let mut groups: BTreeMap<String, Vec<[f64;2]>> = BTreeMap::new();
+    let mut group_color: BTreeMap<String, Color32> = BTreeMap::new();
+    let idx_label = resolver.find_index("Label"); let idx_color = resolver.find_index("Color");
+    for r in &state.raw_table.rows { let ab = resolver.parse_value(r, idx_ab.unwrap(), false); let orv = resolver.parse_value(r, idx_or.unwrap(), false); let an = resolver.parse_value(r, idx_an.unwrap(), false);
+        if let (Some(ab), Some(orv), Some(an)) = (ab, orv, an) { let (x,y) = ternary_to_cartesian(ab, orv, an); let label = idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string()); groups.entry(label.clone()).or_default().push([x,y]); if let Some(i)=idx_color { if let Some(cstr)=r.get(i) { if let Some(c)=parse_egui_color(cstr) { group_color.entry(label.clone()).or_insert(c); } } } }
+    }
+    let Ok(js)=load_aboran_json() else { ui.label("Missing AbOrAn.json"); return; };
+    Plot::new("aboran").view_aspect(1.0).include_x(0.0).include_x(1.0).include_y(0.0).include_y((3.0f64).sqrt()/2.0).legend(Legend::default()).show(ui, |plot_ui| {
+        let h=(3.0f64).sqrt()/2.0; let tri=vec![[0.0,0.0],[1.0,0.0],[0.5,h],[0.0,0.0]]; plot_ui.line(Line::new(tri).color(Color32::from_gray(120)));
+        for (_name, poly3) in js.coords.iter() { let mut poly2=Vec::new(); for p in poly3 { let (x,y)=ternary_to_cartesian(p[0],p[1],p[2]); poly2.push([x,y]); } let mut closed=poly2.clone(); if let Some(first)=closed.first().cloned(){ closed.push(first);} plot_ui.line(Line::new(closed).color(Color32::from_gray(100))); }
+        let palette=egui_palette(); let mut idx=0usize; for (label, pts) in groups { let color=group_color.get(&label).cloned().unwrap_or_else(|| { let c=palette[idx%palette.len()]; idx+=1; c }); let pp:PlotPoints=pts.into(); plot_ui.points(Points::new(pp).color(color).radius(2.5).name(label)); }
+    });
+}
+
+pub fn export_aboran_png(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> { let root: DrawingArea<BitMapBackend<'_>, _>=BitMapBackend::new(path.to_str().unwrap(), (1200,1200)).into_drawing_area(); export_aboran_with_area(state, root) }
+pub fn export_aboran_svg(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> { let root: DrawingArea<SVGBackend<'_>, _>=SVGBackend::new(path.to_str().unwrap(), (1200,1200)).into_drawing_area(); export_aboran_with_area(state, root) }
+
+fn export_aboran_with_area<B: DrawingBackend>(state: &crate::AppState, root: DrawingArea<B, Shift>) -> anyhow::Result<()>
+where <B as DrawingBackend>::ErrorType: 'static { root.fill(&WHITE)?; let mut chart=ChartBuilder::on(&root).margin(20).set_label_area_size(LabelAreaPosition::Left,40).set_label_area_size(LabelAreaPosition::Bottom,40).build_cartesian_2d(0.0..1.0, 0.0..(3.0f64).sqrt()/2.0)?; chart.configure_mesh().disable_x_mesh().disable_y_mesh().draw()?; let h=(3.0f64).sqrt()/2.0; let tri=vec![(0.0,0.0),(1.0,0.0),(0.5,h),(0.0,0.0)]; chart.draw_series(LineSeries::new(tri.into_iter(), RGBColor(120,120,120)))?; let js=load_aboran_json()?; for (_name, poly3) in js.coords.iter(){ let mut poly2:Vec<(f64,f64)>=Vec::new(); for p in poly3 { let (x,y)=ternary_to_cartesian(p[0],p[1],p[2]); poly2.push((x,y)); } let mut closed=poly2.clone(); if let Some(first)=closed.first().cloned(){ closed.push(first);} chart.draw_series(LineSeries::new(closed.into_iter(), RGBColor(100,100,100)))?; } let headers=&state.raw_table.headers; let resolver=build_resolver(headers); let idx_ab=resolver.find_index("Ab").or_else(|| resolver.find_index("Na2O")); let idx_or=resolver.find_index("Or").or_else(|| resolver.find_index("K2O")); let idx_an=resolver.find_index("An").or_else(|| resolver.find_index("CaO")); use std::collections::BTreeMap; let idx_label=resolver.find_index("Label"); let idx_color=resolver.find_index("Color"); let mut groups:BTreeMap<String, Vec<(f64,f64)>>=BTreeMap::new(); let mut gcolors:BTreeMap<String, RGBColor>=BTreeMap::new(); let palette=plotters_palette(); let mut n=0usize; for r in &state.raw_table.rows { let ab=idx_ab.and_then(|i| resolver.parse_value(r,i,false)); let orv=idx_or.and_then(|i| resolver.parse_value(r,i,false)); let an=idx_an.and_then(|i| resolver.parse_value(r,i,false)); if let (Some(ab),Some(orv),Some(an))=(ab,orv,an){ let (x,y)=ternary_to_cartesian(ab,orv,an); let label=idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string()); groups.entry(label.clone()).or_default().push((x,y)); if let Some(i)=idx_color { if let Some(cstr)=r.get(i) { if let Some(c)=parse_plotters_color(cstr) { gcolors.entry(label.clone()).or_insert(c); } } } if !gcolors.contains_key(&label){ gcolors.insert(label.clone(), palette[n%palette.len()].clone()); n+=1; } } } for (label, pts) in groups { let col=gcolors.get(&label).cloned().unwrap_or(BLACK); chart.draw_series(pts.into_iter().map(|(x,y)| Circle::new((x,y),3,col.filled())))?.label(label).legend(move |(x,y)| Circle::new((x,y),4,col.filled())); } chart.configure_series_labels().border_style(&BLACK).background_style(&WHITE.mix(0.8)).label_font(("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font()).position(SeriesLabelPosition::UpperRight).draw()?; root.present()?; Ok(()) }
+
+pub fn show_alfetimg_plot(ui: &mut Ui, state: &crate::AppState) {
+    let headers = &state.raw_table.headers; let resolver = build_resolver(headers);
+    let idx_al = resolver.find_index("Al").or_else(|| resolver.find_index("Al2O3"));
+    let idx_feti = resolver.find_index("FeTi").or_else(|| resolver.find_index("FeO"));
+    let idx_mg = resolver.find_index("Mg").or_else(|| resolver.find_index("MgO"));
+    if idx_al.is_none() || idx_feti.is_none() || idx_mg.is_none() { ui.label("Need Al/Fe+Ti/Mg (or Al2O3/FeO/MgO)"); return; }
+    use std::collections::BTreeMap; let mut groups: BTreeMap<String, Vec<[f64;2]>> = BTreeMap::new(); let mut group_color: BTreeMap<String, Color32> = BTreeMap::new(); let idx_label=resolver.find_index("Label"); let idx_color=resolver.find_index("Color");
+    for r in &state.raw_table.rows { let al = resolver.parse_value(r, idx_al.unwrap(), false); let feti = resolver.parse_value(r, idx_feti.unwrap(), false); let mg = resolver.parse_value(r, idx_mg.unwrap(), false); if let (Some(al),Some(feti),Some(mg))=(al,feti,mg){ let (x,y)=ternary_to_cartesian(al,feti,mg); let label=idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string()); groups.entry(label.clone()).or_default().push([x,y]); if let Some(i)=idx_color { if let Some(cstr)=r.get(i) { if let Some(c)=parse_egui_color(cstr) { group_color.entry(label.clone()).or_insert(c); } } } } }
+    let Ok(js)=load_alfetimg_json() else { ui.label("Missing AlFeTiMg.json"); return; };
+    Plot::new("alfetimg").view_aspect(1.0).include_x(0.0).include_x(1.0).include_y(0.0).include_y((3.0f64).sqrt()/2.0).legend(Legend::default()).show(ui, |plot_ui| {
+        let h=(3.0f64).sqrt()/2.0; let tri=vec![[0.0,0.0],[1.0,0.0],[0.5,h],[0.0,0.0]]; plot_ui.line(Line::new(tri).color(Color32::from_gray(120)));
+        for (_name, poly3) in js.coords.iter() { let mut poly2=Vec::new(); for p in poly3 { let (x,y)=ternary_to_cartesian(p[0],p[1],p[2]); poly2.push([x,y]); } let mut closed=poly2.clone(); if let Some(first)=closed.first().cloned(){ closed.push(first);} plot_ui.line(Line::new(closed).color(Color32::from_gray(100))); }
+        let palette=egui_palette(); let mut idx=0usize; for (label, pts) in groups { let color=group_color.get(&label).cloned().unwrap_or_else(|| { let c=palette[idx%palette.len()]; idx+=1; c }); let pp:PlotPoints=pts.into(); plot_ui.points(Points::new(pp).color(color).radius(2.5).name(label)); }
+    });
+}
+
+pub fn export_alfetimg_png(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> { let root: DrawingArea<BitMapBackend<'_>, _>=BitMapBackend::new(path.to_str().unwrap(), (1200,1200)).into_drawing_area(); export_alfetimg_with_area(state, root) }
+pub fn export_alfetimg_svg(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> { let root: DrawingArea<SVGBackend<'_>, _>=SVGBackend::new(path.to_str().unwrap(), (1200,1200)).into_drawing_area(); export_alfetimg_with_area(state, root) }
+
+fn export_alfetimg_with_area<B: DrawingBackend>(state: &crate::AppState, root: DrawingArea<B, Shift>) -> anyhow::Result<()>
+where <B as DrawingBackend>::ErrorType: 'static { root.fill(&WHITE)?; let mut chart=ChartBuilder::on(&root).margin(20).set_label_area_size(LabelAreaPosition::Left,40).set_label_area_size(LabelAreaPosition::Bottom,40).build_cartesian_2d(0.0..1.0, 0.0..(3.0f64).sqrt()/2.0)?; chart.configure_mesh().disable_x_mesh().disable_y_mesh().draw()?; let h=(3.0f64).sqrt()/2.0; let tri=vec![(0.0,0.0),(1.0,0.0),(0.5,h),(0.0,0.0)]; chart.draw_series(LineSeries::new(tri.into_iter(), RGBColor(120,120,120)))?; let js=load_alfetimg_json()?; for (_name, poly3) in js.coords.iter(){ let mut poly2:Vec<(f64,f64)>=Vec::new(); for p in poly3 { let (x,y)=ternary_to_cartesian(p[0],p[1],p[2]); poly2.push((x,y)); } let mut closed=poly2.clone(); if let Some(first)=closed.first().cloned(){ closed.push(first);} chart.draw_series(LineSeries::new(closed.into_iter(), RGBColor(100,100,100)))?; } let headers=&state.raw_table.headers; let resolver=build_resolver(headers); let idx_al=resolver.find_index("Al").or_else(|| resolver.find_index("Al2O3")); let idx_feti=resolver.find_index("FeTi").or_else(|| resolver.find_index("FeO")); let idx_mg=resolver.find_index("Mg").or_else(|| resolver.find_index("MgO")); use std::collections::BTreeMap; let idx_label=resolver.find_index("Label"); let idx_color=resolver.find_index("Color"); let mut groups:BTreeMap<String, Vec<(f64,f64)>>=BTreeMap::new(); let mut gcolors:BTreeMap<String, RGBColor>=BTreeMap::new(); let palette=plotters_palette(); let mut n=0usize; for r in &state.raw_table.rows { let al=idx_al.and_then(|i| resolver.parse_value(r,i,false)); let feti=idx_feti.and_then(|i| resolver.parse_value(r,i,false)); let mg=idx_mg.and_then(|i| resolver.parse_value(r,i,false)); if let (Some(al),Some(feti),Some(mg))=(al,feti,mg){ let (x,y)=ternary_to_cartesian(al,feti,mg); let label=idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string()); groups.entry(label.clone()).or_default().push((x,y)); if let Some(i)=idx_color { if let Some(cstr)=r.get(i) { if let Some(c)=parse_plotters_color(cstr) { gcolors.entry(label.clone()).or_insert(c); } } } if !gcolors.contains_key(&label){ gcolors.insert(label.clone(), palette[n%palette.len()].clone()); n+=1; } } } for (label, pts) in groups { let col=gcolors.get(&label).cloned().unwrap_or(BLACK); chart.draw_series(pts.into_iter().map(|(x,y)| Circle::new((x,y),3,col.filled())))?.label(label).legend(move |(x,y)| Circle::new((x,y),4,col.filled())); } chart.configure_series_labels().border_style(&BLACK).background_style(&WHITE.mix(0.8)).label_font(("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font()).position(SeriesLabelPosition::UpperRight).draw()?; root.present()?; Ok(()) }
+
+// ---------------- CIPW (simplified normative) and QAPF ----------------
+#[derive(Clone, Debug)]
+pub struct CipwNorm {
+    pub label: String,
+    pub q_mol: f64,
+    pub a_mol: f64,
+    pub p_mol: f64,
+    pub f_mol: f64,
+}
+
+fn molar_mass(oxide: &str) -> Option<f64> {
+    match oxide {
+        "SiO2"=>Some(60.083), "Al2O3"=>Some(101.960077), "Fe2O3"=>Some(159.687), "FeO"=>Some(71.844),
+        "MgO"=>Some(40.304), "CaO"=>Some(56.077), "Na2O"=>Some(61.97853856), "K2O"=>Some(94.1956),
+        "TiO2"=>Some(79.865), "P2O5"=>Some(141.942524), _=>None
+    }
+}
+
+fn parse_major(resolver: &HeaderResolver, row: &[String], name: &str) -> f64 {
+    resolver.find_index(name).and_then(|i| resolver.parse_value(row, i, true)).unwrap_or(0.0)
+}
+
+fn cipw_qapf_for_row(resolver: &HeaderResolver, row: &[String]) -> Option<CipwNorm> {
+    // Read majors (wt%) and convert to moles of oxides
+    let sio2_w = parse_major(resolver, row, "SiO2");
+    let tio2_w = parse_major(resolver, row, "TiO2");
+    let mut al2o3_w = parse_major(resolver, row, "Al2O3");
+    let mut fe2o3_w = parse_major(resolver, row, "Fe2O3");
+    let mut feo_w = parse_major(resolver, row, "FeO");
+    let mno_w = parse_major(resolver, row, "MnO");
+    let mut mgo_w = parse_major(resolver, row, "MgO");
+    let mut cao_w = parse_major(resolver, row, "CaO");
+    let mut na2o_w = parse_major(resolver, row, "Na2O");
+    let mut k2o_w = parse_major(resolver, row, "K2O");
+    let mut p2o5_w = parse_major(resolver, row, "P2O5");
+    // Accessory/volatile proxies
+    let co2_w = parse_major(resolver, row, "CO2");
+    let so3_w = parse_major(resolver, row, "SO3");
+    let s_w = parse_major(resolver, row, "S");
+    let f_w = parse_major(resolver, row, "F");
+    let cl_w = parse_major(resolver, row, "Cl");
+    let zr_w = parse_major(resolver, row, "Zr");
+    let cr_w = parse_major(resolver, row, "Cr");
+    let ni_w = parse_major(resolver, row, "Ni");
+    let ba_w = parse_major(resolver, row, "Ba");
+    let sr_w = parse_major(resolver, row, "Sr");
+
+    // Moles of oxides/elements
+    let mut m_sio2 = sio2_w / molar_mass("SiO2")?;
+    let mut m_tio2 = tio2_w / molar_mass("TiO2").unwrap_or(79.865);
+    let mut m_al2o3 = al2o3_w / molar_mass("Al2O3")?;
+    let mut m_fe2o3 = fe2o3_w / molar_mass("Fe2O3")?;
+    let mut m_feo = feo_w / molar_mass("FeO")?;
+    let mut m_mno = mno_w / molar_mass("MnO").unwrap_or(70.937044);
+    let mut m_mgo = mgo_w / molar_mass("MgO")?;
+    let mut m_cao = cao_w / molar_mass("CaO")?;
+    let mut m_na2o = na2o_w / molar_mass("Na2O")?;
+    let mut m_k2o = k2o_w / molar_mass("K2O")?;
+    let mut m_p2o5 = p2o5_w / molar_mass("P2O5")?;
+    let mut m_co2 = if co2_w>0.0 { co2_w / molar_mass("CO2").unwrap_or(44.009) } else { 0.0 };
+    let mut m_so3 = if so3_w>0.0 { so3_w / molar_mass("SO3").unwrap_or(80.057) } else { 0.0 };
+    let mut m_s = if s_w>0.0 { s_w / molar_mass("S").unwrap_or(32.06) } else { 0.0 };
+    let mut m_f = if f_w>0.0 { f_w / molar_mass("F").unwrap_or(18.9984) } else { 0.0 };
+    let mut m_cl = if cl_w>0.0 { cl_w / molar_mass("Cl").unwrap_or(35.45) } else { 0.0 };
+    let mut m_zr = if zr_w>0.0 { zr_w / molar_mass("Zr").unwrap_or(91.224) } else { 0.0 };
+    let mut m_cr = if cr_w>0.0 { cr_w / molar_mass("Cr").unwrap_or(51.9961) } else { 0.0 };
+    let mut m_ni = if ni_w>0.0 { ni_w / molar_mass("Ni").unwrap_or(58.6934) } else { 0.0 };
+    let mut m_ba = if ba_w>0.0 { ba_w / molar_mass("Ba").unwrap_or(137.327) } else { 0.0 };
+    let mut m_sr = if sr_w>0.0 { sr_w / molar_mass("Sr").unwrap_or(87.62) } else { 0.0 };
+
+    // 1) Apatite: CaO and P2O5 with ratio 10/3, and P2O5 -> 2/3
+    let need_cao = (10.0/3.0) * m_p2o5;
+    let take_cao = m_cao.min(need_cao);
+    m_cao -= take_cao;
+    let apatite = m_p2o5; // track if needed
+    m_p2o5 = m_p2o5 / 1.5;
+
+    // 2) Halides: F reduces P2O5 twice (as in python), Cl consumes Na2O -> Halite
+    if m_f > 0.0 { let d = m_f.min(m_p2o5); m_f -= d; m_p2o5 -= d; }
+    if m_f > 0.0 { let d = m_f.min(m_p2o5); m_f -= d; m_p2o5 -= d; }
+    let halite = m_cl.min(m_na2o); m_na2o -= halite; let _halite = halite; // NaCl
+    // CaO + 0.5 F -> reduces CaO further; F halves
+    let d = m_cao.min(0.5*m_f); m_cao -= d; m_f -= 2.0*d;
+    let fluorite = (m_f*0.5).max(0.0);
+
+    // 3) SO3 distribution: Thenardite vs Anhydrite depending on Na2O, CaO
+    let a_or_t = if m_so3 <= 0.0 { 0 } else if m_na2o >= m_so3 { 1 } else if m_na2o > 0.0 { 2 } else { 3 }; // 1 Thenardite, 2 Both, 3 Anhydrite
+    let mut anhydrite = 0.0; let mut thenardite = 0.0;
+    match a_or_t {
+        1 => { thenardite = m_so3; m_so3 = 0.0; }
+        2 => { thenardite = m_so3 - m_cao; anhydrite = m_cao; }
+        3 => { anhydrite = m_so3; }
+        _ => {}
+    }
+    m_cao -= anhydrite; m_na2o -= thenardite; if m_na2o < 0.0 { m_na2o = 0.0; }
+
+    // 4) Pyrite consumes FeO: FeO -= 0.5*S
+    let pyrite = 0.5*m_s; let d = m_feo.min(pyrite); m_feo -= d; let _ = d; // track if needed
+
+    // 5) Chromite vs Magnesiochromite using FeO vs Cr
+    let cor_m = if m_cr > 0.0 { if m_feo >= m_cr { 1 } else if m_feo > 0.0 { 2 } else { 3 } } else { 0 }; //1 Chromite,2 Both,3 Magnesio
+    let mut chromite = 0.0; let mut magnesiochromite = 0.0;
+    match cor_m {
+        1 => { chromite = m_cr; m_cr = 0.0; }
+        2 => { chromite = m_feo; magnesiochromite = m_cr - m_feo; m_cr = 0.0; }
+        3 => { magnesiochromite = m_cr; m_cr = 0.0; }
+        _ => {}
+    }
+    m_mgo -= magnesiochromite; if m_mgo < 0.0 { m_mgo = 0.0; }
+    m_feo -= chromite; if m_feo < 0.0 { m_feo = 0.0; }
+
+    // 6) Ilmenite vs Sphene using FeO vs TiO2
+    let i_or_s = if m_tio2 <= 0.0 { 0 } else if m_feo >= m_tio2 { 1 } else if m_feo > 0.0 { 2 } else { 3 }; //1 Ilmenite,2 Both,3 Sphene
+    let mut ilmenite = 0.0; let mut sphene = 0.0;
+    match i_or_s {
+        1 => { ilmenite = m_tio2; m_tio2 = 0.0; }
+        3 => { sphene = m_tio2; m_tio2 = 0.0; }
+        2 => { sphene = m_tio2 - m_feo; ilmenite = m_feo; m_tio2 = 0.0; }
+        _ => {}
+    }
+    m_feo -= ilmenite; if m_feo < 0.0 { m_feo = 0.0; }
+
+    // 7) Carbonate: Calcite vs Na2CO3 using CaO vs CO2
+    let c_or_n = if m_co2 <= 0.0 { 0 } else if m_cao >= m_co2 { 1 } else if m_cao > 0.0 { 2 } else { 3 }; //1 Calcite,2 Both,3 Na2CO3
+    let mut calcite = 0.0; let mut na2co3 = 0.0;
+    match c_or_n {
+        1 => { calcite = m_co2; m_co2 = 0.0; }
+        3 => { na2co3 = m_co2; m_co2 = 0.0; }
+        2 => { calcite = m_cao; na2co3 = m_co2 - m_cao; m_co2 = 0.0; m_cao = 0.0; }
+        _ => { m_co2 = 0.0; m_so3 = 0.0; }
+    }
+    m_cao -= calcite; if m_cao < 0.0 { m_cao = 0.0; }
+    // SO3 removes Na2O further
+    if m_so3 > 0.0 { if m_na2o >= m_so3 { m_na2o -= m_so3; } else { m_na2o = 0.0; } }
+
+    // 8) Zircon: consumes SiO2 equal to Zr
+    m_sio2 -= m_zr; if m_sio2 < 0.0 { m_sio2 = 0.0; }
+
+    // 9) K-feldspar vs K2SiO3 using Al2O3
+    let mut m_or = m_k2o.min(m_al2o3); // Orthoclase
+    let mut k2sio3 = 0.0;
+    if m_k2o > 0.0 {
+        if m_al2o3 >= m_k2o { /* Orthoclase fully */ }
+        else if m_al2o3 > 0.0 { // Both
+            k2sio3 = m_k2o - m_al2o3; m_or = m_al2o3; m_k2o = 0.0; m_al2o3 = 0.0;
+        } else { k2sio3 = m_k2o; m_k2o = 0.0; }
+    }
+    m_al2o3 -= m_or; if m_al2o3 < 0.0 { m_al2o3 = 0.0; } m_k2o -= m_or; if m_k2o < 0.0 { m_k2o = 0.0; }
+
+    // 10) Albite vs Na2SiO3
+    let mut m_ab = m_na2o.min(m_al2o3);
+    let mut na2sio3 = 0.0;
+    if m_na2o > 0.0 {
+        if m_al2o3 >= m_na2o { /* Albite fully */ }
+        else if m_al2o3 > 0.0 { // Both
+            na2sio3 = m_na2o - m_al2o3; m_ab = m_al2o3; m_na2o = 0.0; m_al2o3 = 0.0;
+        } else { na2sio3 = m_na2o; m_na2o = 0.0; }
+    }
+    m_al2o3 -= m_ab; if m_al2o3 < 0.0 { m_al2o3 = 0.0; } m_na2o -= m_ab; if m_na2o < 0.0 { m_na2o = 0.0; }
+
+    // 11) Anorthite vs Corundum
+    let mut m_an = 0.0; let mut corundum = 0.0;
+    if m_al2o3 > 0.0 {
+        if m_cao > 0.0 { m_an = m_cao.min(m_al2o3); m_cao -= m_an; m_al2o3 -= m_an; }
+        if m_al2o3 > 0.0 { corundum = m_al2o3; m_al2o3 = 0.0; }
+    }
+
+    // 12) Sphene vs Rutile using CaO vs MnO
+    let mut rutile = 0.0;
+    if m_mno > 0.0 {
+        if m_cao >= m_mno { sphene += m_mno; m_mno = 0.0; }
+        else if m_cao > 0.0 { rutile = m_mno - m_cao; m_mno = m_cao; m_cao = 0.0; }
+        else { rutile = m_mno; m_mno = 0.0; }
+        m_cao -= m_mno; if m_cao < 0.0 { m_cao = 0.0; }
+    }
+
+    // 13) Acmite vs Na2SiO3 using Fe2O3 vs Na2SiO3 proxy (Cl in python)
+    let mut acmite = 0.0;
+    if na2sio3 > 0.0 {
+        if m_fe2o3 >= na2sio3 { acmite = na2sio3; na2sio3 = 0.0; }
+        else if m_fe2o3 > 0.0 { acmite = m_fe2o3; na2sio3 -= m_fe2o3; m_fe2o3 = 0.0; }
+    }
+    m_fe2o3 -= acmite; if m_fe2o3 < 0.0 { m_fe2o3 = 0.0; }
+
+    // 14) Magnetite vs Hematite using FeO vs Fe2O3
+    let mut magnetite = 0.0; let mut hematite = 0.0;
+    if m_fe2o3 > 0.0 {
+        if m_feo >= m_fe2o3 { magnetite = m_fe2o3; m_fe2o3 = 0.0; }
+        else if m_feo > 0.0 { magnetite = m_feo; hematite = m_fe2o3 - m_feo; m_fe2o3 = 0.0; }
+        else { hematite = m_fe2o3; m_fe2o3 = 0.0; }
+        m_feo -= magnetite; if m_feo < 0.0 { m_feo = 0.0; }
+    }
+
+    // 15) Merge FeO + MgO for pyroxenes later
+    m_feo += m_mgo; m_mgo = 0.0;
+
+    // 16) Diopside vs Wollastonite using CaO vs FeO(Mg)
+    let mut diopside = 0.0; let mut wollastonite = 0.0;
+    if m_cao > 0.0 {
+        if m_feo >= m_cao { diopside = m_cao; m_cao = 0.0; }
+        else if m_feo > 0.0 { diopside = m_feo; wollastonite = m_cao - m_feo; m_cao = 0.0; }
+        else { wollastonite = m_cao; m_cao = 0.0; }
+        m_feo -= diopside; if m_feo < 0.0 { m_feo = 0.0; }
+    }
+
+    // 17) Build quartz from silica balance after feldspars and others
+    // Consume SiO2 for Or(6), Ab(6), An(2), Acmite(4), Diopside(2), Sphene(1), Hypersthene(1), Albite(6), Orthoclase(6), Wollastonite(1)
+    let mut quartz = m_sio2 - (6.0*m_or + 6.0*m_ab + 2.0*m_an + 4.0*acmite + 2.0*diopside + sphene + m_ab*6.0 + m_or*6.0 + wollastonite);
+    if quartz.is_nan() { quartz = 0.0; }
+
+    // 18) Hypersthene/Olivine depending on quartz sign
+    let mut hypersthene = m_feo; let mut olivine = 0.0;
+    let old_hyp = hypersthene;
+    if hypersthene <= 0.0 { hypersthene = 0.0; }
+    else if quartz > 0.0 { /* hypersthene */ }
+    else if hypersthene + 2.0*quartz > 0.0 { hypersthene = hypersthene + 2.0*quartz; olivine = quartz.abs(); quartz = 0.0; }
+    else { olivine = hypersthene/2.0; hypersthene = 0.0; }
+    quartz = quartz + old_hyp - (hypersthene + olivine);
+
+    // 19) Sphene/Perovskite adjustment with quartz
+    let mut perovskite = 0.0; let old_sph = sphene;
+    if sphene > 0.0 {
+        if quartz >= 0.0 { /* sphene */ }
+        else if sphene + quartz > 0.0 { sphene += quartz; /* both */ }
+        else { perovskite = sphene; sphene = 0.0; }
+        quartz += old_sph - sphene;
+    }
+    
+    // 20) Albite/Nepheline with quartz
+    let old_ab = m_ab; let mut nepheline = 0.0;
+    if m_ab > 0.0 {
+        if quartz >= 0.0 { /* albite */ }
+        else if m_ab + quartz/4.0 > 0.0 { m_ab += quartz/4.0; nepheline = old_ab - m_ab; }
+        else { nepheline = m_ab; m_ab = 0.0; }
+        quartz += (6.0*old_ab) - (6.0*m_ab) - (2.0*nepheline);
+    }
+
+    // 21) Orthoclase/Leucite with quartz
+    let old_or = m_or; let mut leucite = 0.0; let mut kalsilite = 0.0; let mut larnite = 0.0; let mut perovskite = 0.0;
+    if m_or > 0.0 {
+        if quartz >= 0.0 { /* orthoclase */ }
+        else if m_or + quartz/2.0 > 0.0 { m_or += quartz/2.0; leucite = old_or - m_or; }
+        else { leucite = m_or; m_or = 0.0; }
+        quartz += (6.0*old_or) - (6.0*m_or) - (4.0*leucite);
+    }
+
+    // 22) Wollastonite/Larnite with quartz
+    let old_w = wollastonite;
+    if wollastonite > 0.0 {
+        if quartz >= 0.0 { /* wollastonite */ }
+        else if wollastonite + quartz/2.0 > 0.0 { wollastonite += quartz*2.0; larnite = (old_w - wollastonite)/2.0; }
+        else { larnite = wollastonite/2.0; wollastonite = 0.0; }
+        quartz += old_w - wollastonite - larnite;
+    }
+
+    // 23) Diopside/Larnite/Olivine with quartz
+    let old_d = diopside; let old_l = larnite; let old_o = olivine;
+    if diopside > 0.0 {
+        if quartz >= 0.0 { /* diopside */ }
+        else if diopside + quartz > 0.0 { diopside += quartz; larnite += old_d - diopside; olivine += old_d - diopside; }
+        else { larnite += diopside/2.0; olivine += diopside/2.0; diopside = 0.0; }
+        quartz += (2.0*old_d) + old_o + old_l - larnite - (2.0*diopside) - olivine;
+    }
+
+    // 24) Leucite/Kalsilite with quartz
+    let old_le = leucite;
+    if leucite > 0.0 {
+        if quartz >= 0.0 { /* leucite */ }
+        else if leucite + quartz/2.0 > 0.0 { leucite += quartz/2.0; kalsilite = old_le - leucite; }
+        else { kalsilite = leucite; leucite = 0.0; }
+        quartz += (4.0*old_le) - (4.0*leucite) - (2.0*kalsilite);
+    }
+
+    // Normative Q-A-P-F
+    let q = quartz.max(0.0);
+    let a = m_or.max(0.0);
+    let p = (m_an + m_ab).max(0.0);
+    let f = (nepheline + leucite + kalsilite).max(0.0);
+    let label = resolver.find_index("Label").and_then(|i| row.get(i)).cloned().unwrap_or_else(|| "Group".to_string());
+    Some(CipwNorm{ label, q_mol: q, a_mol: a, p_mol: p, f_mol: f })
+}
+
+pub fn compute_cipw_and_store(state: &mut crate::AppState) {
+    let resolver = build_resolver(&state.raw_table.headers);
+    let mut results = Vec::new();
+    for row in &state.raw_table.rows { if let Some(r) = cipw_qapf_for_row(&resolver, row) { results.push(r); } }
+    state.cipw_results = results;
+    state.status = format!("CIPW computed for {} rows", state.cipw_results.len());
+}
+
+fn qapf_point(q: f64, a: f64, p: f64, f: f64) -> (f32, f32) {
+    // Use Q-A-P triangle when F < 10% of (Q+A+P+F); otherwise F-A-P
+    let sum = q + a + p + f; if sum <= 0.0 { return (0.0,0.0); }
+    let qn = q / sum * 100.0; let an = a / sum * 100.0; let pn = p / sum * 100.0; let f_n = f / sum * 100.0;
+    let (x,y) = if f_n < 10.0 { // Q-A-P
+        let (x,y) = ternary_to_cartesian(qn, an, pn);
+        (x as f32, y as f32)
+    } else { // F-A-P
+        let (x,y) = ternary_to_cartesian(f_n, an, pn);
+        (x as f32, y as f32)
+    };
+    (x,y)
+}
+
+pub fn show_qapf_plot(ui: &mut Ui, state: &crate::AppState) {
+    if state.cipw_results.is_empty() { ui.label("Please run CIPW first"); return; }
+    Plot::new("qapf").view_aspect(1.0).include_x(0.0).include_x(1.0).include_y(0.0).include_y((3.0f64).sqrt()/2.0)
+        .legend(Legend::default()).show(ui, |plot_ui| {
+        let h = (3.0f64).sqrt()/2.0; let tri = vec![[0.0,0.0],[1.0,0.0],[0.5,h],[0.0,0.0]];
+        plot_ui.line(Line::new(tri).color(Color32::from_gray(120)));
+        let palette = egui_palette(); let mut idx = 0usize;
+        use std::collections::BTreeMap; let mut by_label: BTreeMap<String, Vec<[f64;2]>> = BTreeMap::new();
+        for r in &state.cipw_results {
+            let (x,y) = qapf_point(r.q_mol, r.a_mol, r.p_mol, r.f_mol); by_label.entry(r.label.clone()).or_default().push([x as f64, y as f64]);
+        }
+        for (label, pts) in by_label {
+            let color = palette[idx % palette.len()]; idx+=1; let pp: PlotPoints = pts.into();
+            plot_ui.points(Points::new(pp).color(color).radius(2.5).name(label));
+        }
+    });
+}
+
+pub fn export_qapf_png(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> {
+    let root: DrawingArea<BitMapBackend<'_>, _> = BitMapBackend::new(path.to_str().unwrap(), (1200, 1200)).into_drawing_area();
+    export_qapf_with_area(state, root)
+}
+pub fn export_qapf_svg(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> {
+    let root: DrawingArea<SVGBackend<'_>, _> = SVGBackend::new(path.to_str().unwrap(), (1200, 1200)).into_drawing_area();
+    export_qapf_with_area(state, root)
+}
+
+fn export_qapf_with_area<B: DrawingBackend>(state: &crate::AppState, root: DrawingArea<B, Shift>) -> anyhow::Result<()>
+where <B as DrawingBackend>::ErrorType: 'static {
+    root.fill(&WHITE)?;
+    let mut chart = ChartBuilder::on(&root).margin(20)
+        .set_label_area_size(LabelAreaPosition::Left, 40)
+        .set_label_area_size(LabelAreaPosition::Bottom, 40)
+        .build_cartesian_2d(0.0..1.0, 0.0..(3.0f64).sqrt()/2.0)?;
+    chart.configure_mesh().disable_x_mesh().disable_y_mesh().draw()?;
+    let h = (3.0f64).sqrt()/2.0; let tri = vec![(0.0,0.0),(1.0,0.0),(0.5,h),(0.0,0.0)];
+    chart.draw_series(LineSeries::new(tri.into_iter(), RGBColor(120,120,120)))?;
+    use std::collections::BTreeMap; let mut by_label: BTreeMap<String, Vec<(f64,f64)>> = BTreeMap::new();
+    for r in &state.cipw_results { let (x,y) = qapf_point(r.q_mol, r.a_mol, r.p_mol, r.f_mol); by_label.entry(r.label.clone()).or_default().push((x as f64,y as f64)); }
+    let palette = plotters_palette(); let mut n = 0usize;
+    for (label, pts) in by_label {
+        let col = palette[n % palette.len()].clone(); n+=1;
+        chart.draw_series(pts.into_iter().map(|(x,y)| Circle::new((x,y), 3, col.filled())))?.label(label)
+            .legend(move |(x,y)| Circle::new((x,y), 4, col.filled()));
+    }
+    chart.configure_series_labels().border_style(&BLACK).background_style(&WHITE.mix(0.8))
+        .label_font(("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font())
+        .position(SeriesLabelPosition::UpperRight).draw()?;
+    root.present()?; Ok(())
+}
+
+// ---------------- CIPW result export ----------------
+pub fn export_cipw_csv(state: &crate::AppState, path: &std::path::Path) -> anyhow::Result<()> {
+    let mut w = csv::Writer::from_path(path)?;
+    w.write_record(["Label","Q_mol","A_mol","P_mol","F_mol"])?;
+    for r in &state.cipw_results {
+        w.write_record(&[r.label.as_str(), &format!("{:.6}", r.q_mol), &format!("{:.6}", r.a_mol), &format!("{:.6}", r.p_mol), &format!("{:.6}", r.f_mol)])?;
+    }
+    w.flush()?; Ok(())
+}
 
 fn ree_standard_values(idx: usize) -> std::collections::HashMap<&'static str, f64> {
     use std::collections::HashMap; let mut m = HashMap::new();
@@ -452,6 +1250,7 @@ where <B as DrawingBackend>::ErrorType: 'static {
         .y_desc("K2O wt%")
         .label_style(axis_font.clone())
         .axis_desc_style(axis_font.clone())
+        .disable_x_mesh().disable_y_mesh()
         .draw()?;
 
     chart.draw_series(LineSeries::new((45..=85).map(|x| {
@@ -529,18 +1328,20 @@ pub fn show_tas_plot(ui: &mut Ui, state: &crate::AppState) {
     let regions = tas_regions();
 
     Plot::new("tas").include_x(30.0).include_x(90.0).include_y(0.0).include_y(20.0).view_aspect(1.6).legend(Legend::default()).show(ui, |plot_ui| {
-        for (name, poly) in regions.iter() {
+        for (_abbr, (_fullname, poly)) in regions.iter() {
             let mut closed = poly.clone(); if let Some(first) = closed.first().cloned() { closed.push(first); }
-            plot_ui.line(Line::new(closed).color(Color32::from_gray(120)).name(format!("{}", name)));
+            plot_ui.line(Line::new(closed).color(Color32::from_gray(120)));
         }
-        // Abbreviation labels placed similar to original
-        let labels = vec![
-            ("F", [39.0,10.0]), ("Pc", [43.0,1.5]), ("U1", [44.0,6.0]), ("Ba", [47.5,3.5]), ("Bs", [49.5,1.5]),
-            ("S1", [49.0,5.2]), ("U2", [49.0,9.5]), ("O1", [54.0,3.0]), ("S2", [53.0,7.0]), ("U3", [53.0,12.0]),
-            ("O2", [60.0,4.0]), ("S3", [57.6,11.7]), ("Ph", [61.0,8.6]), ("O3", [67.0,5.0]), ("T", [65.0,12.0]),
-            ("Td", [67.0,9.0]), ("R", [75.0,9.0]), ("Q", [85.0,1.0]), ("S/N/L", [55.0,18.5])
-        ];
-        for (t, [x,y]) in labels { plot_ui.text(PlotText::new(PlotPoint::new(x, y), t)); }
+        // place labels at polygon centroids; label text from TAS.json mapping per mode
+        let mode_is_vol = state.tas_mode_is_volcanic;
+        for (abbr, (_full, poly)) in &regions {
+            if poly.is_empty() { continue; }
+            let (mut cx, mut cy, mut n) = (0.0f64,0.0f64,0.0f64);
+            for p in poly { cx += p[0]; cy += p[1]; n += 1.0; }
+            cx /= n.max(1.0); cy /= n.max(1.0);
+            // show abbreviation; tooltip can show full name if desired (future)
+            plot_ui.text(PlotText::new(PlotPoint::new(cx, cy), abbr.as_str()));
+        }
         let palette = egui_palette();
         let mut idx = 0usize;
         for (label, pts) in groups {
@@ -583,15 +1384,27 @@ where <B as DrawingBackend>::ErrorType: 'static {
         .set_label_area_size(LabelAreaPosition::Bottom, 60)
         .build_cartesian_2d(30.0..90.0, 0.0..20.0)?;
     chart.configure_mesh().x_desc("SiO2 wt%").y_desc("Na2O+K2O wt%")
-        .label_style(axis_font.clone()).axis_desc_style(axis_font.clone()).draw()?;
+        .label_style(axis_font.clone()).axis_desc_style(axis_font.clone())
+        .disable_x_mesh().disable_y_mesh()
+        .draw()?;
 
     // boundary demo line
     // TAS region outlines (closed)
-    for (_name, poly) in tas_regions() {
+    for (_abbr, (_full, poly)) in tas_regions() {
         let mut closed: Vec<(f64,f64)> = poly.iter().copied().map(|p| (p[0],p[1])).collect();
         if let Some(first) = closed.first().cloned() { closed.push(first); }
         chart.draw_series(LineSeries::new(closed.into_iter(), RGBColor(120,120,120)))?;
     }
+    // Abbreviation labels on export – use polygon centroid
+    let mut text_elems: Vec<Text<'_, _, _>> = Vec::new();
+    for (abbr, (_full, poly)) in tas_regions() {
+        if poly.is_empty() { continue; }
+        let (mut cx, mut cy, mut n) = (0.0f64,0.0f64,0.0f64);
+        for p in &poly { cx += p[0]; cy += p[1]; n += 1.0; }
+        cx /= n.max(1.0); cy /= n.max(1.0);
+        text_elems.push(Text::new(abbr, (cx,cy), ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 12).into_font()));
+    }
+    chart.draw_series(text_elems)?;
 
     use std::collections::BTreeMap;
     let resolver = build_resolver(&state.raw_table.headers);
@@ -693,13 +1506,7 @@ where <B as DrawingBackend>::ErrorType: 'static {
     let title_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 28).into_font();
     let axis_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font();
     let legend_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font();
-    let mut chart = ChartBuilder::on(&root).margin(20).caption("REE pattern", title_font)
-        .set_label_area_size(LabelAreaPosition::Left, 60)
-        .set_label_area_size(LabelAreaPosition::Bottom, 60)
-        .build_cartesian_2d(1.0..15.0, -3.0..3.0)?;
-    chart.configure_mesh().x_desc("La..Lu index").y_desc("log10(value)")
-        .label_style(axis_font.clone()).axis_desc_style(axis_font.clone()).draw()?;
-
+    // Build groups first to compute dynamic y-range and paint x tick labels as element names
     use std::collections::BTreeMap;
     let idx_label = resolver.find_index("Label");
     let idx_color = resolver.find_index("Color");
@@ -725,11 +1532,40 @@ where <B as DrawingBackend>::ErrorType: 'static {
         if let Some(i) = idx_color { if let Some(cstr) = r.get(i) { if let Some(c) = parse_plotters_color(cstr) { gcolors.entry(label.clone()).or_insert(c); } } }
         if !gcolors.contains_key(&label) { gcolors.insert(label.clone(), palette[n % palette.len()].clone()); n+=1; }
     }
+
+    // dynamic y range from UI-equivalent data
+    let mut miny = 1e9f64; let mut maxy = -1e9f64;
+    for (_l, pts) in &groups { for p in pts { miny = miny.min(p.1); maxy = maxy.max(p.1); } }
+    if !(miny < maxy) { miny = -3.0; maxy = 3.0; }
+
+    let mut chart = ChartBuilder::on(&root).margin(20).caption("REE pattern", title_font)
+        .set_label_area_size(LabelAreaPosition::Left, 60)
+        .set_label_area_size(LabelAreaPosition::Bottom, 60)
+        .build_cartesian_2d(0.5..14.5, miny..maxy)?;
+    chart.configure_mesh().x_desc("La..Lu")
+        .y_desc("log10(value/standard)")
+        .label_style(axis_font.clone()).axis_desc_style(axis_font.clone())
+        .disable_x_mesh().disable_y_mesh()
+        .x_labels(0)
+        .draw()?;
+    // draw x-axis element labels explicitly at each integer position
+    let x_label_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 12).into_font();
+    chart.draw_series((1..=14).map(|i| {
+        let name = elems[i-1];
+        Text::new(name.to_string(), (i as f64, miny), x_label_font.clone())
+    }))?;
+
+    // groups already prepared above
     for (label, pts) in groups {
         let col = gcolors.get(&label).cloned().unwrap_or(BLACK);
         chart.draw_series(LineSeries::new(pts.into_iter(), col))?.label(label)
             .legend(move |(x,y)| PathElement::new(vec![(x,y), (x+20,y)], &col));
     }
+    // annotate chosen standard name near the top-left inside plot area
+    let std_name = REE_STANDARD_NAMES.get(state.ree_standard_idx).copied().unwrap_or(REE_STANDARD_NAMES[0]);
+    let annot_font = ("Microsoft YaHei, Arial, SimHei, DejaVu Sans", 14).into_font();
+    let y_annot = maxy - (maxy - miny) * 0.05;
+    chart.draw_series(std::iter::once(Text::new(format!("Standard: {}", std_name), (1.0f64, y_annot), annot_font)))?;
     chart.configure_series_labels().border_style(&BLACK).background_style(&WHITE.mix(0.8)).label_font(legend_font)
         .position(SeriesLabelPosition::UpperRight).draw()?;
     root.present()?; Ok(())

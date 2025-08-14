@@ -1,0 +1,36 @@
+{
+	"comment": "This is a sample JSON file for coords of GeoChem Plots. ",
+	"date": "2020-10-9",
+	"version": "0.01",
+	"author": "fred yu",
+	"title": "AbAnOr",
+	"type": "xyz",
+	"reference": "Barker1979",
+  
+	"coords": {
+		"Line1":[
+		  [70,30,0],
+		  [60,20,20],
+		  [40,0,60]
+		],
+		"line2":[
+		  [0,80,20],
+		  [60,20,20]
+		],
+		"line3":[
+		  [75,25,0],
+		  [0,0,100]
+		],
+		"line4":[
+		  [0,65,35],
+		  [65,0,35]
+		],
+		"line5":[
+		  [0,70,30],
+		  [70,0,30],
+		  [0,100,0]
+		]
+	}
+}
+
+  
