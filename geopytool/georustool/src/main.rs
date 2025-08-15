@@ -424,9 +424,14 @@ impl eframe::App for GeoRusToolApp {
         if self.state.pearson_view_open {
             let state_snapshot = self.state.clone();
             let mut open_flag = self.state.pearson_view_open;
-            egui::Window::new("Pearson (Pearce) 4 views").open(&mut open_flag).show(ctx, |ui| {
-                geochem::show_pearson_grid(ui, &state_snapshot);
-            });
+            egui::Window::new("Pearson (Pearce) 4 views")
+                .open(&mut open_flag)
+                .default_size(egui::vec2(980.0, 820.0))  // 合理默认尺寸
+                .min_size(egui::vec2(720.0, 600.0))      // 最小尺寸，确保 2x2 子图不挤压
+                .resizable(true)                         // 可拉伸
+                .show(ctx, |ui| {
+                    geochem::show_pearson_grid(ui, &state_snapshot);
+                });
             self.state.pearson_view_open = open_flag;
         }
 

@@ -1,8 +1,10 @@
 use egui::{Color32, Ui, ColorImage, TextureHandle, TextureOptions, Image};
+use egui::{Frame, RichText, Margin};
 
 // Helper function to render plotters plot to egui texture
 fn render_plotters_to_texture<F>(
     ctx: &egui::Context,
+    name: &str,
     plot_fn: F,
     width: u32,
     height: u32,
@@ -40,7 +42,7 @@ where
 
     // Load the texture
     let texture = ctx.load_texture(
-        "plotters_plot",
+        name,
         color_image,
         egui::TextureOptions::default(),
     );
@@ -551,10 +553,13 @@ pub fn show_pearson_plot_sized(ui: &mut Ui, state: &crate::AppState, variant: us
     let width = (side * ui.ctx().pixels_per_point()) as u32;
     let height = (side * ui.ctx().pixels_per_point()) as u32;
     
+    // 为每个变体创建唯一的纹理名称
+    let texture_name = format!("pearson_plot_{}", variant);
+    
     // 渲染图表为纹理
-    if let Some(texture) = render_plotters_to_texture(&ctx, plot_fn, width, height) {
+    if let Some(texture) = render_plotters_to_texture(&ctx, &texture_name, plot_fn, width, height) {
         // 在egui中显示纹理
-        let image = Image::new(egui::load::SizedTexture::from_handle(&texture))  // 修复了类型转换
+        let image = Image::new(egui::load::SizedTexture::from_handle(&texture))
             .fit_to_original_size(1.0)
             .maintain_aspect_ratio(true);
         
@@ -573,38 +578,47 @@ pub fn show_pearson_plot_sized(ui: &mut Ui, state: &crate::AppState, variant: us
 
 pub fn show_pearson_grid(ui: &mut Ui, state: &crate::AppState) {
     let avail = ui.available_size();
-    
-    // 定义边距和间距
-    let margin = 10.0;
-    let spacing = 5.0;
-    
-    // 计算可用于子图的总空间（减去边距和间距）
-    let usable_width = avail.x - 2.0 * margin - spacing;
-    let usable_height = avail.y - 2.0 * margin - spacing;
-    
-    // 计算每个子图的最大尺寸（确保不超过可用空间的一半）
-    let max_side_width = usable_width / 2.0;
-    let max_side_height = usable_height / 2.0;
-    let side = max_side_width.min(max_side_height).max(50.0); // 设置最小尺寸为50.0
-    
-    // 添加外边距
-    ui.add_space(margin);
-    ui.horizontal(|row| {
-        row.add_space(margin);
-        show_pearson_plot_sized(row, state, 0, side);
-        row.add_space(spacing);
-        show_pearson_plot_sized(row, state, 1, side);
-        row.add_space(margin);
-    });
-    ui.add_space(spacing);
-    ui.horizontal(|row| {
-        row.add_space(margin);
-        show_pearson_plot_sized(row, state, 2, side);
-        row.add_space(spacing);
-        show_pearson_plot_sized(row, state, 3, side);
-        row.add_space(margin);
-    });
-    ui.add_space(margin);
+
+    // 统一的边距与间距（视觉更舒服）
+    let gap = 12.0;
+    let pad = 8.0;
+    let title_h = 20.0;
+
+    // 计算每个子图边长（保持 2x2 布局的方正）
+    let side_w = (avail.x - gap) / 2.0 - 2.0 * pad;
+    let side_h = (avail.y - gap - 2.0 * title_h) / 2.0 - 2.0 * pad;
+    let side = side_w.min(side_h).clamp(120.0, 8192.0);
+
+    egui::Grid::new("pearson_grid_2x2")
+        .spacing(egui::vec2(gap, gap))
+        .show(ui, |ui| {
+            for row in 0..2 {
+                for col in 0..2 {
+                    let variant = row * 2 + col;
+
+                    // 读取标题
+                    let title = match pearson_variant(variant) {
+                        Ok(set) => set.title,
+                        Err(_) => format!("Pearson Variant {}", variant),
+                    };
+
+                    Frame::group(ui.style())
+                        .inner_margin(egui::Margin::symmetric(pad, pad))
+                        .show(ui, |ui| {
+                            ui.vertical_centered(|ui| {
+                                ui.label(RichText::new(title).strong());
+                                ui.add_space(4.0);
+                                show_pearson_plot_sized(ui, state, variant, side);
+                            });
+                        });
+
+                    if col < 1 {
+                        // 同行两列之间的单元由 Grid 自身 spacing 控制，无需额外 add_space
+                    }
+                }
+                ui.end_row();
+            }
+        });
 }
 
 pub fn export_pearson_png(state: &crate::AppState, path: &std::path::Path, variant: usize) -> anyhow::Result<()> {
@@ -647,7 +661,7 @@ where <B as DrawingBackend>::ErrorType: 'static {
     for seg in &set.baselines { for p in seg { let x=p[0].log10(); let y=p[1].log10(); minx=minx.min(x); maxx=maxx.max(x); miny=miny.min(y); maxy=maxy.max(y); } }
     if !minx.is_finite() { minx=0.0; maxx=3.0; miny=0.0; maxy=3.0; }
 
-    let mut chart = ChartBuilder::on(&root).margin(20).caption("Pearson Diagram", title_font)
+    let mut chart = ChartBuilder::on(&root).margin(20).caption(set.title.clone(), title_font)
         .set_label_area_size(LabelAreaPosition::Left, 60).set_label_area_size(LabelAreaPosition::Bottom, 60)
         .build_cartesian_2d(minx..maxx, miny..maxy)?;
     chart.configure_mesh().x_desc(set.xlabel).y_desc(set.ylabel).label_style(axis_font.clone()).axis_desc_style(axis_font.clone())
