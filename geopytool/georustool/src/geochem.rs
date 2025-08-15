@@ -199,7 +199,7 @@ pub fn show_k2o_sio2_plot(ui: &mut Ui, state: &crate::AppState) {
     let idx_color = resolver.find_index("Color");
     use std::collections::BTreeMap;
     let mut groups: BTreeMap<String, Vec<[f64;2]>> = BTreeMap::new();
-    let mut group_color: BTreeMap<String, Color32> = BTreeMap::new();
+        let mut group_color: BTreeMap<String, Color32> = BTreeMap::new();
     for r in &state.raw_table.rows {
         if let (Some(x), Some(y)) = (resolver.parse_value(r, ix, true), resolver.parse_value(r, iy, true)) {
             let label = idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string());
@@ -453,7 +453,7 @@ pub fn show_pearson_plot(ui: &mut Ui, state: &crate::AppState, variant: usize) {
     if !minx.is_finite() { minx = 0.0; maxx = 3.0; miny = 0.0; maxy = 3.0; }
 
     let plot_id = format!("pearson_{}", variant);
-    Plot::new(plot_id).view_aspect(1.0).include_x(minx).include_x(maxx).include_y(miny).include_y(maxy).legend(Legend::default()).show(ui, |plot_ui| {
+    Plot::new(plot_id).view_aspect(1.0).legend(Legend::default()).show(ui, |plot_ui| {
         // draw baselines
         for seg in &set.baselines {
             let line_pts: Vec<[f64;2]> = seg.iter().map(|p| [p[0].log10(), p[1].log10()]).collect();
@@ -497,10 +497,7 @@ pub fn show_pearson_plot_sized(ui: &mut Ui, state: &crate::AppState, variant: us
     for seg in &set.baselines { for p in seg { let x=p[0].log10(); let y=p[1].log10(); minx=minx.min(x); maxx=maxx.max(x); miny=miny.min(y); maxy=maxy.max(y); } }
     if !minx.is_finite() { minx = 0.0; maxx = 3.0; miny = 0.0; maxy = 3.0; }
     let plot_id = format!("pearson_sized_{}", variant);
-    let plot = Plot::new(plot_id).view_aspect(1.0)
-        .include_x(minx).include_x(maxx)
-        .include_y(miny).include_y(maxy)
-        .legend(Legend::default());
+    let plot = Plot::new(plot_id).view_aspect(1.0).legend(Legend::default());
     ui.allocate_ui_with_layout(egui::vec2(side, side), egui::Layout::top_down(egui::Align::Min), |sub_ui| {
         plot.show(sub_ui, |plot_ui| {
             for seg in &set.baselines {
