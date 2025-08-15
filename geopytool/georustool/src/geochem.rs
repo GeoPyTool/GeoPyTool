@@ -1,4 +1,52 @@
-use egui::{Color32, Ui};
+use egui::{Color32, Ui, ColorImage, TextureHandle, TextureOptions, Image};
+
+// Helper function to render plotters plot to egui texture
+fn render_plotters_to_texture<F>(
+    ctx: &egui::Context,
+    plot_fn: F,
+    width: u32,
+    height: u32,
+) -> Option<egui::TextureHandle>
+where
+    F: FnOnce(DrawingArea<BitMapBackend<'_>, Shift>) -> anyhow::Result<()>,
+{
+    use plotters::prelude::*;
+
+    // Create a buffer to hold the image data (RGB)
+    let mut buffer_rgb = vec![0; (width * height * 3) as usize];
+
+    {
+        let root = BitMapBackend::with_buffer(&mut buffer_rgb, (width, height)).into_drawing_area();
+        if let Err(e) = plot_fn(root) {
+            eprintln!("Failed to render plot: {:?}", e);
+            return None;
+        }
+    }
+
+    // Convert RGB to RGBA
+    let mut buffer_rgba = vec![0; (width * height * 4) as usize];
+    for i in 0..(width * height) as usize {
+        buffer_rgba[i*4] = buffer_rgb[i*3];
+        buffer_rgba[i*4+1] = buffer_rgb[i*3+1];
+        buffer_rgba[i*4+2] = buffer_rgb[i*3+2];
+        buffer_rgba[i*4+3] = 255; // opaque
+    }
+
+    // Convert the buffer to an egui ColorImage
+    let color_image = egui::ColorImage::from_rgba_unmultiplied(
+        [width as usize, height as usize],
+        &buffer_rgba,
+    );
+
+    // Load the texture
+    let texture = ctx.load_texture(
+        "plotters_plot",
+        color_image,
+        egui::TextureOptions::default(),
+    );
+
+    Some(texture)
+}
 use egui_plot::{Line, Plot, PlotPoints, Points, Legend, MarkerShape, Text as PlotText, PlotPoint};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -385,6 +433,12 @@ struct PearsonSet {
     #[serde(rename = "yLabel")] ylabel: String,
     #[serde(rename = "Labels")] labels: Vec<String>,
     #[serde(rename = "LabelsLocations")] label_locs: Vec<[f64;2]>,
+    #[serde(rename = "title", default = "default_title")]
+    title: String,
+}
+
+fn default_title() -> String {
+    "Pearson Diagram".to_string()
 }
 
 #[derive(Deserialize)]
@@ -453,7 +507,16 @@ pub fn show_pearson_plot(ui: &mut Ui, state: &crate::AppState, variant: usize) {
     if !minx.is_finite() { minx = 0.0; maxx = 3.0; miny = 0.0; maxy = 3.0; }
 
     let plot_id = format!("pearson_{}", variant);
-    Plot::new(plot_id).view_aspect(1.0).legend(Legend::default()).show(ui, |plot_ui| {
+    Plot::new(plot_id)
+        .view_aspect(1.0)
+        .include_x(minx)
+        .include_x(maxx)
+        .include_y(miny)
+        .include_y(maxy)
+        .legend(Legend::default())
+        .x_axis_label(set.xlabel.clone())
+        .y_axis_label(set.ylabel.clone())
+        .show(ui, |plot_ui| {
         // draw baselines
         for seg in &set.baselines {
             let line_pts: Vec<[f64;2]> = seg.iter().map(|p| [p[0].log10(), p[1].log10()]).collect();
@@ -477,43 +540,34 @@ pub fn show_pearson_plot(ui: &mut Ui, state: &crate::AppState, variant: usize) {
 }
 
 pub fn show_pearson_plot_sized(ui: &mut Ui, state: &crate::AppState, variant: usize, side: f32) {
-    let headers = &state.raw_table.headers;
-    let resolver = build_resolver(headers);
-    let Ok(set) = pearson_variant(variant) else { ui.label("Missing Pearson.json"); return; };
-    use std::collections::BTreeMap;
-    let mut groups: BTreeMap<String, Vec<[f64;2]>> = BTreeMap::new();
-    let mut group_color: BTreeMap<String, Color32> = BTreeMap::new();
-    let idx_label = resolver.find_index("Label");
-    let idx_color = resolver.find_index("Color");
-    for r in &state.raw_table.rows {
-        if let Some((x,y)) = pearson_xy_for_row(&resolver, r, variant) {
-            let label = idx_label.and_then(|i| r.get(i)).cloned().unwrap_or_else(|| "Group".to_string());
-            groups.entry(label.clone()).or_default().push([x,y]);
-            if let Some(i) = idx_color { if let Some(cstr) = r.get(i) { if let Some(c) = parse_egui_color(cstr) { group_color.entry(label.clone()).or_insert(c); } } }
-        }
+    let ctx = ui.ctx().clone();
+    
+    // 创建plotters绘制函数
+    let plot_fn = |root: DrawingArea<BitMapBackend<'_>, Shift>| {
+        export_pearson_with_area(state, root, variant)
+    };
+    
+    // 计算渲染尺寸
+    let width = (side * ui.ctx().pixels_per_point()) as u32;
+    let height = (side * ui.ctx().pixels_per_point()) as u32;
+    
+    // 渲染图表为纹理
+    if let Some(texture) = render_plotters_to_texture(&ctx, plot_fn, width, height) {
+        // 在egui中显示纹理
+        let image = Image::new(egui::load::SizedTexture::from_handle(&texture))  // 修复了类型转换
+            .fit_to_original_size(1.0)
+            .maintain_aspect_ratio(true);
+        
+        ui.allocate_ui_with_layout(
+            egui::vec2(side, side),
+            egui::Layout::top_down(egui::Align::Min),
+            |sub_ui| {
+                sub_ui.add(image);
+            },
+        );
+    } else {
+        ui.label("Failed to render Pearson plot");
     }
-    let mut minx = f64::INFINITY; let mut maxx = f64::NEG_INFINITY; let mut miny = f64::INFINITY; let mut maxy = f64::NEG_INFINITY;
-    for (_, pts) in &groups { for p in pts { minx = minx.min(p[0]); maxx = maxx.max(p[0]); miny = miny.min(p[1]); maxy = maxy.max(p[1]); } }
-    for seg in &set.baselines { for p in seg { let x=p[0].log10(); let y=p[1].log10(); minx=minx.min(x); maxx=maxx.max(x); miny=miny.min(y); maxy=maxy.max(y); } }
-    if !minx.is_finite() { minx = 0.0; maxx = 3.0; miny = 0.0; maxy = 3.0; }
-    let plot_id = format!("pearson_sized_{}", variant);
-    let plot = Plot::new(plot_id).view_aspect(1.0).legend(Legend::default());
-    ui.allocate_ui_with_layout(egui::vec2(side, side), egui::Layout::top_down(egui::Align::Min), |sub_ui| {
-        plot.show(sub_ui, |plot_ui| {
-            for seg in &set.baselines {
-                let line_pts: Vec<[f64;2]> = seg.iter().map(|p| [p[0].log10(), p[1].log10()]).collect();
-                plot_ui.line(Line::new(line_pts).color(Color32::from_gray(120)));
-            }
-            for (i, lab) in set.labels.iter().enumerate() {
-                if let Some(pos) = set.label_locs.get(i) { plot_ui.text(PlotText::new(PlotPoint::new(pos[0], pos[1]), lab.as_str())); }
-            }
-            let palette = egui_palette(); let mut idx = 0usize;
-            for (label, pts) in groups.clone() {
-                let color = group_color.get(&label).cloned().unwrap_or_else(|| { let c = palette[idx % palette.len()]; idx+=1; c });
-                let pp: PlotPoints = pts.into(); plot_ui.points(Points::new(pp).color(color).radius(2.5).name(label));
-            }
-        });
-    });
 }
 
 pub fn show_pearson_grid(ui: &mut Ui, state: &crate::AppState) {
