@@ -570,20 +570,41 @@ pub fn show_pearson_plot_sized(ui: &mut Ui, state: &crate::AppState, variant: us
     }
 }
 
+
 pub fn show_pearson_grid(ui: &mut Ui, state: &crate::AppState) {
     let avail = ui.available_size();
-    let side = ((avail.x - 8.0) / 2.0).min((avail.y - 8.0) / 2.0).max(120.0);
+    
+    // 定义边距和间距
+    let margin = 10.0;
+    let spacing = 5.0;
+    
+    // 计算可用于子图的总空间（减去边距和间距）
+    let usable_width = avail.x - 2.0 * margin - spacing;
+    let usable_height = avail.y - 2.0 * margin - spacing;
+    
+    // 计算每个子图的最大尺寸（确保不超过可用空间的一半）
+    let max_side_width = usable_width / 2.0;
+    let max_side_height = usable_height / 2.0;
+    let side = max_side_width.min(max_side_height).max(50.0); // 设置最小尺寸为50.0
+    
+    // 添加外边距
+    ui.add_space(margin);
     ui.horizontal(|row| {
+        row.add_space(margin);
         show_pearson_plot_sized(row, state, 0, side);
-        row.add_space(8.0);
+        row.add_space(spacing);
         show_pearson_plot_sized(row, state, 1, side);
+        row.add_space(margin);
     });
-    ui.add_space(8.0);
+    ui.add_space(spacing);
     ui.horizontal(|row| {
+        row.add_space(margin);
         show_pearson_plot_sized(row, state, 2, side);
-        row.add_space(8.0);
+        row.add_space(spacing);
         show_pearson_plot_sized(row, state, 3, side);
+        row.add_space(margin);
     });
+    ui.add_space(margin);
 }
 
 pub fn export_pearson_png(state: &crate::AppState, path: &std::path::Path, variant: usize) -> anyhow::Result<()> {
