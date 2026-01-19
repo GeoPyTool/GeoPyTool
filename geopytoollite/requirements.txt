@@ -1,0 +1,8 @@
+PySide6-Essentials~=6.8
+numpy
+pandas
+matplotlib
+scipy
+pyqtgraph
+openpyxl
+scikit-learn

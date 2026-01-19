@@ -1,0 +1,131 @@
+# This project was generated with 0.3.25 using template: https://github.com/beeware/briefcase-template @ v0.3.25
+[tool.briefcase]
+project_name = "GeoPyToolLite"
+bundle = "com.geopytool"
+version = "0.0.1"
+url = "https://geopytool.com"
+license.file = "LICENSE"
+author = "cycleuser"
+author_email = "wedonotuse@outlook.com"
+
+[tool.briefcase.app.geopytoollite]
+formal_name = "GeoPyToolLite"
+description = "A Lite version of GeoPyTool"
+long_description = """More details about the app should go here.
+"""
+sources = [
+    "src/geopytoollite",
+]
+test_sources = [
+    "tests",
+]
+
+requires = [
+    "PySide6",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "scipy",
+    "pyqtgraph",
+    "openpyxl",
+    "scikit-learn",
+    # "PySide6-Addons~=6.8",
+]
+test_requires = [
+    "pytest",
+]
+
+[tool.briefcase.app.geopytoollite.macOS]
+universal_build = true
+# As of Pyside 6.8, PySide enforces a macOS 12 minimum on wheels.
+min_os_version = "12.0"
+requires = [
+    "std-nslog~=1.0.3",
+]
+
+[tool.briefcase.app.geopytoollite.linux]
+requires = [
+]
+
+[tool.briefcase.app.geopytoollite.linux.system.debian]
+system_requires = [
+]
+
+system_runtime_requires = [
+    # Derived from https://doc.qt.io/qt-6/linux-requirements.html
+    "libxext6",
+    "libxrender1",
+    "libx11-xcb1",
+    "libxkbcommon-x11-0",
+    "libxcb-image0",
+    "libxcb-cursor0",
+    "libxcb-shape0",
+    "libxcb-randr0",
+    "libxcb-xfixes0",
+    "libxcb-sync1",
+    "libxcb-icccm4",
+    "libxcb-keysyms1",
+    "libfontconfig1",
+    "libsm6",
+    "libice6",
+    "libglib2.0-0",
+    "libgl1",
+    "libegl1",
+    "libdbus-1-3",
+]
+
+[tool.briefcase.app.geopytoollite.linux.system.rhel]
+system_requires = [
+]
+
+system_runtime_requires = [
+    "qt6-qtbase-gui",
+]
+
+[tool.briefcase.app.geopytoollite.linux.system.suse]
+system_requires = [
+]
+
+system_runtime_requires = [
+    "libgthread-2_0-0",
+    "libQt6Gui6",
+]
+
+[tool.briefcase.app.geopytoollite.linux.system.arch]
+system_requires = [
+]
+
+system_runtime_requires = [
+    "qt6-base",
+]
+
+[tool.briefcase.app.geopytoollite.linux.appimage]
+manylinux = "manylinux_2_28"
+
+system_requires = [
+# ?? FIXME
+]
+
+linuxdeploy_plugins = [
+]
+
+[tool.briefcase.app.geopytoollite.linux.flatpak]
+flatpak_runtime = "org.kde.Platform"
+flatpak_runtime_version = "6.9"
+flatpak_sdk = "org.kde.Sdk"
+
+[tool.briefcase.app.geopytoollite.windows]
+requires = [
+]
+
+# Mobile deployments
+[tool.briefcase.app.geopytoollite.iOS]
+supported = false
+
+[tool.briefcase.app.geopytoollite.android]
+supported = false
+
+# Web deployments
+[tool.briefcase.app.geopytoollite.web]
+supported = false
+
