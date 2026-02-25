@@ -1,0 +1,84 @@
+[tool.briefcase]
+project_name = "GeoPyTool Reborn"
+bundle = "org.geopytool"
+version = "2.0.0"
+url = "https://github.com/GeoPyTool/GeoPyTool"
+license.file = "LICENSE"
+author = "GeoPyTool Team"
+author_email = "cycleuser@cycleuser.org"
+
+[tool.briefcase.app.geopytool_reborn]
+formal_name = "GeoPyTool Reborn"
+description = "A comprehensive geochemistry data analysis toolkit"
+long_description = """GeoPyTool Reborn is a restructured version of GeoPyTool,
+providing tools for geochemistry data visualization and analysis including
+TAS diagrams, REE/Trace element patterns, Harker diagrams, Pearce tectonic
+discrimination diagrams, CIPW norm calculations, and statistical analysis."""
+sources = ["src/geopytool_reborn"]
+requires = [
+    "PySide6>=6.4.0",
+    "numpy>=1.20.0",
+    "pandas>=1.3.0",
+    "matplotlib>=3.4.0",
+    "scipy>=1.7.0",
+    "scikit-learn>=1.0.0",
+    "openpyxl>=3.0.0",
+]
+
+[tool.briefcase.app.geopytool_reborn.macOS]
+requires = []
+
+[tool.briefcase.app.geopytool_reborn.linux]
+requires = []
+system_requires = []
+
+[tool.briefcase.app.geopytool_reborn.linux.system.debian]
+system_requires = [
+    "libgirepository1.0-dev",
+]
+
+[tool.briefcase.app.geopytool_reborn.linux.system.rhel]
+system_requires = []
+
+[tool.briefcase.app.geopytool_reborn.linux.system.suse]
+system_requires = []
+
+[tool.briefcase.app.geopytool_reborn.linux.system.arch]
+system_requires = []
+
+[tool.briefcase.app.geopytool_reborn.linux.flatpak]
+flatpak_runtime = "org.kde.Platform"
+flatpak_runtime_version = "6.6"
+flatpak_sdk = "org.kde.Sdk"
+
+[tool.briefcase.app.geopytool_reborn.windows]
+requires = []
+
+[build-system]
+requires = ["briefcase"]
+
+[project]
+name = "geopytool-reborn"
+version = "2.0.0"
+description = "A comprehensive geochemistry data analysis toolkit"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "GPL-3.0"}
+authors = [
+    {name = "GeoPyTool Team", email = "cycleuser@cycleuser.org"}
+]
+dependencies = [
+    "PySide6>=6.4.0",
+    "numpy>=1.20.0",
+    "pandas>=1.3.0",
+    "matplotlib>=3.4.0",
+    "scipy>=1.7.0",
+    "scikit-learn>=1.0.0",
+    "openpyxl>=3.0.0",
+]
+
+[project.scripts]
+geopytool-reborn = "geopytool_reborn.__main__:main"
+
+[project.gui-scripts]
+geopytool-reborn-gui = "geopytool_reborn.__main__:main"

@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Briefcase-Version: 0.3.26
+Name: geopytool_reborn
+Formal-Name: GeoPyTool Reborn
+App-ID: org.geopytool.geopytool-reborn
+Version: 2.0.0
+Home-page: https://github.com/GeoPyTool/GeoPyTool
+Download-URL: https://github.com/GeoPyTool/GeoPyTool
+Author: GeoPyTool Team
+Author-email: cycleuser@cycleuser.org
+Summary: A comprehensive geochemistry data analysis toolkit
