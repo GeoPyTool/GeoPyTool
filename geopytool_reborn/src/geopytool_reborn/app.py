@@ -13,10 +13,10 @@ import pandas as pd
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QMenuBar, QMenu, QStatusBar, QFileDialog, QMessageBox,
-    QTableView, QLabel, QToolBar, QActionGroup
+    QTableView, QLabel, QToolBar
 )
 from PySide6.QtCore import Qt, QSize
-from PySide6.QtGui import QIcon, QAction
+from PySide6.QtGui import QIcon, QAction, QActionGroup
 
 from . import __version__, __date__
 from .core.data_model import PandasModel, DataCleaner
