@@ -32,10 +32,22 @@ from .diagrams.pearce import Pearce
 from .diagrams.triangular.qapf import QAPF
 from .diagrams.triangular.qfl import QFL
 
+# Import isotope diagram modules
+from .diagrams.isotopes.rbsr import RbSrIsotope
+from .diagrams.isotopes.smnd import SmNdIsotope
+from .diagrams.isotopes.kca import KArIsotope
+from .diagrams.isotopes.arar import ArArIsotope
+
 # Import analysis modules
 from .analysis.pca import PCA
 from .analysis.cluster import Cluster
 from .analysis.statistics import Statistics
+from .analysis.ml import SVMAnalysis, LDAAnalysis, MLPAnalysis, PCAAnalysis
+
+# Import tool modules
+from .tools.cipw import CIPWWindow
+from .tools.combine import CombineWindow
+from .tools.flatten import FlattenWindow
 
 
 class MainWindow(QMainWindow):
@@ -167,6 +179,63 @@ class MainWindow(QMainWindow):
         stats_action = QAction("Statistics", self)
         stats_action.triggered.connect(lambda: self._open_diagram(Statistics))
         analysis_menu.addAction(stats_action)
+        
+        analysis_menu.addSeparator()
+        
+        # Machine Learning submenu
+        ml_menu = analysis_menu.addMenu("Machine Learning")
+        
+        pca_ml_action = QAction("PCA Analysis", self)
+        pca_ml_action.triggered.connect(lambda: self._open_diagram(PCAAnalysis))
+        ml_menu.addAction(pca_ml_action)
+        
+        svm_action = QAction("SVM Classification", self)
+        svm_action.triggered.connect(lambda: self._open_diagram(SVMAnalysis))
+        ml_menu.addAction(svm_action)
+        
+        lda_action = QAction("LDA Analysis", self)
+        lda_action.triggered.connect(lambda: self._open_diagram(LDAAnalysis))
+        ml_menu.addAction(lda_action)
+        
+        mlp_action = QAction("MLP Neural Network", self)
+        mlp_action.triggered.connect(lambda: self._open_diagram(MLPAnalysis))
+        ml_menu.addAction(mlp_action)
+        
+        # Isotope menu
+        isotope_menu = menubar.addMenu("&Isotopes")
+        
+        rbsr_action = QAction("Rb-Sr Isochron", self)
+        rbsr_action.triggered.connect(lambda: self._open_diagram(RbSrIsotope))
+        isotope_menu.addAction(rbsr_action)
+        
+        smnd_action = QAction("Sm-Nd Isochron", self)
+        smnd_action.triggered.connect(lambda: self._open_diagram(SmNdIsotope))
+        isotope_menu.addAction(smnd_action)
+        
+        kar_action = QAction("K-Ar Isochron", self)
+        kar_action.triggered.connect(lambda: self._open_diagram(KArIsotope))
+        isotope_menu.addAction(kar_action)
+        
+        arar_action = QAction("Ar-Ar Isochron", self)
+        arar_action.triggered.connect(lambda: self._open_diagram(ArArIsotope))
+        isotope_menu.addAction(arar_action)
+        
+        # Tools menu
+        tools_menu = menubar.addMenu("&Tools")
+        
+        cipw_action = QAction("CIPW Norm Calculator", self)
+        cipw_action.triggered.connect(lambda: self._open_diagram(CIPWWindow))
+        tools_menu.addAction(cipw_action)
+        
+        tools_menu.addSeparator()
+        
+        combine_action = QAction("Combine Data", self)
+        combine_action.triggered.connect(lambda: self._open_diagram(CombineWindow))
+        tools_menu.addAction(combine_action)
+        
+        flatten_action = QAction("Flatten Data", self)
+        flatten_action.triggered.connect(lambda: self._open_diagram(FlattenWindow))
+        tools_menu.addAction(flatten_action)
         
         # Help menu
         help_menu = menubar.addMenu("&Help")
