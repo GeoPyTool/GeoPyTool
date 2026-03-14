@@ -13,7 +13,7 @@ import pandas as pd
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QMenuBar, QMenu, QStatusBar, QFileDialog, QMessageBox,
-    QTableView, QLabel, QToolBar
+    QTableView, QLabel, QToolBar, QActionGroup
 )
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QIcon, QAction
@@ -22,8 +22,8 @@ from . import __version__, __date__
 from .core.data_model import PandasModel, DataCleaner
 from .ui.table_viewer import TableViewer, CustomTableView
 from .ui.widgets import FileDropTableView
+from .resources.i18n import tr, set_language, get_language, Translator, get_available_languages
 
-# Import diagram modules
 from .diagrams.tas import TAS
 from .diagrams.ree import REE
 from .diagrams.trace import Trace
@@ -32,19 +32,16 @@ from .diagrams.pearce import Pearce
 from .diagrams.triangular.qapf import QAPF
 from .diagrams.triangular.qfl import QFL
 
-# Import isotope diagram modules
 from .diagrams.isotopes.rbsr import RbSrIsotope
 from .diagrams.isotopes.smnd import SmNdIsotope
 from .diagrams.isotopes.kca import KArIsotope
 from .diagrams.isotopes.arar import ArArIsotope
 
-# Import analysis modules
 from .analysis.pca import PCA
 from .analysis.cluster import Cluster
 from .analysis.statistics import Statistics
 from .analysis.ml import SVMAnalysis, LDAAnalysis, MLPAnalysis, PCAAnalysis
 
-# Import tool modules
 from .tools.cipw import CIPWWindow
 from .tools.combine import CombineWindow
 from .tools.flatten import FlattenWindow
@@ -58,48 +55,44 @@ class MainWindow(QMainWindow):
     - File loading (CSV, Excel)
     - Data viewing and editing
     - Access to all diagram and analysis tools
+    - Multi-language support (English/Chinese)
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
         
-        self.setWindowTitle(f"GeoPyTool Reborn v{__version__}")
+        self.translator = Translator.instance()
+        self.translator.add_callback(self._update_ui_texts)
+        
+        self.setWindowTitle(f"{tr('win_main')} v{__version__}")
         self.setMinimumSize(1024, 768)
         
-        # Data storage
         self.raw_data = pd.DataFrame()
         self.data_cleaner = DataCleaner()
         
-        # Track open windows
         self.open_windows = []
         
-        # Setup UI
         self._setup_ui()
         self._setup_menus()
         self._setup_toolbar()
         self._setup_statusbar()
         
-        # Accept file drops
         self.setAcceptDrops(True)
 
     def _setup_ui(self):
         """Setup the main UI."""
-        # Central widget
         central = QWidget()
         layout = QVBoxLayout(central)
         
-        # Info label
-        self.info_label = QLabel("Load a data file to begin (CSV or Excel)")
+        self.info_label = QLabel(tr('info_load_file'))
         self.info_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.info_label)
         
-        # Data table
         self.table_view = FileDropTableView(self)
         self.model = PandasModel()
         self.table_view.setModel(self.model)
         layout.addWidget(self.table_view)
         
-        # Status info
         self.data_info_label = QLabel()
         layout.addWidget(self.data_info_label)
         
@@ -109,183 +102,258 @@ class MainWindow(QMainWindow):
         """Setup menu bar."""
         menubar = self.menuBar()
         
-        # File menu
-        file_menu = menubar.addMenu("&File")
+        self.file_menu = menubar.addMenu(tr('menu_file'))
         
-        open_action = QAction("&Open...", self)
-        open_action.setShortcut("Ctrl+O")
-        open_action.triggered.connect(self.open_file)
-        file_menu.addAction(open_action)
+        self.open_action = QAction(tr('action_open'), self)
+        self.open_action.setShortcut("Ctrl+O")
+        self.open_action.triggered.connect(self.open_file)
+        self.file_menu.addAction(self.open_action)
         
-        save_action = QAction("&Save...", self)
-        save_action.setShortcut("Ctrl+S")
-        save_action.triggered.connect(self.save_file)
-        file_menu.addAction(save_action)
+        self.save_action = QAction(tr('action_save'), self)
+        self.save_action.setShortcut("Ctrl+S")
+        self.save_action.triggered.connect(self.save_file)
+        self.file_menu.addAction(self.save_action)
         
-        file_menu.addSeparator()
+        self.file_menu.addSeparator()
         
-        quit_action = QAction("&Quit", self)
-        quit_action.setShortcut("Ctrl+Q")
-        quit_action.triggered.connect(self.close)
-        file_menu.addAction(quit_action)
+        self.quit_action = QAction(tr('action_quit'), self)
+        self.quit_action.setShortcut("Ctrl+Q")
+        self.quit_action.triggered.connect(self.close)
+        self.file_menu.addAction(self.quit_action)
         
-        # Geochemistry menu
-        geochem_menu = menubar.addMenu("&Geochemistry")
+        self.geochem_menu = menubar.addMenu(tr('menu_geochemistry'))
         
-        tas_action = QAction("TAS Diagram", self)
-        tas_action.triggered.connect(lambda: self._open_diagram(TAS))
-        geochem_menu.addAction(tas_action)
+        self.tas_action = QAction(tr('action_tas'), self)
+        self.tas_action.triggered.connect(lambda: self._open_diagram(TAS))
+        self.geochem_menu.addAction(self.tas_action)
         
-        ree_action = QAction("REE Spider Diagram", self)
-        ree_action.triggered.connect(lambda: self._open_diagram(REE))
-        geochem_menu.addAction(ree_action)
+        self.ree_action = QAction(tr('action_ree'), self)
+        self.ree_action.triggered.connect(lambda: self._open_diagram(REE))
+        self.geochem_menu.addAction(self.ree_action)
         
-        trace_action = QAction("Trace Element Diagram", self)
-        trace_action.triggered.connect(lambda: self._open_diagram(Trace))
-        geochem_menu.addAction(trace_action)
+        self.trace_action = QAction(tr('action_trace'), self)
+        self.trace_action.triggered.connect(lambda: self._open_diagram(Trace))
+        self.geochem_menu.addAction(self.trace_action)
         
-        harker_action = QAction("Harker Diagram", self)
-        harker_action.triggered.connect(lambda: self._open_diagram(Harker))
-        geochem_menu.addAction(harker_action)
+        self.harker_action = QAction(tr('action_harker'), self)
+        self.harker_action.triggered.connect(lambda: self._open_diagram(Harker))
+        self.geochem_menu.addAction(self.harker_action)
         
-        geochem_menu.addSeparator()
+        self.geochem_menu.addSeparator()
         
-        pearce_action = QAction("Pearce Tectonic Diagram", self)
-        pearce_action.triggered.connect(lambda: self._open_diagram(Pearce))
-        geochem_menu.addAction(pearce_action)
+        self.pearce_action = QAction(tr('action_pearce'), self)
+        self.pearce_action.triggered.connect(lambda: self._open_diagram(Pearce))
+        self.geochem_menu.addAction(self.pearce_action)
         
-        # Triangular diagrams submenu
-        tri_menu = geochem_menu.addMenu("Triangular Diagrams")
+        self.tri_menu = self.geochem_menu.addMenu(tr('menu_triangular'))
         
-        qapf_action = QAction("QAPF Diagram", self)
-        qapf_action.triggered.connect(lambda: self._open_diagram(QAPF))
-        tri_menu.addAction(qapf_action)
+        self.qapf_action = QAction(tr('action_qapf'), self)
+        self.qapf_action.triggered.connect(lambda: self._open_diagram(QAPF))
+        self.tri_menu.addAction(self.qapf_action)
         
-        qfl_action = QAction("QFL Diagram", self)
-        qfl_action.triggered.connect(lambda: self._open_diagram(QFL))
-        tri_menu.addAction(qfl_action)
+        self.qfl_action = QAction(tr('action_qfl'), self)
+        self.qfl_action.triggered.connect(lambda: self._open_diagram(QFL))
+        self.tri_menu.addAction(self.qfl_action)
         
-        # Analysis menu
-        analysis_menu = menubar.addMenu("&Analysis")
+        self.analysis_menu = menubar.addMenu(tr('menu_analysis'))
         
-        pca_action = QAction("PCA", self)
-        pca_action.triggered.connect(lambda: self._open_diagram(PCA))
-        analysis_menu.addAction(pca_action)
+        self.pca_action = QAction(tr('action_pca'), self)
+        self.pca_action.triggered.connect(lambda: self._open_diagram(PCA))
+        self.analysis_menu.addAction(self.pca_action)
         
-        cluster_action = QAction("Cluster Analysis", self)
-        cluster_action.triggered.connect(lambda: self._open_diagram(Cluster))
-        analysis_menu.addAction(cluster_action)
+        self.cluster_action = QAction(tr('action_cluster'), self)
+        self.cluster_action.triggered.connect(lambda: self._open_diagram(Cluster))
+        self.analysis_menu.addAction(self.cluster_action)
         
-        stats_action = QAction("Statistics", self)
-        stats_action.triggered.connect(lambda: self._open_diagram(Statistics))
-        analysis_menu.addAction(stats_action)
+        self.stats_action = QAction(tr('action_statistics'), self)
+        self.stats_action.triggered.connect(lambda: self._open_diagram(Statistics))
+        self.analysis_menu.addAction(self.stats_action)
         
-        analysis_menu.addSeparator()
+        self.analysis_menu.addSeparator()
         
-        # Machine Learning submenu
-        ml_menu = analysis_menu.addMenu("Machine Learning")
+        self.ml_menu = self.analysis_menu.addMenu(tr('menu_ml'))
         
-        pca_ml_action = QAction("PCA Analysis", self)
-        pca_ml_action.triggered.connect(lambda: self._open_diagram(PCAAnalysis))
-        ml_menu.addAction(pca_ml_action)
+        self.pca_ml_action = QAction(tr('action_pca_ml'), self)
+        self.pca_ml_action.triggered.connect(lambda: self._open_diagram(PCAAnalysis))
+        self.ml_menu.addAction(self.pca_ml_action)
         
-        svm_action = QAction("SVM Classification", self)
-        svm_action.triggered.connect(lambda: self._open_diagram(SVMAnalysis))
-        ml_menu.addAction(svm_action)
+        self.svm_action = QAction(tr('action_svm'), self)
+        self.svm_action.triggered.connect(lambda: self._open_diagram(SVMAnalysis))
+        self.ml_menu.addAction(self.svm_action)
         
-        lda_action = QAction("LDA Analysis", self)
-        lda_action.triggered.connect(lambda: self._open_diagram(LDAAnalysis))
-        ml_menu.addAction(lda_action)
+        self.lda_action = QAction(tr('action_lda'), self)
+        self.lda_action.triggered.connect(lambda: self._open_diagram(LDAAnalysis))
+        self.ml_menu.addAction(self.lda_action)
         
-        mlp_action = QAction("MLP Neural Network", self)
-        mlp_action.triggered.connect(lambda: self._open_diagram(MLPAnalysis))
-        ml_menu.addAction(mlp_action)
+        self.mlp_action = QAction(tr('action_mlp'), self)
+        self.mlp_action.triggered.connect(lambda: self._open_diagram(MLPAnalysis))
+        self.ml_menu.addAction(self.mlp_action)
         
-        # Isotope menu
-        isotope_menu = menubar.addMenu("&Isotopes")
+        self.isotope_menu = menubar.addMenu(tr('menu_isotopes'))
         
-        rbsr_action = QAction("Rb-Sr Isochron", self)
-        rbsr_action.triggered.connect(lambda: self._open_diagram(RbSrIsotope))
-        isotope_menu.addAction(rbsr_action)
+        self.rbsr_action = QAction(tr('action_rbsr'), self)
+        self.rbsr_action.triggered.connect(lambda: self._open_diagram(RbSrIsotope))
+        self.isotope_menu.addAction(self.rbsr_action)
         
-        smnd_action = QAction("Sm-Nd Isochron", self)
-        smnd_action.triggered.connect(lambda: self._open_diagram(SmNdIsotope))
-        isotope_menu.addAction(smnd_action)
+        self.smnd_action = QAction(tr('action_smnd'), self)
+        self.smnd_action.triggered.connect(lambda: self._open_diagram(SmNdIsotope))
+        self.isotope_menu.addAction(self.smnd_action)
         
-        kar_action = QAction("K-Ar Isochron", self)
-        kar_action.triggered.connect(lambda: self._open_diagram(KArIsotope))
-        isotope_menu.addAction(kar_action)
+        self.kar_action = QAction(tr('action_kar'), self)
+        self.kar_action.triggered.connect(lambda: self._open_diagram(KArIsotope))
+        self.isotope_menu.addAction(self.kar_action)
         
-        arar_action = QAction("Ar-Ar Isochron", self)
-        arar_action.triggered.connect(lambda: self._open_diagram(ArArIsotope))
-        isotope_menu.addAction(arar_action)
+        self.arar_action = QAction(tr('action_arar'), self)
+        self.arar_action.triggered.connect(lambda: self._open_diagram(ArArIsotope))
+        self.isotope_menu.addAction(self.arar_action)
         
-        # Tools menu
-        tools_menu = menubar.addMenu("&Tools")
+        self.tools_menu = menubar.addMenu(tr('menu_tools'))
         
-        cipw_action = QAction("CIPW Norm Calculator", self)
-        cipw_action.triggered.connect(lambda: self._open_diagram(CIPWWindow))
-        tools_menu.addAction(cipw_action)
+        self.cipw_action = QAction(tr('action_cipw'), self)
+        self.cipw_action.triggered.connect(lambda: self._open_diagram(CIPWWindow))
+        self.tools_menu.addAction(self.cipw_action)
         
-        tools_menu.addSeparator()
+        self.tools_menu.addSeparator()
         
-        combine_action = QAction("Combine Data", self)
-        combine_action.triggered.connect(lambda: self._open_diagram(CombineWindow))
-        tools_menu.addAction(combine_action)
+        self.combine_action = QAction(tr('action_combine'), self)
+        self.combine_action.triggered.connect(lambda: self._open_diagram(CombineWindow))
+        self.tools_menu.addAction(self.combine_action)
         
-        flatten_action = QAction("Flatten Data", self)
-        flatten_action.triggered.connect(lambda: self._open_diagram(FlattenWindow))
-        tools_menu.addAction(flatten_action)
+        self.flatten_action = QAction(tr('action_flatten'), self)
+        self.flatten_action.triggered.connect(lambda: self._open_diagram(FlattenWindow))
+        self.tools_menu.addAction(self.flatten_action)
         
-        # Help menu
-        help_menu = menubar.addMenu("&Help")
+        self.help_menu = menubar.addMenu(tr('menu_help'))
         
-        about_action = QAction("&About", self)
-        about_action.triggered.connect(self.show_about)
-        help_menu.addAction(about_action)
+        self.lang_menu = self.help_menu.addMenu(tr('menu_language'))
+        
+        self.lang_group = QActionGroup(self)
+        self.lang_group.setExclusive(True)
+        
+        self.lang_en_action = QAction(tr('lang_en'), self)
+        self.lang_en_action.setCheckable(True)
+        self.lang_en_action.setChecked(get_language() == 'en')
+        self.lang_en_action.triggered.connect(lambda: self._change_language('en'))
+        self.lang_menu.addAction(self.lang_en_action)
+        self.lang_group.addAction(self.lang_en_action)
+        
+        self.lang_zh_action = QAction(tr('lang_zh'), self)
+        self.lang_zh_action.setCheckable(True)
+        self.lang_zh_action.setChecked(get_language() == 'zh')
+        self.lang_zh_action.triggered.connect(lambda: self._change_language('zh'))
+        self.lang_menu.addAction(self.lang_zh_action)
+        self.lang_group.addAction(self.lang_zh_action)
+        
+        self.help_menu.addSeparator()
+        
+        self.about_action = QAction(tr('action_about'), self)
+        self.about_action.triggered.connect(self.show_about)
+        self.help_menu.addAction(self.about_action)
 
     def _setup_toolbar(self):
         """Setup toolbar."""
-        toolbar = QToolBar("Main Toolbar")
-        toolbar.setIconSize(QSize(24, 24))
-        self.addToolBar(toolbar)
+        self.toolbar = QToolBar("Main Toolbar")
+        self.toolbar.setIconSize(QSize(24, 24))
+        self.addToolBar(self.toolbar)
         
-        # Quick access buttons
-        open_btn = QAction("Open", self)
-        open_btn.triggered.connect(self.open_file)
-        toolbar.addAction(open_btn)
+        self.open_btn = QAction(tr('toolbar_open'), self)
+        self.open_btn.triggered.connect(self.open_file)
+        self.toolbar.addAction(self.open_btn)
         
-        save_btn = QAction("Save", self)
-        save_btn.triggered.connect(self.save_file)
-        toolbar.addAction(save_btn)
+        self.save_btn = QAction(tr('toolbar_save'), self)
+        self.save_btn.triggered.connect(self.save_file)
+        self.toolbar.addAction(self.save_btn)
         
-        toolbar.addSeparator()
+        self.toolbar.addSeparator()
         
-        tas_btn = QAction("TAS", self)
-        tas_btn.triggered.connect(lambda: self._open_diagram(TAS))
-        toolbar.addAction(tas_btn)
+        self.tas_btn = QAction(tr('toolbar_tas'), self)
+        self.tas_btn.triggered.connect(lambda: self._open_diagram(TAS))
+        self.toolbar.addAction(self.tas_btn)
         
-        ree_btn = QAction("REE", self)
-        ree_btn.triggered.connect(lambda: self._open_diagram(REE))
-        toolbar.addAction(ree_btn)
+        self.ree_btn = QAction(tr('toolbar_ree'), self)
+        self.ree_btn.triggered.connect(lambda: self._open_diagram(REE))
+        self.toolbar.addAction(self.ree_btn)
         
-        trace_btn = QAction("Trace", self)
-        trace_btn.triggered.connect(lambda: self._open_diagram(Trace))
-        toolbar.addAction(trace_btn)
+        self.trace_btn = QAction(tr('toolbar_trace'), self)
+        self.trace_btn.triggered.connect(lambda: self._open_diagram(Trace))
+        self.toolbar.addAction(self.trace_btn)
         
-        harker_btn = QAction("Harker", self)
-        harker_btn.triggered.connect(lambda: self._open_diagram(Harker))
-        toolbar.addAction(harker_btn)
+        self.harker_btn = QAction(tr('toolbar_harker'), self)
+        self.harker_btn.triggered.connect(lambda: self._open_diagram(Harker))
+        self.toolbar.addAction(self.harker_btn)
 
     def _setup_statusbar(self):
         """Setup status bar."""
-        self.statusBar().showMessage("Ready")
+        self.statusBar().showMessage(tr('status_ready'))
+
+    def _change_language(self, lang: str):
+        """Change the application language."""
+        set_language(lang)
+        self._update_ui_texts()
+
+    def _update_ui_texts(self):
+        """Update all UI texts after language change."""
+        self.setWindowTitle(f"{tr('win_main')} v{__version__}")
+        
+        self.file_menu.setTitle(tr('menu_file'))
+        self.open_action.setText(tr('action_open'))
+        self.save_action.setText(tr('action_save'))
+        self.quit_action.setText(tr('action_quit'))
+        
+        self.geochem_menu.setTitle(tr('menu_geochemistry'))
+        self.tas_action.setText(tr('action_tas'))
+        self.ree_action.setText(tr('action_ree'))
+        self.trace_action.setText(tr('action_trace'))
+        self.harker_action.setText(tr('action_harker'))
+        self.pearce_action.setText(tr('action_pearce'))
+        self.tri_menu.setTitle(tr('menu_triangular'))
+        self.qapf_action.setText(tr('action_qapf'))
+        self.qfl_action.setText(tr('action_qfl'))
+        
+        self.analysis_menu.setTitle(tr('menu_analysis'))
+        self.pca_action.setText(tr('action_pca'))
+        self.cluster_action.setText(tr('action_cluster'))
+        self.stats_action.setText(tr('action_statistics'))
+        self.ml_menu.setTitle(tr('menu_ml'))
+        self.pca_ml_action.setText(tr('action_pca_ml'))
+        self.svm_action.setText(tr('action_svm'))
+        self.lda_action.setText(tr('action_lda'))
+        self.mlp_action.setText(tr('action_mlp'))
+        
+        self.isotope_menu.setTitle(tr('menu_isotopes'))
+        self.rbsr_action.setText(tr('action_rbsr'))
+        self.smnd_action.setText(tr('action_smnd'))
+        self.kar_action.setText(tr('action_kar'))
+        self.arar_action.setText(tr('action_arar'))
+        
+        self.tools_menu.setTitle(tr('menu_tools'))
+        self.cipw_action.setText(tr('action_cipw'))
+        self.combine_action.setText(tr('action_combine'))
+        self.flatten_action.setText(tr('action_flatten'))
+        
+        self.help_menu.setTitle(tr('menu_help'))
+        self.lang_menu.setTitle(tr('menu_language'))
+        self.lang_en_action.setText(tr('lang_en'))
+        self.lang_zh_action.setText(tr('lang_zh'))
+        self.about_action.setText(tr('action_about'))
+        
+        self.open_btn.setText(tr('toolbar_open'))
+        self.save_btn.setText(tr('toolbar_save'))
+        self.tas_btn.setText(tr('toolbar_tas'))
+        self.ree_btn.setText(tr('toolbar_ree'))
+        self.trace_btn.setText(tr('toolbar_trace'))
+        self.harker_btn.setText(tr('toolbar_harker'))
+        
+        if self.raw_data.empty:
+            self.info_label.setText(tr('info_load_file'))
+        
+        self.statusBar().showMessage(tr('status_ready'))
 
     def open_file(self):
         """Open a data file."""
         filepath, _ = QFileDialog.getOpenFileName(
-            self, "Open Data File", "",
-            "All Supported (*.csv *.xlsx *.xls);;CSV Files (*.csv);;Excel Files (*.xlsx *.xls)"
+            self, tr('dialog_open_file'), "",
+            f"{tr('filter_all')};;{tr('filter_csv')};;{tr('filter_excel')}"
         )
         
         if filepath:
@@ -299,30 +367,28 @@ class MainWindow(QMainWindow):
             else:
                 df = pd.read_excel(filepath, engine='openpyxl')
             
-            # Ensure required columns
             df = self.data_cleaner.ensure_style_columns(df)
             
             self.raw_data = df
             self.model = PandasModel(df)
             self.table_view.setModel(self.model)
             
-            # Update info
-            self.info_label.setText(f"Loaded: {os.path.basename(filepath)}")
-            self.data_info_label.setText(f"Rows: {len(df)}, Columns: {len(df.columns)}")
-            self.statusBar().showMessage(f"Loaded {filepath}")
+            self.info_label.setText(f"{tr('info_loaded')} {os.path.basename(filepath)}")
+            self.data_info_label.setText(f"{tr('label_rows')} {len(df)}, {tr('label_columns')} {len(df.columns)}")
+            self.statusBar().showMessage(f"{tr('status_loaded')} {filepath}")
             
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to load file:\n{str(e)}")
+            QMessageBox.critical(self, tr('msg_error'), f"Failed to load file:\n{str(e)}")
 
     def save_file(self):
         """Save data to file."""
         if self.raw_data.empty:
-            QMessageBox.warning(self, "Warning", "No data to save.")
+            QMessageBox.warning(self, tr('msg_warning'), tr('msg_no_data'))
             return
         
         filepath, _ = QFileDialog.getSaveFileName(
-            self, "Save Data File", "",
-            "Excel Files (*.xlsx);;CSV Files (*.csv)"
+            self, tr('dialog_save_file'), "",
+            f"{tr('filter_excel')};;{tr('filter_csv')}"
         )
         
         if filepath:
@@ -332,15 +398,15 @@ class MainWindow(QMainWindow):
                 else:
                     self.raw_data.to_excel(filepath, index=False)
                 
-                self.statusBar().showMessage(f"Saved to {filepath}")
+                self.statusBar().showMessage(f"{tr('msg_save_success')} {filepath}")
                 
             except Exception as e:
-                QMessageBox.critical(self, "Error", f"Failed to save file:\n{str(e)}")
+                QMessageBox.critical(self, tr('msg_error'), f"Failed to save file:\n{str(e)}")
 
     def _open_diagram(self, diagram_class):
         """Open a diagram window with current data."""
         if self.raw_data.empty:
-            QMessageBox.warning(self, "Warning", "Please load data first.")
+            QMessageBox.warning(self, tr('msg_warning'), tr('msg_load_first'))
             return
         
         try:
@@ -348,7 +414,7 @@ class MainWindow(QMainWindow):
             window.show()
             self.open_windows.append(window)
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to open diagram:\n{str(e)}")
+            QMessageBox.critical(self, tr('msg_error'), f"Failed to open diagram:\n{str(e)}")
 
     def on_data_loaded(self, df, filepath):
         """Callback when data is loaded via drag-drop."""
@@ -357,9 +423,9 @@ class MainWindow(QMainWindow):
         self.model = PandasModel(df)
         self.table_view.setModel(self.model)
         
-        self.info_label.setText(f"Loaded: {os.path.basename(filepath)}")
-        self.data_info_label.setText(f"Rows: {len(df)}, Columns: {len(df.columns)}")
-        self.statusBar().showMessage(f"Loaded {filepath}")
+        self.info_label.setText(f"{tr('info_loaded')} {os.path.basename(filepath)}")
+        self.data_info_label.setText(f"{tr('label_rows')} {len(df)}, {tr('label_columns')} {len(df.columns)}")
+        self.statusBar().showMessage(f"{tr('status_loaded')} {filepath}")
 
     def dragEnterEvent(self, event):
         """Handle drag enter events."""
@@ -380,18 +446,17 @@ class MainWindow(QMainWindow):
     def show_about(self):
         """Show about dialog."""
         QMessageBox.about(
-            self, "About GeoPyTool Reborn",
+            self, tr('about_title'),
             f"<h2>GeoPyTool Reborn</h2>"
-            f"<p>Version: {__version__}</p>"
-            f"<p>Date: {__date__}</p>"
-            f"<p>A comprehensive geochemistry data analysis toolkit.</p>"
-            f"<p>Restructured from the original GeoPyTool by cycleuser.</p>"
-            f"<p>Website: <a href='https://github.com/GeoPyTool/GeoPyTool'>GitHub</a></p>"
+            f"<p>{tr('about_version')} {__version__}</p>"
+            f"<p>{tr('about_date')} {__date__}</p>"
+            f"<p>{tr('about_desc')}</p>"
+            f"<p>{tr('about_restructured')}</p>"
+            f"<p>{tr('about_website')} <a href='https://github.com/GeoPyTool/GeoPyTool'>GitHub</a></p>"
         )
 
     def closeEvent(self, event):
         """Handle close event."""
-        # Close all child windows
         for window in self.open_windows:
             try:
                 window.close()

@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 
 from ..core.data_model import PandasModel
+from ..resources.i18n import tr
 
 
 class CIPWCalculator:
@@ -86,15 +87,6 @@ class CIPWCalculator:
     }
     
     def calculate_single(self, row: Dict) -> Tuple[Dict, Dict, Dict, Dict]:
-        """
-        Calculate CIPW norm for a single sample.
-        
-        Args:
-            row: Dictionary with oxide values and styling attributes
-            
-        Returns:
-            tuple: (mole_result, weight_result, volume_result, calc_result)
-        """
         mole_result = self._init_result_dict(row, ' Mole%')
         weight_result = self._init_result_dict(row, ' Weight%')
         volume_result = self._init_result_dict(row, ' Volume%')
@@ -140,7 +132,6 @@ class CIPWCalculator:
         return mole_result, weight_result, volume_result, calc_result
     
     def _init_result_dict(self, row: Dict, suffix: str) -> Dict:
-        """Initialize result dictionary with styling attributes."""
         result = {}
         label = str(row.get('Label', ''))
         result['Label'] = label + suffix if label else ''
@@ -150,7 +141,6 @@ class CIPWCalculator:
         return result
     
     def _get_element_moles(self, row: Dict) -> Optional[Dict]:
-        """Calculate mole percentages for each element."""
         elements = {}
         total_mass = 0
         
@@ -178,7 +168,6 @@ class CIPWCalculator:
         return elements
     
     def _calculate_minerals(self, elements: Dict) -> Dict:
-        """Calculate mineral proportions from element moles."""
         calc = elements.copy()
         
         if calc['CaO'] >= 10/3 * calc.get('P2O5', 0):
@@ -280,7 +269,7 @@ class CIPWWindow(QWidget):
     
     def __init__(self, df=pd.DataFrame(), parent=None):
         super().__init__(parent)
-        self.setWindowTitle(self.title)
+        self.setWindowTitle(tr('win_cipw'))
         self.df = df
         self.parent_window = parent
         self.calculator = CIPWCalculator()
@@ -298,16 +287,16 @@ class CIPWWindow(QWidget):
         
         control_layout = QHBoxLayout()
         
-        self.calc_button = QPushButton("Calculate CIPW Norm")
+        self.calc_button = QPushButton(tr('btn_calc_cipw'))
         self.calc_button.clicked.connect(self._calculate)
         control_layout.addWidget(self.calc_button)
         
-        self.qapf_button = QPushButton("Open QAPF Diagram")
+        self.qapf_button = QPushButton(tr('btn_open_qapf'))
         self.qapf_button.clicked.connect(self._open_qapf)
         self.qapf_button.setEnabled(False)
         control_layout.addWidget(self.qapf_button)
         
-        self.save_button = QPushButton("Save Results")
+        self.save_button = QPushButton(tr('btn_save_results'))
         self.save_button.clicked.connect(self._save_results)
         control_layout.addWidget(self.save_button)
         
@@ -325,16 +314,16 @@ class CIPWWindow(QWidget):
         self.calc_table = QTableView()
         self.calc_table.setSortingEnabled(True)
         
-        self.tabs.addTab(self.mole_table, "Mole %")
-        self.tabs.addTab(self.weight_table, "Weight %")
-        self.tabs.addTab(self.volume_table, "Volume %")
-        self.tabs.addTab(self.calc_table, "Calculated Parameters")
+        self.tabs.addTab(self.mole_table, tr('tab_mole'))
+        self.tabs.addTab(self.weight_table, tr('tab_weight'))
+        self.tabs.addTab(self.volume_table, tr('tab_volume'))
+        self.tabs.addTab(self.calc_table, tr('tab_params'))
         
         layout.addWidget(self.tabs)
     
     def _calculate(self):
         if self.df.empty:
-            QMessageBox.warning(self, "Warning", "No data to calculate.")
+            QMessageBox.warning(self, tr('msg_warning'), tr('msg_no_data'))
             return
         
         self.mole_results = []
@@ -368,10 +357,9 @@ class CIPWWindow(QWidget):
             
             self.qapf_button.setEnabled(True)
             
-            QMessageBox.information(self, "Success", f"Calculated CIPW norms for {len(self.mole_results)} samples.")
+            QMessageBox.information(self, tr('msg_success'), tr('msg_calc_success').format(len(self.mole_results)))
     
     def _prepare_qapf_data(self):
-        """Prepare QAPF data from CIPW results."""
         if not self.weight_results:
             return
         
@@ -399,9 +387,8 @@ class CIPWWindow(QWidget):
         self.qapf_df = pd.DataFrame(qapf_data)
     
     def _open_qapf(self):
-        """Open QAPF diagram with calculated data."""
         if self.qapf_df is None or self.qapf_df.empty:
-            QMessageBox.warning(self, "Warning", "Calculate CIPW first.")
+            QMessageBox.warning(self, tr('msg_warning'), tr('msg_no_calc'))
             return
         
         try:
@@ -411,15 +398,16 @@ class CIPWWindow(QWidget):
             qapf_window.show()
             
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to open QAPF diagram:\n{str(e)}")
+            QMessageBox.critical(self, tr('msg_error'), f"Failed to open QAPF diagram:\n{str(e)}")
     
     def _save_results(self):
         if not self.mole_results:
-            QMessageBox.warning(self, "Warning", "No results to save. Calculate first.")
+            QMessageBox.warning(self, tr('msg_warning'), tr('msg_no_results'))
             return
         
         filepath, _ = QFileDialog.getSaveFileName(
-            self, "Save CIPW Results", "", "Excel Files (*.xlsx);;CSV Files (*.csv)"
+            self, tr('dialog_save_cipw'), "", 
+            f"{tr('filter_excel')};;{tr('filter_csv')}"
         )
         
         if filepath:
@@ -442,9 +430,9 @@ class CIPWWindow(QWidget):
                         volume_df.to_excel(writer, sheet_name='Volume%', index=False)
                         calc_df.to_excel(writer, sheet_name='Parameters', index=False)
                 
-                QMessageBox.information(self, "Success", f"Results saved to {filepath}")
+                QMessageBox.information(self, tr('msg_success'), f"{tr('msg_save_success')} {filepath}")
             except Exception as e:
-                QMessageBox.critical(self, "Error", f"Failed to save: {str(e)}")
+                QMessageBox.critical(self, tr('msg_error'), f"Failed to save: {str(e)}")
     
     def update_data(self, df):
         self.df = df
