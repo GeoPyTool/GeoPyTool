@@ -22,6 +22,7 @@ from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as Navigation
 from matplotlib.figure import Figure
 
 from ..core.base_widget import GrowingTextEdit
+from ..resources.i18n import tr
 
 
 class Harker(QWidget):
@@ -41,7 +42,7 @@ class Harker(QWidget):
     
     def __init__(self, df=pd.DataFrame(), parent=None):
         super().__init__(parent)
-        self.setWindowTitle(self.title)
+        self.setWindowTitle(tr('win_harker'))
         self._df = df
         self.setMinimumSize(1000, 800)
         
@@ -60,7 +61,7 @@ class Harker(QWidget):
         
         control_layout = QHBoxLayout()
         
-        self.x_label = QLabel("X-axis:")
+        self.x_label = QLabel(tr('label_x_axis'))
         control_layout.addWidget(self.x_label)
         
         self.x_combo = QComboBox()
@@ -68,17 +69,17 @@ class Harker(QWidget):
         self.x_combo.currentIndexChanged.connect(self.plot)
         control_layout.addWidget(self.x_combo)
         
-        self.legend_cb = QCheckBox("Legend")
+        self.legend_cb = QCheckBox(tr('cb_legend'))
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.plot)
         control_layout.addWidget(self.legend_cb)
         
-        self.regression_cb = QCheckBox("Regression")
+        self.regression_cb = QCheckBox(tr('cb_regression'))
         self.regression_cb.setChecked(False)
         self.regression_cb.stateChanged.connect(self.plot)
         control_layout.addWidget(self.regression_cb)
         
-        self.save_btn = QPushButton("Save Image")
+        self.save_btn = QPushButton(tr('btn_save_image'))
         self.save_btn.clicked.connect(self._save_image)
         control_layout.addWidget(self.save_btn)
         
