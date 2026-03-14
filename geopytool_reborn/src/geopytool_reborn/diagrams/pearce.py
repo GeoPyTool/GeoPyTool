@@ -23,6 +23,7 @@ from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as Navigation
 from matplotlib.figure import Figure
 
 from ..core.base_widget import GrowingTextEdit
+from ..resources.i18n import tr
 
 
 class Pearce(QWidget):
@@ -50,7 +51,7 @@ class Pearce(QWidget):
     
     def __init__(self, df=pd.DataFrame(), parent=None):
         super().__init__(parent)
-        self.setWindowTitle(self.title)
+        self.setWindowTitle(tr('win_pearce'))
         self._df = df
         self.setMinimumSize(900, 800)
         
@@ -69,17 +70,17 @@ class Pearce(QWidget):
         
         control_layout = QHBoxLayout()
         
-        self.legend_cb = QCheckBox("Legend")
+        self.legend_cb = QCheckBox(tr('cb_legend'))
         self.legend_cb.setChecked(True)
         self.legend_cb.stateChanged.connect(self.plot)
         control_layout.addWidget(self.legend_cb)
         
-        self.fields_cb = QCheckBox("Field Labels")
+        self.fields_cb = QCheckBox(tr('cb_fields'))
         self.fields_cb.setChecked(True)
         self.fields_cb.stateChanged.connect(self.plot)
         control_layout.addWidget(self.fields_cb)
         
-        self.save_btn = QPushButton("Save Image")
+        self.save_btn = QPushButton(tr('btn_save_image'))
         self.save_btn.clicked.connect(self._save_image)
         control_layout.addWidget(self.save_btn)
         
