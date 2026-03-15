@@ -55,7 +55,11 @@ flatpak_sdk = "org.kde.Sdk"
 requires = []
 
 [build-system]
-requires = ["briefcase"]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project]
 name = "geopytool-reborn"
