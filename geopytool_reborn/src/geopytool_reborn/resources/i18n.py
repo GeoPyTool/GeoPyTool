@@ -57,6 +57,7 @@ TRANSLATIONS = {
         'action_cipw': 'CIPW Norm Calculator',
         'action_combine': 'Combine Data',
         'action_flatten': 'Flatten Data',
+        'action_zircon_ce': 'Zircon Ce Oxygen Fugacity',
         
         # Help menu
         'action_about': '&About',
@@ -78,6 +79,8 @@ TRANSLATIONS = {
         'dialog_save_file': 'Save Data File',
         'dialog_save_image': 'Save Image',
         'dialog_save_cipw': 'Save CIPW Results',
+        'dialog_save_zircon_ce': 'Save Zircon Ce Results',
+        'dialog_save_figure': 'Save Figure',
         'filter_all': 'All Supported (*.csv *.xlsx *.xls)',
         'filter_csv': 'CSV Files (*.csv)',
         'filter_excel': 'Excel Files (*.xlsx *.xls)',
@@ -92,6 +95,8 @@ TRANSLATIONS = {
         'msg_save_success': 'Saved to',
         'msg_calc_success': 'Calculated CIPW norms for {} samples.',
         'msg_no_calc': 'Calculate CIPW first.',
+        'msg_zircon_ce_no_result': 'No valid Zircon Ce results. Check data.',
+        'msg_zircon_ce_calc_success': 'Calculated Zircon Ce4+/Ce3+ for {} samples.',
         'msg_file_saved': 'File saved successfully.',
         'msg_error': 'Error',
         'msg_warning': 'Warning',
@@ -110,6 +115,7 @@ TRANSLATIONS = {
         'label_type': 'Type:',
         'label_columns_count': 'Columns:',
         'label_component': 'component',
+        'label_results': 'Results:',
         
         # Buttons
         'btn_save': 'Save',
@@ -128,6 +134,9 @@ TRANSLATIONS = {
         'btn_flatten': 'Flatten',
         'btn_open_qapf': 'Open QAPF Diagram',
         'btn_calc_cipw': 'Calculate CIPW Norm',
+        'btn_calc_zircon_ce': 'Calculate Zircon Ce',
+        'btn_show_result': 'Show Result',
+        'btn_save_figure': 'Save Figure',
         'btn_save_results': 'Save Results',
         'btn_cluster_labels': 'Cluster Labels',
         
@@ -170,6 +179,7 @@ TRANSLATIONS = {
         'win_kar': 'K-Ar Isochron Diagram',
         'win_arar': 'Ar-Ar Isochron Diagram',
         'win_cipw': 'CIPW Norm Calculation',
+        'win_zircon_ce': 'Zircon Ce Oxygen Fugacity',
         'win_combine': 'Combine Data',
         'win_flatten': 'Flatten Data',
         
@@ -230,6 +240,7 @@ TRANSLATIONS = {
         'action_cipw': 'CIPW标准矿物计算',
         'action_combine': '数据合并',
         'action_flatten': '数据展平',
+        'action_zircon_ce': '锆石Ce氧逸度计算',
         
         # Help menu
         'action_about': '关于(&A)',
@@ -251,6 +262,8 @@ TRANSLATIONS = {
         'dialog_save_file': '保存数据文件',
         'dialog_save_image': '保存图像',
         'dialog_save_cipw': '保存CIPW结果',
+        'dialog_save_zircon_ce': '保存锆石Ce结果',
+        'dialog_save_figure': '保存图像',
         'filter_all': '所有支持的格式 (*.csv *.xlsx *.xls)',
         'filter_csv': 'CSV文件 (*.csv)',
         'filter_excel': 'Excel文件 (*.xlsx *.xls)',
@@ -265,6 +278,8 @@ TRANSLATIONS = {
         'msg_save_success': '已保存到',
         'msg_calc_success': '已计算 {} 个样品的CIPW标准矿物。',
         'msg_no_calc': '请先计算CIPW。',
+        'msg_zircon_ce_no_result': '没有有效的锆石Ce结果，请检查数据。',
+        'msg_zircon_ce_calc_success': '已计算 {} 个样品的锆石Ce4+/Ce3+。',
         'msg_file_saved': '文件保存成功。',
         'msg_error': '错误',
         'msg_warning': '警告',
@@ -283,6 +298,7 @@ TRANSLATIONS = {
         'label_type': '类型：',
         'label_columns_count': '列数：',
         'label_component': '成分',
+        'label_results': '结果：',
         
         # Buttons
         'btn_save': '保存',
@@ -301,6 +317,9 @@ TRANSLATIONS = {
         'btn_flatten': '展平',
         'btn_open_qapf': '打开QAPF图解',
         'btn_calc_cipw': '计算CIPW标准矿物',
+        'btn_calc_zircon_ce': '计算锆石Ce',
+        'btn_show_result': '显示结果',
+        'btn_save_figure': '保存图像',
         'btn_save_results': '保存结果',
         'btn_cluster_labels': '聚类标签',
         
@@ -343,6 +362,7 @@ TRANSLATIONS = {
         'win_kar': 'K-Ar等时线图解',
         'win_arar': 'Ar-Ar等时线图解',
         'win_cipw': 'CIPW标准矿物计算',
+        'win_zircon_ce': '锆石Ce氧逸度计算',
         'win_combine': '数据合并',
         'win_flatten': '数据展平',
         

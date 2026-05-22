@@ -45,6 +45,7 @@ from .analysis.ml import SVMAnalysis, LDAAnalysis, MLPAnalysis, PCAAnalysis
 from .tools.cipw import CIPWWindow
 from .tools.combine import CombineWindow
 from .tools.flatten import FlattenWindow
+from .tools.zircon_ce import ZirconCeWindow
 
 
 class MainWindow(QMainWindow):
@@ -223,6 +224,12 @@ class MainWindow(QMainWindow):
         self.flatten_action.triggered.connect(lambda: self._open_diagram(FlattenWindow))
         self.tools_menu.addAction(self.flatten_action)
         
+        self.tools_menu.addSeparator()
+        
+        self.zircon_ce_action = QAction(tr('action_zircon_ce'), self)
+        self.zircon_ce_action.triggered.connect(lambda: self._open_diagram(ZirconCeWindow))
+        self.tools_menu.addAction(self.zircon_ce_action)
+        
         self.help_menu = menubar.addMenu(tr('menu_help'))
         
         self.lang_menu = self.help_menu.addMenu(tr('menu_language'))
@@ -330,6 +337,7 @@ class MainWindow(QMainWindow):
         self.cipw_action.setText(tr('action_cipw'))
         self.combine_action.setText(tr('action_combine'))
         self.flatten_action.setText(tr('action_flatten'))
+        self.zircon_ce_action.setText(tr('action_zircon_ce'))
         
         self.help_menu.setTitle(tr('menu_help'))
         self.lang_menu.setTitle(tr('menu_language'))

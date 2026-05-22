@@ -10,7 +10,7 @@ and analysis, including TAS diagrams, REE/Trace element patterns,
 tectonic discrimination diagrams, CIPW norm calculations, and more.
 """
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __date__ = "2026-02-25"
 __author__ = "GeoPyTool Team"
 
